@@ -22,7 +22,7 @@ const ToggleThemeDropDown = () => {
           <DropdownMenuItem
             className={cn(
               "cursor-pointer rounded-md py-1 text-base",
-              theme === providedTheme && "border-[1px] border-moon/60",
+              theme === providedTheme && "border-[1px] border-primary/60",
             )}
             key={text}
             onClick={() => setTheme(theme)}

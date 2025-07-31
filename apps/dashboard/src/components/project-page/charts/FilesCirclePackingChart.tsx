@@ -50,7 +50,7 @@ const FilesCirclePackingChart = () => {
 
   return (
     <div
-      className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border border-neutral-600/50 p-3 text-2xl"
+      className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border p-3 text-2xl"
       ref={parentDivRef}
     >
       <h2 className="text-center text-2xl font-bold">Most used files</h2>

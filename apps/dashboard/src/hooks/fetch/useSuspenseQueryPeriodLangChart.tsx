@@ -1,5 +1,5 @@
 import { PERIODS_CONFIG } from "@/constants";
-import getLanguageColor from "@repo/common/getLanguageColor";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";

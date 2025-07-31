@@ -71,7 +71,7 @@ export const GROUP_BY_DROPDOWN_ITEMS: {
 export const chartConfig = {
   time: {
     label: "Time spent",
-    color: "#FFDC67",
+    color: "hsl(var(--primary))",
   },
 } satisfies ChartConfig;
 

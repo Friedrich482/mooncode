@@ -8,7 +8,8 @@
     "./tailwind.config": "./tailwind.config.ts",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
-    "./index": "./src/index.ts"
+    "./index": "./src/index.ts",
+    "./utils/*": "./src/utils/*.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

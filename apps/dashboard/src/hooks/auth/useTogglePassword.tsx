@@ -6,7 +6,7 @@ const useTogglePassword = () => {
   const handleEyeIconClick = () => setIsPasswordVisible((prev) => !prev);
   const EyeIconComponent = () => (
     <div
-      className="absolute z-10 pr-2 text-white/60"
+      className="absolute z-10 pr-2 hover:text-primary"
       onClick={handleEyeIconClick}
       title={`${isPasswordVisible ? "Hide" : "Show"} the password`}
     >

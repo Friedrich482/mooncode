@@ -36,7 +36,7 @@ const PeriodTimeChart = () => {
   );
 
   return (
-    <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border border-neutral-600/50 max-chart:w-full">
+    <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border max-chart:w-full">
       <GroupByDropDown />
       <ChartContainer
         config={chartConfig}
@@ -82,7 +82,7 @@ const PeriodTimeChart = () => {
 
           <Line
             dataKey="timeSpentLine"
-            stroke="#dc2626"
+            stroke="hsl(var(--destructive))"
             strokeWidth={2}
             dot={{ r: 4 }}
             type="monotone"

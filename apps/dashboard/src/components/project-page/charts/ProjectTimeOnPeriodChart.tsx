@@ -49,7 +49,7 @@ const ProjectTimeOnPeriodChart = () => {
   );
 
   return (
-    <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border border-neutral-600/50 max-chart:w-full">
+    <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border max-chart:w-full">
       <Icon
         Icon={isBarChartVisible ? AreaChart : BarChart}
         className="absolute -top-12 right-0 z-0"
@@ -100,7 +100,7 @@ const ProjectTimeOnPeriodChart = () => {
               />
               <Line
                 dataKey="timeSpentLine"
-                stroke="#dc2626"
+                stroke="hsl(var(--destructive))"
                 strokeWidth={2}
                 dot={{ r: 4 }}
                 type="monotone"
@@ -113,7 +113,7 @@ const ProjectTimeOnPeriodChart = () => {
               fill="var(--color-time)"
               className="cursor-pointer"
               name="Time"
-              stroke="#dc2626"
+              stroke="hsl(var(--destructive))"
               strokeWidth={2}
               type="monotone"
               fillOpacity={1}

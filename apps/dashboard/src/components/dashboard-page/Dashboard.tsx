@@ -12,7 +12,7 @@ import SuspenseBoundary from "../suspense/SuspenseBoundary";
 const Dashboard = () => {
   document.title = "MoonCode | Dashboard";
   return (
-    <main className="flex flex-col gap-x-10 gap-y-12 px-14 pb-4 text-black dark:text-white">
+    <main className="flex flex-col gap-x-10 gap-y-12 px-14 pb-4">
       <DashboardTitle />
 
       <ChartGroupWrapper>
@@ -48,7 +48,7 @@ const Dashboard = () => {
           FallbackComponent={({ error }) => (
             <ErrorFallBack
               error={error}
-              className="relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border border-neutral-600/50 px-1.5 text-2xl text-red-600 max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+              className="relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
             />
           )}
         >

@@ -1,5 +1,5 @@
 import formatDuration from "@repo/common/formatDuration";
-import getLanguageName from "@repo/common/getLanguageName";
+import getLanguageName from "@repo/ui/utils/getLanguageName";
 import { z } from "zod";
 
 const CustomChartToolTip = (

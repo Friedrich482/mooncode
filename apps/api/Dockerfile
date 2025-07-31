@@ -13,7 +13,9 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build --workspace=api
+RUN npm run build --workspace=api          
+RUN npm run build --workspace=@repo/common 
+RUN npm run build --workspace=@repo/trpc   
 
 FROM node:22-alpine AS deps
 
@@ -30,11 +32,8 @@ RUN npm ci --only=production
 
 FROM node:22-alpine AS production
 
-
 WORKDIR /app
 
-# Install bash for easier debugging
-RUN apk add --no-cache bash
 
 COPY --from=builder /app/apps/api/dist ./dist
 
@@ -53,4 +52,4 @@ USER nestjs
 
 EXPOSE 3000
 
-CMD ["node", "dist/main.js"]
+CMD ["node", "dist/src/main.js"]

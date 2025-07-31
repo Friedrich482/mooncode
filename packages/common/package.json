@@ -16,7 +16,8 @@
   },
   "scripts": {
     "dev": "tsc --watch",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "build": "tsc"
   },
   "files": [
     "./dist/**"

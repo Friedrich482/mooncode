@@ -28,7 +28,7 @@ const CustomRangeDatesSelector = () => {
           popoverTriggerContent={
             <Button
               variant="link"
-              className="p-0 text-2xl text-moon max-[25.625rem]:text-base"
+              className="p-0 text-2xl max-[25.625rem]:text-base"
             >
               {new Date(customRange.start).toDateString()}
             </Button>
@@ -44,7 +44,7 @@ const CustomRangeDatesSelector = () => {
           popoverTriggerContent={
             <Button
               variant="link"
-              className="p-0 text-2xl text-moon max-[25.625rem]:text-base"
+              className="p-0 text-2xl max-[25.625rem]:text-base"
             >
               {new Date(customRange.end).toDateString()}
             </Button>

@@ -86,7 +86,7 @@ const LoginForm = () => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex w-[clamp(15rem,60%,25rem)] flex-col gap-8"
         >
-          <h2 className="text-center text-3xl text-black dark:text-white max-sm:text-2xl">
+          <h2 className="text-center text-3xl font-extrabold text-black dark:text-white max-sm:text-2xl">
             Login to MoonCode
           </h2>
           <FormField
@@ -99,7 +99,7 @@ const LoginForm = () => {
                   <Input
                     placeholder="example@email.com"
                     {...field}
-                    className="h-10 focus-visible:ring-moon/65"
+                    className="h-10 border-border"
                   />
                 </FormControl>
                 <FormMessage />
@@ -118,7 +118,7 @@ const LoginForm = () => {
                       placeholder="**********"
                       {...field}
                       type={isPasswordVisible ? "text" : "password"}
-                      className="h-10 flex-nowrap focus-visible:ring-moon/65"
+                      className="h-10 flex-nowrap border-border"
                     />
                   </FormControl>
                   <EyeIconComponent />

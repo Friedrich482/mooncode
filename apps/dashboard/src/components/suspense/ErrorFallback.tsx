@@ -32,7 +32,7 @@ const ErrorComponent = ({
     <div
       className={
         className ||
-        "relative z-0 flex min-h-96 w-[45%] items-center justify-center rounded-md border border-neutral-600/50 px-1.5 text-2xl text-red-600 max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+        "relative z-0 flex min-h-96 w-[45%] items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
       }
     >
       <p className="flex gap-2">

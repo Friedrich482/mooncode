@@ -11,7 +11,6 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        moon: "#FFDC67",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
@@ -63,6 +62,9 @@ export default {
       lg: "64rem",
       xl: "80rem",
       "2xl": "96rem",
+    },
+    fontFamily: {
+      sans: ["var(--font-sans)"],
     },
   },
   plugins: [animate],

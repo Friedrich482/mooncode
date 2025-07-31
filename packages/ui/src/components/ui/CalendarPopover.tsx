@@ -39,7 +39,7 @@ function CalendarPopover<T extends "single" | "range">({
             className="p-2"
             classNames={{
               day_today: cn(
-                "shadow-sm shadow-moon",
+                "shadow-sm shadow-primary",
                 (date as Date).getDate() === new Date().getDate() &&
                   "shadow-none",
               ),
@@ -62,7 +62,7 @@ function CalendarPopover<T extends "single" | "range">({
             }}
             className="p-2"
             classNames={{
-              day_today: cn("shadow-sm shadow-moon"),
+              day_today: cn("shadow-sm shadow-primary"),
             }}
             disabled={{ after: new Date() }}
           />

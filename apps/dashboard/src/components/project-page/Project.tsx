@@ -27,14 +27,14 @@ const ProjectTitleErrorBoundary = ({
         return <Navigate to="/not-found" />;
       }
 
-      return <div className="h-9 text-red-600">{error.message}</div>;
+      return <div className="h-9 text-destructive">{error.message}</div>;
     }}
     children={children}
   />
 );
 
 const Project = () => (
-  <main className="flex flex-col gap-x-10 gap-y-12 px-14 pb-4 text-black dark:text-white">
+  <main className="flex flex-col gap-x-10 gap-y-12 px-14 pb-4">
     <div className="flex flex-col gap-4">
       <ProjectTitleErrorBoundary>
         <SuspenseBoundary fallBackClassName="h-9 w-52">

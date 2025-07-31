@@ -21,7 +21,7 @@ import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { chartConfig } from "@/constants";
 import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
-import getLanguageColor from "@repo/common/getLanguageColor";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import useSuspenseQueryPeriodLangChart from "@/hooks/fetch/useSuspenseQueryPeriodLangChart";
 
@@ -52,7 +52,7 @@ const PeriodLanguagesChart = () => {
         className="absolute -top-12 right-0 z-0"
         onClick={handleClick}
       />
-      <div className="flex min-h-96 flex-col rounded-md border border-neutral-600/50">
+      <div className="flex min-h-96 flex-col rounded-md border">
         <h2 className="text-center text-2xl font-bold">Languages</h2>
         <ChartContainer
           config={chartConfig}

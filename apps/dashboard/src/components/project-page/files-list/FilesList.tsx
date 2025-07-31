@@ -19,13 +19,13 @@ const FilesList = () => {
       : undefined;
 
   return (
-    <div className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border border-neutral-600/50 p-3 text-2xl">
+    <div className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border p-3 text-2xl">
       <h2 className="text-center text-2xl font-bold">Files List</h2>
       <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
         <ErrorBoundary
           FallbackComponent={({ error }) => (
             <ErrorFallBack error={error}>
-              <h3 className="flex h-9 items-center justify-center gap-2 p-1 text-red-600">
+              <h3 className="flex h-9 items-center justify-center gap-2 p-1 text-destructive">
                 <TriangleAlert className="size-8 shrink-0 max-xl:size-6" />
                 <span>Error</span>
               </h3>

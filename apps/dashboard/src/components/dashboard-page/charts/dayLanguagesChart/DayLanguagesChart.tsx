@@ -9,8 +9,8 @@ import ChartTitle from "./ChartTitle";
 import CustomChartToolTip from "@/components/CustomChartToolTip";
 import { DATE_LOCALE } from "@repo/common/constants";
 import { chartConfig } from "@/constants";
-import getLanguageColor from "@repo/common/getLanguageColor";
-import getLanguageName from "@repo/common/getLanguageName";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
+import getLanguageName from "@repo/ui/utils/getLanguageName";
 import getNextDayDate from "@/utils/getNextDayDate";
 import getPrevDayDate from "@/utils/getPreviousDayDate";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -43,7 +43,7 @@ const DayLanguagesChart = () => {
   }));
 
   return (
-    <div className="flex min-h-96 w-[45%] flex-col gap-y-2 rounded-md border border-neutral-600/50 py-2 max-chart:w-full">
+    <div className="flex min-h-96 w-[45%] flex-col gap-y-2 rounded-md border py-2 max-chart:w-full">
       <ChartTitle
         displayDate={displayDate}
         formattedTotalTimeSpent={formattedTotalTimeSpent}

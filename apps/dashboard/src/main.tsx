@@ -24,16 +24,6 @@ const router = createBrowserRouter([
             element: <Root />,
           },
           {
-            path: "login",
-            element: <LoginForm />,
-            loader: authRouteLoader,
-          },
-          {
-            path: "register",
-            element: <RegisterForm />,
-            loader: authRouteLoader,
-          },
-          {
             path: "dashboard",
             element: <Dashboard />,
             loader: protectedRouteLoader,
@@ -50,6 +40,20 @@ const router = createBrowserRouter([
           {
             path: "*",
             element: <RedirectToNotFound />,
+          },
+        ],
+      },
+      {
+        children: [
+          {
+            path: "login",
+            element: <LoginForm />,
+            loader: authRouteLoader,
+          },
+          {
+            path: "register",
+            element: <RegisterForm />,
+            loader: authRouteLoader,
           },
         ],
       },

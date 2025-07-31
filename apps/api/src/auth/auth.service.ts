@@ -136,6 +136,10 @@ export class AuthService {
   }
 
   async logOut(response: Response) {
-    response.clearCookie(this.AUTH_COOKIE_NAME);
+    response.clearCookie(this.AUTH_COOKIE_NAME, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
   }
 }
