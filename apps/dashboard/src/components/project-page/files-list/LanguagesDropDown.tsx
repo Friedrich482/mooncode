@@ -26,7 +26,7 @@ const LanguagesDropDown = ({
       <DropdownMenuTrigger asChild>
         <Button
           variant="secondary"
-          className="flex items-center justify-center gap-2 bg-neutral-200 dark:bg-accent"
+          className="flex items-center justify-center gap-2"
         >
           <span>Languages</span>
           <ChevronDown />

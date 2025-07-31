@@ -21,7 +21,7 @@ import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { chartConfig } from "@/constants";
 import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
-import getLanguageColor from "@repo/common/getLanguageColor";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import useSuspenseQueryPeriodLangChart from "@/hooks/fetch/useSuspenseQueryPeriodLangChart";
 

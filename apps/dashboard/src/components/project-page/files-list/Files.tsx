@@ -1,7 +1,7 @@
 import { cn } from "@repo/ui/lib/utils";
 import formatDuration from "@repo/common/formatDuration";
-import getLanguageColor from "@repo/common/getLanguageColor";
-import getLanguageName from "@repo/common/getLanguageName";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
+import getLanguageName from "@repo/ui/utils/getLanguageName";
 import useFiles from "@/hooks/projects/useFiles";
 
 const Files = ({

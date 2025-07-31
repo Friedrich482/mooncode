@@ -100,7 +100,7 @@ const ProjectTimeOnPeriodChart = () => {
               />
               <Line
                 dataKey="timeSpentLine"
-                stroke="#dc2626"
+                stroke="hsl(var(--destructive))"
                 strokeWidth={2}
                 dot={{ r: 4 }}
                 type="monotone"
@@ -113,7 +113,7 @@ const ProjectTimeOnPeriodChart = () => {
               fill="var(--color-time)"
               className="cursor-pointer"
               name="Time"
-              stroke="#dc2626"
+              stroke="hsl(var(--destructive))"
               strokeWidth={2}
               type="monotone"
               fillOpacity={1}

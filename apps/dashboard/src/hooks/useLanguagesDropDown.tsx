@@ -1,7 +1,7 @@
 import { Entry, ProjectParamsSchema } from "@/types-schemas";
 import { PERIODS_CONFIG } from "@/constants";
-import getLanguageColor from "@repo/common/getLanguageColor";
-import getLanguageName from "@repo/common/getLanguageName";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
+import getLanguageName from "@repo/ui/utils/getLanguageName";
 import { usePeriodStore } from "./store/periodStore";
 import useSafeParams from "./useSafeParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
