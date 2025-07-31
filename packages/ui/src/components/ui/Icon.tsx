@@ -9,7 +9,7 @@ const Icon = React.forwardRef<
     Icon: React.ForwardRefExoticComponent<
       Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
     >;
-  } & { iconClassName?: string }
+  }
 >(({ className, Icon, ...props }, ref) => (
   <Button
     ref={ref}
