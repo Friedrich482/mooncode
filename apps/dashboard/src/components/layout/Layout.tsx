@@ -6,7 +6,6 @@ import { cn } from "@repo/ui/lib/utils";
 
 const GlobalSpinner = () => (
   <div className="flex h-dvh items-center justify-center">
-    {/* moon color */}
     <ClipLoader size={80} color="hsl(var(--primary))" />
   </div>
 );

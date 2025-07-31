@@ -72,10 +72,19 @@ export const CircularPacking = ({
               dominantBaseline="middle"
               className="cursor-pointer"
             >
-              <tspan x={0} className="bg-zinc-600 font-extrabold" fill="white">
+              <tspan
+                x={0}
+                className="font-extrabold"
+                fill="hsl(var(--muted-foreground))"
+              >
                 {bubble.data.name}
               </tspan>
-              <tspan x={0} dy="1.2em" fill="white" className="font-light">
+              <tspan
+                x={0}
+                dy="1.2em"
+                fill="hsl(var(--muted-foreground))"
+                className="font-light"
+              >
                 {formatDuration(bubble.data.value)}
               </tspan>
             </text>

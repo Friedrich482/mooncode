@@ -1,4 +1,3 @@
-import { Button } from "@repo/ui/components/ui/button";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Link } from "react-router";
 import Logo from "./Logo";
@@ -29,15 +28,14 @@ const SideBar = ({
       <Icon onClick={handleClick} Icon={X} />
     </div>
 
-    <ul className="">
+    <ul>
       <li>
-        <Button
-          variant="secondary"
-          asChild
-          className="self-center bg-transparent text-neutral-700 shadow-none hover:bg-transparent hover:text-black dark:text-neutral-400 dark:hover:text-white"
+        <Link
+          to="/dashboard"
+          className="text-muted-foreground/60 hover:text-primary"
         >
-          <Link to="/dashboard">Dashboard</Link>
-        </Button>
+          Dashboard
+        </Link>
       </li>
     </ul>
   </nav>

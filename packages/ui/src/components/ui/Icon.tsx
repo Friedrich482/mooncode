@@ -10,16 +10,15 @@ const Icon = React.forwardRef<
       Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
     >;
   } & { iconClassName?: string }
->(({ className, Icon, iconClassName, ...props }, ref) => (
+>(({ className, Icon, ...props }, ref) => (
   <Button
-    className={cn(
-      "flex size-10 flex-shrink-0 items-center justify-center border-none border-transparent bg-transparent p-0 text-white shadow-none hover:bg-accent hover:text-white [&_svg]:size-auto",
-      className,
-    )}
     ref={ref}
+    variant="ghost"
+    size="icon"
     {...props}
+    className={cn("size-10 [&_svg]:size-auto", className)}
   >
-    <Icon className={cn("text-black dark:text-white", iconClassName)} />
+    <Icon />
   </Button>
 ));
 Icon.displayName = "Icon";

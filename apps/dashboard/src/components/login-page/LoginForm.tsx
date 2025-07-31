@@ -99,7 +99,7 @@ const LoginForm = () => {
                   <Input
                     placeholder="example@email.com"
                     {...field}
-                    className="h-10 focus-visible:ring-primary/65"
+                    className="h-10 border-border"
                   />
                 </FormControl>
                 <FormMessage />
@@ -118,7 +118,7 @@ const LoginForm = () => {
                       placeholder="**********"
                       {...field}
                       type={isPasswordVisible ? "text" : "password"}
-                      className="h-10 flex-nowrap focus-visible:ring-primary/65"
+                      className="h-10 flex-nowrap border-border"
                     />
                   </FormControl>
                   <EyeIconComponent />
