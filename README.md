@@ -21,22 +21,23 @@ This project is the monorepo for MoonCode. This is an application to track and g
 
 - [`api`](./apps/api): a [Nestjs](https://nestjs.com/) application that powers the `extension` and the `dashboard`
 - [`dashboard`](./apps/dashboard): a [Vite](https://vite.dev/) application served locally by the extension to visualize the data
-- [`vscode extension`](./apps/vscode-extension): the VSCode extension that collects the data 
+- [`vscode extension`](./apps/vscode-extension): the VSCode extension that collects the data
 - [`web`](./apps/web): a [Nextjs](https://nextjs.org/) application that is the web site of the project (coming soon)
 - [`@repo/common`](./packages/common): all functions, constants and utils shared by the three parts of the project
 - [`@repo/trpc`](./packages/trpc): the package that shares trpc types across the project
 - [`@repo/ui`](./packages/ui): ui components shared between `dashboard` and `web`
 
 ### Useful links
-- The API is deployed on fly.io: [https://mooncode-api.fly.dev](https://mooncode-api.fly.dev)
+
+- The API is deployed on [api.mooncode.cc](https://api.mooncode.cc)
 - The extension: [https://marketplace.visualstudio.com/items?itemName=Friedrich482.mooncode](https://marketplace.visualstudio.com/items?itemName=Friedrich482.mooncode)
-- The dashboard is served by the dashboard on [http://localhost:4208](http://localhost:4208) or any near available port
+- The dashboard is served by the extension on [http://localhost:4208](http://localhost:4208) or any near available port
 
 ### Develop
 
-To start the dev server of all apps at the same time, run 
+To start the dev server of all apps at the same time, run
 
 ```
 cd mooncode
-turbo dev
+turbo dev # or npm run dev
 ```

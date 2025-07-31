@@ -51,12 +51,10 @@ const PeriodProjects = () => {
                 <Icon
                   Icon={Folder}
                   className="absolute -top-8 left-0 block hover:bg-transparent group-hover:hidden"
-                  iconClassName="stroke-neutral-600/50 group-hover:stroke-primary/85 transition duration-150"
                 />
                 <Icon
                   Icon={FolderOpen}
-                  className="absolute -top-8 left-0 hidden hover:bg-transparent hover:bg-none group-hover:block"
-                  iconClassName="stroke-neutral-600/50 group-hover:stroke-primary/85 transition duration-150"
+                  className="absolute -top-8 left-0 hidden hover:bg-transparent hover:bg-none group-hover:block group-hover:text-primary/85"
                 />
                 <h3 className="font-bold group-hover:underline max-[42rem]:text-xl">
                   {entry.name}
