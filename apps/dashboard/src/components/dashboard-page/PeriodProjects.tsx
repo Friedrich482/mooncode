@@ -44,13 +44,13 @@ const PeriodProjects = () => {
           )}
         </p>
       ) : (
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(12rem,0.5fr))] gap-4 max-[42rem]:grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] max-[42rem]:gap-8">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-8 max-[42rem]:grid-cols-1 max-[42rem]:gap-8">
           {data.map((entry) => (
             <Link key={entry.path} to={`/dashboard/${entry.name}`}>
               <div className="group relative flex min-h-40 origin-bottom-right cursor-pointer flex-col items-center justify-center gap-4 rounded-md border p-3 transition-transform duration-150 hover:border-primary/85">
                 <Icon
                   Icon={Folder}
-                  className="absolute -top-8 left-0 block hover:bg-transparent group-hover:hidden"
+                  className="absolute -top-8 left-0 block text-border hover:bg-transparent group-hover:hidden"
                 />
                 <Icon
                   Icon={FolderOpen}

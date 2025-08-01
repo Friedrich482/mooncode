@@ -53,6 +53,25 @@ const useFiles = (languagesToFetch: string[] | undefined) => {
       },
       {},
     ),
+  ).map(
+    ([languageSlug, rest]) =>
+      [
+        {
+          languageSlug,
+          totalTimeSpentOnLanguage: rest.reduce(
+            (acc, value) => acc + value.totalTimeSpent,
+            0,
+          ),
+        },
+        rest,
+        //  we need to type it as a tuple to get proper type inference
+      ] as [
+        {
+          languageSlug: string;
+          totalTimeSpentOnLanguage: number;
+        },
+        typeof rest,
+      ],
   );
 
   return { groups, files };
