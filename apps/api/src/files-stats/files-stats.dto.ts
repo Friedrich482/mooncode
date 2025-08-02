@@ -48,7 +48,7 @@ export const GetProjectLanguagesPerDayOfPeriodDto = GetProjectPerDayOfPeriodDto;
 export const GetProjectFilesOnPeriodDto = refineSchema(
   DateRangeSchema.extend({
     name: z.string().min(1),
-    amount: z.number().int().positive().optional(),
+    amount: z.number().int().nonnegative().optional(),
     languages: z.array(z.string().min(1)).optional(),
   }),
 );

@@ -5,7 +5,10 @@ import useSafeParams from "@/hooks/useSafeParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 
-const useFiles = (languagesToFetch: string[] | undefined) => {
+const useFiles = (
+  languagesToFetch: string[] | undefined,
+  amount: number | undefined,
+) => {
   const { projectName: name } = useSafeParams(ProjectParamsSchema);
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
@@ -19,12 +22,14 @@ const useFiles = (languagesToFetch: string[] | undefined) => {
             start: customRange.start,
             end: customRange.end,
             languages: languagesToFetch,
+            amount,
           }
         : {
             name,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             languages: languagesToFetch,
+            amount,
           },
     ),
   );

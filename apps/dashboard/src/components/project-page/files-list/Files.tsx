@@ -16,11 +16,13 @@ import { useState } from "react";
 const Files = ({
   languagesToFetch,
   isGrouped,
+  amount,
 }: {
   languagesToFetch: string[] | undefined;
   isGrouped: boolean;
+  amount: number | undefined;
 }) => {
-  const { files, groups } = useFiles(languagesToFetch);
+  const { files, groups } = useFiles(languagesToFetch, amount);
 
   const [collapsedLanguages, setCollapsedLanguages] = useState<string[]>([]);
 

@@ -1,27 +1,44 @@
-import { Checkbox } from "@repo/ui/components/ui/checkbox";
+import { useEffect, useState } from "react";
 import { Entry } from "@/types-schemas";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "@/components/suspense/ErrorFallback";
 import Files from "./Files";
+import FiltersSection from "./FiltersSection";
 import LanguagesDropDown from "./LanguagesDropDown";
 import SuspenseBoundary from "@/components/suspense/SuspenseBoundary";
 import { TriangleAlert } from "lucide-react";
 import { cn } from "@repo/ui/lib/utils";
-import { useState } from "react";
 
 const FilesList = () => {
   const [selectedEntries, setSelectedEntries] = useState<Entry[]>([]);
-  const [isGrouped, setIsGrouped] = useState(false);
-  const handleCheckChange = () => setIsGrouped((prev) => !prev);
   const languagesToFetch =
     selectedEntries.length !== 0
       ? selectedEntries.map((entry) => entry.languageSlug)
       : undefined;
 
+  const [isGrouped, setIsGrouped] = useState(false);
+  const handleCheckChange = () => setIsGrouped((prev) => !prev);
+
+  const [limitInput, setLimitInput] = useState("");
+  const [limit, setLimit] = useState<number | undefined>(undefined);
+  const handleLimitInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setLimitInput(e.target.value);
+
+  useEffect(() => {
+    if (limitInput.length === 0) {
+      setLimit(undefined);
+    } else {
+      const parsedLimit = parseInt(limitInput, 10);
+      if (!isNaN(parsedLimit)) {
+        setLimit(parsedLimit);
+      }
+    }
+  }, [limitInput]);
+
   return (
     <div className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border p-3 text-2xl">
       <h2 className="text-center text-2xl font-bold">Files List</h2>
-      <div className="flex flex-wrap items-center gap-x-10 gap-y-5">
+      <div className="flex flex-wrap items-center gap-x-10 gap-y-5 rounded-md border p-2">
         <ErrorBoundary
           FallbackComponent={({ error }) => (
             <ErrorFallBack error={error}>
@@ -40,14 +57,12 @@ const FilesList = () => {
           </SuspenseBoundary>
         </ErrorBoundary>
 
-        <div className="flex gap-4">
-          <p>Group</p>
-          <Checkbox
-            className="size-8"
-            checked={isGrouped}
-            onCheckedChange={handleCheckChange}
-          />
-        </div>
+        <FiltersSection
+          isGrouped={isGrouped}
+          limitInput={limitInput}
+          handleCheckChange={handleCheckChange}
+          handleLimitInputChange={handleLimitInputChange}
+        />
       </div>
 
       <div
@@ -58,7 +73,11 @@ const FilesList = () => {
       >
         <ErrorBoundary FallbackComponent={ErrorFallBack}>
           <SuspenseBoundary fallBackClassName="h-[52rem] w-full max-chart:w-full">
-            <Files languagesToFetch={languagesToFetch} isGrouped={isGrouped} />
+            <Files
+              languagesToFetch={languagesToFetch}
+              isGrouped={isGrouped}
+              amount={limit}
+            />
           </SuspenseBoundary>
         </ErrorBoundary>
       </div>
