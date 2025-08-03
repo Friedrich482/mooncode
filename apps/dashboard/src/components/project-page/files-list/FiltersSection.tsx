@@ -6,19 +6,24 @@ import { Input } from "@repo/ui/components/ui/input";
 const FiltersSection = ({
   limitInput,
   isGrouped,
+  searchTerm,
   handleLimitInputChange,
   handleCheckChange,
   handleSortButtonClick,
+  handleSearchInputChange,
 }: {
   limitInput: string;
   isGrouped: boolean;
+  searchTerm: string;
   // eslint-disable-next-line no-unused-vars
   handleLimitInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCheckChange: () => void;
   handleSortButtonClick: () => void;
+  // eslint-disable-next-line no-unused-vars
+  handleSearchInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <>
-    <div className="flex gap-4">
+    <div>
       <Input
         value={limitInput}
         aria-label="limit"
@@ -26,6 +31,7 @@ const FiltersSection = ({
         onChange={handleLimitInputChange}
       />
     </div>
+
     <div className="flex gap-4">
       <p>Group</p>
       <Checkbox
@@ -34,6 +40,7 @@ const FiltersSection = ({
         onCheckedChange={handleCheckChange}
       />
     </div>
+
     <Button
       className="flex items-center gap-4"
       variant="secondary"
@@ -43,6 +50,15 @@ const FiltersSection = ({
       <span>Sort</span>
       <ArrowUpDown />
     </Button>
+
+    <div>
+      <Input
+        value={searchTerm}
+        aria-label="search file"
+        placeholder="Search file..."
+        onChange={handleSearchInputChange}
+      />
+    </div>
   </>
 );
 

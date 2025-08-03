@@ -4,25 +4,32 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
+import { memo, useState } from "react";
 import FilesGroupHeader from "./FilesGroupHeader";
 import { cn } from "@repo/ui/lib/utils";
 import formatDuration from "@repo/common/formatDuration";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import useFiles from "@/hooks/projects/files/useFiles";
-import { useState } from "react";
 
-const Files = ({
+const Files = memo(function Files({
   languagesToFetch,
-  isGrouped,
   amount,
+  searchTerm,
+  isGrouped,
   isSortedDesc,
 }: {
   languagesToFetch: string[] | undefined;
+  amount: number | undefined;
+  searchTerm: string;
   isGrouped: boolean;
   isSortedDesc: boolean;
-  amount: number | undefined;
-}) => {
-  const { files, groups } = useFiles(languagesToFetch, amount, isSortedDesc);
+}) {
+  const { files, groups } = useFiles(
+    languagesToFetch,
+    amount,
+    searchTerm,
+    isSortedDesc,
+  );
 
   const [collapsedLanguages, setCollapsedLanguages] = useState<string[]>([]);
   const getIsLanguageCollapsed = (languageSlug: string) =>
@@ -45,6 +52,14 @@ const Files = ({
         : [...ascSortedLanguages, languageSlug],
     );
   };
+
+  if (files.length === 0 || groups.length === 0) {
+    return (
+      <div className="h-24 w-full content-center text-center">
+        No files found
+      </div>
+    );
+  }
 
   return (
     <ul className={cn("flex w-full flex-col", isGrouped && "gap-y-4")}>
@@ -127,6 +142,6 @@ const Files = ({
       )}
     </ul>
   );
-};
+});
 
 export default Files;

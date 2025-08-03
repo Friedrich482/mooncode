@@ -7,6 +7,7 @@ import FiltersSection from "./FiltersSection";
 import LanguagesDropDown from "./LanguagesDropDown";
 import SuspenseBoundary from "@/components/suspense/SuspenseBoundary";
 import { TriangleAlert } from "lucide-react";
+import { useDebounce } from "@/hooks/useDebounce";
 
 const FilesList = () => {
   const [selectedEntries, setSelectedEntries] = useState<Entry[]>([]);
@@ -22,9 +23,15 @@ const FilesList = () => {
   const [limit, setLimit] = useState<number | undefined>(undefined);
   const handleLimitInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setLimitInput(e.target.value);
+  const debouncedLimit = useDebounce(limit, 500);
 
   const [isSortedDesc, setIsSortedDesc] = useState(true);
   const handleSortButtonClick = () => setIsSortedDesc((prev) => !prev);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(e.target.value);
+  const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
   useEffect(() => {
     if (limitInput.length === 0) {
@@ -65,9 +72,11 @@ const FilesList = () => {
         <FiltersSection
           isGrouped={isGrouped}
           limitInput={limitInput}
+          searchTerm={searchTerm}
           handleCheckChange={handleCheckChange}
           handleLimitInputChange={handleLimitInputChange}
           handleSortButtonClick={handleSortButtonClick}
+          handleSearchInputChange={handleSearchInputChange}
         />
       </div>
 
@@ -76,8 +85,9 @@ const FilesList = () => {
           <SuspenseBoundary fallBackClassName="h-[52rem] w-full max-chart:w-full">
             <Files
               languagesToFetch={languagesToFetch}
+              amount={debouncedLimit}
+              searchTerm={debouncedSearchTerm}
               isGrouped={isGrouped}
-              amount={limit}
               isSortedDesc={isSortedDesc}
             />
           </SuspenseBoundary>

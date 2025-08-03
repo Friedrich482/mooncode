@@ -8,6 +8,7 @@ import { useTRPC } from "@/utils/trpc";
 const useFiles = (
   languagesToFetch: string[] | undefined,
   amount: number | undefined,
+  searchTerm: string,
   isSortedDesc: boolean,
 ) => {
   const { projectName: name } = useSafeParams(ProjectParamsSchema);
@@ -35,7 +36,9 @@ const useFiles = (
     ),
   );
 
-  const files = Object.entries(filesData);
+  const files = Object.entries(filesData).filter(([, { name }]) =>
+    name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
+  );
 
   const groups = Object.entries(
     files.reduce(

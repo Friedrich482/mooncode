@@ -54,7 +54,7 @@ const FilesGroupHeader = ({
         onClick={() => handleCollapseButtonClick(languageSlug)}
         aria-label="collapse language"
         title={!isLanguageCollapsed ? "collapse" : "extend"}
-        className="max-[25rem]:hidden"
+        className="size-9 max-[25rem]:hidden"
       />
     </div>
   </div>
