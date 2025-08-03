@@ -24,23 +24,23 @@ const FilesGroupHeader = ({
   handleCollapseButtonClick: (languageSlug: string) => void;
 }) => (
   <div className="flex w-full justify-between">
-    <div>
+    <div className="">
       <span
-        className="inline-block h-full rounded-tr-md p-2 text-primary-foreground"
+        className="inline-block rounded-tr-md p-2 text-primary-foreground"
         style={{
           backgroundColor: languageColor,
         }}
       >
         {getLanguageName(languageSlug)}
       </span>
-      <span className="p-2 text-primary">
+      <span className="p-2 text-primary max-[34.375rem]:hidden">
         {formatDuration(totalTimeSpentOnLanguage)}
       </span>
     </div>
 
     <div className="flex items-center justify-center gap-2">
       <Button
-        className="flex items-center gap-4"
+        className="flex items-center gap-4 max-[23rem]:hidden"
         variant="secondary"
         onClick={() => handleSortButtonClick(languageSlug)}
         aria-label={`Sort files ${isLanguageAscSorted ? "descending" : "ascending"}`}
@@ -54,6 +54,7 @@ const FilesGroupHeader = ({
         onClick={() => handleCollapseButtonClick(languageSlug)}
         aria-label="collapse language"
         title={!isLanguageCollapsed ? "collapse" : "extend"}
+        className="max-[25rem]:hidden"
       />
     </div>
   </div>

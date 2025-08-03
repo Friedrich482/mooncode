@@ -83,11 +83,11 @@ const Files = ({
                           <li key={filePath}>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div className="inline-block min-h-9 space-x-4">
-                                  <span className="min-h-9 w-full overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
+                                <div className="flex min-h-9 gap-4">
+                                  <span className="min-h-9 overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
                                     &bull; {name}
                                   </span>
-                                  <span className="whitespace-nowrap font-extralight">
+                                  <span className="overflow-hidden text-ellipsis whitespace-nowrap font-extralight">
                                     {formatDuration(totalTimeSpent)}
                                   </span>
                                 </div>
@@ -110,11 +110,11 @@ const Files = ({
             <li key={filePath}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="inline-block min-h-9 space-x-4">
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
+                  <div className="flex min-h-9 gap-4">
+                    <span className="min-h-9 overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
                       &bull; {name}
                     </span>
-                    <span className="whitespace-nowrap font-extralight">
+                    <span className="overflow-hidden text-ellipsis whitespace-nowrap font-extralight">
                       {formatDuration(totalTimeSpent)}
                     </span>
                   </div>
