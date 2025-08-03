@@ -1,6 +1,6 @@
 import { FileMap } from "./types-schemas";
 
-export const PROD_API_URL = "https://mooncode-api.fly.dev/trpc";
+export const PROD_API_URL = "https://api.mooncode.cc/trpc";
 
 export const MAX_IDLE_TIME = 300; //seconds
 

@@ -5,7 +5,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "../suspense/ErrorFallback";
 import GeneralStatsChart from "./charts/GeneralStatsChart";
 import PeriodLanguagesChart from "./charts/PeriodLanguagesChart";
-import PeriodProjects from "./charts/PeriodProjects";
+import PeriodProjects from "./PeriodProjects";
 import PeriodTimeChart from "./charts/PeriodTimeChart";
 import SuspenseBoundary from "../suspense/SuspenseBoundary";
 

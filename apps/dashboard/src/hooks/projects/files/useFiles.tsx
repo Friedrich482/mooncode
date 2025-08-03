@@ -5,7 +5,12 @@ import useSafeParams from "@/hooks/useSafeParams";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 
-const useFiles = (languagesToFetch: string[] | undefined) => {
+const useFiles = (
+  languagesToFetch: string[] | undefined,
+  amount: number | undefined,
+  searchTerm: string,
+  isSortedDesc: boolean,
+) => {
   const { projectName: name } = useSafeParams(ProjectParamsSchema);
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
@@ -19,17 +24,21 @@ const useFiles = (languagesToFetch: string[] | undefined) => {
             start: customRange.start,
             end: customRange.end,
             languages: languagesToFetch,
+            amount,
           }
         : {
             name,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             languages: languagesToFetch,
+            amount,
           },
     ),
   );
 
-  const files = Object.entries(filesData);
+  const files = Object.entries(filesData).filter(([, { name }]) =>
+    name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
+  );
 
   const groups = Object.entries(
     files.reduce(
@@ -53,9 +62,33 @@ const useFiles = (languagesToFetch: string[] | undefined) => {
       },
       {},
     ),
+  ).map(
+    ([languageSlug, rest]) =>
+      [
+        {
+          languageSlug,
+          totalTimeSpentOnLanguage: rest.reduce(
+            (acc, value) => acc + value.totalTimeSpent,
+            0,
+          ),
+        },
+        rest,
+        //  we need to type it as a tuple to get proper type inference
+      ] as [
+        {
+          languageSlug: string;
+          totalTimeSpentOnLanguage: number;
+        },
+        typeof rest,
+      ],
   );
-
-  return { groups, files };
+  // the data initially returned by the server is in DESC order
+  return isSortedDesc
+    ? { groups, files }
+    : {
+        groups: [...groups].reverse(),
+        files: [...files].reverse(),
+      };
 };
 
 export default useFiles;
