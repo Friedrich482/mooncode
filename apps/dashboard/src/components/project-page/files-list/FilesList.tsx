@@ -32,8 +32,11 @@ const FilesList = () => {
       setLimit(undefined);
     } else {
       const parsedLimit = parseInt(limitInput, 10);
-      if (!isNaN(parsedLimit)) {
+
+      if (!isNaN(parsedLimit) && parsedLimit > 0) {
         setLimit(parsedLimit);
+      } else {
+        setLimit(undefined);
       }
     }
   }, [limitInput]);

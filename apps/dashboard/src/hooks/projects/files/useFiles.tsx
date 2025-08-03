@@ -79,7 +79,7 @@ const useFiles = (
         typeof rest,
       ],
   );
-
+  // the data initially returned by the server is in DESC order
   return isSortedDesc
     ? { groups, files }
     : {
