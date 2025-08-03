@@ -1,3 +1,5 @@
+import { ArrowUpDown } from "lucide-react";
+import { Button } from "@repo/ui/components/ui/button";
 import { Checkbox } from "@repo/ui/components/ui/checkbox";
 import { Input } from "@repo/ui/components/ui/input";
 
@@ -6,12 +8,14 @@ const FiltersSection = ({
   isGrouped,
   handleLimitInputChange,
   handleCheckChange,
+  handleSortButtonClick,
 }: {
   limitInput: string;
   isGrouped: boolean;
   // eslint-disable-next-line no-unused-vars
   handleLimitInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCheckChange: () => void;
+  handleSortButtonClick: () => void;
 }) => (
   <>
     <div className="flex gap-4">
@@ -30,6 +34,15 @@ const FiltersSection = ({
         onCheckedChange={handleCheckChange}
       />
     </div>
+    <Button
+      className="flex items-center gap-4"
+      variant="secondary"
+      onClick={handleSortButtonClick}
+      aria-label="Sort files"
+    >
+      <span>Sort</span>
+      <ArrowUpDown />
+    </Button>
   </>
 );
 

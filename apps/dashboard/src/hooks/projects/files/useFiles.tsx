@@ -8,6 +8,7 @@ import { useTRPC } from "@/utils/trpc";
 const useFiles = (
   languagesToFetch: string[] | undefined,
   amount: number | undefined,
+  isSortedDesc: boolean,
 ) => {
   const { projectName: name } = useSafeParams(ProjectParamsSchema);
   const period = usePeriodStore((state) => state.period);
@@ -79,7 +80,12 @@ const useFiles = (
       ],
   );
 
-  return { groups, files };
+  return isSortedDesc
+    ? { groups, files }
+    : {
+        groups: [...groups].reverse(),
+        files: [...files].reverse(),
+      };
 };
 
 export default useFiles;

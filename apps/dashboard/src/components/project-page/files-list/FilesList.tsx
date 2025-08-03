@@ -24,6 +24,9 @@ const FilesList = () => {
   const handleLimitInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setLimitInput(e.target.value);
 
+  const [isSortedDesc, setIsSortedDesc] = useState(true);
+  const handleSortButtonClick = () => setIsSortedDesc((prev) => !prev);
+
   useEffect(() => {
     if (limitInput.length === 0) {
       setLimit(undefined);
@@ -62,6 +65,7 @@ const FilesList = () => {
           limitInput={limitInput}
           handleCheckChange={handleCheckChange}
           handleLimitInputChange={handleLimitInputChange}
+          handleSortButtonClick={handleSortButtonClick}
         />
       </div>
 
@@ -77,6 +81,7 @@ const FilesList = () => {
               languagesToFetch={languagesToFetch}
               isGrouped={isGrouped}
               amount={limit}
+              isSortedDesc={isSortedDesc}
             />
           </SuspenseBoundary>
         </ErrorBoundary>
