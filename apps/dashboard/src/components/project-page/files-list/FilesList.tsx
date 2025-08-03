@@ -7,7 +7,6 @@ import FiltersSection from "./FiltersSection";
 import LanguagesDropDown from "./LanguagesDropDown";
 import SuspenseBoundary from "@/components/suspense/SuspenseBoundary";
 import { TriangleAlert } from "lucide-react";
-import { cn } from "@repo/ui/lib/utils";
 
 const FilesList = () => {
   const [selectedEntries, setSelectedEntries] = useState<Entry[]>([]);
@@ -72,12 +71,7 @@ const FilesList = () => {
         />
       </div>
 
-      <div
-        className={cn(
-          "grid w-full grid-cols-[repeat(auto-fit,minmax(12rem,1fr))] gap-4 text-xl max-[42rem]:grid-cols-[repeat(auto-fit,minmax(8rem,1fr))] max-[42rem]:gap-8",
-          isGrouped && "pt-10",
-        )}
-      >
+      <div className="flex w-full gap-4 text-xl max-[42rem]:gap-8">
         <ErrorBoundary FallbackComponent={ErrorFallBack}>
           <SuspenseBoundary fallBackClassName="h-[52rem] w-full max-chart:w-full">
             <Files

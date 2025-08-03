@@ -1,16 +1,13 @@
-import { ArrowUpDown, ChevronsDownUp, ChevronsUpDown } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
-import { Button } from "@repo/ui/components/ui/button";
-import Icon from "@repo/ui/components/ui/Icon";
+import FilesGroupHeader from "./FilesGroupHeader";
 import { cn } from "@repo/ui/lib/utils";
 import formatDuration from "@repo/common/formatDuration";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
-import getLanguageName from "@repo/ui/utils/getLanguageName";
 import useFiles from "@/hooks/projects/files/useFiles";
 import { useState } from "react";
 
@@ -50,7 +47,7 @@ const Files = ({
   };
 
   return (
-    <ul className={cn("flex flex-col", isGrouped && "space-y-16")}>
+    <ul className={cn("flex w-full flex-col", isGrouped && "gap-y-4")}>
       {isGrouped ? (
         groups.map(
           ([{ languageSlug, totalTimeSpentOnLanguage }, groupedFiles]) => {
@@ -62,73 +59,48 @@ const Files = ({
               : groupedFiles;
 
             return (
-              <ul
-                key={languageSlug}
-                className={cn(
-                  "relative rounded-md rounded-l-none border-t-[1px]",
-                  !isLanguageCollapsed && "border p-4",
-                )}
-                style={{ borderColor: languageColor }}
-              >
-                <div className="absolute -left-[1px] -top-11 flex w-full justify-between">
-                  <div>
-                    <span
-                      className="inline-block h-full rounded-tr-md p-2 text-primary-foreground"
-                      style={{
-                        backgroundColor: languageColor,
-                      }}
-                    >
-                      {getLanguageName(languageSlug)}
-                    </span>
-                    <span className="p-2 text-primary">
-                      {formatDuration(totalTimeSpentOnLanguage)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2">
-                    <Button
-                      className="flex items-center gap-4"
-                      variant="secondary"
-                      onClick={() => handleSortButtonClick(languageSlug)}
-                      aria-label={`Sort files ${isLanguageAscSorted ? "descending" : "ascending"}`}
-                      title={`Currently sorted ${isLanguageAscSorted ? "ascending" : "descending"}`}
-                    >
-                      <p>Sort {isLanguageAscSorted ? "↑" : "↓"}</p>
-                      <ArrowUpDown />
-                    </Button>
-                    <Icon
-                      Icon={
-                        isLanguageCollapsed ? ChevronsUpDown : ChevronsDownUp
-                      }
-                      onClick={() => handleCollapseButtonClick(languageSlug)}
-                      aria-label="collapse language"
-                      title={!isLanguageCollapsed ? "collapse" : "extend"}
-                    />
-                  </div>
-                </div>
-                {!isLanguageCollapsed && (
-                  <TooltipProvider>
-                    {sortedGroupedFiles.map(
-                      ({ filePath, name, totalTimeSpent }) => (
-                        <li key={filePath}>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <div className="inline-block min-h-9 space-x-4">
-                                <span className="min-h-9 w-full overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
-                                  &bull; {name}
-                                </span>
-                                <span className="whitespace-nowrap font-extralight">
-                                  {formatDuration(totalTimeSpent)}
-                                </span>
-                              </div>
-                            </TooltipTrigger>
-                            <TooltipContent>{filePath}</TooltipContent>
-                          </Tooltip>
-                        </li>
-                      ),
-                    )}
-                  </TooltipProvider>
-                )}
-              </ul>
+              <div key={languageSlug} className="flex w-full flex-col">
+                <FilesGroupHeader
+                  languageColor={languageColor}
+                  languageSlug={languageSlug}
+                  isLanguageAscSorted={isLanguageAscSorted}
+                  isLanguageCollapsed={isLanguageCollapsed}
+                  totalTimeSpentOnLanguage={totalTimeSpentOnLanguage}
+                  handleCollapseButtonClick={handleCollapseButtonClick}
+                  handleSortButtonClick={handleSortButtonClick}
+                />
+                <ul
+                  className={cn(
+                    "rounded-md rounded-l-none border-t-[1px]",
+                    !isLanguageCollapsed && "border p-4",
+                  )}
+                  style={{ borderColor: languageColor }}
+                >
+                  {!isLanguageCollapsed && (
+                    <TooltipProvider>
+                      {sortedGroupedFiles.map(
+                        ({ filePath, name, totalTimeSpent }) => (
+                          <li key={filePath}>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <div className="inline-block min-h-9 space-x-4">
+                                  <span className="min-h-9 w-full overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
+                                    &bull; {name}
+                                  </span>
+                                  <span className="whitespace-nowrap font-extralight">
+                                    {formatDuration(totalTimeSpent)}
+                                  </span>
+                                </div>
+                              </TooltipTrigger>
+                              <TooltipContent>{filePath}</TooltipContent>
+                            </Tooltip>
+                          </li>
+                        ),
+                      )}
+                    </TooltipProvider>
+                  )}
+                </ul>
+              </div>
             );
           },
         )
