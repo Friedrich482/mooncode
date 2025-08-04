@@ -42,12 +42,19 @@ export const CircularPacking = ({
 
   return (
     <>
-      <div className="flex items-center justify-end gap-5">
+      <div className="flex w-28 items-center justify-end gap-5 self-end rounded-md border p-1">
         <Icon
           Icon={isAnimating ? Pause : Play}
           onClick={handleToggleAnimationButtonClick}
+          title={`${isAnimating ? "Pause" : "Play"} animation`}
+          aria-label={`${isAnimating ? "Pause" : "Play"} animation`}
         />
-        <Icon Icon={RotateCcw} onClick={handleResetButtonClick} />
+        <Icon
+          Icon={RotateCcw}
+          onClick={handleResetButtonClick}
+          title="Reset animation"
+          aria-label="Reset animation"
+        />
       </div>
 
       <svg width={width} height={height} className="-translate-x-3">

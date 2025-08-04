@@ -1,8 +1,21 @@
-const ChartGroupWrapper = ({ children }: { children: React.ReactNode }) => {
+import { cn } from "@repo/ui/lib/utils";
+
+const ChartGroupWrapper = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
   return (
-    <div className="flex items-center justify-between max-chart:flex-col max-chart:gap-20">
+    <section
+      className={cn(
+        "flex items-center justify-between max-chart:flex-col max-chart:gap-20",
+        className,
+      )}
+    >
       {children}
-    </div>
+    </section>
   );
 };
 

@@ -7,7 +7,6 @@ import {
 } from "@repo/ui/components/ui/chart";
 import { PERIODS_CONFIG, chartConfig } from "@/constants";
 import CustomChartToolTip from "@/components/CustomChartToolTip";
-import GroupByDropDown from "@/components/dashboard-page/GroupByDropDown";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { ProjectParamsSchema } from "@/types-schemas";
@@ -55,7 +54,6 @@ const ProjectTimeOnPeriodChart = () => {
         className="absolute -top-12 right-0 z-0"
         onClick={handleClick}
       />
-      <GroupByDropDown />
       <ChartContainer
         config={chartConfig}
         className="h-full flex-1 border-none"

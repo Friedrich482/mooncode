@@ -6,7 +6,6 @@ import {
 } from "@repo/ui/components/ui/chart";
 import { PERIODS_CONFIG, chartConfig } from "@/constants";
 import CustomChartToolTip from "@/components/CustomChartToolTip";
-import GroupByDropDown from "../GroupByDropDown";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
 import { usePeriodStore } from "@/hooks/store/periodStore";
@@ -37,7 +36,6 @@ const PeriodTimeChart = () => {
 
   return (
     <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border max-chart:w-full">
-      <GroupByDropDown />
       <ChartContainer
         config={chartConfig}
         className="h-full flex-1 border-none"
