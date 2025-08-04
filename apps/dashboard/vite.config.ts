@@ -18,4 +18,16 @@ export default defineConfig({
     },
     dedupe: ["react", "react-dom"],
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          d3: ["d3-hierarchy"],
+          recharts: ["recharts"],
+          "react-router": ["react-router"],
+          zod: ["zod"],
+        },
+      },
+    },
+  },
 });
