@@ -4,11 +4,9 @@ import { DASHBOARD_PORT } from "@repo/common/constants";
 import { NestFactory } from "@nestjs/core";
 import { TrpcExceptionFilter } from "./trpc/trpc.exception-handler";
 import { TrpcRouter } from "./trpc/trpc.router";
-import { ValidationPipe } from "@nestjs/common";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
     origin: Array.from({ length: 6 }, (_, i) => DASHBOARD_PORT + i).flatMap(
       (port) => [`http://localhost:${port}`, `http://127.0.0.1:${port}`],
