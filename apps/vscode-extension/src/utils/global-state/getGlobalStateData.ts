@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { GlobalStateData, globalStateInitialDataSchema } from "@/types-schemas";
 import { SYNC_DATA_KEY } from "@/constants";
 import { ZodError } from "zod";
-import { formatZodError } from "@repo/common/formatZodIssues";
+import { formatZodError } from "@repo/common/formatZodError";
 import { getExtensionContext } from "@/extension";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 
