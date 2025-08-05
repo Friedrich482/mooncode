@@ -31,7 +31,14 @@ async function copyDashboard() {
     }
 
     // Copy dashboard files
-    fs.cpSync(sourcePath, destPath, { recursive: true });
+    fs.cpSync(sourcePath, destPath, {
+      recursive: true,
+      // do not include the rollup-plugin-visualizer file: deps.html
+      filter: (src) => {
+        const baseName = path.basename(src);
+        return baseName !== "deps.html";
+      },
+    });
 
     // Get folder size for logging
     const getDirSize = (dir) => {
