@@ -38,9 +38,12 @@
     "braces": "^3.0.3",
     "micromatch": "^4.0.8",
     "concat-stream": "^2.0.0",
-    "lodash.template": "^4.5.0",
-    "yargs-parser": "^21.0.0",
-    "yargs": "^17.0.0",
-    "esbuild": "0.25.8"
+    "esbuild": "0.25.8",
+    "module": {
+      "lodash.template": "^4.5.0",
+      "concat-stream": "^2.0.0",
+      "yargs-parser": "^21.0.0",
+      "yargs": "^17.0.0"
+    }
   }
 }
