@@ -11,7 +11,7 @@ export default defineConfig({
     commonjs(),
     visualizer({
       open: true,
-      filename: "dist/stats.html",
+      filename: "dist/deps.html",
     }),
   ],
   server: {

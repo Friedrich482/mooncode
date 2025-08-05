@@ -17,8 +17,9 @@ const CustomRangeDatesSelector = () => {
 
   return (
     period === "Custom Range" && (
-      <>
-        on
+      <p className="inline text-pretty">
+        {" "}
+        on{" "}
         <CalendarPopover
           mode="single"
           isPopoverOpen={isStartPopoverOpen}
@@ -26,15 +27,12 @@ const CustomRangeDatesSelector = () => {
           date={startDate}
           setDate={setStartDate}
           popoverTriggerContent={
-            <Button
-              variant="link"
-              className="p-0 text-2xl max-[25.625rem]:text-base"
-            >
+            <Button variant="link" className="p-0 text-2xl">
               {new Date(customRange.start).toDateString()}
             </Button>
           }
-        />
-        to
+        />{" "}
+        to{" "}
         <CalendarPopover
           mode="single"
           isPopoverOpen={isEndPopoverOpen}
@@ -42,15 +40,12 @@ const CustomRangeDatesSelector = () => {
           date={endDate}
           setDate={setEndDate}
           popoverTriggerContent={
-            <Button
-              variant="link"
-              className="p-0 text-2xl max-[25.625rem]:text-base"
-            >
+            <Button variant="link" className="p-0 text-2xl">
               {new Date(customRange.end).toDateString()}
             </Button>
           }
         />
-      </>
+      </p>
     )
   );
 };

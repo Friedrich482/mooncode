@@ -1,5 +1,4 @@
 import { PERIODS_CONFIG } from "@/constants";
-import { cn } from "@repo/ui/lib/utils";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
@@ -23,6 +22,6 @@ const TimeSpentOnPeriod = () => {
     ),
   );
 
-  return <span className={cn("text-nowrap")}>{data.formattedTime}</span>;
+  return <span className="text-pretty">{data.formattedTime}</span>;
 };
 export default TimeSpentOnPeriod;

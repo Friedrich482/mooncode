@@ -43,17 +43,21 @@ const Project = () => (
         </SuspenseBoundary>
       </ProjectTitleErrorBoundary>
 
-      <div className="flex flex-nowrap items-start gap-2 rounded-md border p-3 text-center text-2xl max-[25.625rem]:text-base">
-        <div className="flex flex-col gap-2">
+      <div className="rounded-md border p-3 text-center text-2xl">
+        <div className="float-left mb-4 mr-4 flex flex-col gap-2">
           <PeriodDropDown />
           <GroupByDropDown />
         </div>
-        <ProjectTitleErrorBoundary>
-          <SuspenseBoundary fallBackClassName="h-9 w-44">
-            <TimeSpentOnProject />
-          </SuspenseBoundary>
-        </ProjectTitleErrorBoundary>
-        <CustomRangeDatesSelector />
+
+        <div className="text-balance text-start">
+          <ProjectTitleErrorBoundary>
+            <SuspenseBoundary fallBackClassName="h-9 w-44 translate-x-[8.3rem]">
+              <TimeSpentOnProject />
+            </SuspenseBoundary>
+          </ProjectTitleErrorBoundary>
+
+          <CustomRangeDatesSelector />
+        </div>
       </div>
     </section>
 
@@ -74,7 +78,7 @@ const Project = () => (
 
       <ChartGroupWrapper>
         <ErrorBoundary FallbackComponent={ErrorFallBack}>
-          <SuspenseBoundary fallBackClassName="h-[24rem] w-full max-chart:w-full">
+          <SuspenseBoundary fallBackClassName="h-[45.5rem] w-full max-chart:w-full">
             <FilesCirclePackingChart />
           </SuspenseBoundary>
         </ErrorBoundary>
