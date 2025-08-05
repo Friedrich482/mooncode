@@ -34,7 +34,6 @@
     "cookie-parser": "^1.4.7",
     "date-fns": "^4.1.0",
     "drizzle-orm": "^0.44.4",
-    "esbuild": "0.25.8",
     "module": "^1.2.5",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
