@@ -28,16 +28,6 @@ export const loginResponseSchema = z.object({
     }),
   }),
 });
-// TODO make this less loose
-export const dateStringDto = z.string().refine(
-  (dateStr) => {
-    const date = new Date(dateStr);
-    return !isNaN(date.getTime());
-  },
-  {
-    message: "Invalid date string",
-  },
-);
 
 export const IsoDateStringSchema = z
   .string()
@@ -64,3 +54,4 @@ export const IsoDateStringSchema = z
 export const IsoDateSchema = IsoDateStringSchema.transform(
   (dateStr) => new Date(dateStr),
 );
+export const dateStringDto = IsoDateStringSchema;

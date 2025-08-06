@@ -2,7 +2,6 @@ import * as cookieParser from "cookie-parser";
 import { DASHBOARD_PORT, DASHBOARD_PREVIEW_PORT } from "@repo/common/constants";
 import { AppModule } from "./app.module";
 import { NestFactory } from "@nestjs/core";
-import { TrpcExceptionFilter } from "./trpc/trpc.exception-handler";
 import { TrpcRouter } from "./trpc/trpc.router";
 
 const allowedClients = Array.from({ length: 6 }, (_, i) => DASHBOARD_PORT + i)
@@ -18,11 +17,11 @@ async function bootstrap() {
     origin: allowedClients,
     credentials: true,
   });
-
   app.use(cookieParser());
+
   const trpc = app.get(TrpcRouter);
-  app.useGlobalFilters(new TrpcExceptionFilter());
   trpc.applyMiddleware(app);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
