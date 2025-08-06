@@ -59,7 +59,7 @@ const Project = () => (
 
         <div className="text-balance text-start">
           <ProjectTitleErrorBoundary>
-            <SuspenseBoundary fallBackClassName="h-9 w-44 translate-x-[8.3rem]">
+            <SuspenseBoundary fallBackClassName="h-9 w-44 inline-block align-top">
               <TimeSpentOnProject />
             </SuspenseBoundary>
           </ProjectTitleErrorBoundary>

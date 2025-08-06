@@ -29,7 +29,7 @@ const DashboardTitle = () => (
           </ErrorFallBack>
         )}
       >
-        <SuspenseBoundary fallBackClassName="h-9 w-44 translate-x-[8.3rem]">
+        <SuspenseBoundary fallBackClassName="h-9 w-44 inline-block align-top">
           <TimeSpentOnPeriod />
         </SuspenseBoundary>
       </ErrorBoundary>
