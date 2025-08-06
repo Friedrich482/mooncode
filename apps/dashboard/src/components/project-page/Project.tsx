@@ -10,6 +10,7 @@ import ProjectTitle from "./ProjectTitle";
 import SuspenseBoundary from "../suspense/SuspenseBoundary";
 import { TRPCClientError } from "@trpc/client";
 import TimeSpentOnProject from "./TimeSpentOnProject";
+import { TriangleAlert } from "lucide-react";
 import { lazy } from "react";
 
 const ProjectTitleErrorBoundary = ({
@@ -26,7 +27,12 @@ const ProjectTitleErrorBoundary = ({
         return <Navigate to="/not-found" />;
       }
 
-      return <div className="h-9 text-destructive">{error.message}</div>;
+      return (
+        <h3 className="inline-block space-x-1 text-destructive">
+          <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
+          <span className="text-2xl">Error</span>
+        </h3>
+      );
     }}
     children={children}
   />
@@ -85,8 +91,15 @@ const Project = () => (
       </ChartGroupWrapper>
 
       <ChartGroupWrapper>
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
-          <SuspenseBoundary fallBackClassName="h-[45.5rem] w-full max-chart:w-full">
+        <ErrorBoundary
+          FallbackComponent={({ error }) => (
+            <ErrorFallBack
+              error={error}
+              className="z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+            />
+          )}
+        >
+          <SuspenseBoundary fallBackClassName="h-[45.5rem] w-full">
             <FilesCirclePackingChart />
           </SuspenseBoundary>
         </ErrorBoundary>

@@ -22,8 +22,8 @@ const DashboardTitle = () => (
       <ErrorBoundary
         FallbackComponent={({ error }) => (
           <ErrorFallBack error={error}>
-            <h3 className="flex h-9 items-center justify-center gap-2 p-1 text-destructive">
-              <TriangleAlert className="size-8 shrink-0 max-xl:size-6" />
+            <h3 className="inline-block space-x-1 text-destructive">
+              <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
               <span>Error</span>
             </h3>
           </ErrorFallBack>
