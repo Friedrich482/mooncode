@@ -5,6 +5,7 @@ import { EnvService } from "src/env/env.service";
 import { Injectable } from "@nestjs/common";
 import { JwtPayloadDtoType } from "@repo/common/types";
 import { JwtService } from "@nestjs/jwt";
+import { errorFormatter } from "src/filters/errorFormatter";
 import superjson from "superjson";
 
 export type TrpcContext = {
@@ -29,9 +30,11 @@ export class TrpcService {
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
   ) {
-    this.trpc = initTRPC
-      .context<TrpcContext>()
-      .create({ transformer: superjson });
+    this.trpc = initTRPC.context<TrpcContext>().create({
+      transformer: superjson,
+      errorFormatter: ({ error, shape }) =>
+        errorFormatter(this.envService, { error, shape }),
+    });
   }
 
   // these routes are publicly accessible to everyone
