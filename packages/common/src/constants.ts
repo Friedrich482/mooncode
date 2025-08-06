@@ -7,7 +7,6 @@ export const ALREADY_EXISTING_USERNAME_MESSAGE = "This username already exists";
 export const COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE = "Auth cookie/token missing";
 
 export const DASHBOARD_PORT = 4208;
-export const DASHBOARD_URL = `http://localhost:${DASHBOARD_PORT}`;
 export const DASHBOARD_PREVIEW_PORT = 4173;
 
 export const DATE_LOCALE = "sv-SE";

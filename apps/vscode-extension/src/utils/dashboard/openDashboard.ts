@@ -1,14 +1,17 @@
 import * as vscode from "vscode";
-import { DASHBOARD_URL } from "@repo/common/constants";
+import { getDashboardPort } from "@/extension";
 
 const openDashboard = async () => {
+  const dashboardPort = getDashboardPort();
+  const dashboardUrl = `http://localhost:${dashboardPort}`;
+
   try {
     const success = await vscode.env.openExternal(
-      vscode.Uri.parse(DASHBOARD_URL),
+      vscode.Uri.parse(dashboardUrl),
     );
     if (success) {
       vscode.window.showInformationMessage(
-        `Opening dashboard at ${DASHBOARD_URL}`,
+        `Opening dashboard at ${dashboardUrl}`,
       );
     } else {
       vscode.window.showErrorMessage("Failed to open the dashboard URL");
