@@ -28,7 +28,7 @@ COPY apps/api/package*.json ./apps/api/
 COPY packages/common/package*.json ./packages/common/
 COPY packages/trpc/package*.json ./packages/trpc/
 
-RUN npm ci --only=production
+RUN npm ci --omit=dev
 
 FROM node:22-alpine AS production
 
@@ -36,8 +36,6 @@ WORKDIR /app
 
 
 COPY --from=builder /app/apps/api/dist ./dist
-
-COPY --from=builder /app/apps/api/node_modules ./dist/node_modules
 
 COPY --from=builder /app/packages ./packages
 
