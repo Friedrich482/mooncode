@@ -2,17 +2,15 @@ import ChartGroupWrapper from "../ChartGroupWrapper";
 import CustomRangeDatesSelector from "../CustomRangeDatesSelector";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "../suspense/ErrorFallback";
-import FilesCirclePackingChart from "./charts/FilesCirclePackingChart";
 import FilesList from "./files-list/FilesList";
 import GroupByDropDown from "../dashboard-page/GroupByDropDown";
 import { Navigate } from "react-router";
 import PeriodDropDown from "../dashboard-page/PeriodDropDown";
-import ProjectLanguagesTimeOnPeriodChart from "./charts/ProjectLanguagesTimeOnPeriodChart";
-import ProjectTimeOnPeriodChart from "./charts/ProjectTimeOnPeriodChart";
 import ProjectTitle from "./ProjectTitle";
 import SuspenseBoundary from "../suspense/SuspenseBoundary";
 import { TRPCClientError } from "@trpc/client";
 import TimeSpentOnProject from "./TimeSpentOnProject";
+import { lazy } from "react";
 
 const ProjectTitleErrorBoundary = ({
   children,
@@ -32,6 +30,16 @@ const ProjectTitleErrorBoundary = ({
     }}
     children={children}
   />
+);
+
+const ProjectTimeOnPeriodChart = lazy(
+  () => import("./charts/ProjectTimeOnPeriodChart"),
+);
+const ProjectLanguagesTimeOnPeriodChart = lazy(
+  () => import("./charts/ProjectLanguagesTimeOnPeriodChart"),
+);
+const FilesCirclePackingChart = lazy(
+  () => import("./charts/FilesCirclePackingChart"),
 );
 
 const Project = () => (

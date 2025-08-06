@@ -1,13 +1,19 @@
 import ChartGroupWrapper from "../ChartGroupWrapper";
 import DashboardTitle from "./DashboardTitle";
-import DayLanguagesChart from "./charts/dayLanguagesChart/DayLanguagesChart";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "../suspense/ErrorFallback";
 import GeneralStatsChart from "./charts/GeneralStatsChart";
-import PeriodLanguagesChart from "./charts/PeriodLanguagesChart";
 import PeriodProjects from "./PeriodProjects";
-import PeriodTimeChart from "./charts/PeriodTimeChart";
 import SuspenseBoundary from "../suspense/SuspenseBoundary";
+import { lazy } from "react";
+
+const PeriodTimeChart = lazy(() => import("./charts/PeriodTimeChart"));
+const PeriodLanguagesChart = lazy(
+  () => import("./charts/PeriodLanguagesChart"),
+);
+const DayLanguagesChart = lazy(
+  () => import("./charts/dayLanguagesChart/DayLanguagesChart"),
+);
 
 const Dashboard = () => {
   document.title = "MoonCode | Dashboard";
