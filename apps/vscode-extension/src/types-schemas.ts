@@ -17,11 +17,7 @@ export type FileData = {
 export const globalStateInitialDataSchema = z.object({
   lastServerSync: z.union([
     z.date(),
-    z
-      .string()
-      .min(1)
-      .datetime()
-      .transform((str) => new Date(str)),
+    z.iso.datetime().transform((str) => new Date(str)),
   ]),
   dailyData: z.record(
     IsoDateStringSchema, // the localDateString of the day
@@ -42,11 +38,7 @@ export const globalStateInitialDataSchema = z.object({
 
       updatedAt: z.union([
         z.date(),
-        z
-          .string()
-          .min(1)
-          .datetime()
-          .transform((str) => new Date(str)),
+        z.iso.datetime().transform((str) => new Date(str)),
       ]),
     }),
   ),

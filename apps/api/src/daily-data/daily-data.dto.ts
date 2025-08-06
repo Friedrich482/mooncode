@@ -3,19 +3,19 @@ import { z } from "zod";
 
 export const CreateDailyDataDto = z.object({
   targetedDate: dateStringDto,
-  userId: z.string().ulid(),
+  userId: z.ulid(),
   timeSpent: z.number().int().positive(),
 });
 
 export const findOneDailyDataDto = z.object({
   date: dateStringDto,
-  userId: z.string().ulid(),
+  userId: z.ulid(),
 });
 
 export const UpdateDailyDataDto = CreateDailyDataDto;
 
 export const FindRangeDailyDataDto = z.object({
-  userId: z.string().ulid(),
+  userId: z.ulid(),
   start: dateStringDto,
   end: dateStringDto,
 });

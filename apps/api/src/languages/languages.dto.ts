@@ -1,17 +1,17 @@
 import { z } from "zod";
 
 export const CreateLanguageDto = z.object({
-  dailyDataId: z.string().ulid(),
+  dailyDataId: z.ulid(),
   timeSpent: z.number().int(),
   languageSlug: z.string().min(1),
 });
 
 export const FindAllLanguagesDto = z.object({
-  dailyDataId: z.string().ulid(),
+  dailyDataId: z.ulid(),
 });
 
 export const FindOneLanguageDto = z.object({
-  dailyDataId: z.string().ulid(),
+  dailyDataId: z.ulid(),
   languageSlug: z.string().min(1),
 });
 

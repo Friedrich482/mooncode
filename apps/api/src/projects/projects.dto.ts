@@ -2,34 +2,34 @@ import { dateStringDto } from "@repo/common/schemas";
 import { z } from "zod";
 
 export const CreateProjectDto = z.object({
-  dailyDataId: z.string().ulid(),
+  dailyDataId: z.ulid(),
   name: z.string().min(1),
   path: z.string().min(1),
   timeSpent: z.number().int().positive(),
 });
 
 export const UpdateProjectDto = z.object({
-  dailyDataId: z.string().ulid(),
+  dailyDataId: z.ulid(),
   timeSpent: z.number().int().positive(),
   name: z.string().min(1),
   path: z.string().min(1),
 });
 
 export const FindProjectDto = z.object({
-  dailyDataId: z.string().ulid(),
+  dailyDataId: z.ulid(),
   name: z.string().min(1),
   path: z.string().min(1),
 });
 
 export const FindProjectByNameOnRangeDto = z.object({
-  userId: z.string().ulid(),
+  userId: z.ulid(),
   start: dateStringDto,
   end: dateStringDto,
   name: z.string().min(1),
 });
 
 export const FindAllRangeProjectsDto = z.object({
-  userId: z.string().ulid(),
+  userId: z.ulid(),
   start: dateStringDto,
   end: dateStringDto,
 });
@@ -41,12 +41,11 @@ export const getProjectLanguagesTimeOnPeriodDto = FindProjectByNameOnRangeDto;
 export const getProjectLanguagesTimePerDayOfPeriodDto =
   FindProjectByNameOnRangeDto;
 
-export const GetAllProjectFilesOnPeriodDto = FindProjectByNameOnRangeDto.merge(
-  z.object({
-    amount: z.number().optional(),
-    languages: z.array(z.string()).optional(),
-  }),
-);
+export const GetAllProjectFilesOnPeriodDto = z.object({
+  ...FindProjectByNameOnRangeDto.shape,
+  amount: z.number().optional(),
+  languages: z.array(z.string()).optional(),
+});
 
 export type CreateProjectDtoType = z.infer<typeof CreateProjectDto>;
 

@@ -8,16 +8,16 @@ export const createUserDto = RegisterUserDto.omit({
 export const UpdateProfileDto = RegisterUserDto.partial();
 
 export const FindByIdDto = z.object({
-  id: z.string().ulid(),
+  id: z.ulid(),
 });
 
 export const FindByEmailDto = z.object({
-  email: z.string().email(),
+  email: z.email(),
 });
 
 export const UpdateUserDto = z.object({
-  id: z.string().ulid(),
-  email: z.string().email({ message: "Invalid email format" }).optional(),
+  id: z.ulid(),
+  email: z.email({ message: "Invalid email format" }).optional(),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
@@ -29,7 +29,7 @@ export const UpdateUserDto = z.object({
 });
 
 export const DeleteUserDto = z.object({
-  id: z.string().ulid(),
+  id: z.ulid(),
 });
 
 export type CreateUserDtoType = z.infer<typeof createUserDto>;

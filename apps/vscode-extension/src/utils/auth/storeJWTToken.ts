@@ -6,7 +6,7 @@ const storeJWTToken = async (
   token: string,
 ) => {
   try {
-    const verifiedToken = z.string().min(1).jwt().parse(token);
+    const verifiedToken = z.jwt().parse(token);
     await context.secrets.store("authToken", verifiedToken);
   } catch (error) {
     if (error instanceof Error) {
