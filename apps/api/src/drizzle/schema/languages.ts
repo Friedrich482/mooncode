@@ -18,8 +18,8 @@ export const languages = pgTable(
     timeSpent: integer("time_spent").notNull().default(0),
     ...timestamps,
   },
-  (table) => ({
-    dailyDataIdIdx: index("language_daily_data_id_index").on(table.dailyDataId),
-    languageSlugIdx: index("language_slug_index").on(table.languageSlug),
-  }),
+  (table) => [
+    index("language_daily_data_id_index").on(table.dailyDataId),
+    index("language_slug_index").on(table.languageSlug),
+  ],
 );

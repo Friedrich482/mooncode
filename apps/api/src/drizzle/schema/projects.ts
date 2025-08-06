@@ -19,9 +19,9 @@ export const projects = pgTable(
     timeSpent: integer("time_spent").notNull().default(0),
     ...timestamps,
   },
-  (table) => ({
-    dailyDataIdIdx: index("project_daily_data_id_index").on(table.dailyDataId),
-    nameIdx: index("project_name_index").on(table.name),
-    pathIdx: index("project_path_index").on(table.path),
-  }),
+  (table) => [
+    index("project_daily_data_id_index").on(table.dailyDataId),
+    index("project_name_index").on(table.name),
+    index("project_path_index").on(table.path),
+  ],
 );

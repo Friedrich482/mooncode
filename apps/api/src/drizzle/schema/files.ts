@@ -23,10 +23,10 @@ export const files = pgTable(
     timeSpent: integer("time_spent").notNull().default(0),
     ...timestamps,
   },
-  (table) => ({
-    projectIdIdx: index("project_id_index").on(table.projectId),
-    languageIdIdx: index("language_id_index").on(table.languageId),
-    nameIdx: index("file_name_index").on(table.name),
-    path: index("file_path_index").on(table.path),
-  }),
+  (table) => [
+    index("project_id_index").on(table.projectId),
+    index("language_id_index").on(table.languageId),
+    index("file_name_index").on(table.name),
+    index("file_path_index").on(table.path),
+  ],
 );
