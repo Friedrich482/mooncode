@@ -18,8 +18,8 @@ export const dailyData = pgTable(
     timeSpent: integer("time_spent").notNull(),
     ...timestamps,
   },
-  (table) => ({
-    userIdIdx: index("daily_data_user_id_index").on(table.userId),
-    dateIdx: index("daily_data_date_index").on(table.date),
-  }),
+  (table) => [
+    index("daily_data_user_id_index").on(table.userId),
+    index("daily_data_date_index").on(table.date),
+  ],
 );

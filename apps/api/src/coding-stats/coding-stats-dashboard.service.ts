@@ -285,7 +285,7 @@ export class CodingStatsDashboardService {
       })
     ).rawTime;
 
-    const mean = timeSpentOnPeriod / numberOfDays;
+    const mean = Math.floor(timeSpentOnPeriod / numberOfDays);
 
     const timeSpentToday =
       (

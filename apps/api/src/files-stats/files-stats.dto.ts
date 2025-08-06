@@ -33,20 +33,23 @@ export const UpsertFilesDto = z.object({
 export const GetPeriodProjectsDto = refineSchema(DateRangeSchema);
 
 export const GetProjectOnPeriodDto = refineSchema(
-  DateRangeSchema.merge(
-    z.object({
-      name: z.string().min(1),
-    }),
-  ),
+  z.object({
+    ...DateRangeSchema.shape,
+    name: z.string().min(1),
+  }),
 );
 
 export const GetProjectPerDayOfPeriodDto = refineAndTransformSchema(
-  BaseSchema.merge(z.object({ name: z.string().min(1) })),
+  z.object({
+    ...BaseSchema.shape,
+    name: z.string().min(1),
+  }),
 );
 export const GetProjectLanguagesTimeOnPeriodDto = GetProjectOnPeriodDto;
 export const GetProjectLanguagesPerDayOfPeriodDto = GetProjectPerDayOfPeriodDto;
 export const GetProjectFilesOnPeriodDto = refineSchema(
-  DateRangeSchema.extend({
+  z.object({
+    ...DateRangeSchema.shape,
     name: z.string().min(1),
     amount: z.number().int().nonnegative().optional(),
     languages: z.array(z.string().min(1)).optional(),

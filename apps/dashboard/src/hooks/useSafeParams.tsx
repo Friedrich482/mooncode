@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router";
-import { ZodSchema } from "zod";
+import { ZodType } from "zod";
 
-const useSafeParams = <T,>(schema: ZodSchema<T>) => {
+const useSafeParams = <T,>(schema: ZodType<T>) => {
   const navigate = useNavigate();
   const params = useParams();
 

@@ -1,4 +1,4 @@
-import { ZodSchema, z } from "zod";
+import { ZodType, z } from "zod";
 import { GroupByEnum } from "@repo/common/types";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import { dateStringDto } from "@repo/common/schemas";
@@ -10,16 +10,13 @@ export const DateRangeSchema = z.object({
   end: dateStringDto,
 });
 
-export const BaseSchema = DateRangeSchema.merge(
-  z.object({
-    start: dateStringDto,
-    end: dateStringDto,
-    groupBy: z.enum(GroupByEnum).optional(),
-  }),
-);
+export const BaseSchema = z.object({
+  ...DateRangeSchema.shape,
+  groupBy: z.enum(GroupByEnum).optional(),
+});
 
 export const refineSchema = <T extends z.infer<typeof DateRangeSchema>>(
-  schema: ZodSchema<T>,
+  schema: ZodType<T>,
 ) => {
   return schema.refine((input) => !isAfter(input.start, input.end), {
     message: INCOHERENT_DATE_RANGE_ERROR_MESSAGE,
@@ -27,7 +24,7 @@ export const refineSchema = <T extends z.infer<typeof DateRangeSchema>>(
 };
 
 export const refineAndTransformSchema = <T extends z.infer<typeof BaseSchema>>(
-  schema: ZodSchema<T>,
+  schema: ZodType<T>,
 ) => {
   return refineSchema(schema).transform((input) => {
     //  this prevent the groupBy attribute to be "weeks" for periods like "Last 7 days", "This week" or "Last week"
