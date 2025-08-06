@@ -1,18 +1,21 @@
 import * as cookieParser from "cookie-parser";
+import { DASHBOARD_PORT, DASHBOARD_PREVIEW_PORT } from "@repo/common/constants";
 import { AppModule } from "./app.module";
-import { DASHBOARD_PORT } from "@repo/common/constants";
 import { NestFactory } from "@nestjs/core";
 import { TrpcExceptionFilter } from "./trpc/trpc.exception-handler";
 import { TrpcRouter } from "./trpc/trpc.router";
-import { ValidationPipe } from "@nestjs/common";
+
+const allowedClients = Array.from({ length: 6 }, (_, i) => DASHBOARD_PORT + i)
+  .flatMap((port) => [`http://localhost:${port}`, `http://127.0.0.1:${port}`])
+  .concat([
+    `http://localhost:${DASHBOARD_PREVIEW_PORT}`,
+    `http://127.0.0.1:${DASHBOARD_PREVIEW_PORT}`,
+  ]);
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe());
   app.enableCors({
-    origin: Array.from({ length: 6 }, (_, i) => DASHBOARD_PORT + i).flatMap(
-      (port) => [`http://localhost:${port}`, `http://127.0.0.1:${port}`],
-    ),
+    origin: allowedClients,
     credentials: true,
   });
 

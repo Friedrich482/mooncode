@@ -81,7 +81,14 @@ const FilesList = () => {
       </div>
 
       <div className="flex w-full gap-4 text-xl max-[42rem]:gap-8">
-        <ErrorBoundary FallbackComponent={ErrorFallBack}>
+        <ErrorBoundary
+          FallbackComponent={({ error }) => (
+            <ErrorFallBack
+              error={error}
+              className="relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+            />
+          )}
+        >
           <SuspenseBoundary fallBackClassName="h-[52rem] w-full max-chart:w-full">
             <Files
               languagesToFetch={languagesToFetch}

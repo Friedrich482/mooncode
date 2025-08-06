@@ -2,16 +2,16 @@ import ChartGroupWrapper from "../ChartGroupWrapper";
 import CustomRangeDatesSelector from "../CustomRangeDatesSelector";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorFallBack from "../suspense/ErrorFallback";
-import FilesCirclePackingChart from "./charts/FilesCirclePackingChart";
 import FilesList from "./files-list/FilesList";
+import GroupByDropDown from "../dashboard-page/GroupByDropDown";
 import { Navigate } from "react-router";
 import PeriodDropDown from "../dashboard-page/PeriodDropDown";
-import ProjectLanguagesTimeOnPeriodChart from "./charts/ProjectLanguagesTimeOnPeriodChart";
-import ProjectTimeOnPeriodChart from "./charts/ProjectTimeOnPeriodChart";
 import ProjectTitle from "./ProjectTitle";
 import SuspenseBoundary from "../suspense/SuspenseBoundary";
 import { TRPCClientError } from "@trpc/client";
 import TimeSpentOnProject from "./TimeSpentOnProject";
+import { TriangleAlert } from "lucide-react";
+import { lazy } from "react";
 
 const ProjectTitleErrorBoundary = ({
   children,
@@ -27,57 +27,88 @@ const ProjectTitleErrorBoundary = ({
         return <Navigate to="/not-found" />;
       }
 
-      return <div className="h-9 text-destructive">{error.message}</div>;
+      return (
+        <h3 className="inline-block space-x-1 text-destructive">
+          <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
+          <span className="text-2xl">Error</span>
+        </h3>
+      );
     }}
     children={children}
   />
 );
 
+const ProjectTimeOnPeriodChart = lazy(
+  () => import("./charts/ProjectTimeOnPeriodChart"),
+);
+const ProjectLanguagesTimeOnPeriodChart = lazy(
+  () => import("./charts/ProjectLanguagesTimeOnPeriodChart"),
+);
+const FilesCirclePackingChart = lazy(
+  () => import("./charts/FilesCirclePackingChart"),
+);
+
 const Project = () => (
-  <main className="flex flex-col gap-x-10 gap-y-12 px-14 pb-4">
-    <div className="flex flex-col gap-4">
+  <main className="flex flex-col gap-y-4 px-14 pb-4">
+    <section className="flex flex-col gap-4">
       <ProjectTitleErrorBoundary>
         <SuspenseBoundary fallBackClassName="h-9 w-52">
           <ProjectTitle />
         </SuspenseBoundary>
       </ProjectTitleErrorBoundary>
 
-      <div className="flex flex-wrap items-center gap-2 text-center text-2xl max-[25.625rem]:text-base">
-        <PeriodDropDown />
-        <ProjectTitleErrorBoundary>
-          <SuspenseBoundary fallBackClassName="h-9 w-44">
-            <TimeSpentOnProject />
-          </SuspenseBoundary>
-        </ProjectTitleErrorBoundary>
-        <CustomRangeDatesSelector />
+      <div className="rounded-md border p-3 text-center text-2xl">
+        <div className="float-left mb-4 mr-4 flex flex-col gap-2">
+          <PeriodDropDown />
+          <GroupByDropDown />
+        </div>
+
+        <div className="text-balance text-start">
+          <ProjectTitleErrorBoundary>
+            <SuspenseBoundary fallBackClassName="h-9 w-44 inline-block align-top">
+              <TimeSpentOnProject />
+            </SuspenseBoundary>
+          </ProjectTitleErrorBoundary>
+
+          <CustomRangeDatesSelector />
+        </div>
       </div>
+    </section>
+
+    <div className="flex flex-col gap-x-10 gap-y-12 rounded-md border p-3 pt-14">
+      <ChartGroupWrapper>
+        <ErrorBoundary FallbackComponent={ErrorFallBack}>
+          <SuspenseBoundary>
+            <ProjectTimeOnPeriodChart />
+          </SuspenseBoundary>
+        </ErrorBoundary>
+
+        <ErrorBoundary FallbackComponent={ErrorFallBack}>
+          <SuspenseBoundary>
+            <ProjectLanguagesTimeOnPeriodChart />
+          </SuspenseBoundary>
+        </ErrorBoundary>
+      </ChartGroupWrapper>
+
+      <ChartGroupWrapper>
+        <ErrorBoundary
+          FallbackComponent={({ error }) => (
+            <ErrorFallBack
+              error={error}
+              className="z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+            />
+          )}
+        >
+          <SuspenseBoundary fallBackClassName="h-[45.5rem] w-full">
+            <FilesCirclePackingChart />
+          </SuspenseBoundary>
+        </ErrorBoundary>
+      </ChartGroupWrapper>
+
+      <ChartGroupWrapper>
+        <FilesList />
+      </ChartGroupWrapper>
     </div>
-
-    <ChartGroupWrapper>
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <SuspenseBoundary>
-          <ProjectTimeOnPeriodChart />
-        </SuspenseBoundary>
-      </ErrorBoundary>
-
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <SuspenseBoundary>
-          <ProjectLanguagesTimeOnPeriodChart />
-        </SuspenseBoundary>
-      </ErrorBoundary>
-    </ChartGroupWrapper>
-
-    <ChartGroupWrapper>
-      <ErrorBoundary FallbackComponent={ErrorFallBack}>
-        <SuspenseBoundary fallBackClassName="h-[24rem] w-full max-chart:w-full">
-          <FilesCirclePackingChart />
-        </SuspenseBoundary>
-      </ErrorBoundary>
-    </ChartGroupWrapper>
-
-    <ChartGroupWrapper>
-      <FilesList />
-    </ChartGroupWrapper>
   </main>
 );
 

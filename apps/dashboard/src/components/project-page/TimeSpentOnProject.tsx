@@ -5,7 +5,7 @@ const TimeSpentOnProject = () => {
   const data = useGetTimeSpentOnProject();
 
   return (
-    <span className="text-nowrap">{formatDuration(data.totalTimeSpent)}</span>
+    <span className="text-wrap">{formatDuration(data.totalTimeSpent)}</span>
   );
 };
 

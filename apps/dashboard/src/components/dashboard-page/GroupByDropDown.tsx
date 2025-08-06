@@ -33,7 +33,7 @@ const GroupByDropDown = () => {
         <DropdownMenuTrigger asChild>
           <Button
             variant="secondary"
-            className="absolute -top-11 left-0 flex items-center gap-4 bg-neutral-200 dark:bg-accent"
+            className="flex max-w-24 items-center gap-4"
           >
             <Group />
             <span>

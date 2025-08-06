@@ -2,6 +2,7 @@ import { Outlet, useNavigation } from "react-router";
 import { ClipLoader } from "react-spinners";
 import Footer from "./Footer";
 import Header from "./header/Header";
+import ScrollToTopButton from "@repo/ui/components/ScrollToTopButton";
 import { cn } from "@repo/ui/lib/utils";
 
 const GlobalSpinner = () => (
@@ -18,10 +19,11 @@ const Layout = () => {
   return (
     <>
       <Header />
-      <div className={cn(isLoading && "opacity-70")}>
+      <div id="loader" className={cn(isLoading && "opacity-70")}>
         {isLoading && <GlobalSpinner />}
         <Outlet />
       </div>
+      <ScrollToTopButton />
       <Footer />
     </>
   );

@@ -81,7 +81,7 @@ const ProjectLanguagesTimeOnPeriodChart = () => {
                     limit={20}
                   />
                 }
-                className="flex-wrap justify-end pr-2 max-small:hidden"
+                className="flex-wrap justify-end pr-2 max-[30rem]:hidden"
                 layout="vertical"
                 verticalAlign="middle"
                 align="right"
