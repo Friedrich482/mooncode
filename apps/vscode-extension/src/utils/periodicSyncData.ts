@@ -4,6 +4,7 @@ import calculateTime from "./time/calculateTime";
 import getGlobalStateData from "./global-state/getGlobalStateData";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import { isEqual } from "date-fns";
+import { logError } from "./logger/logger";
 import setStatusBarItem from "./status-bar/setStatusBarItem";
 import trpc from "./trpc/client";
 import updateFilesDataAfterSync from "./files/updateFilesDataAfterSync";
@@ -133,7 +134,7 @@ const periodicSyncData = async (
     });
   } catch (error) {
     if (error instanceof TRPCClientError) {
-      console.error(
+      logError(
         `tRPC Error during sync: ${error.message}, Cause: ${error.cause}.`,
       );
     } else {

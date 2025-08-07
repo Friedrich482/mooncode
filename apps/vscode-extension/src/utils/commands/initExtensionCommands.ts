@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { logDir, logInfo } from "../logger/logger";
 import { FileDataSync } from "@/types-schemas";
 import calculateTime from "../time/calculateTime";
 import { getExtensionContext } from "@/extension";
@@ -30,7 +31,7 @@ const initExtensionCommands = (
       )
         .map(([key, elapsedTime]) => `${key}: ${elapsedTime} seconds`)
         .join("\n");
-      console.log(`Current Languages Data:\n${formattedData}`);
+      logInfo(`Current Languages Data:\n${formattedData}`);
     },
   );
 
@@ -48,7 +49,7 @@ const initExtensionCommands = (
       )
         .map(([key, elapsedTime]) => `${key}: ${elapsedTime} seconds`)
         .join("\n");
-      console.log(`Initial Languages Data:\n${formattedData}`);
+      logInfo(`Initial Languages Data:\n${formattedData}`);
     },
   );
 
@@ -59,7 +60,7 @@ const initExtensionCommands = (
       const formattedData = Object.entries(filesData)
         .map(([key, { elapsedTime }]) => `${key}: ${elapsedTime} seconds`)
         .join("\n");
-      console.log(`Current files data:\n${formattedData}`);
+      logInfo(`Current files data:\n${formattedData}`);
     },
   );
 
@@ -72,7 +73,7 @@ const initExtensionCommands = (
             `${key}: ${elapsedTime} seconds`,
         )
         .join("\n");
-      console.log(`InitialFilesData from server:\n${formattedData}`);
+      logInfo(`InitialFilesData:\n${formattedData}`);
     },
   );
 
@@ -80,7 +81,7 @@ const initExtensionCommands = (
     "MoonCode.showGlobalStateData",
     async () => {
       const data = await getGlobalStateData();
-      console.dir(data, { depth: Infinity });
+      logDir(data);
     },
   );
 

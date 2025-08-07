@@ -3,6 +3,7 @@ import { FileMap } from "@/types-schemas";
 import { getExtensionContext } from "@/extension";
 import getGlobalStateData from "../global-state/getGlobalStateData";
 import isNewDayHandler from "./isNewDayHandler";
+import { logError } from "../logger/logger";
 import updateCurrentFileObj from "../files/updateCurrentFileObj";
 import updateFilesDataElapsedTime from "../files/updateFilesDataElapsedTime";
 import updateFilesDataFrozenStates from "../files/updateFilesDataFrozenStates";
@@ -26,7 +27,7 @@ const calculateTime = async (): Promise<() => FileMap> => {
 
       updateFilesDataFrozenStates();
     } catch (error) {
-      console.error("Error in periodic check:", error);
+      logError(`Error in periodic check:${error}`);
     } finally {
       timeoutId = setTimeout(runPeriodicCheck, 1000);
     }
