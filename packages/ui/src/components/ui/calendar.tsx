@@ -58,14 +58,13 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        // eslint-disable-next-line react/prop-types
-        IconLeft: ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
-          <ChevronLeft className={cn("size-4", className)} {...props} />
-        ),
-        // eslint-disable-next-line react/prop-types
-        IconRight: ({ className, ...props }: React.SVGProps<SVGSVGElement>) => (
-          <ChevronRight className={cn("size-4", className)} {...props} />
-        ),
+        Chevron: (props) => {
+          // eslint-disable-next-line react/prop-types
+          if (props.orientation === "left") {
+            return <ChevronLeft {...props} />;
+          }
+          return <ChevronRight {...props} />;
+        },
       }}
       {...props}
     />

@@ -10,7 +10,7 @@ import { Button } from "@repo/ui/components/ui/button";
 import CalendarPopover from "@repo/ui/components/ui/CalendarPopover";
 import { ChevronDown } from "lucide-react";
 import { DATE_LOCALE } from "@repo/common/constants";
-import { DateRange } from "@repo/ui/index";
+import { DateRange } from "react-day-picker";
 import { Period } from "@/types-schemas";
 import getPeriodResolution from "@repo/common/getPeriodResolution";
 import { usePeriodStore } from "@/hooks/store/periodStore";
