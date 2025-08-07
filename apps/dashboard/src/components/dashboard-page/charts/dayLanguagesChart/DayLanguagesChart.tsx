@@ -83,14 +83,14 @@ const DayLanguagesChart = () => {
                 <div className="font-semibold">{displayDate}</div>
               )}
               formatter={(
-                value: string,
+                value: number,
                 _,
                 { payload }: { payload?: (typeof chartData)[number] },
               ) => {
                 if (!payload) return null;
 
                 return CustomChartToolTip(
-                  parseInt(value),
+                  value,
                   payload.color,
                   payload.languageSlug,
                   payload.percentage,
