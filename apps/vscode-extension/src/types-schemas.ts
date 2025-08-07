@@ -1,5 +1,5 @@
 import { IsoDateStringSchema, JWTDto } from "@repo/common/schemas";
-import z from "zod";
+import { z } from "zod";
 
 export type FileData = {
   elapsedTime: number;
