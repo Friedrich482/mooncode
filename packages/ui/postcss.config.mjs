@@ -1,8 +1,10 @@
-/** @type {import('postcss-load-config').Config} */
+import { join } from "path";
+
 const config = {
   plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
+    "@tailwindcss/postcss": {
+      base: join(__dirname, "../../"),
+    },
   },
 };
 

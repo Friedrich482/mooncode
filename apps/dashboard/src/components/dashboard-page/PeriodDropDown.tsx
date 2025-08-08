@@ -72,10 +72,7 @@ const PeriodDropDown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          variant="default"
-          className="flex items-center justify-center gap-2"
-        >
+        <Button className="flex items-center justify-center gap-2">
           <span>{period}</span>
           <ChevronDown />
         </Button>

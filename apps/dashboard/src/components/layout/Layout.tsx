@@ -7,7 +7,7 @@ import { cn } from "@repo/ui/lib/utils";
 
 const GlobalSpinner = () => (
   <div className="flex h-dvh items-center justify-center">
-    <ClipLoader size={80} color="hsl(var(--primary))" />
+    <ClipLoader size={80} color="var(--primary)" />
   </div>
 );
 

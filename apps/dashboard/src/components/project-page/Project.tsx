@@ -28,7 +28,7 @@ const ProjectTitleErrorBoundary = ({
       }
 
       return (
-        <h3 className="inline-block space-x-1 text-destructive">
+        <h3 className="text-destructive inline-block space-x-1">
           <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
           <span className="text-2xl">Error</span>
         </h3>
@@ -58,12 +58,12 @@ const Project = () => (
       </ProjectTitleErrorBoundary>
 
       <div className="rounded-md border p-3 text-center text-2xl">
-        <div className="float-left mb-4 mr-4 flex flex-col gap-2">
+        <div className="float-left mr-4 mb-4 flex flex-col gap-2">
           <PeriodDropDown />
           <GroupByDropDown />
         </div>
 
-        <div className="text-balance text-start">
+        <div className="text-start text-balance">
           <ProjectTitleErrorBoundary>
             <SuspenseBoundary fallBackClassName="h-9 w-44 inline-block align-top">
               <TimeSpentOnProject />
@@ -95,7 +95,7 @@ const Project = () => (
           FallbackComponent={({ error }) => (
             <ErrorFallBack
               error={error}
-              className="z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+              className="text-destructive max-chart:w-full z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl max-xl:text-xl max-[30rem]:text-lg"
             />
           )}
         >
