@@ -64,7 +64,7 @@ const PeriodTimeChart = () => {
 
               return <div>{innerPayload.originalDate}</div>;
             }}
-            formatter={(value: string, name) =>
+            formatter={(value, name) =>
               name === "Time"
                 ? CustomChartToolTip(parseInt(value), "var(--color-time)")
                 : null
