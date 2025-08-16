@@ -1,10 +1,6 @@
-import { join } from "path";
-
 const config = {
   plugins: {
-    "@tailwindcss/postcss": {
-      base: join(__dirname, "../../"),
-    },
+    "@tailwindcss/postcss": {},
   },
 };
 
