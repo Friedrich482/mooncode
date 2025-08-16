@@ -6,6 +6,7 @@ import GeneralStatsChart from "./charts/GeneralStatsChart";
 import PeriodProjects from "./PeriodProjects";
 import SuspenseBoundary from "../suspense/SuspenseBoundary";
 import { lazy } from "react";
+import usePageTitle from "@/hooks/usePageTitle";
 
 const PeriodTimeChart = lazy(() => import("./charts/PeriodTimeChart"));
 const PeriodLanguagesChart = lazy(
@@ -16,7 +17,8 @@ const DayLanguagesChart = lazy(
 );
 
 const Dashboard = () => {
-  document.title = "MoonCode | Dashboard";
+  usePageTitle("Dashboard");
+
   return (
     <main className="flex flex-col gap-y-4 px-14 pb-4">
       <DashboardTitle />
@@ -55,7 +57,7 @@ const Dashboard = () => {
             FallbackComponent={({ error }) => (
               <ErrorFallBack
                 error={error}
-                className="relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+                className="text-destructive max-chart:w-full relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl max-xl:text-xl max-[30rem]:text-lg"
               />
             )}
           >

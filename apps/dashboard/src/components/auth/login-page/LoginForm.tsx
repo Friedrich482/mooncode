@@ -21,12 +21,15 @@ import fetchJWTToken from "@repo/common/fetchJWTToken";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
+import usePageTitle from "@/hooks/usePageTitle";
 import { useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import useTogglePassword from "@/hooks/auth/useTogglePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
+  usePageTitle("Login");
+
   // remove the padding-top on the root div
   useEffect(() => {
     document.getElementById("root")?.classList.add("auth-root");
