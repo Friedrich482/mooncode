@@ -14,7 +14,7 @@ import { Link, useNavigate } from "react-router";
 import { Button } from "@repo/ui/components/ui/button";
 import { Input } from "@repo/ui/components/ui/input";
 import Logo from "../../layout/header/Logo";
-import Night from "../../../../public/animated-night.svg?react";
+import Night from "@/assets/animated-night.svg?react";
 import { SignInUserDto } from "@repo/common/schemas";
 import { SignInUserDtoType } from "@repo/common/types";
 import fetchJWTToken from "@repo/common/fetchJWTToken";
