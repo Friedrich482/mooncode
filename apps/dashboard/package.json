@@ -23,22 +23,23 @@
     "d3-hierarchy": "^3.1.2",
     "date-fns": "^4.1.0",
     "js-md5": "^0.8.3",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "react": "19.1.1",
+    "react-dom": "19.1.1",
     "react-error-boundary": "^5.0.0",
     "react-hook-form": "^7.56.1",
     "react-router": "^7.5.1",
     "react-spinners": "^0.17.0",
     "recharts": "^2.15.1",
-    "zod": "^4.0.14",
+    "zod": "^4.0.17",
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.1.11",
     "@eslint/js": "^9.17.0",
     "@types/d3": "^7.4.3",
     "@types/node": "^22.12.0",
-    "@types/react": "18.3.1",
-    "@types/react-dom": "18.3.1",
+    "@types/react": "19.1.9",
+    "@types/react-dom": "19.1.7",
     "@types/recharts": "^1.8.29",
     "@vitejs/plugin-react-swc": "^3.5.0",
     "autoprefixer": "^10.4.20",
@@ -48,15 +49,13 @@
     "globals": "^15.14.0",
     "postcss": "^8.5.1",
     "prettier": "^3.4.2",
-    "prettier-plugin-tailwindcss": "^0.6.11",
+    "prettier-plugin-tailwindcss": "^0.6.14",
     "rollup-plugin-visualizer": "^6.0.3",
-    "tailwindcss": "^3.4.17",
+    "tailwindcss": "^4.1.11",
     "typescript": "^5.7.2",
     "typescript-eslint": "^8.18.2",
     "vite": "^6.0.5",
-    "vite-plugin-commonjs": "^0.10.4"
-  },
-  "overrides": {
-    "@types/react": "^18.0.0"
+    "vite-plugin-commonjs": "^0.10.4",
+    "vite-plugin-svgr": "^4.3.0"
   }
 }

@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { DASHBOARD_PORT } from "@repo/common/constants";
 import express from "express";
 import getPort from "get-port";
+import { logInfo } from "../logger/logger";
 
 const serveDashboard = async (context: vscode.ExtensionContext) => {
   const app = express();
@@ -27,7 +28,7 @@ const serveDashboard = async (context: vscode.ExtensionContext) => {
 
     const server = app
       .listen(availablePort, () => {
-        console.log(`Dashboard server started on localhost ${availablePort}`);
+        logInfo(`Dashboard server started on localhost ${availablePort}`);
       })
       .on("error", (error) => {
         vscode.window.showErrorMessage(

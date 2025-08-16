@@ -1,5 +1,8 @@
-import { Area, Bar, ComposedChart, Line, XAxis } from "recharts";
-import { AreaChart, BarChart } from "lucide-react";
+import { Area, AreaChart, Bar, ComposedChart, Line, XAxis } from "recharts";
+import {
+  AreaChart as AreaChartIcon,
+  BarChart as BarChartIcon,
+} from "lucide-react";
 import {
   ChartContainer,
   ChartTooltip,
@@ -47,10 +50,11 @@ const ProjectTimeOnPeriodChart = () => {
     ),
   );
 
+  // ! don't try to refactor, extracting the `ChartTooltip` in its own component won't work with recharts
   return (
-    <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border max-chart:w-full">
+    <div className="max-chart:w-full relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border">
       <Icon
-        Icon={isBarChartVisible ? AreaChart : BarChart}
+        Icon={isBarChartVisible ? AreaChartIcon : BarChartIcon}
         className="absolute -top-12 right-0 z-0"
         onClick={handleClick}
       />
@@ -58,67 +62,97 @@ const ProjectTimeOnPeriodChart = () => {
         config={chartConfig}
         className="h-full flex-1 border-none"
       >
-        <ComposedChart data={chartData}>
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => formatTickForGroupBy(value, groupBy)}
-          />
-          <ChartTooltip
-            content={<ChartTooltipContent labelClassName="font-semibold" />}
-            labelFormatter={(
-              _date: string,
-              payload: Payload<string, string>[],
-            ) => {
-              if (payload.length === 0) return null;
+        {isBarChartVisible ? (
+          <ComposedChart data={chartData}>
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => formatTickForGroupBy(value, groupBy)}
+            />
+            <ChartTooltip
+              content={<ChartTooltipContent labelClassName="font-semibold" />}
+              labelFormatter={(
+                _date: string,
+                payload: Payload<string, string>[],
+              ) => {
+                if (payload.length === 0) return null;
 
-              const {
-                payload: innerPayload,
-              }: { payload?: (typeof chartData)[number] } = payload[0];
+                const {
+                  payload: innerPayload,
+                }: { payload?: (typeof chartData)[number] } = payload[0];
 
-              if (!innerPayload) return null;
+                if (!innerPayload) return null;
 
-              return <div>{innerPayload.originalDate}</div>;
-            }}
-            formatter={(value: string, name) =>
-              name === "Time"
-                ? CustomChartToolTip(parseInt(value), "var(--color-time)")
-                : null
-            }
-          />
-          {isBarChartVisible ? (
-            <>
-              <Bar
-                dataKey="timeSpentBar"
-                fill="var(--color-time)"
-                className="cursor-pointer"
-                name="Time"
-              />
-              <Line
-                dataKey="timeSpentLine"
-                stroke="hsl(var(--destructive))"
-                strokeWidth={2}
-                dot={{ r: 4 }}
-                type="monotone"
-                className="cursor-pointer"
-              />
-            </>
-          ) : (
+                return <div>{innerPayload.originalDate}</div>;
+              }}
+              formatter={(value, name) =>
+                name === "Time"
+                  ? CustomChartToolTip(parseInt(value), "var(--color-time)")
+                  : null
+              }
+            />
+            <Bar
+              dataKey="timeSpentBar"
+              fill="var(--color-time)"
+              className="cursor-pointer"
+              name="Time"
+            />
+
+            <Line
+              dataKey="timeSpentLine"
+              stroke="var(--destructive)"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+              type="monotone"
+              className="cursor-pointer"
+            />
+          </ComposedChart>
+        ) : (
+          <AreaChart data={chartData}>
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => formatTickForGroupBy(value, groupBy)}
+            />
+            <ChartTooltip
+              content={<ChartTooltipContent labelClassName="font-semibold" />}
+              labelFormatter={(
+                _date: string,
+                payload: Payload<string, string>[],
+              ) => {
+                if (payload.length === 0) return null;
+
+                const {
+                  payload: innerPayload,
+                }: { payload?: (typeof chartData)[number] } = payload[0];
+
+                if (!innerPayload) return null;
+
+                return <div>{innerPayload.originalDate}</div>;
+              }}
+              formatter={(value, name) =>
+                name === "Time"
+                  ? CustomChartToolTip(parseInt(value), "var(--color-time)")
+                  : null
+              }
+            />
             <Area
               dataKey="timeSpentArea"
               fill="var(--color-time)"
               className="cursor-pointer"
               name="Time"
-              stroke="hsl(var(--destructive))"
+              stroke="var(--destructive)"
               strokeWidth={2}
               type="monotone"
               fillOpacity={1}
               dot={{ r: 4 }}
             />
-          )}
-        </ComposedChart>
+          </AreaChart>
+        )}
       </ChartContainer>
     </div>
   );

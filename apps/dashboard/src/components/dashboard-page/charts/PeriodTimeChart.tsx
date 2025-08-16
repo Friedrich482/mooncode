@@ -35,7 +35,7 @@ const PeriodTimeChart = () => {
   );
 
   return (
-    <div className="relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border max-chart:w-full">
+    <div className="max-chart:w-full relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border">
       <ChartContainer
         config={chartConfig}
         className="h-full flex-1 border-none"
@@ -64,7 +64,7 @@ const PeriodTimeChart = () => {
 
               return <div>{innerPayload.originalDate}</div>;
             }}
-            formatter={(value: string, name) =>
+            formatter={(value, name) =>
               name === "Time"
                 ? CustomChartToolTip(parseInt(value), "var(--color-time)")
                 : null
@@ -80,7 +80,7 @@ const PeriodTimeChart = () => {
 
           <Line
             dataKey="timeSpentLine"
-            stroke="hsl(var(--destructive))"
+            stroke="var(--destructive)"
             strokeWidth={2}
             dot={{ r: 4 }}
             type="monotone"

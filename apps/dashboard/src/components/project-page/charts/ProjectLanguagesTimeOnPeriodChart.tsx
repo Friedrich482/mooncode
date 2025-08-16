@@ -55,7 +55,7 @@ const ProjectLanguagesTimeOnPeriodChart = () => {
                 labelFormatter={() => <div className="font-semibold">Time</div>}
                 content={<ChartTooltipContent labelClassName="font-semibold" />}
                 formatter={(
-                  value: string,
+                  value: number,
                   languageSlug,
                   {
                     payload,
@@ -66,7 +66,7 @@ const ProjectLanguagesTimeOnPeriodChart = () => {
                   const { payload: innerPayload } = payload;
 
                   return CustomChartToolTip(
-                    parseInt(value),
+                    value,
                     innerPayload.color,
                     languageSlug.toString(),
                     innerPayload.percentage,

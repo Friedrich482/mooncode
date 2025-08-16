@@ -5,4 +5,19 @@
   padding-top: 4rem;
   display: flex;
   flex-direction: column;
+
+  &.auth-root {
+    padding-top: 0%;
+  }
+}
+
+@theme {
+  --breakpoint-small: 25rem;
+  --breakpoint-very-small: 21.875rem;
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-chart: 56.25rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 96rem;
 }

@@ -3,12 +3,16 @@ import commonjs from "vite-plugin-commonjs";
 import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react-swc";
+import svgr from "vite-plugin-svgr";
+import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 
 export default defineConfig({
   plugins: [
+    tailwindcss(),
     react(),
     commonjs(),
+    svgr(),
     visualizer({
       open: true,
       filename: "dist/deps.html",
@@ -51,21 +55,6 @@ export default defineConfig({
             "@tanstack/query-core",
             "@tanstack/react-query-devtools",
           ],
-          md5: ["js-md5"],
-          zustand: ["zustand"],
-          lucidereact: ["lucide-react"],
-          reactdaypicker: ["react-day-picker"],
-          radixui: [
-            "@radix-ui/react-checkbox",
-            "@radix-ui/react-dropdown-menu",
-            "@radix-ui/react-label",
-            "@radix-ui/react-popover",
-            "@radix-ui/react-slot",
-            "@radix-ui/react-tooltip",
-          ],
-          "react-error-boundary": ["react-error-boundary"],
-          "react-spinners": ["react-spinners"],
-          superjson: ["superjson"],
         },
       },
     },

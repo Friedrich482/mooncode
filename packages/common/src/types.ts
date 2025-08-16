@@ -1,5 +1,5 @@
 import { JWTDto, RegisterUserDto, SignInUserDto } from "./schemas";
-import z from "zod";
+import { z } from "zod";
 
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];

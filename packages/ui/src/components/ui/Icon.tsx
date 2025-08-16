@@ -3,16 +3,16 @@ import { LucideProps } from "lucide-react";
 import React, { ButtonHTMLAttributes } from "react";
 import { cn } from "#lib/utils.ts";
 
-const Icon = React.forwardRef<
-  HTMLButtonElement,
-  ButtonHTMLAttributes<HTMLButtonElement> & {
-    Icon: React.ForwardRefExoticComponent<
-      Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-    >;
-  }
->(({ className, Icon, ...props }, ref) => (
+const Icon = ({
+  className,
+  Icon,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+  Icon: React.ForwardRefExoticComponent<
+    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
+  >;
+}) => (
   <Button
-    ref={ref}
     variant="ghost"
     size="icon"
     {...props}
@@ -20,7 +20,6 @@ const Icon = React.forwardRef<
   >
     <Icon />
   </Button>
-));
-Icon.displayName = "Icon";
+);
 
 export default Icon;

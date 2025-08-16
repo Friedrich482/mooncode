@@ -21,14 +21,14 @@ const CustomChartToolTip = (
     <div className="flex flex-1 items-center justify-center gap-2 leading-none">
       {color ? (
         <div
-          className="size-3 rounded-sm"
+          className="size-3 rounded-xs"
           style={{
             backgroundColor: safeColor,
           }}
         />
       ) : null}
       {languageSlug && <span>{getLanguageName(languageSlug)}</span>}
-      <span className="flex-1 text-muted-foreground">
+      <span className="text-muted-foreground flex-1">
         {!Number.isNaN(value) ? formatDuration(value) : "######"}{" "}
         {percentage && `(${percentage}%)`}
       </span>

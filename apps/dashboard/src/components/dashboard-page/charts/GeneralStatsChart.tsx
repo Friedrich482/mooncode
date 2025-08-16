@@ -57,13 +57,13 @@ const GeneralStatsChart = () => {
   const mostUsedLanguageName = getLanguageName(mostUsedLanguageSlug);
 
   return (
-    <div className="flex min-h-96 w-[45%] flex-col gap-y-3 rounded-md border p-3 text-2xl max-chart:w-full max-[28.125rem]:justify-between max-[28.125rem]:gap-0">
+    <div className="max-chart:w-full flex min-h-96 w-[45%] flex-col gap-y-3 rounded-md border p-3 text-2xl max-[28.125rem]:justify-between max-[28.125rem]:gap-0">
       <h2 className="text-center text-2xl font-bold">General stats</h2>
 
       <TwoStatsWrapper>
         <StatWrapper>
           <p>Average time per {groupBy?.slice(0, -1)}</p>
-          <p className="font-bold text-primary/85">{avgTime}</p>
+          <p className="text-primary/85 font-bold">{avgTime}</p>
         </StatWrapper>
 
         <StatWrapper>
@@ -83,19 +83,19 @@ const GeneralStatsChart = () => {
       <TwoStatsWrapper>
         <StatWrapper>
           <p>Most active {groupBy?.slice(0, -1)}</p>
-          <p className="font-bold text-primary/85">{mostActiveDate}</p>
+          <p className="text-primary/85 font-bold">{mostActiveDate}</p>
         </StatWrapper>
 
         <StatWrapper>
           <p>Most used language</p>
           <div className="flex items-center justify-center gap-2">
             <div
-              className="size-5 shrink-0 rounded-sm max-sm:size-3"
+              className="size-5 shrink-0 rounded-xs max-sm:size-3"
               style={{
                 backgroundColor: mostUsedLanguageColor,
               }}
             />
-            <p className="font-bold text-primary/85">{mostUsedLanguageName}</p>
+            <p className="text-primary/85 font-bold">{mostUsedLanguageName}</p>
           </div>
         </StatWrapper>
       </TwoStatsWrapper>

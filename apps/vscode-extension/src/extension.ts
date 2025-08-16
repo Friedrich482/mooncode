@@ -3,6 +3,7 @@ import calculateTime from "@/utils/time/calculateTime";
 import fetchInitialData from "./utils/fetchInitialData";
 import initExtensionCommands from "./utils/commands/initExtensionCommands";
 import initializeFiles from "./utils/files/initializeFiles";
+import { logInfo } from "./utils/logger/logger";
 import periodicSyncData from "./utils/periodicSyncData";
 import registerAuthUriHandler from "./utils/auth/registerAuthUriHandler";
 import serveDashboard from "./utils/dashboard/serveDashboard";
@@ -48,7 +49,7 @@ export async function activate(context: vscode.ExtensionContext) {
 }
 
 export async function deactivate() {
-  console.log("MoonCode deactivated");
+  logInfo("MoonCode deactivated");
 }
 
 export const getExtensionContext = () => {

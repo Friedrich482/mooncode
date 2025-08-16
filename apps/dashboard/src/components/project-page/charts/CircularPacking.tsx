@@ -11,7 +11,7 @@ export const CircularPacking = ({
   parentDivRef,
 }: {
   data: Tree;
-  parentDivRef: React.RefObject<HTMLDivElement>;
+  parentDivRef: React.RefObject<HTMLDivElement | null>;
 }) => {
   const [width, setWidth] = useState(
     parentDivRef.current?.clientWidth ?? (window.innerWidth * 5) / 6,
@@ -82,14 +82,14 @@ export const CircularPacking = ({
               <tspan
                 x={0}
                 className="font-extrabold"
-                fill="hsl(var(--muted-foreground))"
+                fill="var(--muted-foreground)"
               >
                 {bubble.data.name}
               </tspan>
               <tspan
                 x={0}
                 dy="1.2em"
-                fill="hsl(var(--muted-foreground))"
+                fill="var(--muted-foreground)"
                 className="font-light"
               >
                 {formatDuration(bubble.data.value)}
