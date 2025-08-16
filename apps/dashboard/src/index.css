@@ -5,6 +5,10 @@
   padding-top: 4rem;
   display: flex;
   flex-direction: column;
+
+  &.auth-root {
+    padding-top: 0%;
+  }
 }
 
 @theme {

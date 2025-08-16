@@ -3,6 +3,7 @@ import commonjs from "vite-plugin-commonjs";
 import { defineConfig } from "vite";
 import path from "path";
 import react from "@vitejs/plugin-react-swc";
+import svgr from "vite-plugin-svgr";
 import tailwindcss from "@tailwindcss/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 
@@ -11,6 +12,7 @@ export default defineConfig({
     tailwindcss(),
     react(),
     commonjs(),
+    svgr(),
     visualizer({
       open: true,
       filename: "dist/deps.html",

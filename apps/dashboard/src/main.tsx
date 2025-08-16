@@ -3,12 +3,12 @@ import { authRouteLoader, protectedRouteLoader } from "./utils/authLoader";
 import App from "./App";
 import Dashboard from "./components/dashboard-page/Dashboard";
 import Layout from "./components/layout/Layout";
-import LoginForm from "./components/login-page/LoginForm";
+import LoginForm from "./components/auth/login-page/LoginForm";
 import NotFound from "./components/not-found-page/NotFound";
 import Project from "./components/project-page/Project";
 import React from "react";
 import RedirectToNotFound from "./components/not-found-page/RedirectToNotFound";
-import RegisterForm from "./components/register-page/RegisterForm";
+import RegisterForm from "./components/auth/register-page/RegisterForm";
 import Root from "./components/root-page/Root";
 import { createRoot } from "react-dom/client";
 
