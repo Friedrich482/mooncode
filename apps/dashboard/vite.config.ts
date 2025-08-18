@@ -35,6 +35,12 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
+      onLog(level, log) {
+        // ignore logs from "date-fns" since it is an ESM only library
+        if (level === "warn" && log.message.includes("date-fns")) {
+          return;
+        }
+      },
       output: {
         manualChunks: {
           d3: [
