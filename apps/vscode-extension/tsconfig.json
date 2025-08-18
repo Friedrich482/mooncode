@@ -9,7 +9,8 @@
     "paths": {
       "@/*": ["./src/*"],
       "@repo/trpc": ["../../packages/trpc/src"],
-      "@repo/common": ["../../packages/common/src"]
+      "@repo/common": ["../../packages/common/src"],
+      "@trpc/server/*": ["../../node_modules/@trpc/server/*"]
     },
     "moduleResolution": "bundler",
     "strict": true,

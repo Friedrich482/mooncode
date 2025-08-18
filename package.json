@@ -13,7 +13,8 @@
   "devDependencies": {
     "lint-staged": "^15.5.1",
     "prettier": "^3.5.0",
-    "turbo": "^2.5.4"
+    "turbo": "^2.5.4",
+    "wait-on": "^8.0.4"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [

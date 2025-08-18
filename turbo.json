@@ -16,6 +16,20 @@
     "dev": {
       "cache": false,
       "persistent": true
+    },
+    "health-check": {
+      "cache": false,
+      "outputs": []
+    },
+    "@repo/trpc#dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["api#health-check"]
+    },
+    "dashboard#dev": {
+      "cache": false,
+      "persistent": true,
+      "dependsOn": ["api#health-check"]
     }
   }
 }

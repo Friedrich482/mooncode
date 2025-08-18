@@ -8,8 +8,9 @@
   "scripts": {
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
-    "start": "nest start",
     "dev": "NEST_DEBUG=true nest start --watch",
+    "health-check": "wait-on http://localhost:3000/health && echo 'API is ready!'",
+    "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:prod": "NODE_ENV=production node dist/main.js",
     "generate": "npx drizzle-kit generate",
