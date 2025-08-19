@@ -4,7 +4,7 @@ import {
   pack,
 } from "d3-hierarchy";
 import { checkCollision, handleCollision } from "@/utils/chartAnimation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Tree } from "@/types-schemas";
 
 const useAnimateChart = (data: Tree, width: number, height: number) => {
@@ -150,10 +150,15 @@ const useAnimateChart = (data: Tree, width: number, height: number) => {
     });
   };
 
-  const handleResetButtonClick = () => setBubbles(initialBubbles);
+  const handleResetButtonClick = useCallback(
+    () => setBubbles(initialBubbles),
+    [initialBubbles],
+  );
 
-  const handleToggleAnimationButtonClick = () =>
-    setIsAnimating((prev) => !prev);
+  const handleToggleAnimationButtonClick = useCallback(
+    () => setIsAnimating((prev) => !prev),
+    [isAnimating],
+  );
 
   return {
     maxValue,

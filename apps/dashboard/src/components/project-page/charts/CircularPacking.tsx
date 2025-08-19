@@ -1,6 +1,5 @@
-import { Pause, Play, RotateCcw } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import Icon from "@repo/ui/components/ui/Icon";
+import { RefObject, useEffect, useState } from "react";
+import OptionsSection from "./OptionsSection";
 import { Tree } from "@/types-schemas";
 import { bubblesColors } from "@/constants";
 import formatDuration from "@repo/common/formatDuration";
@@ -9,9 +8,13 @@ import useAnimateChart from "@/hooks/useAnimateChart";
 export const CircularPacking = ({
   data,
   parentDivRef,
+  isGrouped,
+  handleGroupCheckboxChange,
 }: {
   data: Tree;
-  parentDivRef: React.RefObject<HTMLDivElement | null>;
+  parentDivRef: RefObject<HTMLDivElement | null>;
+  isGrouped: boolean;
+  handleGroupCheckboxChange: () => void;
 }) => {
   const [width, setWidth] = useState(
     parentDivRef.current?.clientWidth ?? (window.innerWidth * 5) / 6,
@@ -42,21 +45,13 @@ export const CircularPacking = ({
 
   return (
     <>
-      <div className="flex w-28 items-center justify-end gap-5 self-end rounded-md border p-1">
-        <Icon
-          Icon={isAnimating ? Pause : Play}
-          onClick={handleToggleAnimationButtonClick}
-          title={`${isAnimating ? "Pause" : "Play"} animation`}
-          aria-label={`${isAnimating ? "Pause" : "Play"} animation`}
-        />
-        <Icon
-          Icon={RotateCcw}
-          onClick={handleResetButtonClick}
-          title="Reset animation"
-          aria-label="Reset animation"
-        />
-      </div>
-
+      <OptionsSection
+        isAnimating={isAnimating}
+        isGrouped={isGrouped}
+        handleToggleAnimationButtonClick={handleToggleAnimationButtonClick}
+        handleResetButtonClick={handleResetButtonClick}
+        handleGroupCheckboxChange={handleGroupCheckboxChange}
+      />
       <svg width={width} height={height} className="-translate-x-3">
         {bubbles.map((bubble, index) => (
           <g
