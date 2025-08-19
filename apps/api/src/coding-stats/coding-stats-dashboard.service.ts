@@ -82,6 +82,7 @@ export class CodingStatsDashboardService {
       originalDate: new Date(date).toDateString(),
       date: getWeekDayName(date),
       timeSpentBar: timeSpent,
+      timeSpentArea: timeSpent,
       value: formatDuration(timeSpent),
     }));
   }

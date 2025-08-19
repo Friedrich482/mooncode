@@ -79,6 +79,7 @@ const getDaysOfPeriodStatsGroupByWeeks = (
     originalDate: weekRange,
     date: weekRange,
     timeSpentBar: timeSpent,
+    timeSpentArea: timeSpent,
     value: formatDuration(timeSpent),
   }));
 };

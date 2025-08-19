@@ -57,6 +57,12 @@ Before continuing you'll need some environment variables: `JWT_TOKEN` and `DATAB
   ssh-keygen -t rsa -b 4096
   ```
 
+- `NODE_ENV`:
+
+  ```bash
+  NODE_ENV=production
+  ```
+
 ## Compile and run the project
 
 Compile :

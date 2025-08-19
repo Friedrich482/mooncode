@@ -9,6 +9,7 @@ import {
   ChartTooltipContent,
 } from "@repo/ui/components/ui/chart";
 import { PERIODS_CONFIG, chartConfig } from "@/constants";
+import { RouterOutput, useTRPC } from "@/utils/trpc";
 import CustomChartToolTip from "@/components/CustomChartToolTip";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
@@ -18,7 +19,26 @@ import { usePeriodStore } from "@/hooks/store/periodStore";
 import useSafeParams from "@/hooks/useSafeParams";
 import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/utils/trpc";
+
+type ChartDataType = RouterOutput["filesStats"]["getProjectPerDayOfPeriod"];
+
+const tooltipLabelFormatter = (
+  _date: string,
+  payload: Payload<string, string>[],
+) => {
+  if (payload.length === 0) return null;
+  const { payload: innerPayload }: { payload?: ChartDataType[number] } =
+    payload[0];
+
+  if (!innerPayload) return null;
+
+  return <div>{innerPayload.originalDate}</div>;
+};
+
+const tooltipFormatter = (value: string, name: string) =>
+  name === "Time"
+    ? CustomChartToolTip(parseInt(value), "var(--color-time)")
+    : null;
 
 const ProjectTimeOnPeriodChart = () => {
   const { projectName: name } = useSafeParams(ProjectParamsSchema);
@@ -73,25 +93,8 @@ const ProjectTimeOnPeriodChart = () => {
             />
             <ChartTooltip
               content={<ChartTooltipContent labelClassName="font-semibold" />}
-              labelFormatter={(
-                _date: string,
-                payload: Payload<string, string>[],
-              ) => {
-                if (payload.length === 0) return null;
-
-                const {
-                  payload: innerPayload,
-                }: { payload?: (typeof chartData)[number] } = payload[0];
-
-                if (!innerPayload) return null;
-
-                return <div>{innerPayload.originalDate}</div>;
-              }}
-              formatter={(value, name) =>
-                name === "Time"
-                  ? CustomChartToolTip(parseInt(value), "var(--color-time)")
-                  : null
-              }
+              labelFormatter={tooltipLabelFormatter}
+              formatter={tooltipFormatter}
             />
             <Bar
               dataKey="timeSpentBar"
@@ -120,25 +123,8 @@ const ProjectTimeOnPeriodChart = () => {
             />
             <ChartTooltip
               content={<ChartTooltipContent labelClassName="font-semibold" />}
-              labelFormatter={(
-                _date: string,
-                payload: Payload<string, string>[],
-              ) => {
-                if (payload.length === 0) return null;
-
-                const {
-                  payload: innerPayload,
-                }: { payload?: (typeof chartData)[number] } = payload[0];
-
-                if (!innerPayload) return null;
-
-                return <div>{innerPayload.originalDate}</div>;
-              }}
-              formatter={(value, name) =>
-                name === "Time"
-                  ? CustomChartToolTip(parseInt(value), "var(--color-time)")
-                  : null
-              }
+              labelFormatter={tooltipLabelFormatter}
+              formatter={tooltipFormatter}
             />
             <Area
               dataKey="timeSpentArea"

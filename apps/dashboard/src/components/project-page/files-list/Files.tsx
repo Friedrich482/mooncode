@@ -99,10 +99,10 @@ const Files = memo(function Files({
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <div className="flex min-h-9 gap-4">
-                                  <span className="min-h-9 overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
+                                  <span className="min-h-9 overflow-hidden font-extrabold text-ellipsis whitespace-nowrap">
                                     &bull; {name}
                                   </span>
-                                  <span className="overflow-hidden text-ellipsis whitespace-nowrap font-extralight">
+                                  <span className="overflow-hidden font-extralight text-ellipsis whitespace-nowrap">
                                     {formatDuration(totalTimeSpent)}
                                   </span>
                                 </div>
@@ -126,10 +126,10 @@ const Files = memo(function Files({
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex min-h-9 gap-4">
-                    <span className="min-h-9 overflow-hidden text-ellipsis whitespace-nowrap font-extrabold">
+                    <span className="min-h-9 overflow-hidden font-extrabold text-ellipsis whitespace-nowrap">
                       &bull; {name}
                     </span>
-                    <span className="overflow-hidden text-ellipsis whitespace-nowrap font-extralight">
+                    <span className="overflow-hidden font-extralight text-ellipsis whitespace-nowrap">
                       {formatDuration(totalTimeSpent)}
                     </span>
                   </div>
