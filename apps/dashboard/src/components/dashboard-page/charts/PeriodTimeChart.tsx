@@ -1,21 +1,50 @@
-import { Bar, ComposedChart, Line, XAxis } from "recharts";
+import { Area, AreaChart, Bar, ComposedChart, Line, XAxis } from "recharts";
+import {
+  AreaChart as AreaChartIcon,
+  BarChart as BarChartIcon,
+} from "lucide-react";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@repo/ui/components/ui/chart";
 import { PERIODS_CONFIG, chartConfig } from "@/constants";
+import { RouterOutput, useTRPC } from "@/utils/trpc";
 import CustomChartToolTip from "@/components/CustomChartToolTip";
+import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
 import { usePeriodStore } from "@/hooks/store/periodStore";
+import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/utils/trpc";
+
+type ChartDataType = RouterOutput["codingStats"]["getDaysOfPeriodStats"];
+
+const tooltipLabelFormatter = (
+  _date: string,
+  payload: Payload<string, string>[],
+) => {
+  if (payload.length === 0) return null;
+  const { payload: innerPayload }: { payload?: ChartDataType[number] } =
+    payload[0];
+
+  if (!innerPayload) return null;
+
+  return <div>{innerPayload.originalDate}</div>;
+};
+
+const tooltipFormatter = (value: string, name: string) =>
+  name === "Time"
+    ? CustomChartToolTip(parseInt(value), "var(--color-time)")
+    : null;
 
 const PeriodTimeChart = () => {
   const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);
   const customRange = usePeriodStore((state) => state.customRange);
+  const [isBarChartVisible, setIsBarChartVisible] = useState(true);
+  const handleClick = () => setIsBarChartVisible((prev) => !prev);
+
   const trpc = useTRPC();
 
   const { data: chartData } = useSuspenseQuery(
@@ -36,57 +65,74 @@ const PeriodTimeChart = () => {
 
   return (
     <div className="max-chart:w-full relative z-0 flex min-h-96 w-[45%] flex-col rounded-md border">
+      <Icon
+        Icon={isBarChartVisible ? AreaChartIcon : BarChartIcon}
+        className="absolute -top-12 right-0 z-0"
+        onClick={handleClick}
+      />
+
       <ChartContainer
         config={chartConfig}
         className="h-full flex-1 border-none"
       >
-        <ComposedChart data={chartData}>
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => formatTickForGroupBy(value, groupBy)}
-          />
-          <ChartTooltip
-            content={<ChartTooltipContent labelClassName="font-semibold" />}
-            labelFormatter={(
-              _date: string,
-              payload: Payload<string, string>[],
-            ) => {
-              if (payload.length === 0) return null;
+        {isBarChartVisible ? (
+          <ComposedChart data={chartData}>
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => formatTickForGroupBy(value, groupBy)}
+            />
+            <ChartTooltip
+              content={<ChartTooltipContent labelClassName="font-semibold" />}
+              labelFormatter={tooltipLabelFormatter}
+              formatter={tooltipFormatter}
+            />
 
-              const {
-                payload: innerPayload,
-              }: { payload?: (typeof chartData)[number] } = payload[0];
+            <Bar
+              dataKey="timeSpentBar"
+              fill="var(--color-time)"
+              className="cursor-pointer"
+              name="Time"
+            />
 
-              if (!innerPayload) return null;
-
-              return <div>{innerPayload.originalDate}</div>;
-            }}
-            formatter={(value, name) =>
-              name === "Time"
-                ? CustomChartToolTip(parseInt(value), "var(--color-time)")
-                : null
-            }
-          />
-
-          <Bar
-            dataKey="timeSpentBar"
-            fill="var(--color-time)"
-            className="cursor-pointer"
-            name="Time"
-          />
-
-          <Line
-            dataKey="timeSpentLine"
-            stroke="var(--destructive)"
-            strokeWidth={2}
-            dot={{ r: 4 }}
-            type="monotone"
-            className="cursor-pointer"
-          />
-        </ComposedChart>
+            <Line
+              dataKey="timeSpentLine"
+              stroke="var(--destructive)"
+              strokeWidth={2}
+              dot={{ r: 4 }}
+              type="monotone"
+              className="cursor-pointer"
+            />
+          </ComposedChart>
+        ) : (
+          <AreaChart data={chartData}>
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => formatTickForGroupBy(value, groupBy)}
+            />
+            <ChartTooltip
+              content={<ChartTooltipContent labelClassName="font-semibold" />}
+              labelFormatter={tooltipLabelFormatter}
+              formatter={tooltipFormatter}
+            />
+            <Area
+              dataKey="timeSpentArea"
+              fill="var(--color-time)"
+              className="cursor-pointer"
+              name="Time"
+              stroke="var(--destructive)"
+              strokeWidth={2}
+              type="monotone"
+              fillOpacity={1}
+              dot={{ r: 4 }}
+            />
+          </AreaChart>
+        )}
       </ChartContainer>
     </div>
   );

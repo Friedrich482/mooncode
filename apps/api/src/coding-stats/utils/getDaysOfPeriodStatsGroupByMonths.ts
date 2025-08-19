@@ -40,6 +40,7 @@ const getDaysOfPeriodStatsGroupByMonths = (
     originalDate: month,
     date: month,
     timeSpentBar: timeSpent,
+    timeSpentArea: timeSpent,
     value: formatDuration(timeSpent),
   }));
 };
