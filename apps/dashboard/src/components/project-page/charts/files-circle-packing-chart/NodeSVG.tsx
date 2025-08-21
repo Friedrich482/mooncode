@@ -21,6 +21,9 @@ const NodeSVG = memo(function ({ bubble }: { bubble: Bubble }) {
             stroke={getLanguageColor(bubble.data.key)}
             strokeWidth={2}
             className="cursor-pointer"
+            tabIndex={0}
+            role="img"
+            aria-label={bubble.data.name}
           />
         </TooltipTrigger>
         <TooltipContent>{bubble.data.name}</TooltipContent>
