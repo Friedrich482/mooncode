@@ -1,0 +1,32 @@
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@repo/ui/components/ui/tooltip";
+import { Bubble } from "@/types-schemas";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
+import { memo } from "react";
+
+const NodeSVG = memo(function ({ bubble }: { bubble: Bubble }) {
+  return (
+    <g key={bubble.data.key} transform={`translate(${bubble.x}, ${bubble.y})`}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <circle
+            cx={0}
+            cy={0}
+            r={bubble.r}
+            fill={getLanguageColor(bubble.data.key)}
+            fillOpacity={0.5}
+            stroke={getLanguageColor(bubble.data.key)}
+            strokeWidth={2}
+            className="cursor-pointer"
+          />
+        </TooltipTrigger>
+        <TooltipContent>{bubble.data.name}</TooltipContent>
+      </Tooltip>
+    </g>
+  );
+});
+
+export default NodeSVG;
