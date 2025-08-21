@@ -8,7 +8,11 @@ export const checkCollision = (bubble1: Bubble, bubble2: Bubble) => {
 };
 
 // Handle collision response
-export const handleCollision = (bubble1: Bubble, bubble2: Bubble) => {
+// TODO rename it to handleCollisionBetweenLeaves/Nodes
+export const handleCollisionBetweenSiblings = (
+  bubble1: Bubble,
+  bubble2: Bubble,
+) => {
   const dx = bubble2.x - bubble1.x;
   const dy = bubble2.y - bubble1.y;
   const distance = Math.sqrt(dx * dx + dy * dy);
@@ -29,7 +33,7 @@ export const handleCollision = (bubble1: Bubble, bubble2: Bubble) => {
   if (dvn > 0) return;
 
   // Collision impulse
-  const impulse = (2 * dvn) / 2;
+  const impulse = dvn;
 
   // Update velocities
   bubble1.vx += impulse * nx;
@@ -47,5 +51,38 @@ export const handleCollision = (bubble1: Bubble, bubble2: Bubble) => {
     bubble1.y -= separationY;
     bubble2.x += separationX;
     bubble2.y += separationY;
+  }
+};
+
+export const handleCollisionBetweenNodeAndLeaf = (
+  node: Bubble,
+  leaf: Bubble,
+) => {
+  const dx = leaf.x - node.x;
+  const dy = leaf.y - node.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+
+  if (distance === 0) return;
+
+  // Normalize direction vector (from node center to leaf)
+  const nx = dx / distance;
+  const ny = dy / distance;
+
+  // Maximum allowed distance (leaf must stay inside node)
+  const maxDistance = node.r - leaf.r;
+
+  if (distance > maxDistance) {
+    // Push leaf back inside the boundary
+    leaf.x = node.x + nx * maxDistance;
+    leaf.y = node.y + ny * maxDistance;
+
+    // Calculate velocity component pointing outward
+    const outwardVelocity = leaf.vx * nx + leaf.vy * ny;
+
+    if (outwardVelocity > 0) {
+      // Reflect outward velocity to "bounce" back inside
+      leaf.vx -= 2 * outwardVelocity * nx;
+      leaf.vy -= 2 * outwardVelocity * ny;
+    }
   }
 };

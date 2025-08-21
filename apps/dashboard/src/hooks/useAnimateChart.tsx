@@ -3,11 +3,20 @@ import {
   hierarchy as d3Hierarchy,
   pack,
 } from "d3-hierarchy";
-import { checkCollision, handleCollision } from "@/utils/chartAnimation";
+import {
+  checkCollision,
+  handleCollisionBetweenNodeAndLeaf,
+  handleCollisionBetweenSiblings,
+} from "@/utils/chartAnimation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Tree } from "@/types-schemas";
 
-const useAnimateChart = (data: Tree, width: number, height: number) => {
+const useAnimateChart = (
+  data: Tree,
+  width: number,
+  height: number,
+  isGrouped: boolean,
+) => {
   const [dataSet, setDataSet] = useState<HierarchyCircularNode<Tree>[]>([]);
 
   const maxValue = useMemo(
@@ -107,7 +116,30 @@ const useAnimateChart = (data: Tree, width: number, height: number) => {
       for (let i = 0; i < newBubbles.length; i++) {
         for (let j = i + 1; j < newBubbles.length; j++) {
           if (checkCollision(newBubbles[i], newBubbles[j])) {
-            handleCollision(newBubbles[i], newBubbles[j]);
+            if (
+              !isGrouped ||
+              // in this case they are grouped
+              // if the two bubbles are both nodes or leaves (i.e, if either both are languages or both are files)
+              newBubbles[i].depth === newBubbles[j].depth
+            ) {
+              handleCollisionBetweenSiblings(newBubbles[i], newBubbles[j]);
+              continue;
+            }
+
+            // nodes have a depth of 1 meanwhile leaves has depth 2
+            else if (
+              newBubbles[i].depth < newBubbles[j].depth &&
+              newBubbles[j].parent?.data.key === newBubbles[i].data.key
+            ) {
+              handleCollisionBetweenNodeAndLeaf(newBubbles[i], newBubbles[j]);
+              continue;
+            } else if (
+              newBubbles[i].depth > newBubbles[j].depth &&
+              newBubbles[i].parent?.data.key === newBubbles[j].data.key
+            ) {
+              handleCollisionBetweenNodeAndLeaf(newBubbles[j], newBubbles[i]);
+              continue;
+            }
           }
         }
       }
