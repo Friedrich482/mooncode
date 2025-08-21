@@ -58,19 +58,15 @@ export const CircularPacking = ({
       />
       <svg width={width} height={height} className="-translate-x-3">
         {!isGrouped ? (
-          bubbles.map((bubble, index) => {
-            if (!isGrouped) {
-              return (
-                <LeafSVG
-                  bubble={bubble}
-                  index={index}
-                  handleBubbleClick={handleBubbleClick}
-                  maxValue={maxValue}
-                  key={bubble.data.key}
-                />
-              );
-            }
-          })
+          bubbles.map((bubble, index) => (
+            <LeafSVG
+              bubble={bubble}
+              index={index}
+              handleBubbleClick={handleBubbleClick}
+              maxValue={maxValue}
+              key={bubble.data.key}
+            />
+          ))
         ) : (
           <>
             {nodesBubbles.map((node) => (
