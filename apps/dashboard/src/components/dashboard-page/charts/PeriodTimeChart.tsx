@@ -95,6 +95,7 @@ const PeriodTimeChart = () => {
               fill="var(--color-time)"
               className="cursor-pointer"
               name="Time"
+              key={`${chartData[0].originalDate}-${chartData.at(-1)?.originalDate}`}
             />
 
             <Line
@@ -130,6 +131,7 @@ const PeriodTimeChart = () => {
               type="monotone"
               fillOpacity={1}
               dot={{ r: 4 }}
+              key={`${chartData[0].originalDate}-${chartData.at(-1)?.originalDate}`}
             />
           </AreaChart>
         )}

@@ -47,7 +47,7 @@ const ProjectLanguagesTimeOnPeriodChart = lazy(
   () => import("./charts/ProjectLanguagesTimeOnPeriodChart"),
 );
 const FilesCirclePackingChart = lazy(
-  () => import("./charts/FilesCirclePackingChart"),
+  () => import("./charts/files-circle-packing-chart/FilesCirclePackingChart"),
 );
 
 const Project = () => {
