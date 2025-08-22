@@ -7,6 +7,7 @@ import {
   RegisterUserDtoType,
   SignInUserDtoType,
 } from "@repo/common/types";
+import { HandleGoogleCallBacKDtoType } from "./auth.dto";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Response } from "express";
@@ -141,5 +142,11 @@ export class AuthService {
       secure: true,
       sameSite: "none",
     });
+  }
+
+  async handleGoogleCallBack(
+    handleGoogleCallBacKDto: HandleGoogleCallBacKDtoType,
+  ) {
+    return handleGoogleCallBacKDto;
   }
 }

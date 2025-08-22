@@ -22,6 +22,20 @@
       "when": 1752257675865,
       "tag": "0002_known_reaper",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1755868620569,
+      "tag": "0003_first_pepper_potts",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1755868730369,
+      "tag": "0004_groovy_weapon_omega",
+      "breakpoints": true
     }
   ]
 }
