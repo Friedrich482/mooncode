@@ -17,6 +17,15 @@
 
 This project is the monorepo for MoonCode. This is an application to track and get a detailled summary about your coding time, languages, files across any period.
 
+## Features 🚀
+
+- Summary of coding time per day, week, month, year,... and any custom period
+- Support for most languages/files extensions
+- Breakdown of coding activity per project
+- Local dashboard to visualize your data, with extensive filters for a more detailed summary
+- All parts (vscode-extension, api, dashboard) of the project can be self-hosted
+- Extension Works offline 🔌
+
 ### Apps and Packages
 
 - [`api`](./apps/api): a [Nestjs](https://nestjs.com/) application that powers the `extension` and the `dashboard`
