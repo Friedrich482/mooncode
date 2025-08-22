@@ -1,4 +1,12 @@
-import { Area, AreaChart, Bar, ComposedChart, Line, XAxis } from "recharts";
+import {
+  Area,
+  AreaChart,
+  Bar,
+  Cell,
+  ComposedChart,
+  Line,
+  XAxis,
+} from "recharts";
 import {
   AreaChart as AreaChartIcon,
   BarChart as BarChartIcon,
@@ -96,7 +104,15 @@ const PeriodTimeChart = () => {
               className="cursor-pointer"
               name="Time"
               key={`${chartData[0].originalDate}-${chartData.at(-1)?.originalDate}`}
-            />
+            >
+              {chartData.map((entry) => (
+                <Cell
+                  min={0}
+                  key={entry.originalDate}
+                  className="cursor-pointer"
+                />
+              ))}
+            </Bar>
 
             <Line
               dataKey="timeSpentLine"
@@ -105,7 +121,15 @@ const PeriodTimeChart = () => {
               dot={{ r: 4 }}
               type="monotone"
               className="cursor-pointer"
-            />
+            >
+              {chartData.map((entry) => (
+                <Cell
+                  min={0}
+                  key={entry.originalDate}
+                  className="cursor-pointer"
+                />
+              ))}
+            </Line>
           </ComposedChart>
         ) : (
           <AreaChart data={chartData}>
@@ -132,7 +156,15 @@ const PeriodTimeChart = () => {
               fillOpacity={1}
               dot={{ r: 4 }}
               key={`${chartData[0].originalDate}-${chartData.at(-1)?.originalDate}`}
-            />
+            >
+              {chartData.map((entry) => (
+                <Cell
+                  min={0}
+                  key={entry.originalDate}
+                  className="cursor-pointer"
+                />
+              ))}
+            </Area>
           </AreaChart>
         )}
       </ChartContainer>

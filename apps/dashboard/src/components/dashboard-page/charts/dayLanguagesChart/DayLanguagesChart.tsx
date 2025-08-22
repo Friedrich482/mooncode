@@ -13,6 +13,7 @@ import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
 import getNextDayDate from "@/utils/getNextDayDate";
 import getPrevDayDate from "@/utils/getPreviousDayDate";
+import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 
@@ -34,7 +35,20 @@ const DayLanguagesChart = () => {
     }),
   );
 
-  const { finalData, formattedTotalTimeSpent, dateLabel: displayDate } = data;
+  const displayDate =
+    dateString === getTodaysLocalDate()
+      ? "Today"
+      : // yesterday's date
+        dateString ===
+          new Date(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate() - 1,
+          ).toLocaleDateString(DATE_LOCALE)
+        ? "Yesterday"
+        : new Date(dateString).toDateString();
+
+  const { finalData, formattedTotalTimeSpent } = data;
 
   const chartData = finalData.map((entry) => ({
     ...entry,
@@ -43,7 +57,7 @@ const DayLanguagesChart = () => {
   }));
 
   return (
-    <div className="flex min-h-96 w-[45%] flex-col gap-y-2 rounded-md border py-2 max-chart:w-full">
+    <div className="max-chart:w-full flex min-h-96 w-[45%] flex-col gap-y-2 rounded-md border py-2">
       <ChartTitle
         displayDate={displayDate}
         formattedTotalTimeSpent={formattedTotalTimeSpent}
