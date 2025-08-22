@@ -84,7 +84,10 @@ export class TrpcService {
       );
       return payload;
     } catch (error) {
-      console.error(error);
+      if (error instanceof Error && error.name !== "JsonWebTokenError") {
+        console.error("Unexpected Error:", error);
+      }
+
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "An error occurred",
