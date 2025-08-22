@@ -6,7 +6,6 @@ import {
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
 } from "./coding-stats.dto";
-import { DATE_LOCALE } from "@repo/common/constants";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { Injectable } from "@nestjs/common";
 import { LanguagesService } from "src/languages/languages.service";
@@ -21,7 +20,6 @@ import getGeneralStatsOnPeriodGroupByWeeks from "./utils/getGeneralStatsOnPeriod
 import getMostUsedLanguageOnPeriod from "./utils/getMostUsedLanguageOnPeriod";
 import getPeriodLanguagesGroupByMonths from "./utils/getPeriodLanguagesGroupByMonths";
 import getPeriodLanguagesGroupByWeeks from "src/coding-stats/utils/getPeriodLanguagesGroupByWeeks";
-import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import getWeekDayName from "src/utils/getWeekdayName";
 
 @Injectable()
@@ -182,21 +180,6 @@ export class CodingStatsDashboardService {
   ) {
     const { userId, dateString } = getDailyStatsForChartDto;
 
-    const providedDate = new Date(dateString);
-
-    const dateLabel =
-      dateString === getTodaysLocalDate()
-        ? "Today"
-        : // yesterday's date
-          dateString ===
-            new Date(
-              new Date().getFullYear(),
-              new Date().getMonth(),
-              new Date().getDate() - 1,
-            ).toLocaleDateString(DATE_LOCALE)
-          ? "Yesterday"
-          : providedDate.toDateString();
-
     const dayData = await this.dailyDataService.findOneDailyData({
       userId,
       date: dateString,
@@ -206,7 +189,6 @@ export class CodingStatsDashboardService {
       return {
         formattedTotalTimeSpent: formatDuration(0),
         finalData: [],
-        dateLabel,
       };
 
     const dayLanguagesTime = await this.languagesService.findAllLanguages({
@@ -229,7 +211,6 @@ export class CodingStatsDashboardService {
     return {
       finalData,
       formattedTotalTimeSpent,
-      dateLabel,
     };
   }
 
