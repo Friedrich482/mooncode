@@ -36,6 +36,13 @@
       "when": 1755868730369,
       "tag": "0004_groovy_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1755939811707,
+      "tag": "0005_legal_tattoo",
+      "breakpoints": true
     }
   ]
 }

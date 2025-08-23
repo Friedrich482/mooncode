@@ -54,3 +54,13 @@ export const authRouteLoader = async () => {
     return null;
   }
 };
+
+export const googleAuthLoader = () => {
+  const AUTH_GOOGLE_URL = import.meta.env.VITE_AUTH_GOOGLE_URL;
+
+  const origin = window.location.origin;
+
+  const authUrl = `${AUTH_GOOGLE_URL}?state=${encodeURIComponent(origin)}`;
+
+  window.location.href = authUrl;
+};

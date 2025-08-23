@@ -17,6 +17,7 @@ import Logo from "../../layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
 import { SignInUserDto } from "@repo/common/schemas";
 import { SignInUserDtoType } from "@repo/common/types";
+import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
 import fetchJWTToken from "@repo/common/fetchJWTToken";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useEffect } from "react";
@@ -29,6 +30,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
   usePageTitle("Login");
+
+  useEffect(() => {
+    displayAuthErrorSonner();
+  }, []);
 
   // remove the padding-top on the root div
   useEffect(() => {
@@ -107,6 +112,9 @@ const LoginForm = () => {
               <Logo className="size-12" />
               Login
             </h2>
+            <Button variant="link">
+              <Link to="/auth/google">Login with Google</Link>
+            </Button>
             <FormField
               control={form.control}
               name="email"

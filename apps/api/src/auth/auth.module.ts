@@ -1,3 +1,4 @@
+import { AuthController } from "./auth.controller";
 import { AuthRouter } from "./auth.router";
 import { AuthService } from "./auth.service";
 import { ConfigModule } from "@nestjs/config";
@@ -6,7 +7,6 @@ import { EnvService } from "src/env/env.service";
 import { JwtModule } from "@nestjs/jwt";
 import { Module } from "@nestjs/common";
 import { UsersModule } from "src/users/users.module";
-import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -22,7 +22,7 @@ import { AuthController } from './auth.controller';
       inject: [EnvService],
     }),
   ],
-  providers: [AuthService, AuthRouter],
+  providers: [AuthService, AuthRouter, EnvService],
   exports: [AuthService, AuthRouter],
   controllers: [AuthController],
 })

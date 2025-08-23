@@ -8,5 +8,7 @@ export const COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE = "Auth cookie/token missing";
 
 export const DASHBOARD_PORT = 4208;
 export const DASHBOARD_PREVIEW_PORT = 4173;
+export const DASHBOARD_DEFAULT_URL = `http://localhost:${DASHBOARD_PORT}`;
+export const DASHBOARD_PREVIEW_URL = `http://localhost:${DASHBOARD_PREVIEW_PORT}`;
 
 export const DATE_LOCALE = "sv-SE";

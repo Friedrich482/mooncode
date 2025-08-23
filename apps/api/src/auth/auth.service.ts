@@ -1,4 +1,9 @@
 import {
+  GoogleUserSchema,
+  HandleGoogleCallBacKDtoType,
+  RedirectToGoogleDtoType,
+} from "./auth.dto";
+import {
   INCORRECT_PASSWORD_MESSAGE,
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
@@ -7,22 +12,27 @@ import {
   RegisterUserDtoType,
   SignInUserDtoType,
 } from "@repo/common/types";
-import { HandleGoogleCallBacKDtoType } from "./auth.dto";
+import { EnvService } from "src/env/env.service";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { OAuth2Client } from "google-auth-library";
 import { Response } from "express";
 import { TRPCError } from "@trpc/server";
 import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
 import { compare } from "bcrypt";
+import handleErrorResponse from "./utils/handleErrorResponse";
+import validateStateQueryParam from "./utils/validateStateQueryParam";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
+    private readonly envService: EnvService,
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
+  private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
   async signIn(signInDto: SignInUserDtoType, response: Response) {
     const { password: pass, email, callbackUrl } = signInDto;
@@ -52,7 +62,7 @@ export class AuthService {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 28 * 24 * 60 * 60 * 1000, // 28 days
+      maxAge: this.COOKIE_MAX_AGE,
     });
 
     if (callbackUrl) {
@@ -88,7 +98,7 @@ export class AuthService {
       httpOnly: true,
       secure: true,
       sameSite: "none",
-      maxAge: 28 * 24 * 60 * 60 * 1000,
+      maxAge: this.COOKIE_MAX_AGE,
     });
 
     if (callbackUrl) {
@@ -144,9 +154,139 @@ export class AuthService {
     });
   }
 
+  async redirectToGoogle(redirectToGoogleDto: RedirectToGoogleDtoType) {
+    const { state, response } = redirectToGoogleDto;
+    const googleAuthUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${this.envService.get("CLIENT_ID")}&` +
+      `redirect_uri=${encodeURIComponent(this.envService.get("GOOGLE_REDIRECT_URI"))}&` +
+      `response_type=code&` +
+      `scope=openid email profile&` +
+      `state=${encodeURIComponent(state)}`;
+
+    response.redirect(googleAuthUrl);
+  }
+
   async handleGoogleCallBack(
     handleGoogleCallBacKDto: HandleGoogleCallBacKDtoType,
   ) {
-    return handleGoogleCallBacKDto;
+    const { type, request, response } = handleGoogleCallBacKDto;
+    const returnUrl = validateStateQueryParam(request);
+
+    const url = new URL(returnUrl);
+    const errorUrl = new URL(`${returnUrl}/login`);
+
+    if (type === "error") {
+      handleErrorResponse({
+        url: errorUrl,
+        error: handleGoogleCallBacKDto.error,
+        errorDescription:
+          "Something went wrong during the authentication process. Please try again",
+        response,
+      });
+
+      return;
+    }
+
+    const code = handleGoogleCallBacKDto.code;
+
+    const client = new OAuth2Client({
+      clientId: this.envService.get("CLIENT_ID"),
+      clientSecret: this.envService.get("CLIENT_SECRET"),
+      redirectUri: this.envService.get("GOOGLE_REDIRECT_URI"),
+    });
+
+    try {
+      const {
+        tokens: { access_token: accessToken },
+      } = await client.getToken(code);
+
+      if (!accessToken) {
+        handleErrorResponse({
+          url: errorUrl,
+          error: "No access token received from Google",
+          errorDescription:
+            "Something went wrong during the authentication process. Please try again",
+          response,
+        });
+
+        return;
+      }
+
+      const googleRes = await fetch(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      );
+      if (!googleRes.ok) {
+        throw new Error("Failed to fetch Google user info");
+      }
+
+      const body = await googleRes.json();
+
+      const googleUser = GoogleUserSchema.parse(body);
+      const existingUser = await this.usersService.findByGoogleEmail({
+        googleEmail: googleUser.email,
+      });
+
+      let userId: string;
+
+      if (existingUser) {
+        await this.usersService.update({
+          id: existingUser.id,
+          googleId: googleUser.id,
+          googleEmail: googleUser.email,
+          authMethod: "google",
+        });
+
+        userId = existingUser.id;
+      } else {
+        const newUser = await this.usersService.createGoogleUser({
+          email: googleUser.email,
+          googleId: googleUser.id,
+          profilePicture: googleUser.picture,
+          googleEmail: googleUser.email,
+          username: googleUser.name,
+          authMethod: "google",
+        });
+
+        userId = newUser.id;
+      }
+
+      const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: userId };
+      const token = await this.jwtService.signAsync(payload);
+
+      response.cookie(this.AUTH_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: this.COOKIE_MAX_AGE,
+      });
+      response.redirect(url.toString());
+
+      return {
+        access_token: token,
+      };
+    } catch (error) {
+      console.error("Google OAuth error:", error);
+      if (error instanceof TRPCError) {
+        handleErrorResponse({
+          url: errorUrl,
+          error: error.message,
+          errorDescription: error.cause?.message as string,
+          response,
+        });
+      }
+      if (error instanceof Error) {
+        handleErrorResponse({
+          url: errorUrl,
+          error: error.name,
+          errorDescription: error.message,
+          response,
+        });
+      }
+      return;
+    }
   }
 }

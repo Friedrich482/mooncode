@@ -6,15 +6,18 @@ import {
   NotFoundException,
 } from "@nestjs/common";
 import {
+  CreateGoogleUserDtoType,
   CreateUserDtoType,
   FindByEmailDtoType,
+  FindByGoogleEmailDtoType,
   FindByIdDtoType,
   UpdateUserDtoType,
 } from "./users.dto";
+import { and, eq, or } from "drizzle-orm";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
+import { randomBytes } from "crypto";
 import { users } from "src/drizzle/schema/users";
 
 @Injectable()
@@ -71,6 +74,65 @@ export class UsersService {
       });
     return userCreated;
   }
+
+  async createGoogleUser(createGoogleUser: CreateGoogleUserDtoType) {
+    const { googleEmail, googleId, username, profilePicture, email } =
+      createGoogleUser;
+
+    // check if a user with the email already exists
+    const [existingUserWithSameGoogleEmail] = await this.db
+      .select()
+      .from(users)
+      .where(
+        and(
+          or(eq(users.googleEmail, googleEmail), eq(users.email, email)),
+          eq(users.googleId, googleId),
+        ),
+      )
+      .limit(1);
+
+    if (existingUserWithSameGoogleEmail) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "This google email is already used",
+      });
+    }
+
+    const [existingUserWithSameUsername] = await this.db
+      .select()
+      .from(users)
+      .where(eq(users.username, username))
+      .limit(1);
+
+    if (existingUserWithSameUsername) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "This google username already exists",
+      });
+    }
+
+    const randomPassword = randomBytes(32).toString("hex");
+    const hashedPassword = await bcrypt.hash(randomPassword, this.saltRounds);
+
+    const [userCreated] = await this.db
+      .insert(users)
+      .values({
+        username,
+        email: googleEmail,
+        password: hashedPassword,
+        profilePicture,
+        googleId: googleId,
+        googleEmail,
+        authMethod: "google",
+      })
+      .returning({
+        id: users.id,
+        email: users.email,
+        username: users.username,
+      });
+    return userCreated;
+  }
+
   async findOne(findByIdDto: FindByIdDtoType) {
     const { id } = findByIdDto;
 
@@ -107,6 +169,22 @@ export class UsersService {
         code: "NOT_FOUND",
         message: "User not found",
       });
+    return user;
+  }
+
+  async findByGoogleEmail(findByGoogleEmailDto: FindByGoogleEmailDtoType) {
+    const { googleEmail } = findByGoogleEmailDto;
+
+    const [user] = await this.db
+      .select({
+        googleEmail: users.googleEmail,
+        username: users.username,
+        id: users.id,
+      })
+      .from(users)
+      .where(eq(users.googleEmail, googleEmail))
+      .limit(1);
+
     return user;
   }
 

@@ -7,6 +7,7 @@ import { Outlet } from "react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TRPCProvider } from "./utils/trpc";
 import { ThemeProvider } from "./components/themeProvider";
+import { Toaster } from "@repo/ui/components/ui/sonner";
 import superjson from "superjson";
 import { useState } from "react";
 
@@ -90,6 +91,7 @@ function App() {
           <Outlet />
         </TRPCProvider>
       </QueryClientProvider>
+      <Toaster />
     </ThemeProvider>
   );
 }

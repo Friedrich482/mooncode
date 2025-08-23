@@ -37,6 +37,7 @@
     "cookie-parser": "^1.4.7",
     "date-fns": "4.1.0",
     "drizzle-orm": "^0.44.4",
+    "google-auth-library": "^10.2.1",
     "pg": "^8.16.3",
     "reflect-metadata": "^0.2.2",
     "ulid": "^3.0.1",
