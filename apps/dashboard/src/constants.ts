@@ -15,7 +15,7 @@ import { ChartConfig } from "@repo/ui/components/ui/chart";
 import { DATE_LOCALE } from "@repo/common/constants";
 import { FixedArray } from "./types-schemas";
 import { GroupBy } from "@repo/common/types";
-import { Theme } from "@/components/themeProvider";
+import { Theme } from "@/providers/themeProvider";
 
 export const THEME_DROPDOWN_ITEMS: {
   text: string;

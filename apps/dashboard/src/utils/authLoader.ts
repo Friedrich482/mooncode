@@ -55,12 +55,24 @@ export const authRouteLoader = async () => {
   }
 };
 
-export const googleAuthLoader = () => {
-  const AUTH_GOOGLE_URL = import.meta.env.VITE_AUTH_GOOGLE_URL;
+export const googleAuthLoader = async () => {
+  try {
+    const response = await fetch(`${API_URL}/auth.checkAuthStatus`, {
+      credentials: "include",
+    });
 
-  const origin = window.location.origin;
+    if (response.ok) {
+      return redirect("/dashboard");
+    }
 
-  const authUrl = `${AUTH_GOOGLE_URL}?state=${encodeURIComponent(origin)}`;
+    const AUTH_GOOGLE_URL = import.meta.env.VITE_AUTH_GOOGLE_URL;
 
-  window.location.href = authUrl;
+    const origin = window.location.origin;
+
+    const authUrl = `${AUTH_GOOGLE_URL}?state=${encodeURIComponent(origin)}`;
+
+    window.location.href = authUrl;
+  } catch {
+    return null;
+  }
 };

@@ -12,7 +12,9 @@ import {
 } from "@repo/ui/components/ui/form";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@repo/ui/components/ui/button";
+import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
+import LoginMethodSeparator from "../LoginMethodSeparator";
 import Logo from "@/components/layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
 import { RegisterUserDto } from "@repo/common/schemas";
@@ -104,10 +106,13 @@ const RegisterForm = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex w-[90%] flex-col gap-4 p-2"
           >
-            <h2 className="flex flex-col items-center justify-center gap-8 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
+            <h2 className="flex flex-col items-center justify-center gap-2 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
               <Logo className="size-12" />
               Register
             </h2>
+            <GoogleLoginButton />
+            <LoginMethodSeparator />
+
             <FormField
               control={form.control}
               name="email"
