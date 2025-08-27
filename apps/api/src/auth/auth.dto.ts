@@ -6,7 +6,7 @@ export const HandleGoogleQueryDto = z.union([
   z.object({ error: z.string().min(1) }),
 ]);
 
-export const HandleGoogleCallBacKDto = z.discriminatedUnion("type", [
+export const HandleGoogleCallBackDto = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("success"),
     code: z.string().min(1),
@@ -34,7 +34,7 @@ export const GoogleUserSchema = z.object({
 export type HandleGoogleQueryDtoType = z.infer<typeof HandleGoogleQueryDto>;
 
 export type HandleGoogleCallBacKDtoType = z.infer<
-  typeof HandleGoogleCallBacKDto
+  typeof HandleGoogleCallBackDto
 > & { response: Response; request: Request };
 
 export type RedirectToGoogleDtoType = z.infer<typeof RedirectToGoogleDto> & {

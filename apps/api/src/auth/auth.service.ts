@@ -168,9 +168,9 @@ export class AuthService {
   }
 
   async handleGoogleCallBack(
-    handleGoogleCallBacKDto: HandleGoogleCallBacKDtoType,
+    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
   ) {
-    const { type, request, response } = handleGoogleCallBacKDto;
+    const { type, request, response } = handleGoogleCallBackDto;
     const returnUrl = validateStateQueryParam(request);
 
     const url = new URL(returnUrl);
@@ -179,7 +179,7 @@ export class AuthService {
     if (type === "error") {
       handleErrorResponse({
         url: errorUrl,
-        error: handleGoogleCallBacKDto.error,
+        error: handleGoogleCallBackDto.error,
         errorDescription:
           "Something went wrong during the authentication process. Please try again",
         response,
@@ -188,7 +188,7 @@ export class AuthService {
       return;
     }
 
-    const code = handleGoogleCallBacKDto.code;
+    const code = handleGoogleCallBackDto.code;
 
     const client = new OAuth2Client({
       clientId: this.envService.get("CLIENT_ID"),
