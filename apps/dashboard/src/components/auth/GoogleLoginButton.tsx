@@ -2,11 +2,11 @@ import { Button } from "@repo/ui/components/ui/button";
 import Google from "@/assets/google.svg?react";
 import { Link } from "react-router";
 
-const GoogleLoginButton = () => {
+const GoogleLoginButton = ({ callbackUrl }: { callbackUrl: string | null }) => {
   return (
     <Button variant="ghost" asChild className="rounded-lg border">
       <Link
-        to="/auth/google"
+        to={`/auth/google${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}` : ""}`}
         className="flex items-center gap-2"
         aria-label="Continue with Google"
       >

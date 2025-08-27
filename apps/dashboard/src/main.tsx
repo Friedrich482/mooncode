@@ -3,6 +3,7 @@ import {
   authRouteLoader,
   googleAuthLoader,
   protectedRouteLoader,
+  redirectToVSCodeAfterGoogleAuthLoader,
 } from "./utils/authLoader";
 import App from "./App";
 import Dashboard from "./components/dashboard-page/Dashboard";
@@ -26,6 +27,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Root />,
+            loader: redirectToVSCodeAfterGoogleAuthLoader,
           },
           {
             path: "dashboard",

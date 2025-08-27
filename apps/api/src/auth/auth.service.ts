@@ -22,6 +22,7 @@ import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
 import { compare } from "bcrypt";
 import handleErrorResponse from "./utils/handleErrorResponse";
+import validateExtensionCallbackUrl from "./utils/validateExtensionCallbackUrl";
 import validateStateQueryParam from "./utils/validateStateQueryParam";
 
 @Injectable()
@@ -155,14 +156,15 @@ export class AuthService {
   }
 
   async redirectToGoogle(redirectToGoogleDto: RedirectToGoogleDtoType) {
-    const { state, response } = redirectToGoogleDto;
+    const { state, response, callback } = redirectToGoogleDto;
+
     const googleAuthUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
       `client_id=${this.envService.get("GOOGLE_CLIENT_ID")}&` +
       `redirect_uri=${encodeURIComponent(this.envService.get("GOOGLE_REDIRECT_URI"))}&` +
       `response_type=code&` +
       `scope=openid email profile&` +
-      `state=${encodeURIComponent(state)}`;
+      `state=${encodeURIComponent(JSON.stringify({ state, callback }))}`;
 
     response.redirect(googleAuthUrl);
   }
@@ -171,7 +173,9 @@ export class AuthService {
     handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
   ) {
     const { type, request, response } = handleGoogleCallBackDto;
+
     const returnUrl = validateStateQueryParam(request);
+    const callbackUrl = validateExtensionCallbackUrl(request);
 
     const url = new URL(returnUrl);
     const errorUrl = new URL(`${returnUrl}/login`);
@@ -230,17 +234,18 @@ export class AuthService {
         googleEmail: googleUser.email,
       });
 
-      let userId: string;
+      const user: { userId: string; email: string } = { userId: "", email: "" };
 
       if (existingUser) {
-        await this.usersService.update({
+        const [{ email }] = await this.usersService.update({
           id: existingUser.id,
           googleId: googleUser.id,
           googleEmail: googleUser.email,
           authMethod: "google",
         });
 
-        userId = existingUser.id;
+        user.userId = existingUser.id;
+        user.email = email;
       } else {
         const newUser = await this.usersService.createGoogleUser({
           email: googleUser.email,
@@ -251,10 +256,11 @@ export class AuthService {
           authMethod: "google",
         });
 
-        userId = newUser.id;
+        user.userId = newUser.id;
+        user.email = newUser.email;
       }
 
-      const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: userId };
+      const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.userId };
       const token = await this.jwtService.signAsync(payload);
 
       response.cookie(this.AUTH_COOKIE_NAME, token, {
@@ -263,11 +269,10 @@ export class AuthService {
         sameSite: "none",
         maxAge: this.COOKIE_MAX_AGE,
       });
-      response.redirect(url.toString());
 
-      return {
-        access_token: token,
-      };
+      response.redirect(
+        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString(),
+      );
     } catch (error) {
       console.error("Google OAuth error:", error);
       if (error instanceof TRPCError) {

@@ -114,7 +114,7 @@ const LoginForm = () => {
               <Logo className="size-12" />
               Login
             </h2>
-            <GoogleLoginButton />
+            <GoogleLoginButton callbackUrl={callbackUrl} />
             <LoginMethodSeparator />
             <FormField
               control={form.control}

@@ -18,7 +18,8 @@ export const HandleGoogleCallBackDto = z.discriminatedUnion("type", [
 ]);
 
 export const RedirectToGoogleDto = z.object({
-  state: z.string().min(1),
+  state: z.url(),
+  callback: z.url().optional(),
 });
 
 export const GoogleUserSchema = z.object({
