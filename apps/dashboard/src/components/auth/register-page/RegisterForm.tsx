@@ -68,8 +68,8 @@ const RegisterForm = () => {
         callbackUrl,
       });
 
-      if (callbackUrl) {
-        window.location.href = `${callbackUrl}&token=${token}&email=${encodeURIComponent(values.email)}`;
+      if (callbackUrl && token) {
+        window.location.href = `${callbackUrl}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`;
       }
 
       await queryClient.invalidateQueries({
@@ -110,7 +110,7 @@ const RegisterForm = () => {
               <Logo className="size-12" />
               Register
             </h2>
-            <GoogleLoginButton />
+            <GoogleLoginButton callbackUrl={callbackUrl} />
             <LoginMethodSeparator />
 
             <FormField

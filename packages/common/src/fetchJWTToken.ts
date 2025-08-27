@@ -1,7 +1,6 @@
 import { TrpcAuthError } from "./types";
 import { loginResponseSchema } from "./schemas";
 
-// TODO come back to properly type the return type of this function
 const fetchJWTToken = async (
   endpointURL: string,
   body: {
@@ -59,7 +58,6 @@ const fetchJWTToken = async (
       );
     }
   }
-  return data;
 };
 
 export default fetchJWTToken;

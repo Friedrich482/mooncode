@@ -73,8 +73,8 @@ const LoginForm = () => {
         callbackUrl,
       });
 
-      if (callbackUrl) {
-        window.location.href = `${callbackUrl}&token=${token}&email=${encodeURIComponent(values.email)}`;
+      if (callbackUrl && token) {
+        window.location.href = `${callbackUrl}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`;
       }
 
       await queryClient.invalidateQueries({

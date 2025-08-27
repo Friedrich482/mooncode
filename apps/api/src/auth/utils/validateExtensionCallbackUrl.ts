@@ -3,9 +3,17 @@ import { Request } from "express";
 
 const validateExtensionCallbackUrl = (request: Request) => {
   try {
-    const callbackParam = RedirectToGoogleDto.parse(
-      JSON.parse(decodeURIComponent(request.query["state"] as string)),
-    ).callback;
+    const rawState = request.query["state"];
+    if (typeof rawState !== "string" || rawState.length > 4096) {
+      return undefined;
+    }
+
+    const parsed = RedirectToGoogleDto.safeParse(
+      JSON.parse(decodeURIComponent(rawState)),
+    );
+
+    if (!parsed.success) return undefined;
+    const callbackParam = parsed.data.callback;
 
     if (
       callbackParam &&

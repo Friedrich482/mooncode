@@ -8,7 +8,6 @@ export const checkCollision = (bubble1: Bubble, bubble2: Bubble) => {
 };
 
 // Handle collision response
-// TODO rename it to handleCollisionBetweenLeaves/Nodes
 export const handleCollisionBetweenSiblings = (
   bubble1: Bubble,
   bubble2: Bubble,
