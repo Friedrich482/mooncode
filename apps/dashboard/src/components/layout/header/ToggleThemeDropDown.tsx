@@ -8,7 +8,7 @@ import { Moon, Sun } from "lucide-react";
 import Icon from "@repo/ui/components/ui/Icon";
 import { THEME_DROPDOWN_ITEMS } from "@/constants";
 import { cn } from "@repo/ui/lib/utils";
-import { useTheme } from "@/components/themeProvider";
+import { useTheme } from "@/providers/themeProvider";
 
 const ToggleThemeDropDown = () => {
   const { theme: providedTheme, setTheme, resolvedTheme } = useTheme();
@@ -22,7 +22,7 @@ const ToggleThemeDropDown = () => {
           <DropdownMenuItem
             className={cn(
               "cursor-pointer rounded-md py-1 text-base",
-              theme === providedTheme && "border-[1px] border-primary/60",
+              theme === providedTheme && "border-primary/60 border-[1px]",
             )}
             key={text}
             onClick={() => setTheme(theme)}

@@ -12,11 +12,14 @@ import {
 } from "@repo/common/constants";
 import { Link, useNavigate } from "react-router";
 import { Button } from "@repo/ui/components/ui/button";
+import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
+import LoginMethodSeparator from "../LoginMethodSeparator";
 import Logo from "../../layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
 import { SignInUserDto } from "@repo/common/schemas";
 import { SignInUserDtoType } from "@repo/common/types";
+import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
 import fetchJWTToken from "@repo/common/fetchJWTToken";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useEffect } from "react";
@@ -29,6 +32,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
   usePageTitle("Login");
+
+  useEffect(() => {
+    displayAuthErrorSonner();
+  }, []);
 
   // remove the padding-top on the root div
   useEffect(() => {
@@ -66,8 +73,8 @@ const LoginForm = () => {
         callbackUrl,
       });
 
-      if (callbackUrl) {
-        window.location.href = `${callbackUrl}&token=${token}&email=${encodeURIComponent(values.email)}`;
+      if (callbackUrl && token) {
+        window.location.href = `${callbackUrl}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`;
       }
 
       await queryClient.invalidateQueries({
@@ -101,12 +108,14 @@ const LoginForm = () => {
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-[90%] flex-col gap-8 p-2"
+            className="flex w-[90%] flex-col gap-5 p-2"
           >
             <h2 className="flex flex-col items-center justify-center gap-8 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
               <Logo className="size-12" />
               Login
             </h2>
+            <GoogleLoginButton callbackUrl={callbackUrl} />
+            <LoginMethodSeparator />
             <FormField
               control={form.control}
               name="email"

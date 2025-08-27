@@ -58,7 +58,6 @@ const fetchJWTToken = async (
       );
     }
   }
-  return data;
 };
 
 export default fetchJWTToken;

@@ -1,5 +1,10 @@
 import { RouterProvider, createBrowserRouter } from "react-router";
-import { authRouteLoader, protectedRouteLoader } from "./utils/authLoader";
+import {
+  authRouteLoader,
+  googleAuthLoader,
+  protectedRouteLoader,
+  redirectToVSCodeAfterGoogleAuthLoader,
+} from "./utils/authLoader";
 import App from "./App";
 import Dashboard from "./components/dashboard-page/Dashboard";
 import Layout from "./components/layout/Layout";
@@ -22,6 +27,7 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Root />,
+            loader: redirectToVSCodeAfterGoogleAuthLoader,
           },
           {
             path: "dashboard",
@@ -54,6 +60,11 @@ const router = createBrowserRouter([
             path: "register",
             element: <RegisterForm />,
             loader: authRouteLoader,
+          },
+          {
+            path: "auth/google",
+            element: null,
+            loader: googleAuthLoader,
           },
         ],
       },

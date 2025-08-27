@@ -2,7 +2,7 @@
   "name": "mooncode",
   "displayName": "MoonCode",
   "description": "MoonCode is an extension that tracks your coding time (like WakaTime) and gives you a detailed summary about all your coding statistics. With MoonCode, developers get the full history of their coding activity.",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "icon": "./public/moon.png",
   "publisher": "Friedrich482",
   "author": {
@@ -88,10 +88,6 @@
         },
         {
           "command": "MoonCode.showInitialFilesData",
-          "when": "MoonCode.isDevEnvironment"
-        },
-        {
-          "command": "MoonCode.showCurrentFilesData",
           "when": "MoonCode.isDevEnvironment"
         },
         {

@@ -1,3 +1,4 @@
+import { AuthController } from "./auth.controller";
 import { AuthRouter } from "./auth.router";
 import { AuthService } from "./auth.service";
 import { ConfigModule } from "@nestjs/config";
@@ -21,7 +22,8 @@ import { UsersModule } from "src/users/users.module";
       inject: [EnvService],
     }),
   ],
-  providers: [AuthService, AuthRouter],
+  providers: [AuthService, AuthRouter, EnvService],
   exports: [AuthService, AuthRouter],
+  controllers: [AuthController],
 })
 export class AuthModule {}

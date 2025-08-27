@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD CONSTRAINT "users_google_email_unique" UNIQUE("google_email");

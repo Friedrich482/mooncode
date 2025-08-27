@@ -13,7 +13,7 @@ const FilesCirclePackingChart = () => {
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
 
-  const [isGrouped, setIsGrouped] = useState(false);
+  const [isGrouped, setIsGrouped] = useState(true);
   const handleGroupCheckboxChange = () => setIsGrouped((prev) => !prev);
 
   const trpc = useTRPC();
