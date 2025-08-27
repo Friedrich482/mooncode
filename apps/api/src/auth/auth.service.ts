@@ -158,7 +158,7 @@ export class AuthService {
     const { state, response } = redirectToGoogleDto;
     const googleAuthUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
-      `client_id=${this.envService.get("CLIENT_ID")}&` +
+      `client_id=${this.envService.get("GOOGLE_CLIENT_ID")}&` +
       `redirect_uri=${encodeURIComponent(this.envService.get("GOOGLE_REDIRECT_URI"))}&` +
       `response_type=code&` +
       `scope=openid email profile&` +
@@ -191,8 +191,8 @@ export class AuthService {
     const code = handleGoogleCallBackDto.code;
 
     const client = new OAuth2Client({
-      clientId: this.envService.get("CLIENT_ID"),
-      clientSecret: this.envService.get("CLIENT_SECRET"),
+      clientId: this.envService.get("GOOGLE_CLIENT_ID"),
+      clientSecret: this.envService.get("GOOGLE_CLIENT_SECRET"),
       redirectUri: this.envService.get("GOOGLE_REDIRECT_URI"),
     });
 
@@ -274,11 +274,10 @@ export class AuthService {
         handleErrorResponse({
           url: errorUrl,
           error: error.message,
-          errorDescription: error.cause?.message as string,
+          errorDescription: error.cause?.message || "An error occurred",
           response,
         });
-      }
-      if (error instanceof Error) {
+      } else if (error instanceof Error) {
         handleErrorResponse({
           url: errorUrl,
           error: error.name,
