@@ -22,7 +22,7 @@ const periodicSyncData = async (
   const filesDataToUpsert = getTime();
 
   const timeSpentToday = Object.values(filesDataToUpsert).reduce(
-    (acc, value) => acc + value.elapsedTime,
+    (acc, curr) => acc + curr.elapsedTime,
     0,
   );
 
@@ -42,11 +42,11 @@ const periodicSyncData = async (
       timeSpent: fileData.elapsedTime,
     }))
     .reduce(
-      (acc, value) => {
-        if (acc[value.project]) {
-          acc[value.project] += value.timeSpent;
+      (acc, curr) => {
+        if (acc[curr.project]) {
+          acc[curr.project] += curr.timeSpent;
         } else {
-          acc[value.project] = value.timeSpent;
+          acc[curr.project] = curr.timeSpent;
         }
         return acc;
       },

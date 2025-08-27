@@ -6,6 +6,11 @@ import { formatZodError } from "@repo/common/formatZodError";
 import { getExtensionContext } from "@/extension";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 
+/**
+ * This function is a wrapper around the raw `vscode.context.globalState.get(key)`
+ * @returns `Promise<GlobalStateData>`
+ */
+
 const getGlobalStateData: () => Promise<GlobalStateData> = async () => {
   const context = getExtensionContext();
   const todaysDateString = getTodaysLocalDate();

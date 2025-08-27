@@ -91,10 +91,6 @@
           "when": "MoonCode.isDevEnvironment"
         },
         {
-          "command": "MoonCode.showCurrentFilesData",
-          "when": "MoonCode.isDevEnvironment"
-        },
-        {
           "command": "MoonCode.showGlobalStateData",
           "when": "MoonCode.isDevEnvironment"
         }
