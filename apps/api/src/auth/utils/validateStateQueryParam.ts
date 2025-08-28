@@ -7,19 +7,26 @@ const validateStateQueryParam = (request: Request) => {
   let returnUrl = DASHBOARD_DEFAULT_URL;
 
   try {
-    const stateParam = RedirectToGoogleDto.parse(
-      JSON.parse(decodeURIComponent(request.query["state"] as string)),
-    ).state;
+    const rawState = request.query["state"];
+    if (typeof rawState !== "string") {
+      return returnUrl;
+    }
 
-    if (stateParam) {
-      const parsedUrl = new URL(stateParam, request.headers.origin);
-      const allowedOrigins = ALLOWED_CLIENTS.map(
-        (client) => new URL(client).origin,
-      );
+    const parsed = RedirectToGoogleDto.safeParse(
+      JSON.parse(decodeURIComponent(rawState)),
+    );
 
-      if (allowedOrigins.includes(parsedUrl.origin)) {
-        returnUrl = stateParam;
-      }
+    if (!parsed.success) return returnUrl;
+
+    const stateParam = parsed.data.state;
+
+    const parsedUrl = new URL(stateParam, request.headers.origin);
+    const allowedOrigins = ALLOWED_CLIENTS.map(
+      (client) => new URL(client).origin,
+    );
+
+    if (allowedOrigins.includes(parsedUrl.origin)) {
+      returnUrl = stateParam;
     }
   } catch {
     // Invalid URL, use default
