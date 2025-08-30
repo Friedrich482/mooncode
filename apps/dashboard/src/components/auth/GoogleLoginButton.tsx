@@ -4,7 +4,7 @@ import { Link } from "react-router";
 
 const GoogleLoginButton = ({ callbackUrl }: { callbackUrl: string | null }) => {
   return (
-    <Button variant="ghost" asChild className="rounded-lg border">
+    <Button variant="ghost" asChild className="rounded-lg border" type="button">
       <Link
         to={`/auth/google${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}` : ""}`}
         className="flex items-center gap-2"
