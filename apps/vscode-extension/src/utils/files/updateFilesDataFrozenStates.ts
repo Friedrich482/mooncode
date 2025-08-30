@@ -43,10 +43,10 @@ const updateFilesDataFrozenStates = () => {
       latestFileObj.freezeStartTime = now;
       latestFileObj.isFrozen = true;
     } else if (
-    /**
-     * we unfreeze if it is active,
-     * marked as frozen and if the user hasn't been idled for more than `MAX_IDLE_TIME` seconds
-     */
+      /**
+       * we unfreeze if it is active,
+       * marked as frozen and if the user hasn't been idled for more than `MAX_IDLE_TIME` seconds
+       */
       idleDuration < MAX_IDLE_TIME &&
       latestFileObj.isFrozen &&
       latestFileObj.freezeStartTime

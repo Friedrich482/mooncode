@@ -43,7 +43,3 @@ export type RedirectToGoogleDtoType = z.infer<typeof RedirectToGoogleDto> & {
 };
 
 export type GoogleUser = z.infer<typeof GoogleUserSchema>;
-
-export type DistributiveOmit<T, K extends PropertyKey> = T extends any
-  ? Omit<T, K>
-  : never;

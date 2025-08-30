@@ -4,6 +4,7 @@ import { FileDataSync } from "@/types-schemas";
 import calculateTime from "../time/calculateTime";
 import { getExtensionContext } from "@/extension";
 import getGlobalStateData from "../global-state/getGlobalStateData";
+import getRawFilesData from "../files/getRawFilesData";
 import login from "../auth/login";
 import logout from "../auth/logout";
 import openDashboard from "../dashboard/openDashboard";
@@ -63,6 +64,19 @@ const initExtensionCommands = (
       logInfo(`Current files data:\n${formattedData}`);
     },
   );
+  /**
+   * *debugging* in prod purposes...
+   */
+  const showRawFilesDataCommand = vscode.commands.registerCommand(
+    "MoonCode.showRawFilesDataCommand",
+    () => {
+      const rawRilesData = getRawFilesData();
+      const formattedData = Object.entries(rawRilesData)
+        .map(([key, fileData]) => `${key}:${JSON.stringify(fileData, null, 2)}`)
+        .join("\n");
+      logInfo(`Raw files Data computed:\n${formattedData}`);
+    },
+  );
 
   const showInitialFilesDataCommand = vscode.commands.registerCommand(
     "MoonCode.showInitialFilesData",
@@ -107,6 +121,7 @@ const initExtensionCommands = (
     showCurrentLanguagesDataCommand,
     showInitialFilesDataCommand,
     showCurrentFilesDataCommand,
+    showRawFilesDataCommand,
     showGlobalStateContentCommand,
     loginCommand,
     logoutCommand,
