@@ -1,2 +1,4 @@
 node_modules
 .env
+packages/ui
+packages/eslint-config

@@ -41,6 +41,12 @@ Before continuing you'll need some environment variables: `JWT_TOKEN` and `DATAB
 
 ### Environment variables
 
+- `NODE_ENV`:
+
+  ```bash
+  NODE_ENV=production
+  ```
+
 - `DATABASE_URL`, you can use:
 
   ```bash
@@ -57,10 +63,11 @@ Before continuing you'll need some environment variables: `JWT_TOKEN` and `DATAB
   ssh-keygen -t rsa -b 4096
   ```
 
-- `NODE_ENV`:
+- `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: you get them when you create credentials in the Google Cloud Console
+- `GOOGLE_REDIRECT_URI`:
 
   ```bash
-  NODE_ENV=production
+  GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
   ```
 
 ## Compile and run the project

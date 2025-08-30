@@ -40,6 +40,23 @@ export const authRouteLoader = async () => {
     ) {
       return redirect("/dashboard");
     }
+
+    // in the case of a vscode login attempt, logout the user from the dashboard
+    const LOGOUT_URL = import.meta.env.VITE_LOGOUT_URL;
+    try {
+      const res = await fetch(LOGOUT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      await res.json();
+    } catch {
+      return null;
+    }
+
     return null;
   }
 

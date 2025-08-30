@@ -35,7 +35,7 @@ export class AuthRouter {
         .query(async ({ ctx }) => this.authService.getUser(ctx)),
 
       logOut: this.trpcService
-        .protectedProcedure()
+        .publicProcedure()
         .mutation(async ({ ctx }) => this.authService.logOut(ctx.res)),
     }),
   };
