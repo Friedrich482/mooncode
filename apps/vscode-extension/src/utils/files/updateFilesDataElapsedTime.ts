@@ -1,11 +1,11 @@
 import { filesData } from "@/constants";
 
 const updateFilesDataElapsedTime = () => {
-  const now = performance.now();
-
   // Update all files times
   Object.keys(filesData).forEach((file) => {
     const fileData = filesData[file];
+    const now = performance.now();
+
     fileData.elapsedTime =
       fileData.isFrozen && fileData.frozenTime
         ? fileData.frozenTime

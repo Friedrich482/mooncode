@@ -14,7 +14,11 @@ const updateFilesDataFrozenStates = () => {
     /**
      * immediately freeze non active files
      */
-    if (!latestFile.absolutePath || file !== latestFile.absolutePath) {
+    if (
+      !latestFile ||
+      !latestFile.absolutePath ||
+      file !== latestFile.absolutePath
+    ) {
       if (!fileData.isFrozen) {
         fileData.freezeStartTime = now;
         fileData.isFrozen = true;
