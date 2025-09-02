@@ -9,15 +9,15 @@ const updateFilesDataFrozenStates = () => {
 
   const now = performance.now();
 
-  Object.keys(filesData).forEach((file) => {
-    const fileData = filesData[file];
+  Object.keys(filesData).forEach((filePath) => {
+    const fileData = filesData[filePath];
     /**
      * immediately freeze non active files
      */
     if (
       !latestFile ||
       !latestFile.absolutePath ||
-      file !== latestFile.absolutePath
+      filePath !== latestFile.absolutePath
     ) {
       if (!fileData.isFrozen) {
         fileData.freezeStartTime = now;
