@@ -4,9 +4,10 @@ import { filesData } from "@/constants";
 const updateFilesDataAfterSync = (
   files: Awaited<ReturnType<AppRouter["filesStats"]["upsert"]>>,
 ) => {
+  const now = performance.now();
+
   Object.keys(files).forEach((filePath) => {
     const file = files[filePath];
-    const now = performance.now();
 
     if (filesData[filePath]) {
       filesData[filePath].elapsedTime = file.timeSpent;

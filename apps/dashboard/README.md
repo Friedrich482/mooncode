@@ -45,6 +45,7 @@ VITE_API_URL="http://localhost:3000/trpc"
 VITE_LOGIN_URL="http://localhost:3000/trpc/auth.signInUser"
 VITE_REGISTER_URL="http://localhost:3000/trpc/auth.registerUser"
 VITE_AUTH_GOOGLE_URL="http://localhost:3000/auth/google"
+VITE_LOGOUT_URL="http://localhost:3000/trpc/auth.logOut"
 ```
 
 So to properly run the dashboard in development, the [API](../api) must be also running on `http://localhost:3000`. Then run

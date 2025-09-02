@@ -63,6 +63,19 @@ const initExtensionCommands = (
       logInfo(`Current files data:\n${formattedData}`);
     },
   );
+  /**
+   * *debugging* in prod purposes...
+   */
+  const showRawFilesDataCommand = vscode.commands.registerCommand(
+    "MoonCode.showRawFilesDataCommand",
+    () => {
+      const filesData = getTime();
+      const formattedData = Object.entries(filesData)
+        .map(([key, fileData]) => `${key}:${JSON.stringify(fileData, null, 2)}`)
+        .join("\n");
+      logInfo(`Raw files Data computed:\n${formattedData}`);
+    },
+  );
 
   const showInitialFilesDataCommand = vscode.commands.registerCommand(
     "MoonCode.showInitialFilesData",
@@ -107,6 +120,7 @@ const initExtensionCommands = (
     showCurrentLanguagesDataCommand,
     showInitialFilesDataCommand,
     showCurrentFilesDataCommand,
+    showRawFilesDataCommand,
     showGlobalStateContentCommand,
     loginCommand,
     logoutCommand,

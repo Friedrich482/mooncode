@@ -37,7 +37,7 @@ Then install dependencies
 npm install
 ```
 
-Before continuing you'll need some environment variables: `JWT_TOKEN` and `DATABASE_URL`.
+Before continuing you'll need some environment variables: `JWT_SECRET` and `DATABASE_URL`.
 
 ### Environment variables
 
@@ -57,10 +57,10 @@ Before continuing you'll need some environment variables: `JWT_TOKEN` and `DATAB
 
   (Local database set up by docker compose as a docker volume. If you don't have docker installed, follow that link to the installation: [Docker](https://docs.docker.com/get-started/get-docker/))
 
-- `JWT_TOKEN`: you need to generate a SSH Key and get the fingerprint.
+- `JWT_SECRET`: Generate an SSL 64-character hexadecimal string.
 
   ```bash
-  ssh-keygen -t rsa -b 4096
+  openssl rand -hex 32
   ```
 
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: you get them when you create credentials in the Google Cloud Console
