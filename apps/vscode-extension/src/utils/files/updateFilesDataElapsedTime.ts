@@ -14,8 +14,6 @@ const updateFilesDataElapsedTime = () => {
   });
 
   return filesData;
-
-  return filesData;
 };
 
 export default updateFilesDataElapsedTime;
