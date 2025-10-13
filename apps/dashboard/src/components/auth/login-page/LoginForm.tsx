@@ -15,7 +15,7 @@ import { Button } from "@repo/ui/components/ui/button";
 import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
 import LoginMethodSeparator from "../LoginMethodSeparator";
-import Logo from "../../layout/header/Logo";
+import Logo from "@/components/layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
 import { SignInUserDto } from "@repo/common/schemas";
 import { SignInUserDtoType } from "@repo/common/types";
