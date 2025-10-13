@@ -4,7 +4,7 @@ import { Link } from "react-router";
 import usePageTitle from "@/hooks/usePageTitle";
 
 const NotFound = () => {
-  usePageTitle("Not found");
+  usePageTitle("Not Found | Mooncode");
 
   return (
     <main className="flex h-dvh flex-col items-center gap-4 pt-8">

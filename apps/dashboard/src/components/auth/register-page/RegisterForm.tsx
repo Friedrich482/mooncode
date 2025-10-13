@@ -30,7 +30,7 @@ import useTogglePassword from "@/hooks/auth/useTogglePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const RegisterForm = () => {
-  usePageTitle("Register");
+  usePageTitle("Register | Mooncode");
 
   useEffect(() => {
     document.getElementById("root")?.classList.add("auth-root");

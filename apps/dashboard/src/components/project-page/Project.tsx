@@ -52,7 +52,7 @@ const FilesCirclePackingChart = lazy(
 
 const Project = () => {
   const data = useGetTimeSpentOnProject();
-  usePageTitle(data.name);
+  usePageTitle(`${data.name} | Mooncode`);
 
   return (
     <main className="flex flex-col gap-y-4 px-14 pb-4">

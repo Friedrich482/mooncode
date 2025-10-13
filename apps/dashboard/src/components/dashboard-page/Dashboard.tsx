@@ -17,7 +17,7 @@ const DayLanguagesChart = lazy(
 );
 
 const Dashboard = () => {
-  usePageTitle("Dashboard");
+  usePageTitle("Dashboard | Mooncode");
 
   return (
     <main className="flex flex-col gap-y-4 px-14 pb-4">

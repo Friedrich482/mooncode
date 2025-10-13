@@ -2,7 +2,7 @@ import { useEffect } from "react";
 
 const usePageTitle = (title: string) => {
   useEffect(() => {
-    document.title = `MoonCode | ${title}`;
+    document.title = title;
   }, []);
 };
 

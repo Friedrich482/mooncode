@@ -31,7 +31,7 @@ import useTogglePassword from "@/hooks/auth/useTogglePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
-  usePageTitle("Login");
+  usePageTitle("Login | Mooncode");
 
   useEffect(() => {
     displayAuthErrorSonner();
