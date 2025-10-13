@@ -1,5 +1,4 @@
-import { addDays, isBefore, isEqual } from "date-fns";
-import { endOfWeek, startOfWeek } from "date-fns";
+import { addDays, endOfWeek, isBefore, isEqual, startOfWeek } from "date-fns";
 
 const countStrictWeeks = (start: Date, end: Date) => {
   let weeks = 0;

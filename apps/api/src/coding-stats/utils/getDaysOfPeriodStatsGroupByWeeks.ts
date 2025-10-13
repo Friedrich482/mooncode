@@ -3,7 +3,7 @@ import { DailyDataService } from "src/daily-data/daily-data.service";
 import { PeriodResolution } from "@repo/common/types";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
-import formatShortDate from "src/utils/formatShortDate";
+import formatShortDate from "src/common/utils/formatShortDate";
 
 const getDaysOfPeriodStatsGroupByWeeks = (
   data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,

@@ -20,7 +20,7 @@ import getGeneralStatsOnPeriodGroupByWeeks from "./utils/getGeneralStatsOnPeriod
 import getMostUsedLanguageOnPeriod from "./utils/getMostUsedLanguageOnPeriod";
 import getPeriodLanguagesGroupByMonths from "./utils/getPeriodLanguagesGroupByMonths";
 import getPeriodLanguagesGroupByWeeks from "src/coding-stats/utils/getPeriodLanguagesGroupByWeeks";
-import getWeekDayName from "src/utils/getWeekdayName";
+import getWeekDayName from "src/common/utils/getWeekdayName";
 
 @Injectable()
 export class CodingStatsDashboardService {

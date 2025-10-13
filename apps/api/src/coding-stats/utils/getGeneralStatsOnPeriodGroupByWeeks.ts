@@ -3,7 +3,7 @@ import { CodingStatsDashboardService } from "../coding-stats-dashboard.service";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { PeriodResolution } from "@repo/common/types";
 import convertToISODate from "@repo/common/convertToISODate";
-import countStrictWeeks from "src/utils/countStrictWeeks";
+import countStrictWeeks from "src/common/utils/countStrictWeeks";
 import formatDuration from "@repo/common/formatDuration";
 import getDaysOfPeriodStatsGroupByWeeks from "./getDaysOfPeriodStatsGroupByWeeks";
 import getMostUsedLanguageOnPeriod from "./getMostUsedLanguageOnPeriod";

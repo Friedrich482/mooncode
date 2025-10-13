@@ -83,19 +83,7 @@ export class FilesService {
       .orderBy(asc(files.timeSpent));
 
     const filesDataObject = Object.fromEntries(
-      filesDataArray.map(
-        ({
-          languageSlug,
-          timeSpent,
-          fileName,
-          filePath,
-          projectName,
-          projectPath,
-        }) => [
-          filePath,
-          { languageSlug, timeSpent, projectPath, projectName, fileName },
-        ],
-      ),
+      filesDataArray.map(({ filePath, ...rest }) => [filePath, rest]),
     );
 
     return filesDataObject;

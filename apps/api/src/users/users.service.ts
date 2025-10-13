@@ -189,29 +189,38 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDtoType) {
-    if (Object.keys(updateUserDto).length === 0) {
+    const { id, ...maybeUpdatedFields } = updateUserDto;
+
+    const setFields = Object.fromEntries(
+      Object.entries(maybeUpdatedFields).filter(
+        ([, value]) => value !== undefined,
+      ),
+    );
+
+    if (Object.keys(setFields).length === 0) {
       throw new BadRequestException("You need to specify at least one field");
     }
-    const { id } = updateUserDto;
+
     const [user] = await this.db.select().from(users).where(eq(users.id, id));
     if (!user) throw new NotFoundException("User not found");
 
-    const updateData = { ...updateUserDto };
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(
-        updateData.password,
+    if (setFields.password) {
+      setFields.password = await bcrypt.hash(
+        setFields.password,
         this.saltRounds,
       );
     }
 
-    return this.db
+    const [returningUser] = await this.db
       .update(users)
-      .set(updateData)
+      .set(setFields)
       .where(eq(users.id, id))
       .returning({
         username: users.username,
         email: users.email,
         profilePicture: users.profilePicture,
       });
+
+    return returningUser;
   }
 }

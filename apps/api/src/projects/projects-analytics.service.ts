@@ -132,12 +132,14 @@ export class ProjectsAnalyticsService {
       .groupBy(languages.languageSlug)
       .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
 
-    return Object.fromEntries(
+    const result: { [languageSlug: string]: number } = Object.fromEntries(
       aggregated.map(({ languageSlug, totalTime }) => [
         languageSlug,
         totalTime,
       ]),
     );
+
+    return result;
   }
 
   async getProjectLanguagesTimePerDayOfPeriod(
@@ -172,11 +174,12 @@ export class ProjectsAnalyticsService {
         acc[date][languageSlug] = (acc[date][languageSlug] || 0) + timeSpent;
         return acc;
       },
-      {} as Record<string, Record<string, number>>,
+      {} as { [date: string]: { [languageSlug: string]: number } },
     );
 
     return result;
   }
+
   async getAllProjectFilesOnPeriod(
     getAllProjectFilesOnPeriodDto: GetAllProjectFilesOnPeriodDtoType,
   ) {

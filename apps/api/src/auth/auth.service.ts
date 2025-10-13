@@ -237,7 +237,8 @@ export class AuthService {
       const user: { userId: string; email: string } = { userId: "", email: "" };
 
       if (existingUser) {
-        const [{ email }] = await this.usersService.update({
+        // TODO fix this update, do we need to update ?
+        const { email } = await this.usersService.update({
           id: existingUser.id,
           googleId: googleUser.id,
           googleEmail: googleUser.email,
