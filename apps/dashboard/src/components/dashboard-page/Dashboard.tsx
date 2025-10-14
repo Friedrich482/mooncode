@@ -1,4 +1,4 @@
-import ChartGroupWrapper from "../ChartGroupWrapper";
+import ChartGroupWrapper from "../common/ChartGroupWrapper";
 import DashboardTitle from "./DashboardTitle";
 import { ErrorBoundary } from "react-error-boundary";
 import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";

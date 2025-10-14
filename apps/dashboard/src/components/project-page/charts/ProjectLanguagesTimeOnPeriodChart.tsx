@@ -9,7 +9,7 @@ import {
 } from "@repo/ui/components/ui/chart";
 import { useMemo, useState } from "react";
 import { Cell } from "recharts";
-import CustomChartToolTip from "@/components/CustomChartToolTip";
+import CustomChartToolTip from "@/components/common/CustomChartToolTip";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { chartConfig } from "@/constants";
@@ -36,7 +36,7 @@ const ProjectLanguagesTimeOnPeriodChart = () => {
   const groupBy = usePeriodStore((state) => state.groupBy);
 
   return (
-    <div className="relative w-[45%] max-chart:w-full">
+    <div className="max-chart:w-full relative w-[45%]">
       <Icon
         Icon={isPieChartVisible ? BarChartIcon : PieChartIcon}
         className="absolute -top-12 right-0 z-0"

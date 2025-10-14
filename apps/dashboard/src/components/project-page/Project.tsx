@@ -1,5 +1,5 @@
-import ChartGroupWrapper from "../ChartGroupWrapper";
-import CustomRangeDatesSelector from "../CustomRangeDatesSelector";
+import ChartGroupWrapper from "../common/ChartGroupWrapper";
+import CustomRangeDatesSelector from "../common/CustomRangeDatesSelector";
 import { ErrorBoundary } from "react-error-boundary";
 import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
 import FilesList from "./files-list/FilesList";
@@ -10,31 +10,6 @@ import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
 import TimeSpentOnProject from "./TimeSpentOnProject";
 import { TriangleAlert } from "lucide-react";
 import { lazy } from "react";
-
-// const ProjectTitleErrorBoundary = ({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) => (
-//   <ErrorBoundary
-//     FallbackComponent={({ error }) => {
-//       if (
-//         error instanceof TRPCClientError &&
-//         error.data?.code === "NOT_FOUND"
-//       ) {
-//         return <Navigate to="/not-found" />;
-//       }
-
-//       return (
-//         <h3 className="text-destructive inline-block space-x-1">
-//           <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
-//           <span className="text-2xl">Error</span>
-//         </h3>
-//       );
-//     }}
-//     children={children}
-//   />
-// );
 
 const ProjectTimeOnPeriodChart = lazy(
   () => import("./charts/ProjectTimeOnPeriodChart"),

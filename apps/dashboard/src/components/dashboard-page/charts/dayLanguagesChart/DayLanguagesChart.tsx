@@ -6,7 +6,7 @@ import {
 } from "@repo/ui/components/ui/chart";
 import { useMemo, useState } from "react";
 import ChartTitle from "./ChartTitle";
-import CustomChartToolTip from "@/components/CustomChartToolTip";
+import CustomChartToolTip from "@/components/common/CustomChartToolTip";
 import { DATE_LOCALE } from "@repo/common/constants";
 import { chartConfig } from "@/constants";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
