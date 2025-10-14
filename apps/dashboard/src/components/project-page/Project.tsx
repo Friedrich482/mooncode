@@ -1,19 +1,17 @@
 import ChartGroupWrapper from "../ChartGroupWrapper";
 import CustomRangeDatesSelector from "../CustomRangeDatesSelector";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallBack from "../suspense/ErrorFallback";
+import ErrorFallBack from "../suspense-error-boundaries/ErrorFallback";
 import FilesList from "./files-list/FilesList";
 import GroupByDropDown from "../dashboard-page/GroupByDropDown";
 import { Navigate } from "react-router";
 import PeriodDropDown from "../dashboard-page/PeriodDropDown";
 import ProjectTitle from "./ProjectTitle";
-import SuspenseBoundary from "../suspense/SuspenseBoundary";
+import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
 import { TRPCClientError } from "@trpc/client";
 import TimeSpentOnProject from "./TimeSpentOnProject";
 import { TriangleAlert } from "lucide-react";
 import { lazy } from "react";
-import useGetTimeSpentOnProject from "@/hooks/projects/useGetTimeSpentOnProject";
-import usePageTitle from "@/hooks/usePageTitle";
 
 const ProjectTitleErrorBoundary = ({
   children,
@@ -51,14 +49,11 @@ const FilesCirclePackingChart = lazy(
 );
 
 const Project = () => {
-  const data = useGetTimeSpentOnProject();
-  usePageTitle(`${data.name} | Mooncode`);
-
   return (
     <main className="flex flex-col gap-y-4 px-14 pb-4">
       <section className="flex flex-col gap-4">
         <ProjectTitleErrorBoundary>
-          <SuspenseBoundary fallBackClassName="h-9 w-52">
+          <SuspenseBoundary className="bg-accent h-9 w-52">
             <ProjectTitle />
           </SuspenseBoundary>
         </ProjectTitleErrorBoundary>
@@ -71,7 +66,7 @@ const Project = () => {
 
           <div className="text-start text-balance">
             <ProjectTitleErrorBoundary>
-              <SuspenseBoundary fallBackClassName="h-9 w-44 inline-block align-top">
+              <SuspenseBoundary className="inline-block h-9 w-44 align-top">
                 <TimeSpentOnProject />
               </SuspenseBoundary>
             </ProjectTitleErrorBoundary>
@@ -84,13 +79,13 @@ const Project = () => {
       <div className="flex flex-col gap-x-10 gap-y-12 rounded-md border p-3 pt-14">
         <ChartGroupWrapper>
           <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary>
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
               <ProjectTimeOnPeriodChart />
             </SuspenseBoundary>
           </ErrorBoundary>
 
           <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary>
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
               <ProjectLanguagesTimeOnPeriodChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -105,7 +100,7 @@ const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary fallBackClassName="h-[45.5rem] w-full">
+            <SuspenseBoundary className="h-[45.5rem] w-full">
               <FilesCirclePackingChart />
             </SuspenseBoundary>
           </ErrorBoundary>

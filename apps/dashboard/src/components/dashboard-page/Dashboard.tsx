@@ -1,10 +1,10 @@
 import ChartGroupWrapper from "../ChartGroupWrapper";
 import DashboardTitle from "./DashboardTitle";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallBack from "../suspense/ErrorFallback";
+import ErrorFallBack from "../suspense-error-boundaries/ErrorFallback";
 import GeneralStatsChart from "./charts/GeneralStatsChart";
 import PeriodProjects from "./PeriodProjects";
-import SuspenseBoundary from "../suspense/SuspenseBoundary";
+import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
 import { lazy } from "react";
 import usePageTitle from "@/hooks/usePageTitle";
 
@@ -26,13 +26,13 @@ const Dashboard = () => {
       <div className="flex flex-col gap-x-10 gap-y-12 rounded-md border p-3 pt-14">
         <ChartGroupWrapper>
           <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary>
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
               <PeriodTimeChart />
             </SuspenseBoundary>
           </ErrorBoundary>
 
           <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary>
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
               <PeriodLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -40,13 +40,13 @@ const Dashboard = () => {
 
         <ChartGroupWrapper>
           <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary>
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
               <DayLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
 
           <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary>
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
               <GeneralStatsChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -61,7 +61,7 @@ const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary fallBackClassName="h-[24rem] w-full max-chart:w-full">
+            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-full">
               <PeriodProjects />
             </SuspenseBoundary>
           </ErrorBoundary>

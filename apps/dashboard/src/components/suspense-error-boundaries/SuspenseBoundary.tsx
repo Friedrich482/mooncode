@@ -3,19 +3,13 @@ import { Suspense } from "react";
 
 const SuspenseBoundary = ({
   children,
-  fallBackClassName,
+  className,
 }: {
   children: React.ReactNode;
-  fallBackClassName?: string;
+  className?: string;
 }) => {
   return (
-    <Suspense
-      fallback={
-        <Skeleton
-          className={fallBackClassName || "h-[24rem] w-[45%] max-chart:w-full"}
-        />
-      }
-    >
+    <Suspense fallback={<Skeleton className={className} />}>
       {children}
     </Suspense>
   );
