@@ -1,6 +1,6 @@
 import CustomRangeDatesSelector from "../CustomRangeDatesSelector";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallBack from "../suspense-error-boundaries/ErrorFallback";
+import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
 import GroupByDropDown from "./GroupByDropDown";
 import PeriodDropDown from "./PeriodDropDown";
 import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
@@ -20,13 +20,18 @@ const DashboardTitle = () => (
 
     <div className="text-start text-balance">
       <ErrorBoundary
-        FallbackComponent={({ error }) => (
-          <ErrorFallBack error={error}>
-            <h3 className="text-destructive inline-block space-x-1">
-              <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
-              <span>Error</span>
-            </h3>
-          </ErrorFallBack>
+        FallbackComponent={({ error, resetErrorBoundary }) => (
+          <FallBackRender
+            error={error}
+            resetErrorBoundary={resetErrorBoundary}
+            hasCustomChildren={true}
+            customChildren={
+              <h3 className="text-destructive inline-block space-x-1">
+                <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
+                <span className="text-2xl">Error</span>
+              </h3>
+            }
+          />
         )}
       >
         <SuspenseBoundary className="inline-block h-9 w-44 align-top">

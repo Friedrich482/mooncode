@@ -1,7 +1,7 @@
 import ChartGroupWrapper from "../ChartGroupWrapper";
 import DashboardTitle from "./DashboardTitle";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallBack from "../suspense-error-boundaries/ErrorFallback";
+import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
 import GeneralStatsChart from "./charts/GeneralStatsChart";
 import PeriodProjects from "./PeriodProjects";
 import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
@@ -25,28 +25,60 @@ const Dashboard = () => {
 
       <div className="flex flex-col gap-x-10 gap-y-12 rounded-md border p-3 pt-14">
         <ChartGroupWrapper>
-          <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary>
               <PeriodTimeChart />
             </SuspenseBoundary>
           </ErrorBoundary>
 
-          <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary>
               <PeriodLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
         </ChartGroupWrapper>
 
         <ChartGroupWrapper>
-          <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary>
               <DayLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
 
-          <ErrorBoundary FallbackComponent={ErrorFallBack}>
-            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-[45%]">
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary>
               <GeneralStatsChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -54,9 +86,11 @@ const Dashboard = () => {
 
         <ChartGroupWrapper>
           <ErrorBoundary
-            FallbackComponent={({ error }) => (
-              <ErrorFallBack
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
                 error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
                 className="text-destructive max-chart:w-full relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl max-xl:text-xl max-[30rem]:text-lg"
               />
             )}

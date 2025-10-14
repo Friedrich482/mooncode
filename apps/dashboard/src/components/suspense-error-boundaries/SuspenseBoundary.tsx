@@ -3,7 +3,7 @@ import { Suspense } from "react";
 
 const SuspenseBoundary = ({
   children,
-  className,
+  className = "max-chart:w-full h-[24rem] w-[45%]",
 }: {
   children: React.ReactNode;
   className?: string;
