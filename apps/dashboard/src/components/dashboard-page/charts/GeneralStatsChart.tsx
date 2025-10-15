@@ -1,7 +1,9 @@
+import { DATE_LOCALE } from "@repo/common/constants";
 import { PERIODS_CONFIG } from "@/constants";
 import { cn } from "@repo/ui/lib/utils";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
+import { useMemo } from "react";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
@@ -32,6 +34,10 @@ const GeneralStatsChart = () => {
   const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);
   const customRange = usePeriodStore((state) => state.customRange);
+  const dateString = useMemo(
+    () => new Date().toLocaleDateString(DATE_LOCALE),
+    [],
+  );
 
   const trpc = useTRPC();
 
@@ -41,11 +47,13 @@ const GeneralStatsChart = () => {
         ? {
             start: customRange.start,
             end: customRange.end,
+            dateString,
             groupBy,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
+            dateString,
             groupBy,
           },
     ),

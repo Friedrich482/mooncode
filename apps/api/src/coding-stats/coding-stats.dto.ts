@@ -28,7 +28,9 @@ export const GetPeriodLanguagesPerDayDto = GetDaysOfPeriodStatsDto;
 
 export const GetDailyStatsForChartDto = GetDailyStatsForExtensionDto;
 
-export const GetPeriodGeneralStatsDto = GetDaysOfPeriodStatsDto;
+export const GetPeriodGeneralStatsDto = refineAndTransformSchema(
+  z.object({ ...BaseSchema.shape, ...GetDailyStatsForExtensionDto.shape }),
+);
 
 export type GetDailyStatsForExtensionDtoType = z.infer<
   typeof GetDailyStatsForExtensionDto

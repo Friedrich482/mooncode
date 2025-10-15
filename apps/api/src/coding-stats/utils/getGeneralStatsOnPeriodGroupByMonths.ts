@@ -11,6 +11,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   userId: string,
   start: string,
   end: string,
+  date: string,
   codingStatsDashboardService: CodingStatsDashboardService,
   dailyDataForPeriod: Awaited<
     ReturnType<DailyDataService["findRangeDailyData"]>
@@ -36,8 +37,8 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   const timeSpentOnTodaySMonth = (
     await codingStatsDashboardService.getTimeSpentOnPeriod({
       userId,
-      start: convertToISODate(startOfMonth(new Date())),
-      end: convertToISODate(endOfMonth(new Date())),
+      start: convertToISODate(startOfMonth(new Date(date))),
+      end: convertToISODate(endOfMonth(new Date(date))),
     })
   ).rawTime;
 
@@ -56,7 +57,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
       ? "N/A"
       : monthlyDataForPeriod.find(
           (month) => month.timeSpent === maxTimeSpentPerMonth,
-        )?.originalDate || convertToISODate(new Date());
+        )?.originalDate || convertToISODate(new Date(start));
 
   const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
     codingStatsDashboardService,
