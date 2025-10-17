@@ -5,15 +5,15 @@ import {
   refineAndTransformSchema,
   refineSchema,
 } from "src/common/dto";
-import { dateStringDto } from "@repo/common/schemas";
+import { DateStingDto } from "@repo/common/schemas";
 import { z } from "zod";
 
 export const GetDailyStatsForExtensionDto = z.object({
-  dateString: dateStringDto,
+  dateString: DateStingDto,
 });
 
 export const UpsertLanguagesDto = z.object({
-  targetedDate: dateStringDto,
+  targetedDate: DateStingDto,
   timeSpentOnDay: z.number().int(),
   timeSpentPerLanguage: z.record(z.string().min(1), z.number().int()),
 });

@@ -1,14 +1,14 @@
-import { dateStringDto } from "@repo/common/schemas";
+import { DateStingDto } from "@repo/common/schemas";
 import { z } from "zod";
 
 export const CreateDailyDataDto = z.object({
-  targetedDate: dateStringDto,
+  targetedDate: DateStingDto,
   userId: z.ulid(),
   timeSpent: z.number().int().positive(),
 });
 
 export const findOneDailyDataDto = z.object({
-  date: dateStringDto,
+  date: DateStingDto,
   userId: z.ulid(),
 });
 
@@ -16,8 +16,8 @@ export const UpdateDailyDataDto = CreateDailyDataDto;
 
 export const FindRangeDailyDataDto = z.object({
   userId: z.ulid(),
-  start: dateStringDto,
-  end: dateStringDto,
+  start: DateStingDto,
+  end: DateStingDto,
 });
 
 export type CreateDailyDataDtoType = z.infer<typeof CreateDailyDataDto>;

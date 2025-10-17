@@ -1,4 +1,4 @@
-import { dateStringDto } from "@repo/common/schemas";
+import { DateStingDto } from "@repo/common/schemas";
 import { z } from "zod";
 
 export const CreateProjectDto = z.object({
@@ -23,15 +23,15 @@ export const FindProjectDto = z.object({
 
 export const FindProjectByNameOnRangeDto = z.object({
   userId: z.ulid(),
-  start: dateStringDto,
-  end: dateStringDto,
+  start: DateStingDto,
+  end: DateStingDto,
   name: z.string().min(1),
 });
 
 export const FindAllRangeProjectsDto = z.object({
   userId: z.ulid(),
-  start: dateStringDto,
-  end: dateStringDto,
+  start: DateStingDto,
+  end: DateStingDto,
 });
 
 export const GroupAndAggregateProjectByNameDto = FindProjectByNameOnRangeDto;

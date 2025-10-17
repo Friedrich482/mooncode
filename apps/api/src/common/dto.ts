@@ -1,13 +1,13 @@
+import { DateStingDto } from "@repo/common/schemas";
 import { GroupByEnum } from "@repo/common/types";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
-import { dateStringDto } from "@repo/common/schemas";
 import getPeriodResolution from "@repo/common/getPeriodResolution";
 import { isAfter } from "date-fns";
 import { z } from "zod";
 
 export const DateRangeSchema = z.object({
-  start: dateStringDto,
-  end: dateStringDto,
+  start: DateStingDto,
+  end: DateStingDto,
 });
 
 export const BaseSchema = z.object({

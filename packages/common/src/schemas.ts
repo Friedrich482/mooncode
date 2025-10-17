@@ -44,4 +44,4 @@ export const IsoDateStringSchema = z
 export const IsoDateSchema = IsoDateStringSchema.transform(
   (dateStr) => new Date(dateStr),
 );
-export const dateStringDto = IsoDateStringSchema;
+export const DateStingDto = IsoDateStringSchema;
