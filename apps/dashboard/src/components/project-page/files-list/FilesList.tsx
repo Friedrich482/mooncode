@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Entry } from "@/types-schemas";
 import { ErrorBoundary } from "react-error-boundary";
-import ErrorFallBack from "@/components/suspense/ErrorFallback";
+import FallBackRender from "@/components/suspense-error-boundaries/ErrorBoundary";
 import Files from "./Files";
 import FiltersSection from "./FiltersSection";
 import LanguagesDropDown from "./LanguagesDropDown";
-import SuspenseBoundary from "@/components/suspense/SuspenseBoundary";
+import SuspenseBoundary from "@/components/suspense-error-boundaries/SuspenseBoundary";
 import { TriangleAlert } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 
@@ -52,16 +52,21 @@ const FilesList = () => {
       <h2 className="text-center text-2xl font-bold">Files List</h2>
       <div className="flex flex-wrap items-center gap-x-10 gap-y-5 rounded-md border p-2">
         <ErrorBoundary
-          FallbackComponent={({ error }) => (
-            <ErrorFallBack error={error}>
-              <h3 className="flex h-9 items-center justify-center gap-2 p-1 text-destructive">
-                <TriangleAlert className="size-8 shrink-0 max-xl:size-6" />
-                <span>Error</span>
-              </h3>
-            </ErrorFallBack>
+          FallbackComponent={({ error, resetErrorBoundary }) => (
+            <FallBackRender
+              error={error}
+              resetErrorBoundary={resetErrorBoundary}
+              hasCustomChildren={true}
+              customChildren={
+                <h3 className="text-destructive flex h-9 items-center justify-center gap-2 p-1">
+                  <TriangleAlert className="size-8 shrink-0 max-xl:size-6" />
+                  <span>Error</span>
+                </h3>
+              }
+            />
           )}
         >
-          <SuspenseBoundary fallBackClassName="h-9 w-44">
+          <SuspenseBoundary className="h-9 w-44">
             <LanguagesDropDown
               selectedEntries={selectedEntries}
               setSelectedEntries={setSelectedEntries}
@@ -82,14 +87,16 @@ const FilesList = () => {
 
       <div className="flex w-full gap-4 text-xl max-[42rem]:gap-8">
         <ErrorBoundary
-          FallbackComponent={({ error }) => (
-            <ErrorFallBack
+          FallbackComponent={({ error, resetErrorBoundary }) => (
+            <FallBackRender
               error={error}
-              className="relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl text-destructive max-xl:text-xl max-chart:w-full max-[30rem]:text-lg"
+              resetErrorBoundary={resetErrorBoundary}
+              hasCustomChildren={false}
+              className="text-destructive max-chart:w-full relative z-0 flex min-h-96 w-full items-center justify-center rounded-md border px-1.5 text-2xl max-xl:text-xl max-[30rem]:text-lg"
             />
           )}
         >
-          <SuspenseBoundary fallBackClassName="h-[52rem] w-full max-chart:w-full">
+          <SuspenseBoundary className="max-chart:w-full h-[52rem] w-full">
             <Files
               languagesToFetch={languagesToFetch}
               amount={debouncedLimit}

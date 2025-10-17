@@ -3,7 +3,7 @@ import { PeriodResolution } from "@repo/common/types";
 import { ProjectsService } from "src/projects/projects.service";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
-import formatShortDate from "src/utils/formatShortDate";
+import formatShortDate from "src/common/utils/formatShortDate";
 
 const getProjectPerDayOfPeriodGroupByWeeks = (
   data: Awaited<ReturnType<ProjectsService["findProjectByNameOnRange"]>>,

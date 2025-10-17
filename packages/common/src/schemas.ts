@@ -19,16 +19,6 @@ export const RegisterUserDto = z.object({
   callbackUrl: z.string().nullable(),
 });
 
-export const loginResponseSchema = z.object({
-  result: z.object({
-    data: z.object({
-      json: z.object({
-        access_token: z.jwt(),
-      }),
-    }),
-  }),
-});
-
 export const IsoDateStringSchema = z
   .string()
   .regex(
@@ -54,4 +44,4 @@ export const IsoDateStringSchema = z
 export const IsoDateSchema = IsoDateStringSchema.transform(
   (dateStr) => new Date(dateStr),
 );
-export const dateStringDto = IsoDateStringSchema;
+export const DateStringDto = IsoDateStringSchema;

@@ -1,13 +1,14 @@
+import BrokenMoon from "@/assets/broken_moon.svg?react";
 import { Button } from "@repo/ui/components/ui/button";
 import { Link } from "react-router";
 import usePageTitle from "@/hooks/usePageTitle";
 
 const NotFound = () => {
-  usePageTitle("Not found");
+  usePageTitle("Not Found | Mooncode");
 
   return (
     <main className="flex h-dvh flex-col items-center gap-4 pt-8">
-      <img src="/broken_moon.svg" />
+      <BrokenMoon />
       <div className="text-8xl">404</div>
       <p>This Page Could Not Be Found</p>
       <Button asChild className="w-44">

@@ -77,10 +77,11 @@ export class AuthService {
           message: "Invalid callback url",
         });
       }
-      return {
-        access_token: token,
-      };
     }
+
+    return {
+      accessToken: token,
+    };
   }
 
   async register(registerDto: RegisterUserDtoType, response: Response) {
@@ -113,13 +114,10 @@ export class AuthService {
           message: "Invalid callback url",
         });
       }
-      return {
-        access_token: token,
-      };
     }
 
     return {
-      access_token: token,
+      accessToken: token,
     };
   }
 
@@ -237,7 +235,8 @@ export class AuthService {
       const user: { userId: string; email: string } = { userId: "", email: "" };
 
       if (existingUser) {
-        const [{ email }] = await this.usersService.update({
+        // TODO fix this update, do we need to update ?
+        const { email } = await this.usersService.update({
           id: existingUser.id,
           googleId: googleUser.id,
           googleEmail: googleUser.email,

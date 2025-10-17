@@ -1,11 +1,5 @@
 import * as bcrypt from "bcrypt";
 import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from "@nestjs/common";
-import {
   CreateGoogleUserDtoType,
   CreateUserDtoType,
   FindByEmailDtoType,
@@ -13,6 +7,7 @@ import {
   FindByIdDtoType,
   UpdateUserDtoType,
 } from "./users.dto";
+import { Inject, Injectable } from "@nestjs/common";
 import { and, eq, or } from "drizzle-orm";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
@@ -145,7 +140,8 @@ export class UsersService {
       .from(users)
       .where(eq(users.id, id))
       .limit(1);
-    if (!user) throw new NotFoundException("User not found");
+    if (!user)
+      throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
     return user;
   }
 
@@ -189,29 +185,42 @@ export class UsersService {
   }
 
   async update(updateUserDto: UpdateUserDtoType) {
-    if (Object.keys(updateUserDto).length === 0) {
-      throw new BadRequestException("You need to specify at least one field");
-    }
-    const { id } = updateUserDto;
-    const [user] = await this.db.select().from(users).where(eq(users.id, id));
-    if (!user) throw new NotFoundException("User not found");
+    const { id, ...maybeUpdatedFields } = updateUserDto;
 
-    const updateData = { ...updateUserDto };
-    if (updateData.password) {
-      updateData.password = await bcrypt.hash(
-        updateData.password,
+    const setFields = Object.fromEntries(
+      Object.entries(maybeUpdatedFields).filter(
+        ([, value]) => value !== undefined,
+      ),
+    );
+
+    if (Object.keys(setFields).length === 0) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "You need to specify at least one field",
+      });
+    }
+
+    const [user] = await this.db.select().from(users).where(eq(users.id, id));
+    if (!user)
+      throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+
+    if (setFields.password) {
+      setFields.password = await bcrypt.hash(
+        setFields.password,
         this.saltRounds,
       );
     }
 
-    return this.db
+    const [returningUser] = await this.db
       .update(users)
-      .set(updateData)
+      .set(setFields)
       .where(eq(users.id, id))
       .returning({
         username: users.username,
         email: users.email,
         profilePicture: users.profilePicture,
       });
+
+    return returningUser;
   }
 }

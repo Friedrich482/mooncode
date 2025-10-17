@@ -60,13 +60,9 @@ export class FilesStatsExtensionService {
       return {};
     }
 
-    const returningData = Object.fromEntries(
-      Object.entries(
-        await this.filesService.findAllFilesOnDay({
-          dailyDataId: dailyDataForDay.id,
-        }),
-      ),
-    );
+    const returningData = await this.filesService.findAllFilesOnDay({
+      dailyDataId: dailyDataForDay.id,
+    });
 
     for (const [path, file] of Object.entries(filesData)) {
       const existingProject = await this.projectsService.findOneProject({

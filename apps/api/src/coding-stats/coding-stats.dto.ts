@@ -5,15 +5,15 @@ import {
   refineAndTransformSchema,
   refineSchema,
 } from "src/common/dto";
-import { dateStringDto } from "@repo/common/schemas";
+import { DateStringDto } from "@repo/common/schemas";
 import { z } from "zod";
 
 export const GetDailyStatsForExtensionDto = z.object({
-  dateString: dateStringDto,
+  dateString: DateStringDto,
 });
 
 export const UpsertLanguagesDto = z.object({
-  targetedDate: dateStringDto,
+  targetedDate: DateStringDto,
   timeSpentOnDay: z.number().int(),
   timeSpentPerLanguage: z.record(z.string().min(1), z.number().int()),
 });
@@ -28,7 +28,9 @@ export const GetPeriodLanguagesPerDayDto = GetDaysOfPeriodStatsDto;
 
 export const GetDailyStatsForChartDto = GetDailyStatsForExtensionDto;
 
-export const GetPeriodGeneralStatsDto = GetDaysOfPeriodStatsDto;
+export const GetPeriodGeneralStatsDto = refineAndTransformSchema(
+  z.object({ ...BaseSchema.shape, todaysDateString: DateStringDto }),
+);
 
 export type GetDailyStatsForExtensionDtoType = z.infer<
   typeof GetDailyStatsForExtensionDto

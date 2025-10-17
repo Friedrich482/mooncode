@@ -13,7 +13,7 @@ import getProjectLanguageGroupByMonths from "./utils/getProjectLanguageGroupByMo
 import getProjectLanguagesGroupByWeeks from "./utils/getProjectLanguagesGroupByWeeks";
 import getProjectPerDayOfPeriodGroupByMonths from "./utils/getProjectPerDayOfPeriodGroupByMonths";
 import getProjectPerDayOfPeriodGroupByWeeks from "./utils/getProjectPerDayOfPeriodGroupByWeeks";
-import getWeekDayName from "src/utils/getWeekdayName";
+import getWeekDayName from "src/common/utils/getWeekdayName";
 
 @Injectable()
 export class FilesStatsDashboardService {

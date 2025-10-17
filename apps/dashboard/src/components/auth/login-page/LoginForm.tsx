@@ -11,38 +11,29 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import { Link, useNavigate } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@repo/ui/components/ui/button";
 import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
 import LoginMethodSeparator from "../LoginMethodSeparator";
-import Logo from "../../layout/header/Logo";
+import Logo from "@/components/layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
 import { SignInUserDto } from "@repo/common/schemas";
 import { SignInUserDtoType } from "@repo/common/types";
 import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
-import fetchJWTToken from "@repo/common/fetchJWTToken";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import useTogglePassword from "@/hooks/auth/useTogglePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
-  usePageTitle("Login");
+  usePageTitle("Login | Mooncode");
 
   useEffect(() => {
     displayAuthErrorSonner();
-  }, []);
-
-  // remove the padding-top on the root div
-  useEffect(() => {
-    document.getElementById("root")?.classList.add("auth-root");
-    return () => {
-      document.getElementById("root")?.classList.remove("auth-root");
-    };
   }, []);
 
   const form = useForm<SignInUserDtoType>({
@@ -59,45 +50,43 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const loginMutation = useMutation(trpc.auth.signInUser.mutationOptions());
 
   const callbackUrl = getCallbackUrl();
 
   const onSubmit = async (values: SignInUserDtoType) => {
-    try {
-      // send the credentials to the backend and set an http cookie in the browser
-      const LOGIN_URL = import.meta.env.VITE_LOGIN_URL;
-
-      const token = await fetchJWTToken(LOGIN_URL, {
+    loginMutation.mutate(
+      {
         email: values.email,
         password: values.password,
         callbackUrl,
-      });
+      },
+      {
+        onError: (error) => {
+          const errorMessage = error.message;
 
-      if (callbackUrl && token) {
-        window.location.href = `${callbackUrl}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`;
-      }
+          if (errorMessage === INCORRECT_PASSWORD_MESSAGE) {
+            form.setError("password", { message: errorMessage });
+          } else if (errorMessage === USER_NOT_FOUND_MESSAGE) {
+            form.setError("email", { message: errorMessage });
+          } else {
+            form.setError("root", { message: errorMessage });
+          }
+        },
+        onSuccess: async ({ accessToken }) => {
+          if (callbackUrl && accessToken) {
+            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(values.email)}`;
+          }
 
-      await queryClient.invalidateQueries({
-        queryKey: trpc.auth.getUser.queryKey(),
-        exact: true,
-      });
+          await queryClient.invalidateQueries({
+            queryKey: trpc.auth.getUser.queryKey(),
+            exact: true,
+          });
 
-      navigate("/dashboard");
-    } catch (error) {
-      let errorMessage = "An error occurred";
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      if (errorMessage === INCORRECT_PASSWORD_MESSAGE) {
-        form.setError("password", { message: errorMessage });
-      } else if (errorMessage === USER_NOT_FOUND_MESSAGE) {
-        form.setError("email", { message: errorMessage });
-      } else {
-        form.setError("root", { message: errorMessage });
-      }
-    }
+          navigate("/dashboard");
+        },
+      },
+    );
   };
 
   return (

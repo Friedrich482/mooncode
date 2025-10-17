@@ -5,11 +5,11 @@ import {
   refineAndTransformSchema,
   refineSchema,
 } from "src/common/dto";
-import { dateStringDto } from "@repo/common/schemas";
+import { DateStringDto } from "@repo/common/schemas";
 import { z } from "zod";
 
 export const GetDailyFilesStatsForExtensionDto = z.object({
-  dateString: dateStringDto,
+  dateString: DateStringDto,
 });
 
 export const UpsertFilesDto = z.object({
@@ -27,7 +27,7 @@ export const UpsertFilesDto = z.object({
       fileName: z.string().min(1),
     }),
   ),
-  targetedDate: dateStringDto,
+  targetedDate: DateStringDto,
 });
 
 export const GetPeriodProjectsDto = refineSchema(DateRangeSchema);

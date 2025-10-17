@@ -41,6 +41,9 @@ async function copyDashboard() {
     });
 
     // Get folder size for logging
+    /**
+     * @type {(dir: string) => number}
+     */
     const getDirSize = (dir) => {
       let size = 0;
       const files = fs.readdirSync(dir);
@@ -74,6 +77,9 @@ async function copyDashboard() {
 const esbuildProblemMatcherPlugin = {
   name: "esbuild-problem-matcher",
   setup(build) {
+    /**
+     * @type {number}
+     */
     let startTime;
 
     build.onStart(() => {
@@ -93,7 +99,6 @@ const esbuildProblemMatcherPlugin = {
       });
 
       if (result.errors.length === 0) {
-        const fs = require("fs");
         try {
           const stats = fs.statSync("dist/extension.js");
           const fileSizeInKB = (stats.size / 1024).toFixed(1);

@@ -18,7 +18,7 @@ import {
 } from "@repo/ui/components/ui/chart";
 import { PERIODS_CONFIG, chartConfig } from "@/constants";
 import { RouterOutput, useTRPC } from "@/utils/trpc";
-import CustomChartToolTip from "@/components/CustomChartToolTip";
+import CustomChartToolTip from "@/components/common/CustomChartToolTip";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";

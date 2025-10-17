@@ -20,7 +20,7 @@ import getGeneralStatsOnPeriodGroupByWeeks from "./utils/getGeneralStatsOnPeriod
 import getMostUsedLanguageOnPeriod from "./utils/getMostUsedLanguageOnPeriod";
 import getPeriodLanguagesGroupByMonths from "./utils/getPeriodLanguagesGroupByMonths";
 import getPeriodLanguagesGroupByWeeks from "src/coding-stats/utils/getPeriodLanguagesGroupByWeeks";
-import getWeekDayName from "src/utils/getWeekdayName";
+import getWeekDayName from "src/common/utils/getWeekdayName";
 
 @Injectable()
 export class CodingStatsDashboardService {
@@ -217,7 +217,7 @@ export class CodingStatsDashboardService {
   async getPeriodGeneralStats(
     getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType,
   ) {
-    const { userId, start, end, groupBy, periodResolution } =
+    const { userId, start, end, todaysDateString, groupBy, periodResolution } =
       getPeriodGeneralStatsDto;
 
     const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
@@ -240,6 +240,7 @@ export class CodingStatsDashboardService {
           userId,
           start,
           end,
+          todaysDateString,
           this,
           dailyDataForPeriod,
           periodResolution,
@@ -250,6 +251,7 @@ export class CodingStatsDashboardService {
           userId,
           start,
           end,
+          todaysDateString,
           this,
           dailyDataForPeriod,
         );
@@ -273,7 +275,7 @@ export class CodingStatsDashboardService {
       (
         await this.dailyDataService.findOneDailyData({
           userId,
-          date: convertToISODate(new Date()),
+          date: todaysDateString,
         })
       )?.timeSpent || 0;
 
