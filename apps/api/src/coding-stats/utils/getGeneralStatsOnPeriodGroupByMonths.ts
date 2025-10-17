@@ -11,7 +11,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   userId: string,
   start: string,
   end: string,
-  date: string,
+  todaysDateString: string,
   codingStatsDashboardService: CodingStatsDashboardService,
   dailyDataForPeriod: Awaited<
     ReturnType<DailyDataService["findRangeDailyData"]>
@@ -37,8 +37,8 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   const timeSpentOnTodaySMonth = (
     await codingStatsDashboardService.getTimeSpentOnPeriod({
       userId,
-      start: convertToISODate(startOfMonth(new Date(date))),
-      end: convertToISODate(endOfMonth(new Date(date))),
+      start: convertToISODate(startOfMonth(new Date(todaysDateString))),
+      end: convertToISODate(endOfMonth(new Date(todaysDateString))),
     })
   ).rawTime;
 

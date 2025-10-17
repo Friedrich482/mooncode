@@ -29,7 +29,7 @@ export const GetPeriodLanguagesPerDayDto = GetDaysOfPeriodStatsDto;
 export const GetDailyStatsForChartDto = GetDailyStatsForExtensionDto;
 
 export const GetPeriodGeneralStatsDto = refineAndTransformSchema(
-  z.object({ ...BaseSchema.shape, ...GetDailyStatsForExtensionDto.shape }),
+  z.object({ ...BaseSchema.shape, todaysDateString: DateStingDto }),
 );
 
 export type GetDailyStatsForExtensionDtoType = z.infer<

@@ -217,7 +217,7 @@ export class CodingStatsDashboardService {
   async getPeriodGeneralStats(
     getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType,
   ) {
-    const { userId, start, end, dateString, groupBy, periodResolution } =
+    const { userId, start, end, todaysDateString, groupBy, periodResolution } =
       getPeriodGeneralStatsDto;
 
     const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
@@ -240,7 +240,7 @@ export class CodingStatsDashboardService {
           userId,
           start,
           end,
-          dateString,
+          todaysDateString,
           this,
           dailyDataForPeriod,
           periodResolution,
@@ -251,7 +251,7 @@ export class CodingStatsDashboardService {
           userId,
           start,
           end,
-          dateString,
+          todaysDateString,
           this,
           dailyDataForPeriod,
         );
@@ -275,7 +275,7 @@ export class CodingStatsDashboardService {
       (
         await this.dailyDataService.findOneDailyData({
           userId,
-          date: dateString,
+          date: todaysDateString,
         })
       )?.timeSpent || 0;
 
