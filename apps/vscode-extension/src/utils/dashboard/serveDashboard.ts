@@ -1,11 +1,20 @@
 import * as path from "path";
 import * as vscode from "vscode";
-import { DASHBOARD_PORT } from "@repo/common/constants";
+import {
+  DASHBOARD_DEVELOPMENT_PORT,
+  DASHBOARD_PRODUCTION_PORT,
+} from "@repo/common/constants";
 import express from "express";
 import getPort from "get-port";
 import { logInfo } from "../logger/logger";
 
 const serveDashboard = async (context: vscode.ExtensionContext) => {
+  const isDev = context.extensionMode === vscode.ExtensionMode.Development;
+
+  if (isDev) {
+    return DASHBOARD_DEVELOPMENT_PORT;
+  }
+
   const app = express();
   const pathToFrontendDist = path.join(context.extensionPath, "_dashboard");
 
@@ -23,7 +32,7 @@ const serveDashboard = async (context: vscode.ExtensionContext) => {
 
   try {
     const availablePort = await getPort({
-      port: Array.from({ length: 6 }, (_, i) => DASHBOARD_PORT + i),
+      port: Array.from({ length: 6 }, (_, i) => DASHBOARD_PRODUCTION_PORT + i),
     });
 
     const server = app
@@ -45,7 +54,7 @@ const serveDashboard = async (context: vscode.ExtensionContext) => {
     return availablePort;
   } catch {
     vscode.window.showErrorMessage(
-      `Could not find an available port between ${DASHBOARD_PORT} and ${DASHBOARD_PORT + 5}`,
+      `Could not find an available port between ${DASHBOARD_PRODUCTION_PORT} and ${DASHBOARD_PRODUCTION_PORT + 5}`,
     );
 
     return undefined;
