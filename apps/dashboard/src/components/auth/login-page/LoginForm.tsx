@@ -36,14 +36,6 @@ const LoginForm = () => {
     displayAuthErrorSonner();
   }, []);
 
-  // remove the padding-top on the root div
-  useEffect(() => {
-    document.getElementById("root")?.classList.add("auth-root");
-    return () => {
-      document.getElementById("root")?.classList.remove("auth-root");
-    };
-  }, []);
-
   const form = useForm<SignInUserDtoType>({
     resolver: zodResolver(SignInUserDto),
     defaultValues: {

@@ -21,7 +21,6 @@ import Night from "@/assets/animated-night.svg?react";
 import { RegisterUserDto } from "@repo/common/schemas";
 import { RegisterUserDtoType } from "@repo/common/types";
 import getCallbackUrl from "@/utils/getCallbackUrl";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import usePageTitle from "@/hooks/usePageTitle";
 import { useTRPC } from "@/utils/trpc";
@@ -30,13 +29,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const RegisterForm = () => {
   usePageTitle("Register | Mooncode");
-
-  useEffect(() => {
-    document.getElementById("root")?.classList.add("auth-root");
-    return () => {
-      document.getElementById("root")?.classList.remove("auth-root");
-    };
-  }, []);
 
   const form = useForm<RegisterUserDtoType>({
     resolver: zodResolver(RegisterUserDto),
