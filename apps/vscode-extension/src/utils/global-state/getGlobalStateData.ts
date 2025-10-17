@@ -8,6 +8,7 @@ import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 
 /**
  * This function is a wrapper around the raw `vscode.context.globalState.get(key)`
+ * Don't call `vscode.context.globalState.get(key)` to update the global state data, only use this function
  * @returns `Promise<GlobalStateData>`
  */
 

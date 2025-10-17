@@ -63,9 +63,7 @@ const initExtensionCommands = (
       logInfo(`Current files data:\n${formattedData}`);
     },
   );
-  /**
-   * *debugging* in prod purposes...
-   */
+
   const showRawFilesDataCommand = vscode.commands.registerCommand(
     "MoonCode.showRawFilesDataCommand",
     () => {

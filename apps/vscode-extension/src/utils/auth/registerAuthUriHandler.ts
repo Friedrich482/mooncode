@@ -5,6 +5,7 @@ import vscode from "vscode";
 
 const registerAuthUriHandler = () => {
   const context = getExtensionContext();
+
   vscode.window.registerUriHandler({
     async handleUri(uri: vscode.Uri) {
       if (uri.path === "/auth-callback") {

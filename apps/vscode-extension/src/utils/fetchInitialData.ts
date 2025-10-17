@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
-import { DATE_LOCALE } from "@repo/common/constants";
 import { FileDataSync } from "@/types-schemas";
 import { TRPCClientError } from "@trpc/client";
 import getGlobalStateData from "./global-state/getGlobalStateData";
+import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import trpc from "./trpc/client";
 
 const fetchInitialData = async () => {
-  const dateString = new Date().toLocaleDateString(DATE_LOCALE);
+  const dateString = getTodaysLocalDate();
 
   let timeSpentFromGlobalState = 0;
   let initialFilesDataFromGlobalState: FileDataSync = {};
