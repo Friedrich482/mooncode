@@ -33,7 +33,7 @@ const periodicSyncData = async (
       acc[languageSlug] = (acc[languageSlug] || 0) + elapsedTime;
       return acc;
     },
-    {} as Record<string, number>,
+    {} as { [languageSlug: string]: number },
   );
 
   const timeSpentPerProject = Object.entries(filesDataToUpsert)

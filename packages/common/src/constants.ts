@@ -6,9 +6,11 @@ export const ALREADY_EXISTING_EMAIL_MESSAGE = "This email is already used";
 export const ALREADY_EXISTING_USERNAME_MESSAGE = "This username already exists";
 export const COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE = "Auth cookie/token missing";
 
-export const DASHBOARD_PORT = 4208;
+export const DASHBOARD_DEVELOPMENT_PORT = 4308;
+export const DASHBOARD_PRODUCTION_PORT = 4208;
 export const DASHBOARD_PREVIEW_PORT = 4173;
-export const DASHBOARD_DEFAULT_URL = `http://localhost:${DASHBOARD_PORT}`;
+export const DASHBOARD_PRODUCTION_URL = `http://localhost:${DASHBOARD_PRODUCTION_PORT}`;
+export const DASHBOARD_DEVELOPMENT_URL = `http://localhost:${DASHBOARD_DEVELOPMENT_PORT}`;
 export const DASHBOARD_PREVIEW_URL = `http://localhost:${DASHBOARD_PREVIEW_PORT}`;
 
 export const DATE_LOCALE = "sv-SE";

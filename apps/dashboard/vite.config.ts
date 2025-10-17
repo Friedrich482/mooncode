@@ -1,4 +1,7 @@
-import { DASHBOARD_PORT, DASHBOARD_PREVIEW_PORT } from "@repo/common/constants";
+import {
+  DASHBOARD_DEVELOPMENT_PORT,
+  DASHBOARD_PREVIEW_PORT,
+} from "@repo/common/constants";
 import commonjs from "vite-plugin-commonjs";
 import { defineConfig } from "vite";
 import path from "path";
@@ -19,7 +22,8 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: DASHBOARD_PORT,
+    port: DASHBOARD_DEVELOPMENT_PORT,
+    strictPort: true,
   },
   preview: {
     port: DASHBOARD_PREVIEW_PORT,

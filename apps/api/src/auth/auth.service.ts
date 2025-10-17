@@ -172,7 +172,10 @@ export class AuthService {
   ) {
     const { type, request, response } = handleGoogleCallBackDto;
 
-    const returnUrl = validateStateQueryParam(request);
+    const returnUrl = validateStateQueryParam(
+      request,
+      this.envService.get("NODE_ENV"),
+    );
     const callbackUrl = validateExtensionCallbackUrl(request);
 
     const url = new URL(returnUrl);

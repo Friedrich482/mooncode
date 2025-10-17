@@ -43,3 +43,4 @@ export const refineAndTransformSchema = <
 
 export type UserId = { userId: string };
 export type NAString = "N/A" | (string & {});
+export type Environment = "development" | "production";

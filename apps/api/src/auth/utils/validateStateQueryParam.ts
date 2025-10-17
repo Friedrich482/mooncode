@@ -1,10 +1,20 @@
+import {
+  DASHBOARD_DEVELOPMENT_URL,
+  DASHBOARD_PRODUCTION_URL,
+} from "@repo/common/constants";
 import { ALLOWED_CLIENTS } from "src/common/constants";
-import { DASHBOARD_DEFAULT_URL } from "@repo/common/constants";
+import { type Environment } from "src/common/dto";
 import { RedirectToGoogleDto } from "../auth.dto";
 import { Request } from "express";
 
-const validateStateQueryParam = (request: Request) => {
-  let returnUrl = DASHBOARD_DEFAULT_URL;
+const validateStateQueryParam = (
+  request: Request,
+  environment: Environment,
+) => {
+  let returnUrl =
+    environment === "development"
+      ? DASHBOARD_DEVELOPMENT_URL
+      : DASHBOARD_PRODUCTION_URL;
 
   try {
     const rawState = request.query["state"];
