@@ -11,6 +11,7 @@ import {
   FormMessage,
 } from "@repo/ui/components/ui/form";
 import { Link, useNavigate } from "react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@repo/ui/components/ui/button";
 import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
@@ -19,12 +20,10 @@ import Logo from "@/components/layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
 import { RegisterUserDto } from "@repo/common/schemas";
 import { RegisterUserDtoType } from "@repo/common/types";
-import fetchJWTToken from "@repo/common/fetchJWTToken";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import usePageTitle from "@/hooks/usePageTitle";
-import { useQueryClient } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
 import useTogglePassword from "@/hooks/auth/useTogglePassword";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,46 +53,47 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
+  const registerMutation = useMutation(
+    trpc.auth.registerUser.mutationOptions(),
+  );
 
   const callbackUrl = getCallbackUrl();
 
   const onSubmit = async (values: RegisterUserDtoType) => {
-    try {
-      const REGISTER_URL = import.meta.env.VITE_REGISTER_URL;
-
-      const token = await fetchJWTToken(REGISTER_URL, {
+    registerMutation.mutate(
+      {
         email: values.email,
         username: values.username,
         password: values.password,
         callbackUrl,
-      });
+      },
+      {
+        onError: (error) => {
+          const errorMessage = error.message;
 
-      if (callbackUrl && token) {
-        window.location.href = `${callbackUrl}&token=${encodeURIComponent(token)}&email=${encodeURIComponent(values.email)}`;
-      }
+          if (errorMessage === ALREADY_EXISTING_EMAIL_MESSAGE) {
+            form.setError("email", { message: errorMessage });
+          } else if (errorMessage === ALREADY_EXISTING_USERNAME_MESSAGE) {
+            form.setError("username", { message: errorMessage });
+          } else {
+            form.setError("root", { message: errorMessage });
+          }
+        },
 
-      await queryClient.invalidateQueries({
-        queryKey: trpc.auth.getUser.queryKey(),
-        exact: true,
-      });
+        onSuccess: async ({ accessToken }) => {
+          if (callbackUrl && accessToken) {
+            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(values.email)}`;
+          }
 
-      navigate("/dashboard");
-    } catch (error) {
-      let errorMessage = "An error occurred";
-      console.error(error);
+          await queryClient.invalidateQueries({
+            queryKey: trpc.auth.getUser.queryKey(),
+            exact: true,
+          });
 
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      if (errorMessage === ALREADY_EXISTING_EMAIL_MESSAGE) {
-        form.setError("email", { message: errorMessage });
-      } else if (errorMessage === ALREADY_EXISTING_USERNAME_MESSAGE) {
-        form.setError("username", { message: errorMessage });
-      } else {
-        form.setError("root", { message: errorMessage });
-      }
-    }
+          navigate("/dashboard");
+        },
+      },
+    );
   };
 
   return (

@@ -77,10 +77,11 @@ export class AuthService {
           message: "Invalid callback url",
         });
       }
-      return {
-        access_token: token,
-      };
     }
+
+    return {
+      accessToken: token,
+    };
   }
 
   async register(registerDto: RegisterUserDtoType, response: Response) {
@@ -113,13 +114,10 @@ export class AuthService {
           message: "Invalid callback url",
         });
       }
-      return {
-        access_token: token,
-      };
     }
 
     return {
-      access_token: token,
+      accessToken: token,
     };
   }
 
