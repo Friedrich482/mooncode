@@ -3,6 +3,7 @@ import { FileDataSync } from "@/types-schemas";
 import { TRPCClientError } from "@trpc/client";
 import getGlobalStateData from "./global-state/getGlobalStateData";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
+import { logInfo } from "./logger/logger";
 import trpc from "./trpc/client";
 
 const fetchInitialData = async () => {
@@ -71,9 +72,7 @@ const fetchInitialData = async () => {
     };
   } else {
     // Server data is NOT available, must use global state data
-    vscode.window.showInformationMessage(
-      "Server is unavailable, using the global state instead",
-    );
+    logInfo("Server is unavailable, using the global state instead");
 
     return {
       timeSpent: timeSpentFromGlobalState,

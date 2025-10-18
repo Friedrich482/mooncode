@@ -4,6 +4,7 @@ import { getExtensionContext } from "@/extension";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import login from "./login";
 import setLoginContext from "./setLoginContext";
+import setStatusBarItem from "../status-bar/setStatusBarItem";
 import updateGlobalStateData from "@/utils/global-state/updateGlobalStateData";
 import vscode from "vscode";
 
@@ -15,6 +16,7 @@ const logout = async () => {
     await deleteToken(context);
 
     await setLoginContext(false);
+    setStatusBarItem({ type: "auth" });
 
     //  purge the local data of the current user
 

@@ -3,6 +3,8 @@ import { getExtensionContext } from "@/extension";
 import login from "./login";
 import parseJwtPayload from "./parseJwtPayload";
 import setLoginContext from "./setLoginContext";
+import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
+import setStatusBarItem from "../status-bar/setStatusBarItem";
 
 const getToken = async () => {
   const context = getExtensionContext();
@@ -13,10 +15,7 @@ const getToken = async () => {
 
   if (!parsedPayload.success) {
     await setLoginContext(false);
-
-    vscode.window.showInformationMessage(
-      "You're either logged out or your session has expired",
-    );
+    setStatusBarItem({ type: "auth" });
 
     await login();
     token = await context.secrets.get("authToken");
@@ -27,6 +26,7 @@ const getToken = async () => {
 
   if (!token || expireDate * 1000 < Date.now()) {
     await setLoginContext(false);
+    setStatusBarItem({ type: "auth" });
 
     const selection = await vscode.window.showInformationMessage(
       "You are logged out. Please login",
@@ -42,6 +42,7 @@ const getToken = async () => {
   }
 
   await setLoginContext(true);
+  await setStatusBarAfterLogin();
 
   return token;
 };
