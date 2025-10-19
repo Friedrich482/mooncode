@@ -1,5 +1,6 @@
 import { getExtensionContext } from "@/extension";
 import setLoginContext from "./setLoginContext";
+import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
 import storeJWTToken from "./storeJWTToken";
 import vscode from "vscode";
 
@@ -33,6 +34,7 @@ const registerAuthUriHandler = () => {
           await context.secrets.delete("authState");
 
           await setLoginContext(true);
+          await setStatusBarAfterLogin();
 
           vscode.window.showInformationMessage(
             `Logged in ${email ? `as ${email}` : "successfully"}`,

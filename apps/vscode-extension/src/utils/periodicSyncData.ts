@@ -11,7 +11,6 @@ import updateFilesDataAfterSync from "./files/updateFilesDataAfterSync";
 import updateGlobalStateData from "./global-state/updateGlobalStateData";
 
 const periodicSyncData = async (
-  statusBarItem: vscode.StatusBarItem,
   getTime: Awaited<ReturnType<typeof calculateTime>>,
 ) => {
   const todaysDateString = getTodaysLocalDate();
@@ -168,7 +167,10 @@ const periodicSyncData = async (
       );
     }
 
-    setStatusBarItem(timeSpentOnDay, statusBarItem);
+    setStatusBarItem({
+      type: "time",
+      timeSpentToday: timeSpentOnDay,
+    });
   }
 };
 

@@ -1,8 +1,8 @@
 import * as vscode from "vscode";
+import { getExtensionContext, getStatusBarItem } from "@/extension";
 import { logDir, logInfo } from "../logger/logger";
 import { FileDataSync } from "@/types-schemas";
 import calculateTime from "../time/calculateTime";
-import { getExtensionContext } from "@/extension";
 import getGlobalStateData from "../global-state/getGlobalStateData";
 import login from "../auth/login";
 import logout from "../auth/logout";
@@ -11,7 +11,6 @@ import openDashboard from "../dashboard/openDashboard";
 const initExtensionCommands = (
   getTime: Awaited<ReturnType<typeof calculateTime>>,
   initialFilesData: FileDataSync,
-  statusBarItem: vscode.StatusBarItem,
 ) => {
   const context = getExtensionContext();
 
@@ -112,6 +111,8 @@ const initExtensionCommands = (
     "MoonCode.openDashboard",
     openDashboard,
   );
+
+  const statusBarItem = getStatusBarItem();
 
   context.subscriptions.push(
     showInitialLanguagesDataCommand,

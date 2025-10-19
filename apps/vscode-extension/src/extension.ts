@@ -13,6 +13,7 @@ import vscode from "vscode";
 
 let extensionContext: vscode.ExtensionContext;
 let dashboardPort: number | undefined;
+let statusBarItem: vscode.StatusBarItem;
 
 export async function activate(context: vscode.ExtensionContext) {
   extensionContext = context;
@@ -21,25 +22,21 @@ export async function activate(context: vscode.ExtensionContext) {
   dashboardPort = await serveDashboard(context);
   registerAuthUriHandler();
 
-  vscode.window.showInformationMessage(
-    "MoonCode starts now tracking your coding time",
-  );
-
-  const statusBarItem = addStatusBarItem();
+  statusBarItem = addStatusBarItem();
 
   const { timeSpent, initialFilesData } = await fetchInitialData();
 
-  setStatusBarItem(timeSpent, statusBarItem);
+  setStatusBarItem({ type: "time", timeSpentToday: timeSpent });
 
   initializeFiles(initialFilesData);
 
   const getTime = await calculateTime();
 
   const periodicSyncDataInterval = setInterval(async () => {
-    await periodicSyncData(statusBarItem, getTime);
+    await periodicSyncData(getTime);
   }, 60000);
 
-  initExtensionCommands(getTime, initialFilesData, statusBarItem);
+  initExtensionCommands(getTime, initialFilesData);
 
   context.subscriptions.push({
     dispose: () => {
@@ -66,4 +63,11 @@ export const getDashboardPort = () => {
     );
   }
   return dashboardPort;
+};
+
+export const getStatusBarItem = () => {
+  if (!statusBarItem) {
+    throw new Error("Failed to add the item to the status bar");
+  }
+  return statusBarItem;
 };
