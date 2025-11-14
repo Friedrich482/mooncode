@@ -1,15 +1,16 @@
+import { z, ZodError } from "zod";
+
+import { PERIODS } from "@/constants";
+import { Period, PeriodSchema } from "@/types-schemas";
+import { DATE_LOCALE } from "@repo/common/constants";
+import { formatZodError } from "@repo/common/formatZodError";
+import getPeriodResolution from "@repo/common/getPeriodResolution";
+import getTodaysLocaleDate from "@repo/common/getTodaysLocalDate";
 import {
   GroupBy,
   IsoDateSchema,
   PeriodResolution,
 } from "@repo/common/types-schemas";
-import { Period, PeriodSchema } from "@/types-schemas";
-import { ZodError, z } from "zod";
-import { DATE_LOCALE } from "@repo/common/constants";
-import { PERIODS } from "@/constants";
-import { formatZodError } from "@repo/common/formatZodError";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
-import getTodaysLocaleDate from "@repo/common/getTodaysLocalDate";
 
 type ReturnType = {
   period: Period;

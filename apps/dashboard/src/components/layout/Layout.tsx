@@ -1,10 +1,12 @@
+import { useEffect } from "react";
 import { Outlet, useNavigation } from "react-router";
 import { ClipLoader } from "react-spinners";
-import Footer from "./Footer";
-import Header from "./header/Header";
+
 import ScrollToTopButton from "@repo/ui/components/ScrollToTopButton";
 import { cn } from "@repo/ui/lib/utils";
-import { useEffect } from "react";
+
+import Footer from "./Footer";
+import Header from "./header/Header";
 
 const GlobalSpinner = () => (
   <div className="flex h-dvh items-center justify-center">

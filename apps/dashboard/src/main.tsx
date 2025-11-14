@@ -1,21 +1,22 @@
-import { RouterProvider, createBrowserRouter } from "react-router";
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router";
+
+import App from "./App";
+import LoginForm from "./components/auth/login-page/LoginForm";
+import RegisterForm from "./components/auth/register-page/RegisterForm";
+import Dashboard from "./components/dashboard-page/Dashboard";
+import Layout from "./components/layout/Layout";
+import NotFound from "./components/not-found-page/NotFound";
+import RedirectToNotFound from "./components/not-found-page/RedirectToNotFound";
+import Project from "./components/project-page/Project";
+import Root from "./components/root-page/Root";
 import {
   authRouteLoader,
   googleAuthLoader,
   protectedRouteLoader,
   redirectToVSCodeAfterGoogleAuthLoader,
 } from "./utils/authLoader";
-import App from "./App";
-import Dashboard from "./components/dashboard-page/Dashboard";
-import Layout from "./components/layout/Layout";
-import LoginForm from "./components/auth/login-page/LoginForm";
-import NotFound from "./components/not-found-page/NotFound";
-import Project from "./components/project-page/Project";
-import React from "react";
-import RedirectToNotFound from "./components/not-found-page/RedirectToNotFound";
-import RegisterForm from "./components/auth/register-page/RegisterForm";
-import Root from "./components/root-page/Root";
-import { createRoot } from "react-dom/client";
 
 const router = createBrowserRouter([
   {

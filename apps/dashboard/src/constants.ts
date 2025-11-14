@@ -1,4 +1,3 @@
-import { LayoutDashboard, LucideProps, Monitor, Moon, Sun } from "lucide-react";
 import {
   endOfMonth,
   endOfWeek,
@@ -11,11 +10,14 @@ import {
   subWeeks,
   subYears,
 } from "date-fns";
-import { ChartConfig } from "@repo/ui/components/ui/chart";
-import { DATE_LOCALE } from "@repo/common/constants";
-import { FixedArray } from "./types-schemas";
-import { GroupBy } from "@repo/common/types";
+import { LayoutDashboard, LucideProps, Monitor, Moon, Sun } from "lucide-react";
+
 import { Theme } from "@/providers/themeProvider";
+import { DATE_LOCALE } from "@repo/common/constants";
+import { GroupBy } from "@repo/common/types-schemas";
+import { ChartConfig } from "@repo/ui/components/ui/chart";
+
+import { FixedArray } from "./types-schemas";
 
 export const THEME_DROPDOWN_ITEMS: {
   text: string;

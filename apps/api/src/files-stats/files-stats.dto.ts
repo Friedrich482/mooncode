@@ -1,12 +1,13 @@
+import { z } from "zod";
 import {
   BaseSchema,
   DateRangeSchema,
-  UserId,
   refineAndTransformSchema,
   refineSchema,
+  UserId,
 } from "src/common/dto";
+
 import { DateStringDto } from "@repo/common/types-schemas";
-import { z } from "zod";
 
 export const GetDailyFilesStatsForExtensionDto = z.object({
   dateString: DateStringDto,
@@ -15,7 +16,7 @@ export const GetDailyFilesStatsForExtensionDto = z.object({
 export const UpsertFilesDto = z.object({
   timeSpentPerProject: z.record(
     z.string().min(1),
-    z.number().int().nonnegative(),
+    z.number().int().nonnegative()
   ),
   filesData: z.record(
     z.string().min(1),
@@ -25,7 +26,7 @@ export const UpsertFilesDto = z.object({
       projectName: z.string().min(1),
       projectPath: z.string().min(1),
       fileName: z.string().min(1),
-    }),
+    })
   ),
   targetedDate: DateStringDto,
 });
@@ -36,14 +37,14 @@ export const GetProjectOnPeriodDto = refineSchema(
   z.object({
     ...DateRangeSchema.shape,
     name: z.string().min(1),
-  }),
+  })
 );
 
 export const GetProjectPerDayOfPeriodDto = refineAndTransformSchema(
   z.object({
     ...BaseSchema.shape,
     name: z.string().min(1),
-  }),
+  })
 );
 export const GetProjectLanguagesTimeOnPeriodDto = GetProjectOnPeriodDto;
 export const GetProjectLanguagesPerDayOfPeriodDto = GetProjectPerDayOfPeriodDto;
@@ -53,7 +54,7 @@ export const GetProjectFilesOnPeriodDto = refineSchema(
     name: z.string().min(1),
     amount: z.number().int().nonnegative().optional(),
     languages: z.array(z.string().min(1)).optional(),
-  }),
+  })
 );
 
 export type GetDailyFilesStatsForExtensionDtoType = z.infer<

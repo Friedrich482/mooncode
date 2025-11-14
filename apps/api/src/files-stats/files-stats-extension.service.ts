@@ -1,12 +1,14 @@
+import { DailyDataService } from "src/daily-data/daily-data.service";
+import { FilesService } from "src/files/files.service";
+import { LanguagesService } from "src/languages/languages.service";
+import { ProjectsService } from "src/projects/projects.service";
+
+import { Injectable } from "@nestjs/common";
+
 import {
   GetDailyFilesStatsForExtensionDtoType,
   UpsertFilesStatsDtoType,
 } from "./files-stats.dto";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { FilesService } from "src/files/files.service";
-import { Injectable } from "@nestjs/common";
-import { LanguagesService } from "src/languages/languages.service";
-import { ProjectsService } from "src/projects/projects.service";
 
 @Injectable()
 export class FilesStatsExtensionService {
@@ -14,10 +16,10 @@ export class FilesStatsExtensionService {
     private readonly projectsService: ProjectsService,
     private readonly filesService: FilesService,
     private readonly dailyDataService: DailyDataService,
-    private readonly languagesService: LanguagesService,
+    private readonly languagesService: LanguagesService
   ) {}
   async getDailyFilesStatsForExtension(
-    getDailyFilesStatsForExtensionDto: GetDailyFilesStatsForExtensionDtoType,
+    getDailyFilesStatsForExtensionDto: GetDailyFilesStatsForExtensionDtoType
   ) {
     const { userId, dateString } = getDailyFilesStatsForExtensionDto;
 

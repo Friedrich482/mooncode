@@ -1,3 +1,8 @@
+import { Link, useNavigate } from "react-router";
+import { LogOut, User } from "lucide-react";
+
+import { AUTH_DROPDOWN_ITEMS } from "@/constants";
+import { useTRPC } from "@/utils/trpc";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -5,14 +10,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@repo/ui/components/ui/dropdown-menu";
-import { Link, useNavigate } from "react-router";
-import { LogOut, User } from "lucide-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AUTH_DROPDOWN_ITEMS } from "@/constants";
-import GravatarAvatar from "./GravatarAvatar";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
-import { useTRPC } from "@/utils/trpc";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+
+import GravatarAvatar from "./GravatarAvatar";
 
 const AuthDropDown = () => {
   const trpc = useTRPC();

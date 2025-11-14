@@ -1,5 +1,5 @@
-import { FileDataSync } from "@/types-schemas";
 import { filesData } from "@/constants";
+import { FileDataSync } from "@/types-schemas";
 
 const initializeFiles = (data: FileDataSync) => {
   // initialize the time/other metadata for each file found

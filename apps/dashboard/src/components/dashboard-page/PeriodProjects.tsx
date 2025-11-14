@@ -1,13 +1,14 @@
-import { Folder, FolderOpen, LayoutGrid, List } from "lucide-react";
-import Icon from "@repo/ui/components/ui/Icon";
-import { Link } from "react-router";
-import { PERIODS_CONFIG } from "@/constants";
-import { cn } from "@repo/ui/lib/utils";
-import formatDuration from "@repo/common/formatDuration";
-import { usePeriodStore } from "@/hooks/store/periodStore";
 import { useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { Link } from "react-router";
+import { Folder, FolderOpen, LayoutGrid, List } from "lucide-react";
+
+import { PERIODS_CONFIG } from "@/constants";
+import { usePeriodStore } from "@/hooks/store/periodStore";
 import { useTRPC } from "@/utils/trpc";
+import formatDuration from "@repo/common/formatDuration";
+import Icon from "@repo/ui/components/ui/Icon";
+import { cn } from "@repo/ui/lib/utils";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const PeriodProjects = () => {
   const period = usePeriodStore((state) => state.period);

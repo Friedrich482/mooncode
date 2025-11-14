@@ -1,12 +1,14 @@
-import { FindByIdDto, UpdateProfileDto, UpdateUserDto } from "./users.dto";
-import { Injectable } from "@nestjs/common";
 import { TrpcService } from "src/trpc/trpc.service";
+
+import { Injectable } from "@nestjs/common";
+
+import { FindByIdDto, UpdateProfileDto, UpdateUserDto } from "./users.dto";
 import { UsersService } from "./users.service";
 @Injectable()
 export class UsersRouter {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService
   ) {}
 
   procedures = {
@@ -15,14 +17,14 @@ export class UsersRouter {
         .protectedProcedure()
         .input(UpdateProfileDto)
         .mutation(async ({ ctx, input }) =>
-          this.usersService.update({ id: ctx.user.sub, ...input }),
+          this.usersService.update({ id: ctx.user.sub, ...input })
         ),
 
       getUserById: this.trpcService
         .protectedProcedure()
         .input(FindByIdDto)
         .query(async ({ input }) =>
-          this.usersService.findOne({ id: input.id }),
+          this.usersService.findOne({ id: input.id })
         ),
 
       updateUser: this.trpcService

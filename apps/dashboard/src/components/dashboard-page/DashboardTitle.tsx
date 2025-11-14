@@ -1,11 +1,12 @@
-import CustomRangeDatesSelector from "../common/CustomRangeDatesSelector";
 import { ErrorBoundary } from "react-error-boundary";
+import { TriangleAlert } from "lucide-react";
+
+import CustomRangeDatesSelector from "../common/CustomRangeDatesSelector";
 import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
+import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
 import GroupByDropDown from "./GroupByDropDown";
 import PeriodDropDown from "./PeriodDropDown";
-import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
 import TimeSpentOnPeriod from "./TimeSpentOnPeriod";
-import { TriangleAlert } from "lucide-react";
 
 const DashboardTitle = () => (
   <div

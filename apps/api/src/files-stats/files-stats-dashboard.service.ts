@@ -1,3 +1,9 @@
+import getWeekDayName from "src/common/utils/getWeekdayName";
+import { ProjectsService } from "src/projects/projects.service";
+
+import { Injectable } from "@nestjs/common";
+import formatDuration from "@repo/common/formatDuration";
+
 import {
   GetPeriodProjectsDtoType,
   GetProjectFilesOnPeriodDtoType,
@@ -6,14 +12,10 @@ import {
   GetProjectOnPeriodDtoType,
   GetProjectPerDayOfPeriodDtoType,
 } from "./files-stats.dto";
-import { Injectable } from "@nestjs/common";
-import { ProjectsService } from "src/projects/projects.service";
-import formatDuration from "@repo/common/formatDuration";
 import getProjectLanguageGroupByMonths from "./utils/getProjectLanguageGroupByMonths";
 import getProjectLanguagesGroupByWeeks from "./utils/getProjectLanguagesGroupByWeeks";
 import getProjectPerDayOfPeriodGroupByMonths from "./utils/getProjectPerDayOfPeriodGroupByMonths";
 import getProjectPerDayOfPeriodGroupByWeeks from "./utils/getProjectPerDayOfPeriodGroupByWeeks";
-import getWeekDayName from "src/common/utils/getWeekdayName";
 
 @Injectable()
 export class FilesStatsDashboardService {

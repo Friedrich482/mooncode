@@ -1,8 +1,9 @@
 import { index, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { ulid } from "ulid";
+
+import { timestamps } from "../columns.helpers";
 import { languages } from "./languages";
 import { projects } from "./projects";
-import { timestamps } from "../columns.helpers";
-import { ulid } from "ulid";
 
 export const files = pgTable(
   "files",
@@ -28,5 +29,5 @@ export const files = pgTable(
     index("language_id_index").on(table.languageId),
     index("file_name_index").on(table.name),
     index("file_path_index").on(table.path),
-  ],
+  ]
 );

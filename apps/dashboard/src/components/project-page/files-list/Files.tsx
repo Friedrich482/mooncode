@@ -1,15 +1,17 @@
+import { memo, useState } from "react";
+
+import useFiles from "@/hooks/projects/files/useFiles";
+import formatDuration from "@repo/common/formatDuration";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
-import { memo, useState } from "react";
-import FilesGroupHeader from "./FilesGroupHeader";
 import { cn } from "@repo/ui/lib/utils";
-import formatDuration from "@repo/common/formatDuration";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
-import useFiles from "@/hooks/projects/files/useFiles";
+
+import FilesGroupHeader from "./FilesGroupHeader";
 
 const Files = memo(function Files({
   languagesToFetch,
@@ -86,7 +88,7 @@ const Files = memo(function Files({
                 />
                 <ul
                   className={cn(
-                    "rounded-md rounded-l-none border-t-[1px]",
+                    "rounded-md rounded-l-none border-t",
                     !isLanguageCollapsed && "border p-4",
                   )}
                   style={{ borderColor: languageColor }}

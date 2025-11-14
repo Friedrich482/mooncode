@@ -1,14 +1,15 @@
+import path from "path";
+import { visualizer } from "rollup-plugin-visualizer";
+import { defineConfig } from "vite";
+import commonjs from "vite-plugin-commonjs";
+import svgr from "vite-plugin-svgr";
+
 import {
   DASHBOARD_DEVELOPMENT_PORT,
   DASHBOARD_PREVIEW_PORT,
 } from "@repo/common/constants";
-import commonjs from "vite-plugin-commonjs";
-import { defineConfig } from "vite";
-import path from "path";
-import react from "@vitejs/plugin-react-swc";
-import svgr from "vite-plugin-svgr";
 import tailwindcss from "@tailwindcss/vite";
-import { visualizer } from "rollup-plugin-visualizer";
+import react from "@vitejs/plugin-react-swc";
 
 export default defineConfig({
   plugins: [

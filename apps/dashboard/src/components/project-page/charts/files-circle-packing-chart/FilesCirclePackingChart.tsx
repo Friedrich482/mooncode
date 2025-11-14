@@ -1,12 +1,14 @@
-import { NUMBER_OF_FILES_TO_SHOW, PERIODS_CONFIG } from "@/constants";
-import { ProjectParamsSchema, Tree } from "@/types-schemas";
 import { useRef, useState } from "react";
-import CircularPacking from "./CircularPacking";
-import getLanguageName from "@repo/ui/utils/getLanguageName";
+
+import { NUMBER_OF_FILES_TO_SHOW, PERIODS_CONFIG } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import useSafeParams from "@/hooks/useSafeParams";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { ProjectParamsSchema, Tree } from "@/types-schemas";
 import { useTRPC } from "@/utils/trpc";
+import getLanguageName from "@repo/ui/utils/getLanguageName";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
+import CircularPacking from "./CircularPacking";
 
 const FilesCirclePackingChart = () => {
   const { projectName: name } = useSafeParams(ProjectParamsSchema);

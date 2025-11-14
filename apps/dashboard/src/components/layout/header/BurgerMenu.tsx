@@ -1,8 +1,10 @@
-import Icon from "@repo/ui/components/ui/Icon";
-import { Menu } from "lucide-react";
-import SideBar from "./SideBar";
-import useOutsideClick from "@/hooks/useOutsideClick";
 import { useState } from "react";
+import { Menu } from "lucide-react";
+
+import useOutsideClick from "@/hooks/useOutsideClick";
+import Icon from "@repo/ui/components/ui/Icon";
+
+import SideBar from "./SideBar";
 
 const BurgerMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -13,7 +15,7 @@ const BurgerMenu = () => {
   return (
     <>
       <Icon
-        className="hidden max-small:flex"
+        className="max-small:flex hidden"
         onClick={handleClick}
         Icon={Menu}
       />

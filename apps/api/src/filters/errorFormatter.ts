@@ -1,5 +1,6 @@
-import { ZodError, z } from "zod";
+import { z, ZodError } from "zod";
 import { EnvService } from "src/env/env.service";
+
 import { TRPCError } from "@trpc/server";
 
 type ErrorShape = {
@@ -21,7 +22,7 @@ const errorFormatter = (
   }: {
     shape: ErrorShape;
     error: unknown;
-  },
+  }
 ) => {
   const isDev = envService.get("NODE_ENV") === "development";
 

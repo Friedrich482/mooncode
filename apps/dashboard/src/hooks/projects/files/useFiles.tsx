@@ -1,9 +1,9 @@
 import { PERIODS_CONFIG } from "@/constants";
-import { ProjectParamsSchema } from "@/types-schemas";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import useSafeParams from "@/hooks/useSafeParams";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { ProjectParamsSchema } from "@/types-schemas";
 import { useTRPC } from "@/utils/trpc";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const useFiles = (
   languagesToFetch: string[] | undefined,

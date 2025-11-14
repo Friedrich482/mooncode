@@ -1,4 +1,5 @@
 import { Test, TestingModule } from "@nestjs/testing";
+
 import { DailyDataService } from "./daily-data.service";
 
 describe("DailyDataService", () => {

@@ -1,3 +1,21 @@
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+
+import Night from "@/assets/animated-night.svg?react";
+import Logo from "@/components/layout/header/Logo";
+import useTogglePassword from "@/hooks/auth/useTogglePassword";
+import usePageTitle from "@/hooks/usePageTitle";
+import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
+import getCallbackUrl from "@/utils/getCallbackUrl";
+import { useTRPC } from "@/utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  INCORRECT_PASSWORD_MESSAGE,
+  USER_NOT_FOUND_MESSAGE,
+} from "@repo/common/constants";
+import { SignInUserDto, SignInUserDtoType } from "@repo/common/types-schemas";
+import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
   FormControl,
@@ -6,27 +24,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@repo/ui/components/ui/form";
-import {
-  INCORRECT_PASSWORD_MESSAGE,
-  USER_NOT_FOUND_MESSAGE,
-} from "@repo/common/constants";
-import { Link, useNavigate } from "react-router";
-import { SignInUserDto, SignInUserDtoType } from "@repo/common/types-schemas";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@repo/ui/components/ui/button";
-import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import GoogleLoginButton from "../GoogleLoginButton";
 import LoginMethodSeparator from "../LoginMethodSeparator";
-import Logo from "@/components/layout/header/Logo";
-import Night from "@/assets/animated-night.svg?react";
-import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
-import getCallbackUrl from "@/utils/getCallbackUrl";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import usePageTitle from "@/hooks/usePageTitle";
-import { useTRPC } from "@/utils/trpc";
-import useTogglePassword from "@/hooks/auth/useTogglePassword";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const LoginForm = () => {
   usePageTitle("Login | Mooncode");

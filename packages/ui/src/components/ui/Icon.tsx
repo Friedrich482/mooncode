@@ -1,6 +1,8 @@
-import { Button } from "./button";
-import { LucideProps } from "lucide-react";
 import React, { ButtonHTMLAttributes } from "react";
+import { LucideProps } from "lucide-react";
+
+import { Button } from "./button";
+
 import { cn } from "#lib/utils.ts";
 
 const Icon = ({

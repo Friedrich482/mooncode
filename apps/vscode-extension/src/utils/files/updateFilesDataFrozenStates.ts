@@ -1,10 +1,12 @@
-import { MAX_IDLE_TIME, filesData } from "@/constants";
-import getCurrentFileProperties from "./getCurrentFileProperties";
 import vscode from "vscode";
+
+import { filesData, MAX_IDLE_TIME } from "@/constants";
+
+import getCurrentFileProperties from "./getCurrentFileProperties";
 
 const updateFilesDataFrozenStates = () => {
   const latestFile = getCurrentFileProperties(
-    vscode.window.activeTextEditor?.document,
+    vscode.window.activeTextEditor?.document
   );
 
   const now = performance.now();
@@ -34,7 +36,7 @@ const updateFilesDataFrozenStates = () => {
      *  in a variable called `idleDuration`
      */
     const idleDuration = Math.floor(
-      (now - latestFileObj.lastActivityTime) / 1000,
+      (now - latestFileObj.lastActivityTime) / 1000
     );
 
     /**
@@ -42,7 +44,7 @@ const updateFilesDataFrozenStates = () => {
      */
     if (idleDuration >= MAX_IDLE_TIME && !latestFileObj.isFrozen) {
       latestFileObj.frozenTime = Math.floor(
-        (now - latestFileObj.startTime) / 1000,
+        (now - latestFileObj.startTime) / 1000
       );
       latestFileObj.freezeStartTime = now;
       latestFileObj.isFrozen = true;
@@ -56,7 +58,7 @@ const updateFilesDataFrozenStates = () => {
       latestFileObj.freezeStartTime
     ) {
       const freezeDuration = Math.floor(
-        (now - latestFileObj.freezeStartTime) / 1000,
+        (now - latestFileObj.freezeStartTime) / 1000
       );
       latestFileObj.startTime += Math.floor(freezeDuration * 1000);
       latestFileObj.frozenTime = null;

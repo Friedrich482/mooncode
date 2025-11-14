@@ -1,13 +1,15 @@
 import { useEffect, useState } from "react";
-import { Entry } from "@/types-schemas";
 import { ErrorBoundary } from "react-error-boundary";
+import { TriangleAlert } from "lucide-react";
+
 import FallBackRender from "@/components/suspense-error-boundaries/ErrorBoundary";
+import SuspenseBoundary from "@/components/suspense-error-boundaries/SuspenseBoundary";
+import { useDebounce } from "@/hooks/useDebounce";
+import { Entry } from "@/types-schemas";
+
 import Files from "./Files";
 import FiltersSection from "./FiltersSection";
 import LanguagesDropDown from "./LanguagesDropDown";
-import SuspenseBoundary from "@/components/suspense-error-boundaries/SuspenseBoundary";
-import { TriangleAlert } from "lucide-react";
-import { useDebounce } from "@/hooks/useDebounce";
 
 const FilesList = () => {
   const [selectedEntries, setSelectedEntries] = useState<Entry[]>([]);
@@ -96,7 +98,7 @@ const FilesList = () => {
             />
           )}
         >
-          <SuspenseBoundary className="max-chart:w-full h-[52rem] w-full">
+          <SuspenseBoundary className="max-chart:w-full h-208 w-full">
             <Files
               languagesToFetch={languagesToFetch}
               amount={debouncedLimit}

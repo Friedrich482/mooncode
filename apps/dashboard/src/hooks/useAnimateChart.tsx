@@ -1,15 +1,16 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
-  HierarchyCircularNode,
   hierarchy as d3Hierarchy,
+  HierarchyCircularNode,
   pack,
 } from "d3-hierarchy";
+
+import { Tree } from "@/types-schemas";
 import {
   checkCollision,
   handleCollisionBetweenNodeAndLeaf,
   handleCollisionBetweenSiblings,
 } from "@/utils/chartAnimation";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Tree } from "@/types-schemas";
 
 const useAnimateChart = (
   data: Tree,

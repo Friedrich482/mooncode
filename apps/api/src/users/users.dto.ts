@@ -1,6 +1,7 @@
-import { RegisterUserDto } from "@repo/common/types-schemas";
-import { authMethodEnum } from "src/drizzle/schema/users";
 import { z } from "zod";
+import { authMethodEnum } from "src/drizzle/schema/users";
+
+import { RegisterUserDto } from "@repo/common/types-schemas";
 
 export const createUserDto = RegisterUserDto.omit({
   callbackUrl: true,

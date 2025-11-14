@@ -1,8 +1,9 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
-import { PeriodResolution } from "@repo/common/types-schemas";
-import { ProjectsService } from "src/projects/projects.service";
-import convertToISODate from "@repo/common/convertToISODate";
 import formatShortDate from "src/common/utils/formatShortDate";
+import { ProjectsService } from "src/projects/projects.service";
+
+import convertToISODate from "@repo/common/convertToISODate";
+import { PeriodResolution } from "@repo/common/types-schemas";
 
 const getProjectLanguagesGroupByWeeks = async (
   data: Awaited<ReturnType<ProjectsService["findProjectByNameOnRange"]>>,

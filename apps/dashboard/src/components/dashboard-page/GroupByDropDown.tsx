@@ -1,15 +1,16 @@
+import { useMemo } from "react";
+import { Group } from "lucide-react";
+
+import { GROUP_BY_DROPDOWN_ITEMS, PERIODS_CONFIG } from "@/constants";
+import { usePeriodStore } from "@/hooks/store/periodStore";
+import getPeriodResolution from "@repo/common/getPeriodResolution";
+import { Button } from "@repo/ui/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/components/ui/dropdown-menu";
-import { GROUP_BY_DROPDOWN_ITEMS, PERIODS_CONFIG } from "@/constants";
-import { Button } from "@repo/ui/components/ui/button";
-import { Group } from "lucide-react";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
-import { useMemo } from "react";
-import { usePeriodStore } from "@/hooks/store/periodStore";
 
 const GroupByDropDown = () => {
   const period = usePeriodStore((state) => state.period);

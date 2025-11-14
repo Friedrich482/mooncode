@@ -1,5 +1,6 @@
+import { prettifyError, ZodType } from "zod";
+
 import { BadRequestException, Injectable, PipeTransform } from "@nestjs/common";
-import { ZodType, prettifyError } from "zod";
 
 @Injectable()
 export class ZodPipe<T> implements PipeTransform {

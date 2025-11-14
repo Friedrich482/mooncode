@@ -1,8 +1,10 @@
-import { ALLOWED_CLIENTS } from "./common/constants";
-import { AppModule } from "./app.module";
-import { NestFactory } from "@nestjs/core";
-import { TrpcRouter } from "./trpc/trpc.router";
 import cookieParser from "cookie-parser";
+
+import { NestFactory } from "@nestjs/core";
+
+import { AppModule } from "./app.module";
+import { ALLOWED_CLIENTS } from "./common/constants";
+import { TrpcRouter } from "./trpc/trpc.router";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

@@ -1,5 +1,5 @@
-import type { AppRouter } from "@repo/trpc/router";
 import { filesData } from "@/constants";
+import type { AppRouter } from "@repo/trpc/router";
 
 const updateFilesDataAfterSync = (
   files: Awaited<ReturnType<AppRouter["filesStats"]["upsert"]>>,

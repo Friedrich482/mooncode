@@ -1,12 +1,13 @@
 import { endOfMonth, startOfMonth } from "date-fns";
+import formatShortDate from "src/common/utils/formatShortDate";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { LanguagesService } from "src/languages/languages.service";
+
 import convertToISODate from "@repo/common/convertToISODate";
-import formatShortDate from "src/common/utils/formatShortDate";
 
 const getPeriodLanguagesGroupByMonths = async (
   data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,
-  languagesService: LanguagesService,
+  languagesService: LanguagesService
 ) => {
   if (data.length === 0) return [];
 
@@ -32,7 +33,7 @@ const getPeriodLanguagesGroupByMonths = async (
       languages: await languagesService.findAllLanguages({
         dailyDataId: entry.id,
       }),
-    })),
+    }))
   );
 
   for (const [, entry] of entriesWithLanguages.entries()) {
@@ -71,7 +72,7 @@ const getPeriodLanguagesGroupByMonths = async (
       ...languages,
       originalDate: rest.month,
       date: rest.month,
-    }),
+    })
   );
 };
 export default getPeriodLanguagesGroupByMonths;

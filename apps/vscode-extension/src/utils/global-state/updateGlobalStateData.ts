@@ -1,6 +1,6 @@
-import { GlobalStateData } from "@/types-schemas";
 import { SYNC_DATA_KEY } from "@/constants";
 import { getExtensionContext } from "@/extension";
+import { GlobalStateData } from "@/types-schemas";
 
 /**
  * This function is a wrapper around `vscode.context.globalState.update(key)`

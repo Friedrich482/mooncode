@@ -1,13 +1,14 @@
+import { ChevronDown } from "lucide-react";
+
+import useLanguagesDropDown from "@/hooks/useLanguagesDropDown";
+import { Entry } from "@/types-schemas";
+import { Button } from "@repo/ui/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@repo/ui/components/ui/dropdown-menu";
-import { Button } from "@repo/ui/components/ui/button";
-import { ChevronDown } from "lucide-react";
-import { Entry } from "@/types-schemas";
-import useLanguagesDropDown from "@/hooks/useLanguagesDropDown";
 
 const LanguagesDropDown = ({
   selectedEntries,

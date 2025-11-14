@@ -1,20 +1,22 @@
+import { DailyDataService } from "src/daily-data/daily-data.service";
+import { LanguagesService } from "src/languages/languages.service";
+
+import { Injectable } from "@nestjs/common";
+
 import {
   GetDailyStatsForExtensionDtoType,
   UpsertLanguagesDtoType,
 } from "./coding-stats.dto";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { Injectable } from "@nestjs/common";
-import { LanguagesService } from "src/languages/languages.service";
 
 @Injectable()
 export class CodingStatsExtensionService {
   constructor(
     private readonly dailyDataService: DailyDataService,
-    private readonly languagesService: LanguagesService,
+    private readonly languagesService: LanguagesService
   ) {}
 
   async getDailyStatsForExtension(
-    getDailyStatsForExtensionDto: GetDailyStatsForExtensionDtoType,
+    getDailyStatsForExtensionDto: GetDailyStatsForExtensionDtoType
   ) {
     const { userId, dateString } = getDailyStatsForExtensionDto;
 
@@ -47,13 +49,13 @@ export class CodingStatsExtensionService {
       languages: {} as { [languageSlug: string]: number },
     };
     const existingTimeSpentOnDay = await this.dailyDataService.findOneDailyData(
-      { userId, date: targetedDate },
+      { userId, date: targetedDate }
     );
 
     if (!existingTimeSpentOnDay) {
       // create daily data if it doesn't exists
       const createdTimeSpentOnDay = await this.dailyDataService.createDailyData(
-        { targetedDate, timeSpent: timeSpentOnDay, userId },
+        { targetedDate, timeSpent: timeSpentOnDay, userId }
       );
 
       returningData.dailyDataId = createdTimeSpentOnDay.id;

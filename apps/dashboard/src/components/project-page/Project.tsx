@@ -1,15 +1,16 @@
+import { lazy } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { TriangleAlert } from "lucide-react";
+
 import ChartGroupWrapper from "../common/ChartGroupWrapper";
 import CustomRangeDatesSelector from "../common/CustomRangeDatesSelector";
-import { ErrorBoundary } from "react-error-boundary";
-import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
-import FilesList from "./files-list/FilesList";
 import GroupByDropDown from "../dashboard-page/GroupByDropDown";
 import PeriodDropDown from "../dashboard-page/PeriodDropDown";
-import ProjectTitle from "./ProjectTitle";
+import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
 import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
+import FilesList from "./files-list/FilesList";
+import ProjectTitle from "./ProjectTitle";
 import TimeSpentOnProject from "./TimeSpentOnProject";
-import { TriangleAlert } from "lucide-react";
-import { lazy } from "react";
 
 const ProjectTimeOnPeriodChart = lazy(
   () => import("./charts/ProjectTimeOnPeriodChart"),
@@ -118,7 +119,7 @@ const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary className="h-[45.5rem] w-full">
+            <SuspenseBoundary className="h-182 w-full">
               <FilesCirclePackingChart />
             </SuspenseBoundary>
           </ErrorBoundary>

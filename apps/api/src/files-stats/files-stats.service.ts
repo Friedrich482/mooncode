@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import {
   GetDailyFilesStatsForExtensionDtoType,
   GetPeriodProjectsDtoType,
@@ -10,20 +12,19 @@ import {
 } from "./files-stats.dto";
 import { FilesStatsDashboardService } from "./files-stats-dashboard.service";
 import { FilesStatsExtensionService } from "./files-stats-extension.service";
-import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class FilesStatsService {
   constructor(
     private readonly filesStatsExtensionService: FilesStatsExtensionService,
-    private readonly filesStatsDashboardService: FilesStatsDashboardService,
+    private readonly filesStatsDashboardService: FilesStatsDashboardService
   ) {}
 
   async getDailyFilesStatsForExtension(
-    getDailyFilesStatsForExtensionDto: GetDailyFilesStatsForExtensionDtoType,
+    getDailyFilesStatsForExtensionDto: GetDailyFilesStatsForExtensionDtoType
   ) {
     return this.filesStatsExtensionService.getDailyFilesStatsForExtension(
-      getDailyFilesStatsForExtensionDto,
+      getDailyFilesStatsForExtensionDto
     );
   }
 
@@ -33,45 +34,45 @@ export class FilesStatsService {
 
   async getPeriodProjects(getPeriodProjectsDto: GetPeriodProjectsDtoType) {
     return this.filesStatsDashboardService.getPeriodProjects(
-      getPeriodProjectsDto,
+      getPeriodProjectsDto
     );
   }
 
   async getProjectOnPeriod(getProjectOnPeriodDto: GetProjectOnPeriodDtoType) {
     return this.filesStatsDashboardService.getProjectOnPeriod(
-      getProjectOnPeriodDto,
+      getProjectOnPeriodDto
     );
   }
 
   async getProjectPerDayOfPeriod(
-    getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType,
+    getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType
   ) {
     return this.filesStatsDashboardService.getProjectPerDayOfPeriod(
-      getProjectPerDayOfPeriodDto,
+      getProjectPerDayOfPeriodDto
     );
   }
 
   async getProjectLanguagesTimeOnPeriod(
-    getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType,
+    getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType
   ) {
     return this.filesStatsDashboardService.getProjectLanguagesTimeOnPeriod(
-      getProjectLanguagesTimeOnPeriod,
+      getProjectLanguagesTimeOnPeriod
     );
   }
 
   async getProjectLanguagesPerDayOfPeriod(
-    getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType,
+    getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType
   ) {
     return this.filesStatsDashboardService.getProjectLanguagesPerDayOfPeriod(
-      getProjectLanguagesPerDayOfPeriodDto,
+      getProjectLanguagesPerDayOfPeriodDto
     );
   }
 
   async getProjectFilesOnPeriod(
-    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType,
+    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
   ) {
     return this.filesStatsDashboardService.getProjectFilesOnPeriod(
-      getProjectFilesOnPeriodDto,
+      getProjectFilesOnPeriodDto
     );
   }
 }

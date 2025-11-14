@@ -1,6 +1,7 @@
+import { z } from "zod";
+
 import formatDuration from "@repo/common/formatDuration";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
-import { z } from "zod";
 
 const CustomChartToolTip = (
   value: number,

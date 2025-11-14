@@ -1,3 +1,8 @@
+import { useState } from "react";
+import {
+  AreaChart as AreaChartIcon,
+  BarChart as BarChartIcon,
+} from "lucide-react";
 import {
   Area,
   AreaChart,
@@ -7,25 +12,21 @@ import {
   Line,
   XAxis,
 } from "recharts";
-import {
-  AreaChart as AreaChartIcon,
-  BarChart as BarChartIcon,
-} from "lucide-react";
+import { Payload } from "recharts/types/component/DefaultTooltipContent";
+
+import CustomChartToolTip from "@/components/common/CustomChartToolTip";
+import { chartConfig, PERIODS_CONFIG } from "@/constants";
+import { usePeriodStore } from "@/hooks/store/periodStore";
+import useSafeParams from "@/hooks/useSafeParams";
+import { ProjectParamsSchema } from "@/types-schemas";
+import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
+import { RouterOutput, useTRPC } from "@/utils/trpc";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@repo/ui/components/ui/chart";
-import { PERIODS_CONFIG, chartConfig } from "@/constants";
-import { RouterOutput, useTRPC } from "@/utils/trpc";
-import CustomChartToolTip from "@/components/common/CustomChartToolTip";
 import Icon from "@repo/ui/components/ui/Icon";
-import { Payload } from "recharts/types/component/DefaultTooltipContent";
-import { ProjectParamsSchema } from "@/types-schemas";
-import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
-import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSafeParams from "@/hooks/useSafeParams";
-import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 type ChartDataType = RouterOutput["filesStats"]["getProjectPerDayOfPeriod"];

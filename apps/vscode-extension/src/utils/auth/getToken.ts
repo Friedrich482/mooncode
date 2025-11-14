@@ -1,10 +1,12 @@
 import * as vscode from "vscode";
+
 import { getExtensionContext } from "@/extension";
+
+import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
+import setStatusBarItem from "../status-bar/setStatusBarItem";
 import login from "./login";
 import parseJwtPayload from "./parseJwtPayload";
 import setLoginContext from "./setLoginContext";
-import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
-import setStatusBarItem from "../status-bar/setStatusBarItem";
 
 const getToken = async () => {
   const context = getExtensionContext();
@@ -30,7 +32,7 @@ const getToken = async () => {
 
     const selection = await vscode.window.showInformationMessage(
       "You are logged out. Please login",
-      "Login",
+      "Login"
     );
 
     if (selection !== "Login") {

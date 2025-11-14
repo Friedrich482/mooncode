@@ -1,6 +1,7 @@
-import getCallbackUrl from "./getCallbackUrl";
 import { redirect } from "react-router";
 import { z } from "zod";
+
+import getCallbackUrl from "./getCallbackUrl";
 
 const API_URL = import.meta.env.VITE_API_URL;
 

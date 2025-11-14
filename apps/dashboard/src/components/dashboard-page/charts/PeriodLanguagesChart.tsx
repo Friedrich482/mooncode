@@ -1,3 +1,5 @@
+import { useMemo, useState } from "react";
+import { BarChartIcon, PieChartIcon } from "lucide-react";
 import {
   Bar,
   BarChart,
@@ -7,7 +9,13 @@ import {
   PieChart,
   XAxis,
 } from "recharts";
-import { BarChartIcon, PieChartIcon } from "lucide-react";
+import { Payload } from "recharts/types/component/DefaultTooltipContent";
+
+import CustomChartToolTip from "@/components/common/CustomChartToolTip";
+import { chartConfig } from "@/constants";
+import useSuspenseQueryPeriodLangChart from "@/hooks/fetch/useSuspenseQueryPeriodLangChart";
+import { usePeriodStore } from "@/hooks/store/periodStore";
+import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
 import {
   ChartContainer,
   ChartLegend,
@@ -15,15 +23,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@repo/ui/components/ui/chart";
-import { useMemo, useState } from "react";
-import CustomChartToolTip from "@/components/common/CustomChartToolTip";
 import Icon from "@repo/ui/components/ui/Icon";
-import { Payload } from "recharts/types/component/DefaultTooltipContent";
-import { chartConfig } from "@/constants";
-import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
-import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSuspenseQueryPeriodLangChart from "@/hooks/fetch/useSuspenseQueryPeriodLangChart";
 
 const PeriodLanguagesChart = () => {
   const { pieChartData, barChartData } = useSuspenseQueryPeriodLangChart();

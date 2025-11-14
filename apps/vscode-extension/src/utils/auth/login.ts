@@ -1,6 +1,7 @@
-import * as vscode from "vscode";
-import { getDashboardPort, getExtensionContext } from "@/extension";
 import crypto from "crypto";
+import * as vscode from "vscode";
+
+import { getDashboardPort, getExtensionContext } from "@/extension";
 
 const login = async () => {
   const context = getExtensionContext();
@@ -19,17 +20,17 @@ const login = async () => {
 
     const callbackUri = await vscode.env.asExternalUri(
       vscode.Uri.parse(
-        `vscode://${publisher}.${extensionId}/auth-callback?state=${state}`,
-      ),
+        `vscode://${publisher}.${extensionId}/auth-callback?state=${state}`
+      )
     );
 
     const dashboardLoginUrl = vscode.Uri.parse(
-      `http://localhost:${dashboardPort}/login?client=vscode&callback=${encodeURIComponent(callbackUri.toString())}`,
+      `http://localhost:${dashboardPort}/login?client=vscode&callback=${encodeURIComponent(callbackUri.toString())}`
     );
 
     const selection = await vscode.window.showInformationMessage(
       "Open the local dashboard to login",
-      "Open Dashboard",
+      "Open Dashboard"
     );
 
     if (!selection) {
@@ -41,7 +42,7 @@ const login = async () => {
     }
   } catch (error) {
     vscode.window.showErrorMessage(
-      `An error occurred: ${error instanceof Error ? error.message : error}`,
+      `An error occurred: ${error instanceof Error ? error.message : error}`
     );
   }
 };

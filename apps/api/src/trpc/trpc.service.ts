@@ -1,12 +1,13 @@
-import * as trpcExpress from "@trpc/server/adapters/express";
-import { TRPCError, initTRPC } from "@trpc/server";
-import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
-import { EnvService } from "src/env/env.service";
-import { Injectable } from "@nestjs/common";
-import { JwtPayloadDtoType } from "@repo/common/types-schemas";
-import { JwtService } from "@nestjs/jwt";
-import { errorFormatter } from "src/filters/errorFormatter";
 import superjson from "superjson";
+import { EnvService } from "src/env/env.service";
+import { errorFormatter } from "src/filters/errorFormatter";
+
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
+import { JwtPayloadDtoType } from "@repo/common/types-schemas";
+import { initTRPC, TRPCError } from "@trpc/server";
+import * as trpcExpress from "@trpc/server/adapters/express";
 
 export type TrpcContext = {
   req: trpcExpress.CreateExpressContextOptions["req"];
@@ -15,7 +16,7 @@ export type TrpcContext = {
 };
 
 export const createContext = async (
-  opts: trpcExpress.CreateExpressContextOptions,
+  opts: trpcExpress.CreateExpressContextOptions
 ): Promise<TrpcContext> => {
   return {
     req: opts.req,
@@ -28,7 +29,7 @@ export class TrpcService {
   trpc;
   constructor(
     private readonly jwtService: JwtService,
-    private readonly envService: EnvService,
+    private readonly envService: EnvService
   ) {
     this.trpc = initTRPC.context<TrpcContext>().create({
       transformer: superjson,
@@ -80,7 +81,7 @@ export class TrpcService {
         accessToken,
         {
           secret: this.envService.get("JWT_SECRET"),
-        },
+        }
       );
       return payload;
     } catch (error) {

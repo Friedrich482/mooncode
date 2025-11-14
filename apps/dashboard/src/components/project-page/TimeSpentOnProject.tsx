@@ -1,5 +1,5 @@
-import formatDuration from "@repo/common/formatDuration";
 import useGetTimeSpentOnProject from "@/hooks/projects/useGetTimeSpentOnProject";
+import formatDuration from "@repo/common/formatDuration";
 
 const TimeSpentOnProject = () => {
   const data = useGetTimeSpentOnProject();

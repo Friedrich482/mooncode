@@ -1,5 +1,6 @@
-import { DateStringDto } from "@repo/common/types-schemas";
 import { z } from "zod";
+
+import { DateStringDto } from "@repo/common/types-schemas";
 
 export const CreateDailyDataDto = z.object({
   targetedDate: DateStringDto,

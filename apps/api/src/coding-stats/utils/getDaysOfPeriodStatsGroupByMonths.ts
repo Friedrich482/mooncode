@@ -1,11 +1,12 @@
 import { endOfMonth, startOfMonth } from "date-fns";
+import formatShortDate from "src/common/utils/formatShortDate";
 import { DailyDataService } from "src/daily-data/daily-data.service";
+
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
-import formatShortDate from "src/common/utils/formatShortDate";
 
 const getDaysOfPeriodStatsGroupByMonths = (
-  data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,
+  data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>
 ) => {
   const monthlyMap = new Map<
     string,

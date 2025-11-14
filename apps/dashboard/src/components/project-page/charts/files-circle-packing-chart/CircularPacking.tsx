@@ -1,10 +1,12 @@
 import { RefObject, useEffect, useState } from "react";
+
+import useAnimateChart from "@/hooks/useAnimateChart";
+import { Tree } from "@/types-schemas";
+import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
+
 import LeafSVG from "./LeafSVG";
 import NodeSVG from "./NodeSVG";
 import OptionsSection from "./OptionsSection";
-import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
-import { Tree } from "@/types-schemas";
-import useAnimateChart from "@/hooks/useAnimateChart";
 
 export const CircularPacking = ({
   data,

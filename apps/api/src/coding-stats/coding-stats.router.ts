@@ -1,3 +1,7 @@
+import { TrpcService } from "src/trpc/trpc.service";
+
+import { Injectable } from "@nestjs/common";
+
 import {
   GetDailyStatsForChartDto,
   GetDailyStatsForExtensionDto,
@@ -9,8 +13,6 @@ import {
   UpsertLanguagesDto,
 } from "./coding-stats.dto";
 import { CodingStatsService } from "./coding-stats.service";
-import { Injectable } from "@nestjs/common";
-import { TrpcService } from "src/trpc/trpc.service";
 
 @Injectable()
 export class CodingStatsRouter {

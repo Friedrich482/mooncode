@@ -1,20 +1,21 @@
+import { useEffect, useMemo, useState } from "react";
+import { DateRange } from "react-day-picker";
+import { ChevronDown } from "lucide-react";
+
+import { PERIODS, WEEK_PERIODS, YEAR_PERIODS } from "@/constants";
+import { usePeriodStore } from "@/hooks/store/periodStore";
+import useSynchronizeURL from "@/hooks/useSynchronizeURL";
+import { Period } from "@/types-schemas";
+import { DATE_LOCALE } from "@repo/common/constants";
+import getPeriodResolution from "@repo/common/getPeriodResolution";
+import { Button } from "@repo/ui/components/ui/button";
+import CalendarPopover from "@repo/ui/components/ui/CalendarPopover";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@repo/ui/components/ui/dropdown-menu";
-import { PERIODS, WEEK_PERIODS, YEAR_PERIODS } from "@/constants";
-import { useEffect, useMemo, useState } from "react";
-import { Button } from "@repo/ui/components/ui/button";
-import CalendarPopover from "@repo/ui/components/ui/CalendarPopover";
-import { ChevronDown } from "lucide-react";
-import { DATE_LOCALE } from "@repo/common/constants";
-import { DateRange } from "react-day-picker";
-import { Period } from "@/types-schemas";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
-import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSynchronizeURL from "@/hooks/useSynchronizeURL";
 
 const PeriodDropDown = () => {
   const period = usePeriodStore((state) => state.period);

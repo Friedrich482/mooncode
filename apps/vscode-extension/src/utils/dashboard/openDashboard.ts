@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+
 import { getDashboardPort } from "@/extension";
 
 const openDashboard = async () => {
@@ -7,11 +8,11 @@ const openDashboard = async () => {
 
   try {
     const success = await vscode.env.openExternal(
-      vscode.Uri.parse(dashboardUrl),
+      vscode.Uri.parse(dashboardUrl)
     );
     if (success) {
       vscode.window.showInformationMessage(
-        `Opening dashboard at ${dashboardUrl}`,
+        `Opening dashboard at ${dashboardUrl}`
       );
     } else {
       vscode.window.showErrorMessage("Failed to open the dashboard URL");

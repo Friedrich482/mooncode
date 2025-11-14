@@ -1,11 +1,12 @@
+import { memo } from "react";
+
+import { Bubble } from "@/types-schemas";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
-import { Bubble } from "@/types-schemas";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
-import { memo } from "react";
 
 const NodeSVG = memo(function ({ bubble }: { bubble: Bubble }) {
   return (

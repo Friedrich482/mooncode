@@ -1,5 +1,6 @@
-import { RedirectToGoogleDto } from "../auth.dto";
 import { Request } from "express";
+
+import { RedirectToGoogleDto } from "../auth.dto";
 
 const validateExtensionCallbackUrl = (request: Request) => {
   try {

@@ -1,16 +1,18 @@
 import * as vscode from "vscode";
+
 import { getExtensionContext, getStatusBarItem } from "@/extension";
-import { logDir, logInfo } from "../logger/logger";
 import { FileDataSync } from "@/types-schemas";
-import calculateTime from "../time/calculateTime";
-import getGlobalStateData from "../global-state/getGlobalStateData";
+
 import login from "../auth/login";
 import logout from "../auth/logout";
 import openDashboard from "../dashboard/openDashboard";
+import getGlobalStateData from "../global-state/getGlobalStateData";
+import { logDir, logInfo } from "../logger/logger";
+import calculateTime from "../time/calculateTime";
 
 const initExtensionCommands = (
   getTime: Awaited<ReturnType<typeof calculateTime>>,
-  initialFilesData: FileDataSync,
+  initialFilesData: FileDataSync
 ) => {
   const context = getExtensionContext();
 
@@ -25,13 +27,13 @@ const initExtensionCommands = (
             acc[languageSlug] = (acc[languageSlug] || 0) + elapsedTime;
             return acc;
           },
-          {} as Record<string, number>,
-        ),
+          {} as Record<string, number>
+        )
       )
         .map(([key, elapsedTime]) => `${key}: ${elapsedTime} seconds`)
         .join("\n");
       logInfo(`Current Languages Data:\n${formattedData}`);
-    },
+    }
   );
 
   const showInitialLanguagesDataCommand = vscode.commands.registerCommand(
@@ -43,13 +45,13 @@ const initExtensionCommands = (
             acc[languageSlug] = (acc[languageSlug] || 0) + timeSpent;
             return acc;
           },
-          {} as Record<string, number>,
-        ),
+          {} as Record<string, number>
+        )
       )
         .map(([key, elapsedTime]) => `${key}: ${elapsedTime} seconds`)
         .join("\n");
       logInfo(`Initial Languages Data:\n${formattedData}`);
-    },
+    }
   );
 
   const showCurrentFilesDataCommand = vscode.commands.registerCommand(
@@ -60,7 +62,7 @@ const initExtensionCommands = (
         .map(([key, { elapsedTime }]) => `${key}: ${elapsedTime} seconds`)
         .join("\n");
       logInfo(`Current files data:\n${formattedData}`);
-    },
+    }
   );
 
   const showRawFilesDataCommand = vscode.commands.registerCommand(
@@ -71,7 +73,7 @@ const initExtensionCommands = (
         .map(([key, fileData]) => `${key}:${JSON.stringify(fileData, null, 2)}`)
         .join("\n");
       logInfo(`Raw files Data computed:\n${formattedData}`);
-    },
+    }
   );
 
   const showInitialFilesDataCommand = vscode.commands.registerCommand(
@@ -80,11 +82,11 @@ const initExtensionCommands = (
       const formattedData = Object.entries(initialFilesData)
         .map(
           ([key, { timeSpent: elapsedTime }]) =>
-            `${key}: ${elapsedTime} seconds`,
+            `${key}: ${elapsedTime} seconds`
         )
         .join("\n");
       logInfo(`InitialFilesData:\n${formattedData}`);
-    },
+    }
   );
 
   const showGlobalStateContentCommand = vscode.commands.registerCommand(
@@ -92,24 +94,24 @@ const initExtensionCommands = (
     async () => {
       const data = await getGlobalStateData();
       logDir(data);
-    },
+    }
   );
 
   const loginCommand = vscode.commands.registerCommand(
     "MoonCode.login",
     async () => {
       await login();
-    },
+    }
   );
 
   const logoutCommand = vscode.commands.registerCommand(
     "MoonCode.logout",
-    logout,
+    logout
   );
 
   const openDashboardCommand = vscode.commands.registerCommand(
     "MoonCode.openDashboard",
-    openDashboard,
+    openDashboard
   );
 
   const statusBarItem = getStatusBarItem();
@@ -124,7 +126,7 @@ const initExtensionCommands = (
     loginCommand,
     logoutCommand,
     openDashboardCommand,
-    statusBarItem,
+    statusBarItem
   );
 };
 

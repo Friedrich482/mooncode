@@ -1,5 +1,6 @@
-import getGlobalStateData from "../global-state/getGlobalStateData";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
+
+import getGlobalStateData from "../global-state/getGlobalStateData";
 import setStatusBarItem from "./setStatusBarItem";
 
 const setStatusBarAfterLogin = async () => {

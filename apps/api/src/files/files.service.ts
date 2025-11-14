@@ -1,22 +1,24 @@
+import { and, asc, eq } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
+import { files } from "src/drizzle/schema/files";
+import { languages } from "src/drizzle/schema/languages";
+import { projects } from "src/drizzle/schema/projects";
+
+import { Inject, Injectable } from "@nestjs/common";
+
 import {
   CreateFileDtoType,
   FindAllFilesOnDayDtoType,
   FindOneFileDtoType,
   UpdateFileDtoType,
 } from "./files.dto";
-import { Inject, Injectable } from "@nestjs/common";
-import { and, asc, eq } from "drizzle-orm";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { files } from "src/drizzle/schema/files";
-import { languages } from "src/drizzle/schema/languages";
-import { projects } from "src/drizzle/schema/projects";
 
 @Injectable()
 export class FilesService {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase,
+    private readonly db: NodePgDatabase
   ) {}
 
   async createFile(createFileDto: CreateFileDtoType) {
@@ -55,8 +57,8 @@ export class FilesService {
           eq(files.languageId, languageId),
           eq(files.projectId, projectId),
           eq(files.name, name),
-          eq(files.path, path),
-        ),
+          eq(files.path, path)
+        )
       );
 
     if (!fileData) return null;
@@ -83,7 +85,7 @@ export class FilesService {
       .orderBy(asc(files.timeSpent));
 
     const filesDataObject = Object.fromEntries(
-      filesDataArray.map(({ filePath, ...rest }) => [filePath, rest]),
+      filesDataArray.map(({ filePath, ...rest }) => [filePath, rest])
     );
 
     return filesDataObject;
@@ -102,8 +104,8 @@ export class FilesService {
           eq(files.projectId, projectId),
           eq(files.languageId, languageId),
           eq(files.name, name),
-          eq(files.path, path),
-        ),
+          eq(files.path, path)
+        )
       )
       .returning({
         name: files.name,

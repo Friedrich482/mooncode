@@ -1,5 +1,6 @@
-import { getExtensionContext } from "@/extension";
 import vscode from "vscode";
+
+import { getExtensionContext } from "@/extension";
 
 const setEnvironmentContext = () => {
   const context = getExtensionContext();
@@ -9,12 +10,12 @@ const setEnvironmentContext = () => {
   vscode.commands.executeCommand(
     "setContext",
     "MoonCode.isProdEnvironment",
-    isProd,
+    isProd
   );
   vscode.commands.executeCommand(
     "setContext",
     "MoonCode.isDevEnvironment",
-    isDev,
+    isDev
   );
 };
 

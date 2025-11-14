@@ -1,12 +1,13 @@
+import { useMemo } from "react";
+
 import { PERIODS_CONFIG } from "@/constants";
+import { usePeriodStore } from "@/hooks/store/periodStore";
+import { useTRPC } from "@/utils/trpc";
+import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import { cn } from "@repo/ui/lib/utils";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
-import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
-import { useMemo } from "react";
-import { usePeriodStore } from "@/hooks/store/periodStore";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/utils/trpc";
 
 const StatWrapper = ({ children }: { children: React.ReactNode }) => (
   <div className="flex w-1/2 flex-col justify-center gap-1 rounded-md border px-2 text-center max-[28.125rem]:min-w-full max-[28.125rem]:py-2">

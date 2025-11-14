@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
-import { FileMap } from "@/types-schemas";
+
 import { getExtensionContext } from "@/extension";
-import getGlobalStateData from "../global-state/getGlobalStateData";
-import isNewDayHandler from "./isNewDayHandler";
-import { logError } from "../logger/logger";
+import { FileMap } from "@/types-schemas";
+
 import updateCurrentFileObj from "../files/updateCurrentFileObj";
 import updateFilesDataElapsedTime from "../files/updateFilesDataElapsedTime";
 import updateFilesDataFrozenStates from "../files/updateFilesDataFrozenStates";
+import getGlobalStateData from "../global-state/getGlobalStateData";
+import { logError } from "../logger/logger";
+import isNewDayHandler from "./isNewDayHandler";
 
 const calculateTime = async (): Promise<() => FileMap> => {
   const context = getExtensionContext();

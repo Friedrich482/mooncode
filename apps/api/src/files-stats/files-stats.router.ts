@@ -1,3 +1,7 @@
+import { TrpcService } from "src/trpc/trpc.service";
+
+import { Injectable } from "@nestjs/common";
+
 import {
   GetDailyFilesStatsForExtensionDto,
   GetPeriodProjectsDto,
@@ -9,14 +13,12 @@ import {
   UpsertFilesDto,
 } from "./files-stats.dto";
 import { FilesStatsService } from "./files-stats.service";
-import { Injectable } from "@nestjs/common";
-import { TrpcService } from "src/trpc/trpc.service";
 
 @Injectable()
 export class FilesStatsRouter {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly filesStatsService: FilesStatsService,
+    private readonly filesStatsService: FilesStatsService
   ) {}
 
   procedures = {
@@ -28,7 +30,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getDailyFilesStatsForExtension({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       upsert: this.trpcService
@@ -38,7 +40,7 @@ export class FilesStatsRouter {
           this.filesStatsService.upsert({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       getPeriodProjects: this.trpcService
@@ -48,7 +50,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getPeriodProjects({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       getProjectOnPeriod: this.trpcService
@@ -58,7 +60,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getProjectOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       getProjectPerDayOfPeriod: this.trpcService
@@ -68,7 +70,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getProjectPerDayOfPeriod({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       getProjectLanguagesTimeOnPeriod: this.trpcService
@@ -78,7 +80,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getProjectLanguagesTimeOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       getProjectLanguagesPerDayOfPeriod: this.trpcService
@@ -88,7 +90,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getProjectLanguagesPerDayOfPeriod({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
 
       getProjectFilesOnPeriod: this.trpcService
@@ -98,7 +100,7 @@ export class FilesStatsRouter {
           this.filesStatsService.getProjectFilesOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          }),
+          })
         ),
     }),
   };

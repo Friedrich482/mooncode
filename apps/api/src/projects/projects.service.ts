@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import {
   CreateProjectDtoType,
   FindAllRangeProjectsDtoType,
@@ -9,7 +11,6 @@ import {
   GroupAndAggregateProjectByNameDtoType,
   UpdateProjectDtoType,
 } from "./projects.dto";
-import { Injectable } from "@nestjs/common";
 import { ProjectsAnalyticsService } from "./projects-analytics.service";
 import { ProjectsCrudService } from "./projects-crud.service";
 
@@ -17,7 +18,7 @@ import { ProjectsCrudService } from "./projects-crud.service";
 export class ProjectsService {
   constructor(
     private readonly projectsCrudService: ProjectsCrudService,
-    private readonly projectsAnalyticsService: ProjectsAnalyticsService,
+    private readonly projectsAnalyticsService: ProjectsAnalyticsService
   ) {}
 
   async createProject(createProjectDto: CreateProjectDtoType) {
@@ -29,10 +30,10 @@ export class ProjectsService {
   }
 
   async findAllRangeProjects(
-    findAllRangeProjectsDto: FindAllRangeProjectsDtoType,
+    findAllRangeProjectsDto: FindAllRangeProjectsDtoType
   ) {
     return this.projectsCrudService.findAllRangeProjects(
-      findAllRangeProjectsDto,
+      findAllRangeProjectsDto
     );
   }
 
@@ -41,41 +42,41 @@ export class ProjectsService {
   }
 
   async groupAndAggregateProjectByName(
-    groupAndAggregateProjectByNameDto: GroupAndAggregateProjectByNameDtoType,
+    groupAndAggregateProjectByNameDto: GroupAndAggregateProjectByNameDtoType
   ) {
     return this.projectsAnalyticsService.groupAndAggregateProjectByName(
-      groupAndAggregateProjectByNameDto,
+      groupAndAggregateProjectByNameDto
     );
   }
 
   async findProjectByNameOnRange(
-    findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType,
+    findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType
   ) {
     return this.projectsAnalyticsService.findProjectByNameOnRange(
-      findProjectByNameOnRangeDto,
+      findProjectByNameOnRangeDto
     );
   }
 
   async getProjectLanguagesTimeOnPeriod(
-    getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType,
+    getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType
   ) {
     return this.projectsAnalyticsService.getProjectLanguagesTimeOnPeriod(
-      getProjectLanguagesTimeOnPeriodDto,
+      getProjectLanguagesTimeOnPeriodDto
     );
   }
 
   async getProjectLanguagesTimePerDayOfPeriod(
-    getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType,
+    getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType
   ) {
     return this.projectsAnalyticsService.getProjectLanguagesTimePerDayOfPeriod(
-      getProjectLanguagesTimePerDayOfPeriodDto,
+      getProjectLanguagesTimePerDayOfPeriodDto
     );
   }
   async getAllProjectFilesOnPeriod(
-    getAllProjectFilesOnPeriodDto: GetAllProjectFilesOnPeriodDtoType,
+    getAllProjectFilesOnPeriodDto: GetAllProjectFilesOnPeriodDtoType
   ) {
     return this.projectsAnalyticsService.getAllProjectFilesOnPeriod(
-      getAllProjectFilesOnPeriodDto,
+      getAllProjectFilesOnPeriodDto
     );
   }
 }

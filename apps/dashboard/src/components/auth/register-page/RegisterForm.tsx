@@ -1,7 +1,22 @@
+import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router";
+
+import Night from "@/assets/animated-night.svg?react";
+import Logo from "@/components/layout/header/Logo";
+import useTogglePassword from "@/hooks/auth/useTogglePassword";
+import usePageTitle from "@/hooks/usePageTitle";
+import getCallbackUrl from "@/utils/getCallbackUrl";
+import { useTRPC } from "@/utils/trpc";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ALREADY_EXISTING_EMAIL_MESSAGE,
   ALREADY_EXISTING_USERNAME_MESSAGE,
 } from "@repo/common/constants";
+import {
+  RegisterUserDto,
+  RegisterUserDtoType,
+} from "@repo/common/types-schemas";
+import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
   FormControl,
@@ -10,24 +25,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@repo/ui/components/ui/form";
-import { Link, useNavigate } from "react-router";
-import {
-  RegisterUserDto,
-  RegisterUserDtoType,
-} from "@repo/common/types-schemas";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@repo/ui/components/ui/button";
-import GoogleLoginButton from "../GoogleLoginButton";
 import { Input } from "@repo/ui/components/ui/input";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+
+import GoogleLoginButton from "../GoogleLoginButton";
 import LoginMethodSeparator from "../LoginMethodSeparator";
-import Logo from "@/components/layout/header/Logo";
-import Night from "@/assets/animated-night.svg?react";
-import getCallbackUrl from "@/utils/getCallbackUrl";
-import { useForm } from "react-hook-form";
-import usePageTitle from "@/hooks/usePageTitle";
-import { useTRPC } from "@/utils/trpc";
-import useTogglePassword from "@/hooks/auth/useTogglePassword";
-import { zodResolver } from "@hookform/resolvers/zod";
 
 const RegisterForm = () => {
   usePageTitle("Register | Mooncode");

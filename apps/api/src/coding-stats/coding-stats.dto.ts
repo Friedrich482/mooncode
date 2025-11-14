@@ -1,12 +1,13 @@
+import { z } from "zod";
 import {
   BaseSchema,
   DateRangeSchema,
-  UserId,
   refineAndTransformSchema,
   refineSchema,
+  UserId,
 } from "src/common/dto";
+
 import { DateStringDto } from "@repo/common/types-schemas";
-import { z } from "zod";
 
 export const GetDailyStatsForExtensionDto = z.object({
   dateString: DateStringDto,
