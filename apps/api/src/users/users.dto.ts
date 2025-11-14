@@ -1,4 +1,4 @@
-import { RegisterUserDto } from "@repo/common/schemas";
+import { RegisterUserDto } from "@repo/common/types-schemas";
 import { authMethodEnum } from "src/drizzle/schema/users";
 import { z } from "zod";
 

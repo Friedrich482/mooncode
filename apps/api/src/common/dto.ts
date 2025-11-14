@@ -1,5 +1,4 @@
-import { DateStringDto } from "@repo/common/schemas";
-import { GroupByEnum } from "@repo/common/types";
+import { DateStringDto, GroupByEnum } from "@repo/common/types-schemas";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import getPeriodResolution from "@repo/common/getPeriodResolution";
 import { isAfter } from "date-fns";

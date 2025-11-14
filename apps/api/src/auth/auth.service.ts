@@ -11,7 +11,7 @@ import {
   JwtPayloadDtoType,
   RegisterUserDtoType,
   SignInUserDtoType,
-} from "@repo/common/types";
+} from "@repo/common/types-schemas";
 import { EnvService } from "src/env/env.service";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";

@@ -1,4 +1,4 @@
-import { PeriodResolution } from "./types";
+import { PeriodResolution } from "./types-schemas";
 import { differenceInDays } from "date-fns";
 
 const getPeriodResolution = (

@@ -1,4 +1,4 @@
-import { IsoDateStringSchema, JWTDto } from "@repo/common/schemas";
+import { IsoDateStringSchema } from "@repo/common/types-schemas";
 import { z } from "zod";
 
 /**
@@ -55,4 +55,3 @@ export const globalStateInitialDataSchema = z.object({
 export type FileMap = Record<string, FileData>;
 export type GlobalStateData = z.infer<typeof globalStateInitialDataSchema>;
 export type FileDataSync = GlobalStateData["dailyData"][string]["dayFilesData"];
-export type JwtPayloadType = z.infer<typeof JWTDto>;

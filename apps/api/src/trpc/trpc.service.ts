@@ -3,7 +3,7 @@ import { TRPCError, initTRPC } from "@trpc/server";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { EnvService } from "src/env/env.service";
 import { Injectable } from "@nestjs/common";
-import { JwtPayloadDtoType } from "@repo/common/types";
+import { JwtPayloadDtoType } from "@repo/common/types-schemas";
 import { JwtService } from "@nestjs/jwt";
 import { errorFormatter } from "src/filters/errorFormatter";
 import superjson from "superjson";

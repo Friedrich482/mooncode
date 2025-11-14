@@ -11,6 +11,10 @@ import {
   FormMessage,
 } from "@repo/ui/components/ui/form";
 import { Link, useNavigate } from "react-router";
+import {
+  RegisterUserDto,
+  RegisterUserDtoType,
+} from "@repo/common/types-schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@repo/ui/components/ui/button";
 import GoogleLoginButton from "../GoogleLoginButton";
@@ -18,8 +22,6 @@ import { Input } from "@repo/ui/components/ui/input";
 import LoginMethodSeparator from "../LoginMethodSeparator";
 import Logo from "@/components/layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
-import { RegisterUserDto } from "@repo/common/schemas";
-import { RegisterUserDtoType } from "@repo/common/types";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useForm } from "react-hook-form";
 import usePageTitle from "@/hooks/usePageTitle";

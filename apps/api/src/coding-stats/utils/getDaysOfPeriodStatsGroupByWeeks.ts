@@ -1,6 +1,6 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
 import { DailyDataService } from "src/daily-data/daily-data.service";
-import { PeriodResolution } from "@repo/common/types";
+import { PeriodResolution } from "@repo/common/types-schemas";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 import formatShortDate from "src/common/utils/formatShortDate";

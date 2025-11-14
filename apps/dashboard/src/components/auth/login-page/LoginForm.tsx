@@ -11,6 +11,7 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import { Link, useNavigate } from "react-router";
+import { SignInUserDto, SignInUserDtoType } from "@repo/common/types-schemas";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@repo/ui/components/ui/button";
 import GoogleLoginButton from "../GoogleLoginButton";
@@ -18,8 +19,6 @@ import { Input } from "@repo/ui/components/ui/input";
 import LoginMethodSeparator from "../LoginMethodSeparator";
 import Logo from "@/components/layout/header/Logo";
 import Night from "@/assets/animated-night.svg?react";
-import { SignInUserDto } from "@repo/common/schemas";
-import { SignInUserDtoType } from "@repo/common/types";
 import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useEffect } from "react";
