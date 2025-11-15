@@ -1,6 +1,7 @@
 import { pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { timestamps } from "../columns.helpers";
 import { ulid } from "ulid";
+
+import { timestamps } from "../columns.helpers";
 
 export const authMethodEnum = ["email", "google", "both"] as const;
 

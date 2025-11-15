@@ -1,7 +1,9 @@
-import * as cookieParser from "cookie-parser";
-import { ALLOWED_CLIENTS } from "./common/constants";
-import { AppModule } from "./app.module";
+import cookieParser from "cookie-parser";
+
 import { NestFactory } from "@nestjs/core";
+
+import { AppModule } from "./app.module";
+import { ALLOWED_CLIENTS } from "./common/constants";
 import { TrpcRouter } from "./trpc/trpc.router";
 
 async function bootstrap() {

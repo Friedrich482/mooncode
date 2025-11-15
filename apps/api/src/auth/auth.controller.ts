@@ -1,12 +1,14 @@
+import { Request, Response } from "express";
+import { ZodPipe } from "src/pipes/zod.pipe";
+
 import { Controller, Get, Query, Req, Res } from "@nestjs/common";
+
 import {
   HandleGoogleQueryDto,
   HandleGoogleQueryDtoType,
   RedirectToGoogleDtoType,
 } from "./auth.dto";
-import { Request, Response } from "express";
 import { AuthService } from "./auth.service";
-import { ZodPipe } from "src/pipes/zod.pipe";
 
 @Controller("auth")
 export class AuthController {
@@ -15,7 +17,7 @@ export class AuthController {
   @Get("/google")
   redirectToGoogle(
     @Res() response: Response,
-    @Query() queryParams: Omit<RedirectToGoogleDtoType, "request" | "response">,
+    @Query() queryParams: Omit<RedirectToGoogleDtoType, "request" | "response">
   ) {
     return this.authService.redirectToGoogle({
       ...queryParams,
@@ -28,7 +30,7 @@ export class AuthController {
     @Query(new ZodPipe(HandleGoogleQueryDto))
     queryParams: HandleGoogleQueryDtoType,
     @Res() response: Response,
-    @Req() request: Request,
+    @Req() request: Request
   ) {
     if ("code" in queryParams) {
       return this.authService.handleGoogleCallBack({

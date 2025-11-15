@@ -1,14 +1,15 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
+import formatShortDate from "src/common/utils/formatShortDate";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { LanguagesService } from "src/languages/languages.service";
-import { PeriodResolution } from "@repo/common/types";
+
 import convertToISODate from "@repo/common/convertToISODate";
-import formatShortDate from "src/common/utils/formatShortDate";
+import { PeriodResolution } from "@repo/common/types-schemas";
 
 const getPeriodLanguagesGroupByWeeks = async (
   data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,
   periodResolution: PeriodResolution,
-  languagesService: LanguagesService,
+  languagesService: LanguagesService
 ) => {
   if (data.length === 0) return [];
 
@@ -32,7 +33,7 @@ const getPeriodLanguagesGroupByWeeks = async (
       languages: await languagesService.findAllLanguages({
         dailyDataId: entry.id,
       }),
-    })),
+    }))
   );
 
   for (const [, entry] of entriesWithLanguages.entries()) {
@@ -91,7 +92,7 @@ const getPeriodLanguagesGroupByWeeks = async (
       ...languages,
       originalDate: rest.weekRange,
       date: rest.weekRange,
-    }),
+    })
   );
 };
 

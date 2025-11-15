@@ -1,10 +1,12 @@
 import { endOfWeek, startOfWeek } from "date-fns";
-import { CodingStatsDashboardService } from "../coding-stats-dashboard.service";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { PeriodResolution } from "@repo/common/types";
-import convertToISODate from "@repo/common/convertToISODate";
 import countStrictWeeks from "src/common/utils/countStrictWeeks";
+import { DailyDataService } from "src/daily-data/daily-data.service";
+
+import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
+import { PeriodResolution } from "@repo/common/types-schemas";
+
+import { CodingStatsDashboardService } from "../coding-stats-dashboard.service";
 import getDaysOfPeriodStatsGroupByWeeks from "./getDaysOfPeriodStatsGroupByWeeks";
 import getMostUsedLanguageOnPeriod from "./getMostUsedLanguageOnPeriod";
 
@@ -17,7 +19,7 @@ const getGeneralStatsOnPeriodGroupByWeeks = async (
   dailyDataForPeriod: Awaited<
     ReturnType<DailyDataService["findRangeDailyData"]>
   >,
-  periodResolution: PeriodResolution,
+  periodResolution: PeriodResolution
 ) => {
   const numberOfWeeks = countStrictWeeks(new Date(start), new Date(end));
 
@@ -33,7 +35,7 @@ const getGeneralStatsOnPeriodGroupByWeeks = async (
 
   const weeklyDataForPeriod = getDaysOfPeriodStatsGroupByWeeks(
     dailyDataForPeriod,
-    periodResolution,
+    periodResolution
   ).map((entry) => ({
     timeSpent: entry.timeSpentBar,
     originalDate: entry.originalDate,
@@ -60,14 +62,14 @@ const getGeneralStatsOnPeriodGroupByWeeks = async (
     maxTimeSpentPerWeek === 0
       ? "N/A"
       : weeklyDataForPeriod.find(
-          (week) => week.timeSpent === maxTimeSpentPerWeek,
+          (week) => week.timeSpent === maxTimeSpentPerWeek
         )?.originalDate || convertToISODate(new Date(start));
 
   const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
     codingStatsDashboardService,
     userId,
     start,
-    end,
+    end
   );
 
   return {

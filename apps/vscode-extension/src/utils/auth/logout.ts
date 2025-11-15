@@ -1,15 +1,16 @@
-import deleteFilesDataContent from "../files/deleteFilesDataContent";
-import deleteToken from "./deleteToken";
-import { getExtensionContext } from "@/extension";
-import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
-import login from "./login";
-import setLoginContext from "./setLoginContext";
-import setStatusBarItem from "../status-bar/setStatusBarItem";
-import updateGlobalStateData from "@/utils/global-state/updateGlobalStateData";
 import vscode from "vscode";
 
+import { getExtensionContext } from "@/extension";
+import updateGlobalStateData from "@/utils/global-state/updateGlobalStateData";
+import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
+
+import deleteFilesDataContent from "../files/deleteFilesDataContent";
+import setStatusBarItem from "../status-bar/setStatusBarItem";
+import deleteToken from "./deleteToken";
+import login from "./login";
+import setLoginContext from "./setLoginContext";
+
 const logout = async () => {
-  //!! add a warning to prevent the user that all local data will be lost
   try {
     const context = getExtensionContext();
 
@@ -36,7 +37,7 @@ const logout = async () => {
     });
   } catch (error) {
     vscode.window.showErrorMessage(
-      `Logout failed: ${error instanceof Error ? error.message : error}`,
+      `Logout failed: ${error instanceof Error ? error.message : error}`
     );
     return;
   }
@@ -44,7 +45,7 @@ const logout = async () => {
   const selection = await vscode.window.showInformationMessage(
     "Logged out",
     "Login",
-    "Cancel",
+    "Cancel"
   );
 
   if (selection === "Login") {

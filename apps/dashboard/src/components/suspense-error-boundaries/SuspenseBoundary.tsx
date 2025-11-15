@@ -1,5 +1,6 @@
-import { Skeleton } from "@repo/ui/components/ui/skeleton";
 import { Suspense } from "react";
+
+import { Skeleton } from "@repo/ui/components/ui/skeleton";
 
 const SuspenseBoundary = ({
   children,

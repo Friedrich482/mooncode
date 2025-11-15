@@ -1,10 +1,11 @@
+/* eslint-disable no-console */
 const LOG_PREFIX = "[MoonCode]";
 
 export const logInfo = (message: string) => {
   console.log(`${LOG_PREFIX} INFO: ${message}`);
 };
 
-export const logDir = (data: any) => {
+export const logDir = (data: unknown) => {
   console.log(`${LOG_PREFIX} Data:`);
   console.dir(data, { depth: Infinity });
 };

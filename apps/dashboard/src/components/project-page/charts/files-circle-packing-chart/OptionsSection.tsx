@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Pause, Play, RotateCcw } from "lucide-react";
+
 import { Checkbox } from "@repo/ui/components/ui/checkbox";
 import Icon from "@repo/ui/components/ui/Icon";
-import { memo } from "react";
 
 const OptionsSection = memo(function ({
   isAnimating,

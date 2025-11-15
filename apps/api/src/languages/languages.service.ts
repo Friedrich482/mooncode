@@ -1,20 +1,22 @@
+import { and, asc, eq } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
+import { languages } from "src/drizzle/schema/languages";
+
+import { Inject, Injectable } from "@nestjs/common";
+
 import {
   CreateLanguageDtoType,
   FindAllLanguagesDtoType,
   FindOneLanguageDtoType,
   UpdateLanguageDtoType,
 } from "./languages.dto";
-import { Inject, Injectable } from "@nestjs/common";
-import { and, asc, eq } from "drizzle-orm";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { languages } from "src/drizzle/schema/languages";
 
 @Injectable()
 export class LanguagesService {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase,
+    private readonly db: NodePgDatabase
   ) {}
   async createLanguage(createLanguageDto: CreateLanguageDtoType) {
     const { dailyDataId, languageSlug, timeSpent } = createLanguageDto;
@@ -52,7 +54,7 @@ export class LanguagesService {
       languagesDataArray.map(({ languageSlug, timeSpent }) => [
         languageSlug,
         timeSpent,
-      ]),
+      ])
     );
 
     return languagesDataObject;
@@ -71,8 +73,8 @@ export class LanguagesService {
       .where(
         and(
           eq(languages.dailyDataId, dailyDataId),
-          eq(languages.languageSlug, languageSlug),
-        ),
+          eq(languages.languageSlug, languageSlug)
+        )
       );
 
     if (!languageData) return null;
@@ -91,8 +93,8 @@ export class LanguagesService {
       .where(
         and(
           eq(languages.dailyDataId, dailyDataId),
-          eq(languages.languageSlug, languageSlug),
-        ),
+          eq(languages.languageSlug, languageSlug)
+        )
       )
       .returning({
         languageSlug: languages.languageSlug,

@@ -1,5 +1,5 @@
-import { DEFAULT_COLOR } from "#constants.ts";
 import languagesAttributes from "#colors.json";
+import { DEFAULT_COLOR } from "#constants.ts";
 
 const getLanguageColor = (languageSlug: string) => {
   let languageColor: string = "";

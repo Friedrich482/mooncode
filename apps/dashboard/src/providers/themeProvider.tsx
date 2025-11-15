@@ -10,7 +10,6 @@ type ThemeProviderProps = {
 
 type ThemeProviderState = {
   theme: Theme;
-  // eslint-disable-next-line no-unused-vars
   setTheme: (theme: Theme) => void;
   resolvedTheme: "dark" | "light";
 };
@@ -69,7 +68,6 @@ export function ThemeProvider({
   );
 }
 
-// eslint-disable-next-line react-refresh/only-export-components
 export const useTheme = () => {
   const context = useContext(ThemeProviderContext);
 

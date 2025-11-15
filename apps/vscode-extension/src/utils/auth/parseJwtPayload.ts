@@ -1,11 +1,11 @@
-import { JWTDto } from "@repo/common/schemas";
-import { JwtPayloadType } from "@/types-schemas";
 import { ZodSafeParseResult } from "zod";
 
+import { JWTDto, JwtPayloadDtoType } from "@repo/common/types-schemas";
+
 const parseJwtPayload = (
-  token: string | undefined,
+  token: string | undefined
 ):
-  | ZodSafeParseResult<JwtPayloadType>
+  | ZodSafeParseResult<JwtPayloadDtoType>
   | {
       success: false;
       error: unknown;
@@ -17,7 +17,7 @@ const parseJwtPayload = (
 
     const base64Payload = token.split(".")[1];
     const decodedPayload = Buffer.from(base64Payload, "base64").toString(
-      "utf8",
+      "utf8"
     );
     const jsonPayload = JSON.parse(decodedPayload);
 

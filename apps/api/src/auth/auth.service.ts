@@ -1,8 +1,12 @@
-import {
-  GoogleUserSchema,
-  HandleGoogleCallBacKDtoType,
-  RedirectToGoogleDtoType,
-} from "./auth.dto";
+import { compare } from "bcrypt";
+import { Response } from "express";
+import { OAuth2Client } from "google-auth-library";
+import { EnvService } from "src/env/env.service";
+import { TrpcContext } from "src/trpc/trpc.service";
+import { UsersService } from "src/users/users.service";
+
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import {
   INCORRECT_PASSWORD_MESSAGE,
   USER_NOT_FOUND_MESSAGE,
@@ -11,16 +15,14 @@ import {
   JwtPayloadDtoType,
   RegisterUserDtoType,
   SignInUserDtoType,
-} from "@repo/common/types";
-import { EnvService } from "src/env/env.service";
-import { Injectable } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
-import { OAuth2Client } from "google-auth-library";
-import { Response } from "express";
+} from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
-import { TrpcContext } from "src/trpc/trpc.service";
-import { UsersService } from "src/users/users.service";
-import { compare } from "bcrypt";
+
+import {
+  GoogleUserSchema,
+  HandleGoogleCallBacKDtoType,
+  RedirectToGoogleDtoType,
+} from "./auth.dto";
 import handleErrorResponse from "./utils/handleErrorResponse";
 import validateExtensionCallbackUrl from "./utils/validateExtensionCallbackUrl";
 import validateStateQueryParam from "./utils/validateStateQueryParam";

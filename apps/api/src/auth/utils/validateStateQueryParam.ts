@@ -1,15 +1,17 @@
+import { Request } from "express";
+import { ALLOWED_CLIENTS } from "src/common/constants";
+import { type Environment } from "src/common/dto";
+
 import {
   DASHBOARD_DEVELOPMENT_URL,
   DASHBOARD_PRODUCTION_URL,
 } from "@repo/common/constants";
-import { ALLOWED_CLIENTS } from "src/common/constants";
-import { type Environment } from "src/common/dto";
+
 import { RedirectToGoogleDto } from "../auth.dto";
-import { Request } from "express";
 
 const validateStateQueryParam = (
   request: Request,
-  environment: Environment,
+  environment: Environment
 ) => {
   let returnUrl =
     environment === "development"
@@ -23,7 +25,7 @@ const validateStateQueryParam = (
     }
 
     const parsed = RedirectToGoogleDto.safeParse(
-      JSON.parse(decodeURIComponent(rawState)),
+      JSON.parse(decodeURIComponent(rawState))
     );
 
     if (!parsed.success) return returnUrl;
@@ -32,7 +34,7 @@ const validateStateQueryParam = (
 
     const parsedUrl = new URL(stateParam, request.headers.origin);
     const allowedOrigins = ALLOWED_CLIENTS.map(
-      (client) => new URL(client).origin,
+      (client) => new URL(client).origin
     );
 
     if (allowedOrigins.includes(parsedUrl.origin)) {

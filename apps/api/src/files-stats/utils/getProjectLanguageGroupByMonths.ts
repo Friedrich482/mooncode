@@ -1,11 +1,12 @@
 import { endOfMonth, startOfMonth } from "date-fns";
-import { ProjectsService } from "src/projects/projects.service";
-import convertToISODate from "@repo/common/convertToISODate";
 import formatShortDate from "src/common/utils/formatShortDate";
+import { ProjectsService } from "src/projects/projects.service";
+
+import convertToISODate from "@repo/common/convertToISODate";
 
 const getProjectLanguageGroupByMonths = (
   data: Awaited<ReturnType<ProjectsService["findProjectByNameOnRange"]>>,
-  languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>,
+  languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];
 
@@ -66,7 +67,7 @@ const getProjectLanguageGroupByMonths = (
       ...languages,
       originalDate: rest.month,
       date: rest.month,
-    }),
+    })
   );
 };
 

@@ -1,8 +1,10 @@
-import { getExtensionContext } from "@/extension";
-import setLoginContext from "./setLoginContext";
-import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
-import storeJWTToken from "./storeJWTToken";
 import vscode from "vscode";
+
+import { getExtensionContext } from "@/extension";
+
+import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
+import setLoginContext from "./setLoginContext";
+import storeJWTToken from "./storeJWTToken";
 
 const registerAuthUriHandler = () => {
   const context = getExtensionContext();

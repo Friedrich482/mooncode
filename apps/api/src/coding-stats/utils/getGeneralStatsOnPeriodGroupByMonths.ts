@@ -1,9 +1,11 @@
 import { differenceInMonths, endOfMonth, startOfMonth } from "date-fns";
-import { CodingStatsDashboardService } from "../coding-stats-dashboard.service";
-import { DailyDataService } from "src/daily-data/daily-data.service";
 import { NAString } from "src/common/dto";
+import { DailyDataService } from "src/daily-data/daily-data.service";
+
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
+
+import { CodingStatsDashboardService } from "../coding-stats-dashboard.service";
 import getDaysOfPeriodStatsGroupByMonths from "./getDaysOfPeriodStatsGroupByMonths";
 import getMostUsedLanguageOnPeriod from "./getMostUsedLanguageOnPeriod";
 
@@ -15,7 +17,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   codingStatsDashboardService: CodingStatsDashboardService,
   dailyDataForPeriod: Awaited<
     ReturnType<DailyDataService["findRangeDailyData"]>
-  >,
+  >
 ) => {
   const numberOfMonths = differenceInMonths(end, start) + 1;
   const timeSpentOnPeriod = (
@@ -28,7 +30,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   const mean = timeSpentOnPeriod / numberOfMonths;
 
   const monthlyDataForPeriod = getDaysOfPeriodStatsGroupByMonths(
-    dailyDataForPeriod,
+    dailyDataForPeriod
   ).map((entry) => ({
     timeSpent: entry.timeSpentBar,
     originalDate: entry.originalDate,
@@ -56,14 +58,14 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
     maxTimeSpentPerMonth === 0
       ? "N/A"
       : monthlyDataForPeriod.find(
-          (month) => month.timeSpent === maxTimeSpentPerMonth,
+          (month) => month.timeSpent === maxTimeSpentPerMonth
         )?.originalDate || convertToISODate(new Date(start));
 
   const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
     codingStatsDashboardService,
     userId,
     start,
-    end,
+    end
   );
 
   return {

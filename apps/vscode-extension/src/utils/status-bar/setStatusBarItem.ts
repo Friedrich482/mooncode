@@ -1,5 +1,5 @@
-import formatDuration from "@repo/common/formatDuration";
 import { getStatusBarItem } from "@/extension";
+import formatDuration from "@repo/common/formatDuration";
 
 type SetStatusBarItem =
   | {

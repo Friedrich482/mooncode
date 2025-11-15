@@ -1,21 +1,23 @@
+import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
+
+import CustomChartToolTip from "@/components/common/CustomChartToolTip";
+import { chartConfig } from "@/constants";
+import getNextDayDate from "@/utils/getNextDayDate";
+import getPrevDayDate from "@/utils/getPreviousDayDate";
+import { useTRPC } from "@/utils/trpc";
+import { DATE_LOCALE } from "@repo/common/constants";
+import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@repo/ui/components/ui/chart";
-import { useMemo, useState } from "react";
-import ChartTitle from "./ChartTitle";
-import CustomChartToolTip from "@/components/common/CustomChartToolTip";
-import { DATE_LOCALE } from "@repo/common/constants";
-import { chartConfig } from "@/constants";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
-import getNextDayDate from "@/utils/getNextDayDate";
-import getPrevDayDate from "@/utils/getPreviousDayDate";
-import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/utils/trpc";
+
+import ChartTitle from "./ChartTitle";
 
 const DayLanguagesChart = () => {
   const [date, setDate] = useState(new Date());

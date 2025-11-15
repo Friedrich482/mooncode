@@ -1,9 +1,10 @@
-import { Navigate } from "react-router";
-import { TRPCClientError } from "@trpc/client";
-import { TriangleAlert } from "lucide-react";
-import { isAfter } from "date-fns";
 import { useEffect } from "react";
+import { Navigate } from "react-router";
+import { isAfter } from "date-fns";
+import { TriangleAlert } from "lucide-react";
+
 import { usePeriodStore } from "@/hooks/store/periodStore";
+import { TRPCClientError } from "@trpc/client";
 
 type BaseErrorProps = {
   error: Error;

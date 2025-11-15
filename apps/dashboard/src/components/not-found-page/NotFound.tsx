@@ -1,7 +1,8 @@
-import BrokenMoon from "@/assets/broken_moon.svg?react";
-import { Button } from "@repo/ui/components/ui/button";
 import { Link } from "react-router";
+
+import BrokenMoon from "@/assets/broken_moon.svg?react";
 import usePageTitle from "@/hooks/usePageTitle";
+import { Button } from "@repo/ui/components/ui/button";
 
 const NotFound = () => {
   usePageTitle("Not Found | Mooncode");

@@ -1,15 +1,17 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import type { AppRouter } from "@repo/trpc/router";
+import { useState } from "react";
+import { Outlet } from "react-router";
+import superjson from "superjson";
+
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
-import { Outlet } from "react-router";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { TRPCProvider } from "./utils/trpc";
-import { ThemeProvider } from "./providers/themeProvider";
+import type { AppRouter } from "@repo/trpc/router";
 import { Toaster } from "@repo/ui/components/ui/sonner";
-import superjson from "superjson";
-import { useState } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
+
+import { ThemeProvider } from "./providers/themeProvider";
+import { TRPCProvider } from "./utils/trpc";
 
 function makeQueryClient() {
   return new QueryClient({

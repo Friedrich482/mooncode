@@ -1,28 +1,26 @@
 {
   "compilerOptions": {
     "composite": true,
-    "module": "commonjs",
+    "module": "nodenext",
     "declaration": true,
     "declarationMap": true,
     "removeComments": true,
-    "moduleResolution": "node10",
+    "moduleResolution": "nodenext",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "allowSyntheticDefaultImports": true,
-    "target": "ES6",
+    "target": "ES2021",
+    "lib": ["ES2022"],
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "lib": ["ES2022"],
     "incremental": true,
     "skipLibCheck": true,
-    "strictNullChecks": true,
     "strict": true,
+    "strictNullChecks": true,
     "noImplicitAny": true,
-    "strictBindCallApply": false,
+    "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false
-  },
-  "include": ["src/**/*"],
-  "exclude": ["dist", "node_modules", "**/*.d.ts"]
+  }
 }

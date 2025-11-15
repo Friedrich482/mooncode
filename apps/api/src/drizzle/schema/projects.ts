@@ -1,7 +1,8 @@
 import { index, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
-import { dailyData } from "./dailyData";
-import { timestamps } from "../columns.helpers";
 import { ulid } from "ulid";
+
+import { timestamps } from "../columns.helpers";
+import { dailyData } from "./dailyData";
 
 export const projects = pgTable(
   "projects",
@@ -23,5 +24,5 @@ export const projects = pgTable(
     index("project_daily_data_id_index").on(table.dailyDataId),
     index("project_name_index").on(table.name),
     index("project_path_index").on(table.path),
-  ],
+  ]
 );

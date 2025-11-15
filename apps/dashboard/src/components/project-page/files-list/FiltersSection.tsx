@@ -1,4 +1,5 @@
 import { ArrowUpDown } from "lucide-react";
+
 import { Button } from "@repo/ui/components/ui/button";
 import { Checkbox } from "@repo/ui/components/ui/checkbox";
 import { Input } from "@repo/ui/components/ui/input";
@@ -15,11 +16,11 @@ const FiltersSection = ({
   limitInput: string;
   isGrouped: boolean;
   searchTerm: string;
-  // eslint-disable-next-line no-unused-vars
+
   handleLimitInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCheckChange: () => void;
   handleSortButtonClick: () => void;
-  // eslint-disable-next-line no-unused-vars
+
   handleSearchInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <>

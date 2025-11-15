@@ -1,21 +1,23 @@
+import { and, between, desc, eq, sum } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
+import { dailyData } from "src/drizzle/schema/dailyData";
+import { projects } from "src/drizzle/schema/projects";
+
+import { Inject, Injectable } from "@nestjs/common";
+
 import {
   CreateProjectDtoType,
   FindAllRangeProjectsDtoType,
   FindProjectDtoType,
   UpdateProjectDtoType,
 } from "./projects.dto";
-import { Inject, Injectable } from "@nestjs/common";
-import { and, between, desc, eq, sum } from "drizzle-orm";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { dailyData } from "src/drizzle/schema/dailyData";
-import { projects } from "src/drizzle/schema/projects";
 
 @Injectable()
 export class ProjectsCrudService {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase,
+    private readonly db: NodePgDatabase
   ) {}
 
   async createProject(createProjectDto: CreateProjectDtoType) {
@@ -53,8 +55,8 @@ export class ProjectsCrudService {
         and(
           eq(projects.dailyDataId, dailyDataId),
           eq(projects.name, name),
-          eq(projects.path, path),
-        ),
+          eq(projects.path, path)
+        )
       );
 
     if (!project) return null;
@@ -63,7 +65,7 @@ export class ProjectsCrudService {
   }
 
   async findAllRangeProjects(
-    findAllRangeProjectsDto: FindAllRangeProjectsDtoType,
+    findAllRangeProjectsDto: FindAllRangeProjectsDtoType
   ) {
     const { userId, start, end } = findAllRangeProjectsDto;
 
@@ -76,7 +78,7 @@ export class ProjectsCrudService {
       .from(projects)
       .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
       .where(
-        and(eq(dailyData.userId, userId), between(dailyData.date, start, end)),
+        and(eq(dailyData.userId, userId), between(dailyData.date, start, end))
       )
       .groupBy(projects.path, projects.name)
       .orderBy(desc(sum(projects.timeSpent)));
@@ -95,8 +97,8 @@ export class ProjectsCrudService {
         and(
           eq(projects.dailyDataId, dailyDataId),
           eq(projects.path, path),
-          eq(projects.name, name),
-        ),
+          eq(projects.name, name)
+        )
       )
       .returning({
         name: projects.name,

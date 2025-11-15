@@ -1,13 +1,15 @@
-import { RegisterUserDto, SignInUserDto } from "@repo/common/schemas";
-import { AuthService } from "./auth.service";
-import { Injectable } from "@nestjs/common";
 import { TrpcService } from "src/trpc/trpc.service";
+
+import { Injectable } from "@nestjs/common";
+import { RegisterUserDto, SignInUserDto } from "@repo/common/types-schemas";
+
+import { AuthService } from "./auth.service";
 
 @Injectable()
 export class AuthRouter {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly authService: AuthService,
+    private readonly authService: AuthService
   ) {}
 
   procedures = {
@@ -16,14 +18,14 @@ export class AuthRouter {
         .publicProcedure()
         .input(SignInUserDto)
         .mutation(async ({ input, ctx }) =>
-          this.authService.signIn(input, ctx.res),
+          this.authService.signIn(input, ctx.res)
         ),
 
       registerUser: this.trpcService
         .publicProcedure()
         .input(RegisterUserDto)
         .mutation(async ({ input, ctx }) =>
-          this.authService.register(input, ctx.res),
+          this.authService.register(input, ctx.res)
         ),
 
       checkAuthStatus: this.trpcService

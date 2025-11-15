@@ -1,6 +1,8 @@
+import { useEffect } from "react";
+
 import { DATE_LOCALE } from "@repo/common/constants";
 import getPeriodResolution from "@repo/common/getPeriodResolution";
-import { useEffect } from "react";
+
 import { usePeriodStore } from "./store/periodStore";
 
 const useUpdateCustomRangeDates = (startDate: Date, endDate: Date) => {

@@ -1,11 +1,13 @@
+import express from "express";
+import getPort from "get-port";
 import * as path from "path";
 import * as vscode from "vscode";
+
 import {
   DASHBOARD_DEVELOPMENT_PORT,
   DASHBOARD_PRODUCTION_PORT,
 } from "@repo/common/constants";
-import express from "express";
-import getPort from "get-port";
+
 import { logInfo } from "../logger/logger";
 
 const serveDashboard = async (context: vscode.ExtensionContext) => {
@@ -20,7 +22,7 @@ const serveDashboard = async (context: vscode.ExtensionContext) => {
 
   if (!require("fs").existsSync(pathToFrontendDist)) {
     vscode.window.showErrorMessage(
-      `Dashboard frontend not found at: ${pathToFrontendDist}`,
+      `Dashboard frontend not found at: ${pathToFrontendDist}`
     );
     return;
   }
@@ -41,7 +43,7 @@ const serveDashboard = async (context: vscode.ExtensionContext) => {
       })
       .on("error", (error) => {
         vscode.window.showErrorMessage(
-          `Failed to start dashboard server: ${error.message}`,
+          `Failed to start dashboard server: ${error.message}`
         );
       });
 
@@ -54,7 +56,7 @@ const serveDashboard = async (context: vscode.ExtensionContext) => {
     return availablePort;
   } catch {
     vscode.window.showErrorMessage(
-      `Could not find an available port between ${DASHBOARD_PRODUCTION_PORT} and ${DASHBOARD_PRODUCTION_PORT + 5}`,
+      `Could not find an available port between ${DASHBOARD_PRODUCTION_PORT} and ${DASHBOARD_PRODUCTION_PORT + 5}`
     );
 
     return undefined;

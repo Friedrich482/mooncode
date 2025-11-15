@@ -1,16 +1,17 @@
 "use client";
 
+import * as React from "react";
+import { DayPicker } from "react-day-picker";
 import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ChevronUpIcon,
 } from "lucide-react";
-import * as React from "react";
-import { DayPicker } from "react-day-picker";
+
+import { buttonVariants } from "./button";
 
 import { cn } from "#lib/utils.ts";
-import { buttonVariants } from "./button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
@@ -67,17 +68,20 @@ export const Calendar = ({
   );
 };
 
-// eslint-disable-next-line react/prop-types
 const Chevron = ({ orientation = "left" }) => {
   switch (orientation) {
     case "left":
       return <ChevronLeftIcon className="size-4" />;
+
     case "right":
       return <ChevronRightIcon className="size-4" />;
+
     case "up":
       return <ChevronUpIcon className="size-4" />;
+
     case "down":
       return <ChevronDownIcon className="size-4" />;
+
     default:
       return null;
   }

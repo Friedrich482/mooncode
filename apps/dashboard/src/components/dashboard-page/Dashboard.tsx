@@ -1,12 +1,14 @@
-import ChartGroupWrapper from "../common/ChartGroupWrapper";
-import DashboardTitle from "./DashboardTitle";
-import { ErrorBoundary } from "react-error-boundary";
-import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
-import GeneralStatsChart from "./charts/GeneralStatsChart";
-import PeriodProjects from "./PeriodProjects";
-import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
 import { lazy } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+
 import usePageTitle from "@/hooks/usePageTitle";
+
+import ChartGroupWrapper from "../common/ChartGroupWrapper";
+import FallBackRender from "../suspense-error-boundaries/ErrorBoundary";
+import SuspenseBoundary from "../suspense-error-boundaries/SuspenseBoundary";
+import GeneralStatsChart from "./charts/GeneralStatsChart";
+import DashboardTitle from "./DashboardTitle";
+import PeriodProjects from "./PeriodProjects";
 
 const PeriodTimeChart = lazy(() => import("./charts/PeriodTimeChart"));
 const PeriodLanguagesChart = lazy(
@@ -95,7 +97,7 @@ const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary className="max-chart:w-full h-[24rem] w-full">
+            <SuspenseBoundary className="max-chart:w-full h-96 w-full">
               <PeriodProjects />
             </SuspenseBoundary>
           </ErrorBoundary>

@@ -1,5 +1,6 @@
-import { IsoDateStringSchema, JWTDto } from "@repo/common/schemas";
 import { z } from "zod";
+
+import { IsoDateStringSchema } from "@repo/common/types-schemas";
 
 /**
  * A file is marked as frozen when it is no longer the active file or if it is the active file but the user is inactive in the file for more than `MAX_IDLE_TIME` seconds
@@ -42,17 +43,16 @@ export const globalStateInitialDataSchema = z.object({
           languageSlug: z.string().min(1),
           projectName: z.string().min(1),
           fileName: z.string().min(1),
-        }),
+        })
       ),
 
       updatedAt: z.union([
         z.date(),
         z.iso.datetime().transform((str) => new Date(str)),
       ]),
-    }),
+    })
   ),
 });
 export type FileMap = Record<string, FileData>;
 export type GlobalStateData = z.infer<typeof globalStateInitialDataSchema>;
 export type FileDataSync = GlobalStateData["dailyData"][string]["dayFilesData"];
-export type JwtPayloadType = z.infer<typeof JWTDto>;

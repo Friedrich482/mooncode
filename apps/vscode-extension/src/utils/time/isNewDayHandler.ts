@@ -1,11 +1,12 @@
 import { GlobalStateData } from "@/types-schemas";
-import deleteFilesDataContent from "../files/deleteFilesDataContent";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
+
+import deleteFilesDataContent from "../files/deleteFilesDataContent";
 import updateGlobalStateData from "../global-state/updateGlobalStateData";
 
 const isNewDayHandler = async (
   dailyData: GlobalStateData["dailyData"],
-  lastServerSync: Date,
+  lastServerSync: Date
 ) => {
   const todaysDateString = getTodaysLocalDate();
 

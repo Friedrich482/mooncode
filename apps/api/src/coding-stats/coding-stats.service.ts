@@ -1,3 +1,5 @@
+import { Injectable } from "@nestjs/common";
+
 import {
   GetDailyStatsForChartDtoType,
   GetDailyStatsForExtensionDtoType,
@@ -10,19 +12,18 @@ import {
 } from "./coding-stats.dto";
 import { CodingStatsDashboardService } from "./coding-stats-dashboard.service";
 import { CodingStatsExtensionService } from "./coding-stats-extension.service";
-import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class CodingStatsService {
   constructor(
     private readonly codingStatsExtensionService: CodingStatsExtensionService,
-    private readonly codingStatsDashboardService: CodingStatsDashboardService,
+    private readonly codingStatsDashboardService: CodingStatsDashboardService
   ) {}
   async getDailyStatsForExtension(
-    getDailyStatsForExtensionDto: GetDailyStatsForExtensionDtoType,
+    getDailyStatsForExtensionDto: GetDailyStatsForExtensionDtoType
   ) {
     return this.codingStatsExtensionService.getDailyStatsForExtension(
-      getDailyStatsForExtensionDto,
+      getDailyStatsForExtensionDto
     );
   }
 
@@ -31,49 +32,49 @@ export class CodingStatsService {
   }
 
   async getTimeSpentOnPeriod(
-    getTimeSpentOnPeriodDto: GetTimeSpentOnPeriodDtoType,
+    getTimeSpentOnPeriodDto: GetTimeSpentOnPeriodDtoType
   ) {
     return this.codingStatsDashboardService.getTimeSpentOnPeriod(
-      getTimeSpentOnPeriodDto,
+      getTimeSpentOnPeriodDto
     );
   }
 
   async getDaysOfPeriodStats(
-    getDaysOfPeriodStatsDto: GetDaysOfPeriodStatsDtoType,
+    getDaysOfPeriodStatsDto: GetDaysOfPeriodStatsDtoType
   ) {
     return this.codingStatsDashboardService.getDaysOfPeriodStats(
-      getDaysOfPeriodStatsDto,
+      getDaysOfPeriodStatsDto
     );
   }
 
   async getPeriodLanguagesTime(
-    getPeriodLanguagesTimeDto: GetPeriodLanguagesTimeDtoType,
+    getPeriodLanguagesTimeDto: GetPeriodLanguagesTimeDtoType
   ) {
     return this.codingStatsDashboardService.getPeriodLanguagesTime(
-      getPeriodLanguagesTimeDto,
+      getPeriodLanguagesTimeDto
     );
   }
   async getPeriodLanguagesPerDay(
-    getPeriodLanguagesPerDayDto: GetPeriodLanguagesPerDayDtoType,
+    getPeriodLanguagesPerDayDto: GetPeriodLanguagesPerDayDtoType
   ) {
     return this.codingStatsDashboardService.getPeriodLanguagesPerDay(
-      getPeriodLanguagesPerDayDto,
+      getPeriodLanguagesPerDayDto
     );
   }
 
   async getDailyStatsForChart(
-    getDailyStatsForChartDto: GetDailyStatsForChartDtoType,
+    getDailyStatsForChartDto: GetDailyStatsForChartDtoType
   ) {
     return this.codingStatsDashboardService.getDailyStatsForChart(
-      getDailyStatsForChartDto,
+      getDailyStatsForChartDto
     );
   }
 
   async getPeriodGeneralStats(
-    getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType,
+    getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType
   ) {
     return this.codingStatsDashboardService.getPeriodGeneralStats(
-      getPeriodGeneralStatsDto,
+      getPeriodGeneralStatsDto
     );
   }
 }

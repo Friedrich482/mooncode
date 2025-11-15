@@ -1,6 +1,7 @@
-import { Button } from "@repo/ui/components/ui/button";
-import Google from "@/assets/google.svg?react";
 import { Link } from "react-router";
+
+import Google from "@/assets/google.svg?react";
+import { Button } from "@repo/ui/components/ui/button";
 
 const GoogleLoginButton = ({ callbackUrl }: { callbackUrl: string | null }) => {
   return (

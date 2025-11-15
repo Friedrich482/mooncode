@@ -1,15 +1,17 @@
-import addStatusBarItem from "./utils/status-bar/addStatusBarItem";
+import vscode from "vscode";
+
 import calculateTime from "@/utils/time/calculateTime";
-import fetchInitialData from "./utils/fetchInitialData";
+
+import registerAuthUriHandler from "./utils/auth/registerAuthUriHandler";
 import initExtensionCommands from "./utils/commands/initExtensionCommands";
+import serveDashboard from "./utils/dashboard/serveDashboard";
+import setEnvironmentContext from "./utils/env/setEnvironmentContext";
+import fetchInitialData from "./utils/fetchInitialData";
 import initializeFiles from "./utils/files/initializeFiles";
 import { logInfo } from "./utils/logger/logger";
 import periodicSyncData from "./utils/periodicSyncData";
-import registerAuthUriHandler from "./utils/auth/registerAuthUriHandler";
-import serveDashboard from "./utils/dashboard/serveDashboard";
-import setEnvironmentContext from "./utils/env/setEnvironmentContext";
+import addStatusBarItem from "./utils/status-bar/addStatusBarItem";
 import setStatusBarItem from "./utils/status-bar/setStatusBarItem";
-import vscode from "vscode";
 
 let extensionContext: vscode.ExtensionContext;
 let dashboardPort: number | undefined;
@@ -59,7 +61,7 @@ export const getExtensionContext = () => {
 export const getDashboardPort = () => {
   if (!dashboardPort) {
     throw new Error(
-      "Failed to start the extension. Dashboard could not be served.",
+      "Failed to start the extension. Dashboard could not be served."
     );
   }
   return dashboardPort;

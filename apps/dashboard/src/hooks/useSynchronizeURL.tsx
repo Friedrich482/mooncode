@@ -1,7 +1,9 @@
-import convertToISODate from "@repo/common/convertToISODate";
 import { useEffect } from "react";
-import { usePeriodStore } from "./store/periodStore";
 import { useSearchParams } from "react-router";
+
+import convertToISODate from "@repo/common/convertToISODate";
+
+import { usePeriodStore } from "./store/periodStore";
 
 const useSynchronizeURL = () => {
   const period = usePeriodStore((state) => state.period);

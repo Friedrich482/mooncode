@@ -31,7 +31,6 @@
     "@nestjs/mapped-types": "*",
     "@nestjs/platform-express": "^11.1.5",
     "@repo/common": "*",
-    "@repo/trpc": "*",
     "@trpc/server": "^11.4.4",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",

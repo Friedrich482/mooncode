@@ -1,17 +1,15 @@
-import type { GroupBy, PeriodResolution } from "@repo/common/types";
+import { create } from "zustand";
+
 import { Period } from "@/types-schemas";
 import correctGroupBy from "@/utils/correctGroupBy";
-import { create } from "zustand";
 import getPeriodStoreValuesFromURL from "@/utils/getPeriodStoreValuesFromURL";
+import type { GroupBy, PeriodResolution } from "@repo/common/types-schemas";
 
 type Store = {
   period: Period;
-
-  // eslint-disable-next-line no-unused-vars
   setPeriod: (state: Period) => void;
-  groupBy: GroupBy;
 
-  // eslint-disable-next-line no-unused-vars
+  groupBy: GroupBy;
   setGroupBy: (state: GroupBy) => void;
 
   customRange: {
@@ -19,8 +17,6 @@ type Store = {
     end: string;
     periodResolution: PeriodResolution;
   };
-
-  // eslint-disable-next-line no-unused-vars
   setCustomRange: (state: {
     start: string;
     end: string;
@@ -36,8 +32,10 @@ const correctedGroupBy = correctGroupBy(period, customRange, groupBy);
 export const usePeriodStore = create<Store>((set) => ({
   period,
   setPeriod: (newPeriod) => set({ period: newPeriod }),
+
   groupBy: correctedGroupBy,
   setGroupBy: (newGroupBy) => set({ groupBy: newGroupBy }),
+
   customRange,
   setCustomRange: (newCustomRange) => set({ customRange: newCustomRange }),
 }));

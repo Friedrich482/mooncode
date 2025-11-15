@@ -1,4 +1,13 @@
 import * as bcrypt from "bcrypt";
+import { randomBytes } from "crypto";
+import { and, eq, or } from "drizzle-orm";
+import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
+import { users } from "src/drizzle/schema/users";
+
+import { Inject, Injectable } from "@nestjs/common";
+import { TRPCError } from "@trpc/server";
+
 import {
   CreateGoogleUserDtoType,
   CreateUserDtoType,
@@ -7,13 +16,6 @@ import {
   FindByIdDtoType,
   UpdateUserDtoType,
 } from "./users.dto";
-import { Inject, Injectable } from "@nestjs/common";
-import { and, eq, or } from "drizzle-orm";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { TRPCError } from "@trpc/server";
-import { randomBytes } from "crypto";
-import { users } from "src/drizzle/schema/users";
 
 @Injectable()
 export class UsersService {
@@ -21,7 +23,7 @@ export class UsersService {
 
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase,
+    private readonly db: NodePgDatabase
   ) {}
   async create(createUserDto: CreateUserDtoType) {
     const { email, password, username } = createUserDto;
@@ -81,8 +83,8 @@ export class UsersService {
       .where(
         and(
           or(eq(users.googleEmail, googleEmail), eq(users.email, email)),
-          eq(users.googleId, googleId),
-        ),
+          eq(users.googleId, googleId)
+        )
       )
       .limit(1);
 
@@ -189,8 +191,8 @@ export class UsersService {
 
     const setFields = Object.fromEntries(
       Object.entries(maybeUpdatedFields).filter(
-        ([, value]) => value !== undefined,
-      ),
+        ([, value]) => value !== undefined
+      )
     );
 
     if (Object.keys(setFields).length === 0) {
@@ -207,7 +209,7 @@ export class UsersService {
     if (setFields.password) {
       setFields.password = await bcrypt.hash(
         setFields.password,
-        this.saltRounds,
+        this.saltRounds
       );
     }
 

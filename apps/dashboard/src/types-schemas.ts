@@ -1,5 +1,6 @@
-import { PERIODS } from "./constants";
 import { z } from "zod";
+
+import { PERIODS } from "./constants";
 
 export const PeriodSchema = z.enum([...PERIODS]);
 export type Period = z.infer<typeof PeriodSchema>;
@@ -29,9 +30,7 @@ export type Bubble = Omit<d3.HierarchyCircularNode<Tree>, "constructor"> & {
   vy: number;
 };
 
-// eslint-disable-next-line no-unused-vars
 type Grow<T, A extends Array<T>> = ((x: T, ...xs: A) => void) extends (
-  // eslint-disable-next-line no-unused-vars
   ...a: infer X
 ) => void
   ? X

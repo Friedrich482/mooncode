@@ -1,8 +1,8 @@
 import { PERIODS_CONFIG } from "@/constants";
-import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useTRPC } from "@/utils/trpc";
+import getLanguageColor from "@repo/ui/utils/getLanguageColor";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 const useSuspenseQueryPeriodLangChart = () => {
   const period = usePeriodStore((state) => state.period);

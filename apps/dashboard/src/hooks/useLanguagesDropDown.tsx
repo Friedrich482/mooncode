@@ -1,11 +1,12 @@
-import { Entry, ProjectParamsSchema } from "@/types-schemas";
 import { PERIODS_CONFIG } from "@/constants";
+import { Entry, ProjectParamsSchema } from "@/types-schemas";
+import { useTRPC } from "@/utils/trpc";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
+import { useSuspenseQuery } from "@tanstack/react-query";
+
 import { usePeriodStore } from "./store/periodStore";
 import useSafeParams from "./useSafeParams";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useTRPC } from "@/utils/trpc";
 
 const useLanguagesDropDown = ({
   selectedEntries,

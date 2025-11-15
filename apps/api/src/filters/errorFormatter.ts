@@ -1,13 +1,13 @@
-import { ZodError, z } from "zod";
-import { $ZodIssue } from "zod/v4/core/errors.cjs";
+import { z, ZodError } from "zod";
 import { EnvService } from "src/env/env.service";
+
 import { TRPCError } from "@trpc/server";
 
 type ErrorShape = {
   data: {
     stack?: string | undefined;
     path?: string | undefined;
-    zodIssues?: $ZodIssue[] | undefined;
+    zodIssues?: ZodError[] | undefined;
     code: string;
     httpStatus: number;
   };
@@ -22,7 +22,7 @@ const errorFormatter = (
   }: {
     shape: ErrorShape;
     error: unknown;
-  },
+  }
 ) => {
   const isDev = envService.get("NODE_ENV") === "development";
 

@@ -1,12 +1,13 @@
+import { memo } from "react";
+
+import { bubblesColors } from "@/constants";
+import { Bubble } from "@/types-schemas";
+import formatDuration from "@repo/common/formatDuration";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
-import { Bubble } from "@/types-schemas";
-import { bubblesColors } from "@/constants";
-import formatDuration from "@repo/common/formatDuration";
-import { memo } from "react";
 
 const LeafSVG = memo(function ({
   bubble,
@@ -17,7 +18,7 @@ const LeafSVG = memo(function ({
   bubble: Bubble;
   index: number;
   maxValue: number;
-  // eslint-disable-next-line no-unused-vars
+
   handleBubbleClick: (index: number) => void;
 }) {
   return (

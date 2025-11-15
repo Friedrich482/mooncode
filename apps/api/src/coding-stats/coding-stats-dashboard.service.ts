@@ -1,3 +1,15 @@
+import { differenceInDays } from "date-fns";
+import getDaysOfPeriodStatsGroupByWeeks from "src/coding-stats/utils/getDaysOfPeriodStatsGroupByWeeks";
+import getPeriodLanguagesGroupByWeeks from "src/coding-stats/utils/getPeriodLanguagesGroupByWeeks";
+import { NAString } from "src/common/dto";
+import getWeekDayName from "src/common/utils/getWeekdayName";
+import { DailyDataService } from "src/daily-data/daily-data.service";
+import { LanguagesService } from "src/languages/languages.service";
+
+import { Injectable } from "@nestjs/common";
+import convertToISODate from "@repo/common/convertToISODate";
+import formatDuration from "@repo/common/formatDuration";
+
 import {
   GetDailyStatsForChartDtoType,
   GetDaysOfPeriodStatsDtoType,
@@ -6,31 +18,21 @@ import {
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
 } from "./coding-stats.dto";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { Injectable } from "@nestjs/common";
-import { LanguagesService } from "src/languages/languages.service";
-import { NAString } from "src/common/dto";
-import convertToISODate from "@repo/common/convertToISODate";
-import { differenceInDays } from "date-fns";
-import formatDuration from "@repo/common/formatDuration";
 import getDaysOfPeriodStatsGroupByMonths from "./utils/getDaysOfPeriodStatsGroupByMonths";
-import getDaysOfPeriodStatsGroupByWeeks from "src/coding-stats/utils/getDaysOfPeriodStatsGroupByWeeks";
 import getGeneralStatsOnPeriodGroupByMonths from "./utils/getGeneralStatsOnPeriodGroupByMonths";
 import getGeneralStatsOnPeriodGroupByWeeks from "./utils/getGeneralStatsOnPeriodGroupByWeeks";
 import getMostUsedLanguageOnPeriod from "./utils/getMostUsedLanguageOnPeriod";
 import getPeriodLanguagesGroupByMonths from "./utils/getPeriodLanguagesGroupByMonths";
-import getPeriodLanguagesGroupByWeeks from "src/coding-stats/utils/getPeriodLanguagesGroupByWeeks";
-import getWeekDayName from "src/common/utils/getWeekdayName";
 
 @Injectable()
 export class CodingStatsDashboardService {
   constructor(
     private readonly dailyDataService: DailyDataService,
-    private readonly languagesService: LanguagesService,
+    private readonly languagesService: LanguagesService
   ) {}
 
   async getTimeSpentOnPeriod(
-    getTimeSpentOnPeriodDto: GetTimeSpentOnPeriodDtoType,
+    getTimeSpentOnPeriodDto: GetTimeSpentOnPeriodDtoType
   ) {
     const { userId, start, end } = getTimeSpentOnPeriodDto;
 
@@ -48,7 +50,7 @@ export class CodingStatsDashboardService {
   }
 
   async getDaysOfPeriodStats(
-    getDaysOfPeriodStatsDto: GetDaysOfPeriodStatsDtoType,
+    getDaysOfPeriodStatsDto: GetDaysOfPeriodStatsDtoType
   ) {
     const { userId, start, end, groupBy, periodResolution } =
       getDaysOfPeriodStatsDto;
@@ -65,7 +67,7 @@ export class CodingStatsDashboardService {
       case "weeks":
         return getDaysOfPeriodStatsGroupByWeeks(
           dailyDataForPeriod,
-          periodResolution,
+          periodResolution
         );
 
       case "months":
@@ -86,7 +88,7 @@ export class CodingStatsDashboardService {
   }
 
   async getPeriodLanguagesTime(
-    getPeriodLanguagesTimeDto: GetPeriodLanguagesTimeDtoType,
+    getPeriodLanguagesTimeDto: GetPeriodLanguagesTimeDtoType
   ) {
     const { userId, start, end } = getPeriodLanguagesTimeDto;
 
@@ -105,8 +107,8 @@ export class CodingStatsDashboardService {
     const kVLangTime = (
       await Promise.all(
         dailyDataForPeriod.map(({ id }) =>
-          this.languagesService.findAllLanguages({ dailyDataId: id }),
-        ),
+          this.languagesService.findAllLanguages({ dailyDataId: id })
+        )
       )
     ).reduce((acc, dayStats) => {
       Object.keys(dayStats).forEach((languageSlug) => {
@@ -121,7 +123,7 @@ export class CodingStatsDashboardService {
         time: timeSpent,
         value: formatDuration(timeSpent),
         percentage: parseFloat(
-          ((timeSpent * 100) / totalTimeSpentOnPeriod).toFixed(2),
+          ((timeSpent * 100) / totalTimeSpentOnPeriod).toFixed(2)
         ),
       }))
       .sort((a, b) => a.time - b.time);
@@ -130,7 +132,7 @@ export class CodingStatsDashboardService {
   }
 
   async getPeriodLanguagesPerDay(
-    getPeriodLanguagesPerDayDto: GetPeriodLanguagesPerDayDtoType,
+    getPeriodLanguagesPerDayDto: GetPeriodLanguagesPerDayDtoType
   ) {
     const { userId, start, end, groupBy, periodResolution } =
       getPeriodLanguagesPerDayDto;
@@ -148,13 +150,13 @@ export class CodingStatsDashboardService {
         return getPeriodLanguagesGroupByWeeks(
           dailyDataForPeriod,
           periodResolution,
-          this.languagesService,
+          this.languagesService
         );
 
       case "months":
         return getPeriodLanguagesGroupByMonths(
           dailyDataForPeriod,
-          this.languagesService,
+          this.languagesService
         );
 
       default:
@@ -163,8 +165,8 @@ export class CodingStatsDashboardService {
 
     const allLanguages = await Promise.all(
       dailyDataForPeriod.map(({ id }) =>
-        this.languagesService.findAllLanguages({ dailyDataId: id }),
-      ),
+        this.languagesService.findAllLanguages({ dailyDataId: id })
+      )
     );
 
     return dailyDataForPeriod.map(({ date, timeSpent }, index) => ({
@@ -176,7 +178,7 @@ export class CodingStatsDashboardService {
   }
 
   async getDailyStatsForChart(
-    getDailyStatsForChartDto: GetDailyStatsForChartDtoType,
+    getDailyStatsForChartDto: GetDailyStatsForChartDtoType
   ) {
     const { userId, dateString } = getDailyStatsForChartDto;
 
@@ -215,7 +217,7 @@ export class CodingStatsDashboardService {
   }
 
   async getPeriodGeneralStats(
-    getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType,
+    getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType
   ) {
     const { userId, start, end, todaysDateString, groupBy, periodResolution } =
       getPeriodGeneralStatsDto;
@@ -243,7 +245,7 @@ export class CodingStatsDashboardService {
           todaysDateString,
           this,
           dailyDataForPeriod,
-          periodResolution,
+          periodResolution
         );
 
       case "months":
@@ -253,7 +255,7 @@ export class CodingStatsDashboardService {
           end,
           todaysDateString,
           this,
-          dailyDataForPeriod,
+          dailyDataForPeriod
         );
 
       default:
@@ -294,15 +296,15 @@ export class CodingStatsDashboardService {
         ? "N/A"
         : new Date(
             dailyDataForPeriod.find(
-              (day) => day.timeSpent === maxTimeSpentPerDay,
-            )?.date || convertToISODate(new Date(start)),
+              (day) => day.timeSpent === maxTimeSpentPerDay
+            )?.date || convertToISODate(new Date(start))
           ).toDateString();
 
     const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
       this,
       userId,
       start,
-      end,
+      end
     );
 
     return {

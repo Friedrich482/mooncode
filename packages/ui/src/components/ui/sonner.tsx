@@ -1,7 +1,8 @@
 "use client";
 
-import { useTheme } from "#providers/themeProvider.tsx";
 import { Toaster as Sonner, ToasterProps } from "sonner";
+
+import { useTheme } from "#providers/themeProvider.tsx";
 
 const Toaster = ({ ...props }: ToasterProps) => {
   const { theme = "system" } = useTheme();
