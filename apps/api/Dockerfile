@@ -7,15 +7,13 @@ COPY turbo.json ./
 
 COPY apps/api/package*.json ./apps/api/
 COPY packages/common/package*.json ./packages/common/
-COPY packages/trpc/package*.json ./packages/trpc/
 
 RUN npm install
 
 COPY . .
 
-RUN npm run build --workspace=api          
 RUN npm run build --workspace=@repo/common 
-RUN npm run build --workspace=@repo/trpc   
+RUN npm run build --workspace=api          
 
 FROM node:22-alpine AS deps
 
@@ -26,14 +24,12 @@ COPY turbo.json ./
 
 COPY apps/api/package*.json ./apps/api/
 COPY packages/common/package*.json ./packages/common/
-COPY packages/trpc/package*.json ./packages/trpc/
 
 RUN npm ci --omit=dev
 
 FROM node:22-alpine AS production
 
 WORKDIR /app
-
 
 COPY --from=builder /app/apps/api/dist ./dist
 

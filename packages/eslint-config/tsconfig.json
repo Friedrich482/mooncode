@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "moduleResolution": "nodenext",
-    "module": "nodenext",
-    "target": "es2020",
-    "skipLibCheck": true
-  }
-}
