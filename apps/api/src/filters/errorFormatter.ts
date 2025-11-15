@@ -1,6 +1,7 @@
-import { z, ZodError } from "zod";
+import { ZodError } from "zod";
 import { EnvService } from "src/env/env.service";
 
+import { formatZodError } from "@repo/common/formatZodError";
 import { TRPCError } from "@trpc/server";
 
 type ErrorShape = {
@@ -30,7 +31,7 @@ const errorFormatter = (
     if (error.cause && isZodError(error.cause)) {
       return {
         ...shape,
-        message: z.prettifyError(error.cause),
+        message: formatZodError(error.cause),
         data: {
           code: shape.data.code,
           httpStatus: shape.data.httpStatus,
@@ -48,7 +49,7 @@ const errorFormatter = (
   if (isZodError(error)) {
     return {
       ...shape,
-      message: z.prettifyError(error),
+      message: formatZodError(error),
       data: {
         code: shape.data.code,
         httpStatus: shape.data.httpStatus,
