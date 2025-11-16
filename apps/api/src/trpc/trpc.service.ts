@@ -1,6 +1,6 @@
 import superjson from "superjson";
 import { EnvService } from "src/env/env.service";
-import { errorFormatter } from "src/filters/errorFormatter";
+import { errorFormatter } from "src/trpc/filters/errorFormatter";
 
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
