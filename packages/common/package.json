@@ -16,7 +16,7 @@
   },
   "scripts": {
     "dev": "tsc --watch",
-    "lint": "eslint .",
+    "lint": "eslint . --fix",
     "build": "tsc"
   },
   "files": [

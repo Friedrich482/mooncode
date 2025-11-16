@@ -8,10 +8,11 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "lint-staged": "lint-staged"
+    "lint-staged": "lint-staged",
+    "prepare": "husky || true"
   },
   "devDependencies": {
-    "lint-staged": "^15.5.1",
+    "husky": "^9.1.7",
     "prettier": "^3.5.0",
     "turbo": "^2.5.4",
     "wait-on": "^8.0.4"
