@@ -3,7 +3,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import { EnvService } from "src/env/env.service";
 
-import * as schema from "./schema/users";
+import * as schema from "./schema";
 
 export const DrizzleAsyncProvider = "DrizzleAsyncProvider";
 

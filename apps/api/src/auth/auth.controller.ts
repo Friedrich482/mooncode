@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { ZodPipe } from "src/pipes/zod.pipe";
+import { ZodPipe } from "src/common/pipes/zod.pipe";
 
 import { Controller, Get, Query, Req, Res } from "@nestjs/common";
 

@@ -9,6 +9,9 @@ const getLanguageSlug = (document: vscode.TextDocument | undefined) => {
 
   let languageSlug = document.languageId;
 
+  // if the language is not known (yet) by vscode, it will use "plaintext" as language identifier
+  // for example, zig or kotlin will not be detected as known languages unless you install their vscode extensions
+  // we try to get the file extension (for example .zig or .kt) then if we have the right language in our mapping, we use it
   if (languageSlug === "plaintext" || languageSlug === "ignore") {
     const extension = document.uri.fsPath.split(".").pop()?.toLowerCase() ?? "";
 

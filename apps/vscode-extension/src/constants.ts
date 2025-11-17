@@ -10,6 +10,11 @@ export const languageMapping: Record<string, string> = {
   javascriptreact: "javascript",
   typescriptreact: "typescript",
   jsonc: "json",
+  "asm-collection": "assembly",
+  "asm-list-file": "assembly",
+  "asm-markdown-codeblock": "assembly",
+  "asm-list-markdown-codeblock": "assembly",
+  arm: "assembly",
 };
 
 export let filesData: FileMap = {};
