@@ -50,6 +50,13 @@
       "when": 1763980818642,
       "tag": "0006_aromatic_shiver_man",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1763983634533,
+      "tag": "0007_default_email_verification",
+      "breakpoints": true
     }
   ]
 }

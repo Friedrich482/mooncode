@@ -1,0 +1,1 @@
+UPDATE users SET email_verified_at = NOW();
