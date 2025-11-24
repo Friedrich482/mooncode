@@ -1,4 +1,6 @@
+import { sql } from "drizzle-orm";
 import { pgTable, text, varchar } from "drizzle-orm/pg-core";
+import { timestamp } from "drizzle-orm/pg-core";
 import { ulid } from "ulid";
 
 import { timestamps } from "../columns.helpers";
@@ -20,5 +22,6 @@ export const users = pgTable("users", {
   authMethod: text("auth_method", {
     enum: authMethodEnum,
   }).default("email"),
+  emailVerifiedAt: timestamp("email_verified_at").default(sql`NULL`),
   ...timestamps,
 });

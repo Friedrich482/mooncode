@@ -144,15 +144,22 @@ const LoginForm = () => {
                 </FormItem>
               )}
             />
-            <p>
-              Not registered yet ?{" "}
-              <Link
-                to={`/register${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
-                className="underline"
-              >
-                Sign Up
-              </Link>
-            </p>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p>
+                Not registered yet ?{" "}
+                <Link
+                  to={`/register${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
+                  className="underline"
+                >
+                  Sign Up
+                </Link>
+              </p>
+              <p>
+                <Link to="/reset" className="underline">
+                  Lost your password?
+                </Link>
+              </p>
+            </div>
             <Button
               variant="default"
               type="submit"

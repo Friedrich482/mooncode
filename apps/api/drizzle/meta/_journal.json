@@ -43,6 +43,13 @@
       "when": 1755939811707,
       "tag": "0005_legal_tattoo",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1763980818642,
+      "tag": "0006_aromatic_shiver_man",
+      "breakpoints": true
     }
   ]
 }
