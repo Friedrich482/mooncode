@@ -32,7 +32,7 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly envService: EnvService,
+    private readonly envService: EnvService
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
@@ -170,13 +170,13 @@ export class AuthService {
   }
 
   async handleGoogleCallBack(
-    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
+    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType
   ) {
     const { type, request, response } = handleGoogleCallBackDto;
 
     const returnUrl = validateStateQueryParam(
       request,
-      this.envService.get("NODE_ENV"),
+      this.envService.get("NODE_ENV")
     );
     const callbackUrl = validateExtensionCallbackUrl(request);
 
@@ -224,7 +224,7 @@ export class AuthService {
         "https://www.googleapis.com/oauth2/v2/userinfo",
         {
           headers: { Authorization: `Bearer ${accessToken}` },
-        },
+        }
       );
       if (!googleRes.ok) {
         throw new Error("Failed to fetch Google user info");
@@ -275,7 +275,7 @@ export class AuthService {
       });
 
       response.redirect(
-        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString(),
+        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString()
       );
     } catch (error) {
       console.error("Google OAuth error:", error);
