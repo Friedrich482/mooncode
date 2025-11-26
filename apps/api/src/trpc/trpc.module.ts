@@ -4,6 +4,7 @@ import { DailyDataModule } from "src/daily-data/daily-data.module";
 import { EnvService } from "src/env/env.service";
 import { FilesStatsModule } from "src/files-stats/files-stats.module";
 import { LanguagesModule } from "src/languages/languages.module";
+import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 import { UsersModule } from "src/users/users.module";
 
 import { Global, Module } from "@nestjs/common";
@@ -21,8 +22,8 @@ import { TrpcService } from "./trpc.service";
     LanguagesModule,
     AuthModule,
     FilesStatsModule,
+    PendingRegistrationsModule,
   ],
-  controllers: [],
   providers: [TrpcService, TrpcRouter, JwtService, EnvService],
   exports: [TrpcService],
 })

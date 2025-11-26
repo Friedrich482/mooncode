@@ -12,10 +12,14 @@ export const SignInUserDto = z.object({
   callbackUrl: z.string().nullable(),
 });
 
-export const RegisterUserDto = z.object({
+export const createPendingRegistrationDto = z.object({
   email: z.email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
+});
+
+export const RegisterUserDto = z.object({
+  ...createPendingRegistrationDto.shape,
   callbackUrl: z.string().nullable(),
 });
 
@@ -23,7 +27,7 @@ export const IsoDateStringSchema = z
   .string()
   .regex(
     /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
-    "Date must be in YYYY-MM-DD format",
+    "Date must be in YYYY-MM-DD format"
   )
   .refine(
     (dateStr) => {
@@ -38,11 +42,11 @@ export const IsoDateStringSchema = z
         date.getUTCDate() === day
       );
     },
-    { message: "Invalid date" },
+    { message: "Invalid date" }
   );
 
 export const IsoDateSchema = IsoDateStringSchema.transform(
-  (dateStr) => new Date(dateStr),
+  (dateStr) => new Date(dateStr)
 );
 export const DateStringDto = IsoDateStringSchema;
 
@@ -53,6 +57,9 @@ export type PeriodResolution = "day" | "week" | "month" | "year";
 
 export type JwtPayloadDtoType = z.infer<typeof JWTDto>;
 export type SignInUserDtoType = z.infer<typeof SignInUserDto>;
+export type CreatePendingRegistrationDtoType = z.infer<
+  typeof createPendingRegistrationDto
+>;
 export type RegisterUserDtoType = z.infer<typeof RegisterUserDto>;
 
 export type TrpcAuthError = {

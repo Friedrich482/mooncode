@@ -9,11 +9,13 @@ import { AuthModule } from "./auth/auth.module";
 import { CodingStatsModule } from "./coding-stats/coding-stats.module";
 import { DailyDataModule } from "./daily-data/daily-data.module";
 import { DrizzleModule } from "./drizzle/drizzle.module";
+import { EmailModule } from './email/email.module';
 import { EnvModule } from "./env/env.module";
 import { EnvService } from "./env/env.service";
 import { FilesModule } from "./files/files.module";
 import { FilesStatsModule } from "./files-stats/files-stats.module";
 import { LanguagesModule } from "./languages/languages.module";
+import { PendingRegistrationsModule } from './pending-registrations/pending-registrations.module';
 import { ProjectsModule } from "./projects/projects.module";
 import { TrpcModule } from "./trpc/trpc.module";
 import { UsersModule } from "./users/users.module";
@@ -35,6 +37,8 @@ import { UsersModule } from "./users/users.module";
     FilesModule,
     ProjectsModule,
     FilesStatsModule,
+    PendingRegistrationsModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [AppService, EnvService],

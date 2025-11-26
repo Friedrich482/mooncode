@@ -7,7 +7,7 @@ import { ulid } from "ulid";
 
 import { timestamps } from "../columns.helpers";
 
-export const periodicRegistrations = pgTable("pending_registrations", {
+export const pendingRegistrations = pgTable("pending_registrations", {
   id: varchar("id", { length: 26 })
     .primaryKey()
     .notNull()
