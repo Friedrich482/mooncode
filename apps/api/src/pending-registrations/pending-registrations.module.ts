@@ -8,7 +8,7 @@ import { PendingRegistrationsService } from "./pending-registrations.service";
 
 @Module({
   imports: [DrizzleModule],
-  providers: [PendingRegistrationsService, EnvService, EmailService],
+  providers: [PendingRegistrationsService, EmailService, EnvService],
   exports: [PendingRegistrationsService],
 })
 export class PendingRegistrationsModule {}
