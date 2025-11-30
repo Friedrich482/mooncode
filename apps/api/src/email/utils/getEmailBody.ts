@@ -2,242 +2,133 @@ const getEmailBody = (code: string) => {
   return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
-    <link rel="preload" as="image" href="../assets/moon.svg" />
+  <link
+      rel="preload"
+      as="image"
+      href="https://pub-ed7ddcd6ee5d46ef8244de5ac2e76ee5.r2.dev/moon-email.png" />
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
     <meta name="x-apple-disable-message-reformatting" />
   </head>
-  <body style="background-color: oklch(0.21 0.006 285.885)">
-    <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
-      <tbody>
-        <tr>
-          <td
-            style="
-              background-color: oklch(0.21 0.006 285.885);
-              font-family: &quot;Roboto&quot;;
-            "
+  <body style="margin: 0; padding: 0; background-color: #18181b">
+    <table
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      role="presentation"
+      style="background-color: #18181b"
+    >
+      <tr>
+        <td align="center" style="padding: 20px">
+          <!-- Main container -->
+          <table
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            role="presentation"
+            style="max-width: 432px; background-color: #18181b"
           >
-            <div
-              style="
-                display: none;
-                overflow: hidden;
-                line-height: 1px;
-                opacity: 0;
-                max-height: 0;
-                max-width: 0;
-              "
-              data-skip-in-text="true"
-            >
-              MoonCode Email Verification
-              <div></div>
-            </div>
-            <table
-              width="100%"
-              cellpadding="0"
-              cellspacing="0"
-              role="presentation"
-              style="
-                max-width: 27rem;
-                padding: 20px;
-                margin-right: auto;
-                margin-left: auto;
-                margin-top: 1rem;
-                background-color: oklch(0.21 0.006 285.885);
-              "
-            >
-              <tbody>
-                <tr style="width: 100%">
-                  <td>
-                    <table
-                      width="100%"
-                      cellpadding="0"
-                      cellspacing="0"
-                      role="presentation"
-                      style="
-                        background-color: oklch(0.21 0.006 285.885);
-                        border: 0.5px solid oklch(0.439 0 0);
-                        border-radius: 0.5rem;
-                        padding-top: 1.5rem;
-                      "
-                    >
-                      <tbody>
-                        <tr>
-                          <td>
-                            <table
-                              width="100%"
-                              cellpadding="0"
-                              cellspacing="0"
-                              role="presentation"
-                              style="
-                                background-color: oklch(0.21 0.006 285.885);
-                                display: flex;
-                                padding-bottom: 0px;
-                                padding-top: 40px;
-                                align-items: center;
-                                justify-content: center;
-                                border-radius: 0.5rem;
-                              "
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <img
-                                      alt="MoonCode's Logo"
-                                      height="100"
-                                      src="../assets/moon.svg"
-                                      style="
-                                        display: block;
-                                        outline: none;
-                                        border: none;
-                                        text-decoration: none;
-                                      "
-                                    />
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                            <table
-                              width="100%"
-                              cellpadding="0"
-                              cellspacing="0"
-                              role="presentation"
-                              style="
-                                padding-bottom: 25px;
-                                padding-top: 25px;
-                                padding-right: 35px;
-                                padding-left: 35px;
-                              "
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <h1
-                                      style="
-                                        color: oklch(1 0 0);
-                                        font-size: 2rem;
-                                        font-weight: 700;
-                                        margin-bottom: 15px;
-                                      "
-                                    >
-                                      Verify your identity
-                                    </h1>
-                                    <p
-                                      style="
-                                        font-size: 1.125rem;
-                                        line-height: 24px;
-                                        color: oklch(1 0 0);
-                                        margin-top: 24px;
-                                        margin-bottom: 14px;
-                                        margin-right: 0;
-                                        margin-left: 0;
-                                      "
-                                    >
-                                      Thanks for starting the MoonCode
-                                      registration process. Here is your
-                                      verification code
-                                    </p>
-                                    <p
-                                      style="
-                                        font-size: 2.25rem;
-                                        line-height: 24px;
-                                        color: oklch(1 0 0);
-                                        margin-bottom: 1rem;
-                                        margin-top: 1rem;
-                                        margin-right: 0;
-                                        margin-left: 0;
-                                        font-weight: 700;
-                                        text-align: center;
-                                      "
-                                    >
-                                      ${code}
-                                    </p>
-                                    <p
-                                      style="
-                                        font-size: 1.125rem;
-                                        line-height: 24px;
-                                        color: oklch(1 0 0);
-                                        margin: 0;
-                                        text-align: start;
-                                        margin-top: 2rem;
-                                        margin-bottom: 0;
-                                        margin-left: 0;
-                                        margin-right: 0;
-                                        display: block;
-                                      "
-                                    >
-                                      This code will be valid for 30 minutes.
-                                    </p>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                            <table
-                              width="100%"
-                              cellpadding="0"
-                              cellspacing="0"
-                              role="presentation"
-                              style="
-                                padding-bottom: 25px;
-                                padding-right: 35px;
-                                padding-left: 35px;
-                              "
-                            >
-                              <tbody>
-                                <tr>
-                                  <td>
-                                    <p
-                                      style="
-                                        font-size: 1.125rem;
-                                        line-height: 24px;
-                                        color: oklch(1 0 0);
-                                        margin: 0;
-                                        margin-top: 0;
-                                        margin-bottom: 0;
-                                        margin-left: 0;
-                                        margin-right: 0;
-                                      "
-                                    >
-                                      If you did not try to login in, you can
-                                      safely ignore this email.
-                                    </p>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                            <p
-                              style="
-                                font-size: 1rem;
-                                line-height: 24px;
-                                color: oklch(1 0 0);
-                                text-align: center;
-                                padding-bottom: 1rem;
-                                padding-left: 35px;
-                                padding-right: 35px;
-                                margin: 0;
-                                opacity: 0.65;
-                              "
-                            >
-                              MoonCode
-                              <span class="rights">batat</span>,&nbsp;All rights
-                              reserved
-                            </p>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </td>
-        </tr>
-      </tbody>
+            <tr>
+              <td align="center" style="padding-top: 40px; padding-bottom: 0">
+                <img
+                  alt="MoonCode Logo"
+                  src="https://pub-ed7ddcd6ee5d46ef8244de5ac2e76ee5.r2.dev/moon-email.png"
+                  width="100"
+                  height="100"
+                  style="display: block; border: 0"
+                />
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 25px 0">
+                <h1
+                  style="
+                    margin: 0 0 15px 0;
+                    color: #ffffff;
+                    font-size: 28px;
+                    font-weight: 700;
+                    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+                  "
+                >
+                  Verify your identity
+                </h1>
+                <p
+                  style="
+                    margin: 24px 0 14px 0;
+                    color: #ffffff;
+                    font-size: 16px;
+                    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+                  "
+                >
+                  Thanks for starting the MoonCode registration process. Here is
+                  your verification code:
+                </p>
+                <p
+                  style="
+                    margin: 20px auto;
+                    color: #ffffff;
+                    font-size: 46px;
+                    font-weight: 700;
+                    text-align: center;
+                    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+                    background-color: #3f3f46;
+                    padding: 4px;
+                    border-radius: 8px;
+                  "
+                >
+                  ${code}
+                </p>
+                <p
+                  style="
+                    margin: 32px 0 0 0;
+                    color: #ffffff;
+                    font-size: 18px;
+                    line-height: 24px;
+                    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+                  "
+                >
+                  This code will be valid for 30 minutes.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 0 25px 0">
+                <p
+                  style="
+                    margin: 0;
+                    color: #ffffff;
+                    font-size: 14px;
+                    line-height: 24px;
+                    opacity: 0.65;
+                    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+                  "
+                >
+                  If you did not try to log in, you can safely ignore this
+                  email.
+                </p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding: 0 0 16px 0">
+                <p
+                  style="
+                    margin: 0;
+                    color: #ffffff;
+                    font-size: 14px;
+                    line-height: 20px;
+                    text-align: center;
+                    opacity: 0.65;
+                    font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
+                  "
+                >
+                  MoonCode 2025, &copy; All rights reserved
+                </p>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
     </table>
   </body>
-  <script defer>
-    const dateSpan = document.querySelector(".rights");
-    const currentYear = new Date().getFullYear();
-    dateSpan.textContent = currentYear;
-  </script>
 </html>
 `;
 };

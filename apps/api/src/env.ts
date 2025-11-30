@@ -9,7 +9,7 @@ export const envSchema = z.object({
   GOOGLE_CLIENT_ID: z.string().trim().min(1),
   GOOGLE_CLIENT_SECRET: z.string().trim().min(1),
   GOOGLE_REDIRECT_URI: z.url(),
-  RESEND_EMAIL_ADDRESS: z.email(),
+  ONBOARDING_EMAIL: z.string().min(1),
   RESEND_API_KEY: z.string().min(1),
 });
 

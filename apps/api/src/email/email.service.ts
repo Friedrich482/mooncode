@@ -18,7 +18,7 @@ export class EmailService {
     const resend = new Resend(this.envService.get("RESEND_API_KEY"));
 
     resend.emails.send({
-      from: this.envService.get("RESEND_EMAIL_ADDRESS"),
+      from: this.envService.get("ONBOARDING_EMAIL"),
       to: email,
       subject: "Email verification",
       html: getEmailBody(code),
