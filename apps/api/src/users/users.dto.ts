@@ -1,11 +1,9 @@
 import { z } from "zod";
 import { authMethodEnum } from "src/drizzle/schema/users";
 
-import { RegisterUserDto } from "@repo/common/types-schemas";
+import { CreatePendingRegistrationDto } from "@repo/common/types-schemas";
 
-export const createUserDto = RegisterUserDto.omit({
-  callbackUrl: true,
-});
+export const createUserDto = CreatePendingRegistrationDto;
 
 export const CreateGoogleUserDto = z.object({
   username: z.string().min(1),
@@ -15,8 +13,6 @@ export const CreateGoogleUserDto = z.object({
   profilePicture: z.string().min(1),
   authMethod: z.enum(authMethodEnum),
 });
-
-export const UpdateProfileDto = RegisterUserDto.partial();
 
 export const FindByIdDto = z.object({
   id: z.ulid(),

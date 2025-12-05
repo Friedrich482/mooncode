@@ -14,3 +14,4 @@ export const DASHBOARD_DEVELOPMENT_URL = `http://localhost:${DASHBOARD_DEVELOPME
 export const DASHBOARD_PREVIEW_URL = `http://localhost:${DASHBOARD_PREVIEW_PORT}`;
 
 export const DATE_LOCALE = "sv-SE";
+export const PENDING_REGISTRATION_CODE_LENGTH = 8;

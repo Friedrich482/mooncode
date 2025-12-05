@@ -5,6 +5,8 @@ import { pgTable } from "drizzle-orm/pg-core";
 import { timestamp } from "drizzle-orm/pg-core";
 import { ulid } from "ulid";
 
+import { PENDING_REGISTRATION_CODE_LENGTH } from "@repo/common/constants";
+
 import { timestamps } from "../columns.helpers";
 
 export const pendingRegistrations = pgTable("pending_registrations", {
@@ -16,7 +18,7 @@ export const pendingRegistrations = pgTable("pending_registrations", {
   username: text("name").notNull().unique(),
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
-  code: varchar("code", { length: 8 }).notNull(),
+  code: varchar("code", { length: PENDING_REGISTRATION_CODE_LENGTH }).notNull(),
   expiresAt: timestamp("expires_at")
     .notNull()
     .default(sql`now() + interval '30 minutes'`),

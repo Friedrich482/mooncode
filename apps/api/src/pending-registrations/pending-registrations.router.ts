@@ -1,7 +1,7 @@
 import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
-import { createPendingRegistrationDto } from "@repo/common/types-schemas";
+import { CreatePendingRegistrationDto } from "@repo/common/types-schemas";
 
 import { PendingRegistrationsService } from "./pending-registrations.service";
 
@@ -16,7 +16,7 @@ export class PendingRegistrationsRouter {
     pendingRegistrations: this.trpcService.trpc.router({
       create: this.trpcService
         .publicProcedure()
-        .input(createPendingRegistrationDto)
+        .input(CreatePendingRegistrationDto)
         .mutation(async ({ input }) =>
           this.pendingRegistrationsService.create(input)
         ),

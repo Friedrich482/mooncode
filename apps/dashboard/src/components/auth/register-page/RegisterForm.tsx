@@ -9,12 +9,8 @@ import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ALREADY_EXISTING_EMAIL_MESSAGE,
-  ALREADY_EXISTING_USERNAME_MESSAGE,
-} from "@repo/common/constants";
-import {
-  RegisterUserDto,
-  RegisterUserDtoType,
+  CreatePendingRegistrationDto,
+  CreatePendingRegistrationDtoType,
 } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -26,7 +22,7 @@ import {
   FormMessage,
 } from "@repo/ui/components/ui/form";
 import { Input } from "@repo/ui/components/ui/input";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import GoogleLoginButton from "../GoogleLoginButton";
 import LoginMethodSeparator from "../LoginMethodSeparator";
@@ -34,13 +30,12 @@ import LoginMethodSeparator from "../LoginMethodSeparator";
 const RegisterForm = () => {
   usePageTitle("Register | Mooncode");
 
-  const form = useForm<RegisterUserDtoType>({
-    resolver: zodResolver(RegisterUserDto),
+  const form = useForm<CreatePendingRegistrationDtoType>({
+    resolver: zodResolver(CreatePendingRegistrationDto),
     defaultValues: {
       email: "",
       password: "",
       username: "",
-      callbackUrl: null,
     },
   });
 
@@ -48,45 +43,36 @@ const RegisterForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const registerMutation = useMutation(
-    trpc.auth.registerUser.mutationOptions(),
+  const createPendingRegistrationMutation = useMutation(
+    trpc.pendingRegistrations.create.mutationOptions(),
   );
 
   const callbackUrl = getCallbackUrl();
 
-  const onSubmit = async (values: RegisterUserDtoType) => {
-    registerMutation.mutate(
+  const onSubmit = async (values: CreatePendingRegistrationDtoType) => {
+    createPendingRegistrationMutation.mutate(
       {
         email: values.email,
         username: values.username,
         password: values.password,
-        callbackUrl,
       },
       {
         onError: (error) => {
           const errorMessage = error.message;
 
-          if (errorMessage === ALREADY_EXISTING_EMAIL_MESSAGE) {
+          if (errorMessage.toLowerCase().includes("email")) {
             form.setError("email", { message: errorMessage });
-          } else if (errorMessage === ALREADY_EXISTING_USERNAME_MESSAGE) {
+          } else if (errorMessage.toLowerCase().includes("username")) {
             form.setError("username", { message: errorMessage });
           } else {
             form.setError("root", { message: errorMessage });
           }
         },
 
-        onSuccess: async ({ accessToken }) => {
-          if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(values.email)}`;
-          }
+        onSuccess: async ({ email }) => {
+          localStorage.setItem("pendingRegistrationEmail", email);
 
-          await queryClient.invalidateQueries({
-            queryKey: trpc.auth.getUser.queryKey(),
-            exact: true,
-          });
-
-          navigate("/dashboard");
+          navigate("/register/verify");
         },
       },
     );

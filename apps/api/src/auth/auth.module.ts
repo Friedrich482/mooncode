@@ -1,5 +1,6 @@
 import { EnvModule } from "src/env/env.module";
 import { EnvService } from "src/env/env.service";
+import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 import { UsersModule } from "src/users/users.module";
 
 import { Module } from "@nestjs/common";
@@ -14,6 +15,7 @@ import { AuthService } from "./auth.service";
   imports: [
     ConfigModule,
     UsersModule,
+    PendingRegistrationsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule, EnvModule],
       useFactory: async (envService: EnvService) => ({

@@ -1,5 +1,7 @@
 import z from "zod";
 
+import { PENDING_REGISTRATION_CODE_LENGTH } from "./constants";
+
 export const JWTDto = z.object({
   sub: z.ulid(),
   iat: z.number().int(),
@@ -12,14 +14,15 @@ export const SignInUserDto = z.object({
   callbackUrl: z.string().nullable(),
 });
 
-export const createPendingRegistrationDto = z.object({
+export const CreatePendingRegistrationDto = z.object({
   email: z.email(),
   password: z.string().min(8, "Password must be at least 8 characters"),
   username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
 export const RegisterUserDto = z.object({
-  ...createPendingRegistrationDto.shape,
+  email: z.email(),
+  code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
   callbackUrl: z.string().nullable(),
 });
 
@@ -58,7 +61,7 @@ export type PeriodResolution = "day" | "week" | "month" | "year";
 export type JwtPayloadDtoType = z.infer<typeof JWTDto>;
 export type SignInUserDtoType = z.infer<typeof SignInUserDto>;
 export type CreatePendingRegistrationDtoType = z.infer<
-  typeof createPendingRegistrationDto
+  typeof CreatePendingRegistrationDto
 >;
 export type RegisterUserDtoType = z.infer<typeof RegisterUserDto>;
 

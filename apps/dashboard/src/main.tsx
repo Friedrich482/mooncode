@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 
 import App from "./App";
 import LoginForm from "./components/auth/login-page/LoginForm";
+import CodeVerification from "./components/auth/register-page/code-verification/CodeVerification";
 import RegisterForm from "./components/auth/register-page/RegisterForm";
 import Dashboard from "./components/dashboard-page/Dashboard";
 import Layout from "./components/layout/Layout";
@@ -60,6 +61,11 @@ const router = createBrowserRouter([
           {
             path: "register",
             element: <RegisterForm />,
+            loader: authRouteLoader,
+          },
+          {
+            path: "register/verify",
+            element: <CodeVerification />,
             loader: authRouteLoader,
           },
           {

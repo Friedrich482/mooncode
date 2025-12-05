@@ -9,6 +9,10 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CreatePendingRegistrationDtoType } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
+import {
+  DeletePendingRegistrationAfterRegistrationDtoType,
+  FindPendingRegistrationByEmailDtoType,
+} from "./pending-registration.dto";
 import generateVerificationCode from "./utils/generateVerificationCode";
 
 @Injectable()
@@ -50,6 +54,7 @@ export class PendingRegistrationsService {
       });
     }
 
+    // delete any invalid pending registration tied to this user
     await this.db
       .delete(pendingRegistrations)
       .where(
@@ -113,10 +118,67 @@ export class PendingRegistrationsService {
       code: generatedCode,
     });
 
-    return createdPendingRegistration;
+    return { ...createdPendingRegistration, message: "Verification code sent" };
   }
 
-  delete(id: number) {
-    return `This action removes a #${id} pendingRegistration`;
+  async findByEmail(
+    findPendingRegistrationByEmailType: FindPendingRegistrationByEmailDtoType
+  ) {
+    const { email, code } = findPendingRegistrationByEmailType;
+
+    // delete any invalid pending registration tied to this user
+    await this.db
+      .delete(pendingRegistrations)
+      .where(
+        and(
+          eq(pendingRegistrations.email, email),
+          lt(pendingRegistrations.expiresAt, new Date())
+        )
+      );
+
+    const [existingValidPendingRegistration] = await this.db
+      .select({
+        username: pendingRegistrations.username,
+        password: pendingRegistrations.password,
+        email: pendingRegistrations.email,
+        code: pendingRegistrations.code,
+      })
+      .from(pendingRegistrations)
+      .where(
+        and(
+          eq(pendingRegistrations.email, email),
+          gt(pendingRegistrations.expiresAt, new Date())
+        )
+      )
+      .limit(1);
+
+    if (!existingValidPendingRegistration) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "You have no pending registration. Go back and try again",
+      });
+    }
+
+    if (existingValidPendingRegistration.code !== code) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Incorrect code",
+      });
+    }
+
+    const { code: existingValidCode, ...remaining } =
+      existingValidPendingRegistration;
+
+    return remaining;
+  }
+
+  async deleteAfterRegistration(
+    deletePendingRegistrationAfterRegistrationDto: DeletePendingRegistrationAfterRegistrationDtoType
+  ) {
+    const { email } = deletePendingRegistrationAfterRegistrationDto;
+
+    await this.db
+      .delete(pendingRegistrations)
+      .where(eq(pendingRegistrations.email, email));
   }
 }

@@ -2,6 +2,7 @@ import { compare } from "bcrypt";
 import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { EnvService } from "src/env/env.service";
+import { PendingRegistrationsService } from "src/pending-registrations/pending-registrations.service";
 import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
 
@@ -32,13 +33,27 @@ export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
-    private readonly envService: EnvService
+    private readonly envService: EnvService,
+    private readonly pendingRegistrationService: PendingRegistrationsService
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
   async signIn(signInDto: SignInUserDtoType, response: Response) {
     const { password: pass, email, callbackUrl } = signInDto;
+
+    if (callbackUrl) {
+      //  the request has been sent by the extension, validate it first
+      if (
+        !callbackUrl.startsWith("vscode://") ||
+        !callbackUrl.includes("/auth-callback")
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid callback url",
+        });
+      }
+    }
 
     const user = await this.usersService.findByEmail({ email });
 
@@ -68,8 +83,16 @@ export class AuthService {
       maxAge: this.COOKIE_MAX_AGE,
     });
 
+    return {
+      accessToken: token,
+    };
+  }
+
+  async register(registerDto: RegisterUserDtoType, response: Response) {
+    const { email, code, callbackUrl } = registerDto;
+
     if (callbackUrl) {
-      //  the request has been sent by the extension
+      //  the request has been sent by the extension, validate it first
       if (
         !callbackUrl.startsWith("vscode://") ||
         !callbackUrl.includes("/auth-callback")
@@ -81,17 +104,18 @@ export class AuthService {
       }
     }
 
-    return {
-      accessToken: token,
-    };
-  }
+    const validPendingRegistration =
+      await this.pendingRegistrationService.findByEmail({ email, code });
 
-  async register(registerDto: RegisterUserDtoType, response: Response) {
-    const { username, email, password, callbackUrl } = registerDto;
     const createdUser = await this.usersService.create({
-      username,
-      email,
-      password,
+      username: validPendingRegistration.username,
+      email: validPendingRegistration.email,
+      password: validPendingRegistration.password,
+    });
+
+    // delete the pending registration associated
+    await this.pendingRegistrationService.deleteAfterRegistration({
+      email: createdUser.email,
     });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: createdUser.id };
@@ -104,19 +128,6 @@ export class AuthService {
       sameSite: "none",
       maxAge: this.COOKIE_MAX_AGE,
     });
-
-    if (callbackUrl) {
-      //  the request has been sent by the extension
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid callback url",
-        });
-      }
-    }
 
     return {
       accessToken: token,
