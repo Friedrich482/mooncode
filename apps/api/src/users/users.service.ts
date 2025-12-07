@@ -121,6 +121,7 @@ export class UsersService {
         googleId: googleId,
         googleEmail,
         authMethod: "google",
+        emailVerifiedAt: new Date(),
       })
       .returning({
         id: users.id,
