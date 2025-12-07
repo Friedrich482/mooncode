@@ -202,20 +202,27 @@ export class UsersService {
       });
     }
 
-    const [user] = await this.db.select().from(users).where(eq(users.id, id));
+    const [user] = await this.db
+      .select({ email: users.email, hashedPassword: users.hashedPassword })
+      .from(users)
+      .where(eq(users.id, id));
     if (!user)
       throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
 
+    let hashedPassword = "";
+
     if (setFields.password) {
-      setFields.password = await bcrypt.hash(
-        setFields.password,
-        this.saltRounds
-      );
+      hashedPassword = await bcrypt.hash(setFields.password, this.saltRounds);
     }
 
     const [returningUser] = await this.db
       .update(users)
-      .set(setFields)
+      .set({
+        ...setFields,
+        hashedPassword: setFields.password
+          ? hashedPassword
+          : user.hashedPassword,
+      })
       .where(eq(users.id, id))
       .returning({
         username: users.username,
