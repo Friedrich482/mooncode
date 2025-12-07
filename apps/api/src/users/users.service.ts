@@ -60,7 +60,7 @@ export class UsersService {
       .values({
         username,
         email,
-        password: hashedPassword,
+        hashedPassword,
         profilePicture: "picture",
         emailVerifiedAt: new Date(),
       })
@@ -116,7 +116,7 @@ export class UsersService {
       .values({
         username,
         email: googleEmail,
-        password: hashedPassword,
+        hashedPassword,
         profilePicture,
         googleId: googleId,
         googleEmail,
@@ -156,7 +156,7 @@ export class UsersService {
         username: users.username,
         id: users.id,
         profilePicture: users.profilePicture,
-        password: users.password,
+        hashedPassword: users.hashedPassword,
       })
       .from(users)
       .where(eq(users.email, email))

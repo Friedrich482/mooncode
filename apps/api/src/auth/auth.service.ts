@@ -64,7 +64,7 @@ export class AuthService {
       });
     }
 
-    const isPasswordCorrect = await bcrypt.compare(pass, user.password);
+    const isPasswordCorrect = await bcrypt.compare(pass, user.hashedPassword);
     if (!isPasswordCorrect) {
       throw new TRPCError({
         code: "UNAUTHORIZED",

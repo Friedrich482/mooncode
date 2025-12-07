@@ -17,7 +17,7 @@ export const pendingRegistrations = pgTable("pending_registrations", {
 
   username: text("name").notNull().unique(),
   email: text("email").notNull().unique(),
-  password: text("password").notNull(),
+  hashedPassword: text("hashed_password").notNull(),
   code: varchar("code", { length: PENDING_REGISTRATION_CODE_LENGTH }).notNull(),
   expiresAt: timestamp("expires_at")
     .notNull()
