@@ -139,7 +139,7 @@ export class PendingRegistrationsService {
     const [existingValidPendingRegistration] = await this.db
       .select({
         username: pendingRegistrations.username,
-        password: pendingRegistrations.password,
+        hashedPassword: pendingRegistrations.password,
         email: pendingRegistrations.email,
         code: pendingRegistrations.code,
       })

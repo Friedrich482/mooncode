@@ -1,4 +1,4 @@
-import { compare } from "bcrypt";
+import * as bcrypt from "bcrypt";
 import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { EnvService } from "src/env/env.service";
@@ -64,7 +64,7 @@ export class AuthService {
       });
     }
 
-    const isPasswordCorrect = await compare(pass, user.password);
+    const isPasswordCorrect = await bcrypt.compare(pass, user.password);
     if (!isPasswordCorrect) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
@@ -110,7 +110,7 @@ export class AuthService {
     const createdUser = await this.usersService.create({
       username: validPendingRegistration.username,
       email: validPendingRegistration.email,
-      password: validPendingRegistration.password,
+      hashedPassword: validPendingRegistration.hashedPassword,
     });
 
     // delete the pending registration associated

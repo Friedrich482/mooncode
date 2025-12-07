@@ -34,12 +34,14 @@ const CodeVerificationForm = ({
 }: {
   pendingRegistrationEmail: string;
 }) => {
+  const callbackUrl = getCallbackUrl();
+
   const form = useForm<RegisterUserDtoType>({
     resolver: zodResolver(RegisterUserDto),
     defaultValues: {
       email: pendingRegistrationEmail,
       code: "",
-      callbackUrl: null,
+      callbackUrl,
     },
   });
   useEffect(() => {
@@ -52,8 +54,6 @@ const CodeVerificationForm = ({
   const registerMutation = useMutation(
     trpc.auth.registerUser.mutationOptions(),
   );
-
-  const callbackUrl = getCallbackUrl();
 
   const onSubmit = async (values: RegisterUserDtoType) => {
     registerMutation.mutate(
@@ -76,16 +76,16 @@ const CodeVerificationForm = ({
         onSuccess: async ({ accessToken }) => {
           localStorage.removeItem("pendingRegistrationEmail");
 
-          if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(pendingRegistrationEmail)}`;
-          }
-
           await queryClient.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
           });
 
           navigate("/dashboard");
+
+          if (callbackUrl && accessToken) {
+            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(pendingRegistrationEmail)}`;
+          }
         },
       },
     );
@@ -140,7 +140,11 @@ const CodeVerificationForm = ({
                   asChild
                   className={cn("h-10 w-1/2 self-start rounded-lg")}
                 >
-                  <Link to="/register">Back</Link>
+                  <Link
+                    to={`/register${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
+                  >
+                    Back
+                  </Link>
                 </Button>
                 <Button
                   variant="default"

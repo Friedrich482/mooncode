@@ -72,7 +72,9 @@ const RegisterForm = () => {
         onSuccess: async ({ email }) => {
           localStorage.setItem("pendingRegistrationEmail", email);
 
-          navigate("/register/verify");
+          navigate(
+            `/register/verify${callbackUrl ? `?callback=${callbackUrl}` : ""}`,
+          );
         },
       },
     );

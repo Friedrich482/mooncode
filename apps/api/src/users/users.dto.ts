@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { authMethodEnum } from "src/drizzle/schema/users";
 
-import { CreatePendingRegistrationDto } from "@repo/common/types-schemas";
-
-export const createUserDto = CreatePendingRegistrationDto;
+export const CreateUserDto = z.object({
+  email: z.email(),
+  hashedPassword: z.string().min(1),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+});
 
 export const CreateGoogleUserDto = z.object({
   username: z.string().min(1),
@@ -46,7 +48,7 @@ export const DeleteUserDto = z.object({
   id: z.ulid(),
 });
 
-export type CreateUserDtoType = z.infer<typeof createUserDto>;
+export type CreateUserDtoType = z.infer<typeof CreateUserDto>;
 
 export type CreateGoogleUserDtoType = z.infer<typeof CreateGoogleUserDto>;
 

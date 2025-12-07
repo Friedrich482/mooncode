@@ -37,12 +37,14 @@ const LoginForm = () => {
     displayAuthErrorSonner();
   }, []);
 
+  const callbackUrl = getCallbackUrl();
+
   const form = useForm<SignInUserDtoType>({
     resolver: zodResolver(SignInUserDto),
     defaultValues: {
       email: "",
       password: "",
-      callbackUrl: null,
+      callbackUrl,
     },
   });
 
@@ -52,8 +54,6 @@ const LoginForm = () => {
   const trpc = useTRPC();
   const queryClient = useQueryClient();
   const loginMutation = useMutation(trpc.auth.signInUser.mutationOptions());
-
-  const callbackUrl = getCallbackUrl();
 
   const onSubmit = async (values: SignInUserDtoType) => {
     loginMutation.mutate(
@@ -75,16 +75,16 @@ const LoginForm = () => {
           }
         },
         onSuccess: async ({ accessToken }) => {
-          if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(values.email)}`;
-          }
-
           await queryClient.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
           });
 
           navigate("/dashboard");
+
+          if (callbackUrl && accessToken) {
+            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(values.email)}`;
+          }
         },
       },
     );

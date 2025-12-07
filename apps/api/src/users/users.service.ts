@@ -26,7 +26,7 @@ export class UsersService {
     private readonly db: NodePgDatabase
   ) {}
   async create(createUserDto: CreateUserDtoType) {
-    const { email, password, username } = createUserDto;
+    const { email, hashedPassword, username } = createUserDto;
 
     // check if a user with the email already exists
     const [existingUserWithSameEmail] = await this.db
@@ -55,7 +55,6 @@ export class UsersService {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, this.saltRounds);
     const [userCreated] = await this.db
       .insert(users)
       .values({
@@ -63,6 +62,7 @@ export class UsersService {
         email,
         password: hashedPassword,
         profilePicture: "picture",
+        emailVerifiedAt: new Date(),
       })
       .returning({
         id: users.id,
