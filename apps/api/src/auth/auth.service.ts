@@ -2,6 +2,7 @@ import * as bcrypt from "bcrypt";
 import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { EnvService } from "src/env/env.service";
+import { PasswordResetsService } from "src/password-resets/password-resets.service";
 import { PendingRegistrationsService } from "src/pending-registrations/pending-registrations.service";
 import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
@@ -15,6 +16,7 @@ import {
 import {
   JwtPayloadDtoType,
   RegisterUserDtoType,
+  ResetPasswordDtoType,
   SignInUserDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
@@ -34,7 +36,8 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
-    private readonly pendingRegistrationService: PendingRegistrationsService
+    private readonly pendingRegistrationService: PendingRegistrationsService,
+    private readonly passwordResetsService: PasswordResetsService
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
@@ -119,6 +122,41 @@ export class AuthService {
     });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: createdUser.id };
+    const token = await this.jwtService.signAsync(payload);
+
+    // Set the HTTP-only cookie
+    response.cookie(this.AUTH_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: this.COOKIE_MAX_AGE,
+    });
+
+    return {
+      accessToken: token,
+    };
+  }
+
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDtoType,
+    response: Response
+  ) {
+    const { email, code, newPassword } = resetPasswordDto;
+
+    // verify if the code is still valid
+    await this.passwordResetsService.verifyCode({ code, email });
+
+    const user = await this.usersService.findByEmail({ email });
+
+    await this.usersService.update({
+      id: user.id,
+      password: newPassword,
+    });
+
+    // delete the password reset associated
+    await this.passwordResetsService.deletePasswordResetAfterReset({ email });
+
+    const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
     const token = await this.jwtService.signAsync(payload);
 
     // Set the HTTP-only cookie

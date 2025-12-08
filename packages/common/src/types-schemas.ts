@@ -1,6 +1,9 @@
 import z from "zod";
 
-import { PENDING_REGISTRATION_CODE_LENGTH } from "./constants";
+import {
+  PASSWORD_RESET_CODE_LENGTH,
+  PENDING_REGISTRATION_CODE_LENGTH,
+} from "./constants";
 
 export const JWTDto = z.object({
   sub: z.ulid(),
@@ -24,6 +27,12 @@ export const RegisterUserDto = z.object({
   email: z.email(),
   code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
   callbackUrl: z.string().nullable(),
+});
+
+export const ResetPasswordDto = z.object({
+  email: z.email(),
+  code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
+  newPassword: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export const IsoDateStringSchema = z
@@ -64,6 +73,7 @@ export type CreatePendingRegistrationDtoType = z.infer<
   typeof CreatePendingRegistrationDto
 >;
 export type RegisterUserDtoType = z.infer<typeof RegisterUserDto>;
+export type ResetPasswordDtoType = z.infer<typeof ResetPasswordDto>;
 
 export type TrpcAuthError = {
   error: {

@@ -1,7 +1,11 @@
 import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
-import { RegisterUserDto, SignInUserDto } from "@repo/common/types-schemas";
+import {
+  RegisterUserDto,
+  ResetPasswordDto,
+  SignInUserDto,
+} from "@repo/common/types-schemas";
 
 import { AuthService } from "./auth.service";
 
@@ -26,6 +30,13 @@ export class AuthRouter {
         .input(RegisterUserDto)
         .mutation(async ({ input, ctx }) =>
           this.authService.register(input, ctx.res)
+        ),
+
+      resetPassword: this.trpcService
+        .publicProcedure()
+        .input(ResetPasswordDto)
+        .mutation(async ({ input, ctx }) =>
+          this.authService.resetPassword(input, ctx.res)
         ),
 
       checkAuthStatus: this.trpcService

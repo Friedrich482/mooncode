@@ -1,5 +1,6 @@
 import { EnvModule } from "src/env/env.module";
 import { EnvService } from "src/env/env.service";
+import { PasswordResetsModule } from "src/password-resets/password-resets.module";
 import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 import { UsersModule } from "src/users/users.module";
 
@@ -16,6 +17,7 @@ import { AuthService } from "./auth.service";
     ConfigModule,
     UsersModule,
     PendingRegistrationsModule,
+    PasswordResetsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule, EnvModule],
       useFactory: async (envService: EnvService) => ({

@@ -5,6 +5,8 @@ import { CodingStatsRouter } from "src/coding-stats/coding-stats.router";
 import { EnvService } from "src/env/env.service";
 import { FilesStatsModule } from "src/files-stats/files-stats.module";
 import { FilesStatsRouter } from "src/files-stats/files-stats.router";
+import { PasswordResetsModule } from "src/password-resets/password-resets.module";
+import { PasswordResetsRouter } from "src/password-resets/password-resets.router";
 import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 import { PendingRegistrationsRouter } from "src/pending-registrations/pending-registrations.router";
 
@@ -21,6 +23,7 @@ import { TrpcService } from "./trpc.service";
     CodingStatsModule,
     FilesStatsModule,
     PendingRegistrationsModule,
+    PasswordResetsModule,
   ],
   providers: [
     TrpcService,
@@ -31,6 +34,7 @@ import { TrpcService } from "./trpc.service";
     CodingStatsRouter,
     FilesStatsRouter,
     PendingRegistrationsRouter,
+    PasswordResetsRouter,
   ],
   exports: [TrpcService],
 })

@@ -15,6 +15,7 @@ import { EnvService } from "./env/env.service";
 import { FilesModule } from "./files/files.module";
 import { FilesStatsModule } from "./files-stats/files-stats.module";
 import { LanguagesModule } from "./languages/languages.module";
+import { PasswordResetsModule } from './password-resets/password-resets.module';
 import { PendingRegistrationsModule } from './pending-registrations/pending-registrations.module';
 import { ProjectsModule } from "./projects/projects.module";
 import { TrpcModule } from "./trpc/trpc.module";
@@ -39,6 +40,7 @@ import { UsersModule } from "./users/users.module";
     FilesStatsModule,
     PendingRegistrationsModule,
     EmailModule,
+    PasswordResetsModule,
   ],
   controllers: [AppController],
   providers: [AppService, EnvService],

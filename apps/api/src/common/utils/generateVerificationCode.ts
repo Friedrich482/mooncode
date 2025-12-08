@@ -1,5 +1,5 @@
 const generateVerificationCode = (): string => {
-  const chars = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ"; // No 0,O,1,I,L (confusing characters)
+  const chars = "23456789ABCDEFGHJKMNPQRSTUVWXYZ"; // No 0,O,1,I,L (confusing characters)
   const randomBytes = new Uint8Array(8);
   crypto.getRandomValues(randomBytes);
   let code = "";

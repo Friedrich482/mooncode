@@ -1,6 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { and, eq, gt, lt, or } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
+import generateVerificationCode from "src/common/utils/generateVerificationCode";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { pendingRegistrations, users } from "src/drizzle/schema";
 import { EmailService } from "src/email/email.service";
@@ -13,7 +14,6 @@ import {
   DeletePendingRegistrationAfterRegistrationDtoType,
   FindPendingRegistrationByEmailDtoType,
 } from "./pending-registration.dto";
-import generateVerificationCode from "./utils/generateVerificationCode";
 
 @Injectable()
 export class PendingRegistrationsService {
@@ -54,7 +54,7 @@ export class PendingRegistrationsService {
       });
     }
 
-    // delete any invalid pending registration tied to this user
+    // delete any expired pending registration tied to this user
     await this.db
       .delete(pendingRegistrations)
       .where(
@@ -126,7 +126,7 @@ export class PendingRegistrationsService {
   ) {
     const { email, code } = findPendingRegistrationByEmailType;
 
-    // delete any invalid pending registration tied to this user
+    // delete any expired pending registration tied to this user
     await this.db
       .delete(pendingRegistrations)
       .where(

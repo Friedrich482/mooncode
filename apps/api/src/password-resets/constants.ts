@@ -1,0 +1,1 @@
+export const MAX_ATTEMPTS_PASSWORD_RESET = 5;
