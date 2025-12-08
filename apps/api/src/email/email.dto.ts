@@ -1,11 +1,18 @@
 import z from "zod";
 
-export const sendVerificationCodeDto = z.object({
+import { PASSWORD_RESET_CODE_LENGTH } from "@repo/common/constants";
+
+export const SendVerificationCodeDto = z.object({
   email: z.email(),
-  //  TODO add more validation here ??
-  code: z.string().min(1),
+  code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
 });
 
+export const SendResetPasswordCodeDto = SendVerificationCodeDto;
+
 export type SendVerificationCodeDtoType = z.infer<
-  typeof sendVerificationCodeDto
+  typeof SendVerificationCodeDto
+>;
+
+export type SendResetPasswordCodeDtoType = z.infer<
+  typeof SendResetPasswordCodeDto
 >;

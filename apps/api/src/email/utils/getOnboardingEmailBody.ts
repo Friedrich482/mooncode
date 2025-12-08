@@ -1,5 +1,6 @@
-const getEmailBody = (code: string) => {
-  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+const getOnboardingEmailBody = (
+  code: string
+) => `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
   <link
@@ -102,7 +103,7 @@ const getEmailBody = (code: string) => {
                     font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
                   "
                 >
-                  If you did not try to log in, you can safely ignore this
+                  If you did not try to register, you can safely ignore and delete this
                   email.
                 </p>
               </td>
@@ -131,6 +132,5 @@ const getEmailBody = (code: string) => {
   </body>
 </html>
 `;
-};
 
-export default getEmailBody;
+export default getOnboardingEmailBody;
