@@ -5,6 +5,10 @@ import {
   PENDING_REGISTRATION_CODE_LENGTH,
 } from "./constants";
 
+export const PasswordSchema = z
+  .string()
+  .min(8, "Password must be at least 8 characters");
+
 export const JWTDto = z.object({
   sub: z.ulid(),
   iat: z.number().int(),
@@ -19,7 +23,7 @@ export const SignInUserDto = z.object({
 
 export const CreatePendingRegistrationDto = z.object({
   email: z.email(),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  password: PasswordSchema,
   username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
@@ -32,7 +36,7 @@ export const RegisterUserDto = z.object({
 export const ResetPasswordDto = z.object({
   email: z.email(),
   code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
-  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  newPassword: PasswordSchema,
 });
 
 export const IsoDateStringSchema = z

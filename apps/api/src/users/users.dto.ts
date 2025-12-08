@@ -1,6 +1,8 @@
 import { z } from "zod";
 import { authMethodEnum } from "src/drizzle/schema/users";
 
+import { PasswordSchema } from "@repo/common/types-schemas";
+
 export const CreateUserDto = z.object({
   email: z.email(),
   hashedPassword: z.string().min(1),
@@ -31,10 +33,7 @@ export const FindByGoogleEmailDto = z.object({
 export const UpdateUserDto = z.object({
   id: z.ulid(),
   email: z.email({ message: "Invalid email format" }).optional(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .optional(),
+  password: PasswordSchema.optional(),
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
