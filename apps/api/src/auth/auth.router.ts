@@ -1,7 +1,12 @@
+import {
+  CreatePasswordResetDto,
+  VerifyCodeDto,
+} from "src/password-resets/password-resets.dto";
 import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
 import {
+  CreatePendingRegistrationDto,
   RegisterUserDto,
   ResetPasswordDto,
   SignInUserDto,
@@ -25,12 +30,31 @@ export class AuthRouter {
           this.authService.signIn(input, ctx.res)
         ),
 
+      createPendingRegistration: this.trpcService
+        .publicProcedure()
+        .input(CreatePendingRegistrationDto)
+        .mutation(async ({ input }) =>
+          this.authService.createPendingRegistration(input)
+        ),
+
       registerUser: this.trpcService
         .publicProcedure()
         .input(RegisterUserDto)
         .mutation(async ({ input, ctx }) =>
           this.authService.register(input, ctx.res)
         ),
+
+      createPasswordReset: this.trpcService
+        .publicProcedure()
+        .input(CreatePasswordResetDto)
+        .mutation(async ({ input }) =>
+          this.authService.createPasswordReset(input)
+        ),
+
+      verifyResetCode: this.trpcService
+        .publicProcedure()
+        .input(VerifyCodeDto)
+        .mutation(async ({ input }) => this.authService.verifyResetCode(input)),
 
       resetPassword: this.trpcService
         .publicProcedure()

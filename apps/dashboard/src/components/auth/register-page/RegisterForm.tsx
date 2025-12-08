@@ -44,7 +44,7 @@ const RegisterForm = () => {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const createPendingRegistrationMutation = useMutation(
-    trpc.pendingRegistrations.create.mutationOptions(),
+    trpc.auth.createPendingRegistration.mutationOptions(),
   );
 
   const callbackUrl = getCallbackUrl();
