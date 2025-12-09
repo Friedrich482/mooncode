@@ -10,6 +10,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CreatePendingRegistrationDtoType } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
+import { MAX_ATTEMPTS_PENDING_REGISTRATION_VALID_CODE } from "./constants";
 import {
   DeletePendingRegistrationAfterRegistrationDtoType,
   FindPendingRegistrationByEmailDtoType,
@@ -138,10 +139,12 @@ export class PendingRegistrationsService {
 
     const [existingValidPendingRegistration] = await this.db
       .select({
+        id: pendingRegistrations.id,
         username: pendingRegistrations.username,
         hashedPassword: pendingRegistrations.hashedPassword,
         email: pendingRegistrations.email,
         code: pendingRegistrations.code,
+        attempts: pendingRegistrations.attempts,
       })
       .from(pendingRegistrations)
       .where(
@@ -155,11 +158,35 @@ export class PendingRegistrationsService {
     if (!existingValidPendingRegistration) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "You have no pending registration. Go back and try again",
+        message:
+          "You have no pending registration. Please go back and try again",
+      });
+    }
+
+    if (
+      existingValidPendingRegistration.attempts >=
+      MAX_ATTEMPTS_PENDING_REGISTRATION_VALID_CODE
+    ) {
+      await this.db
+        .delete(pendingRegistrations)
+        .where(
+          eq(pendingRegistrations.id, existingValidPendingRegistration.id)
+        );
+
+      throw new TRPCError({
+        code: "TOO_MANY_REQUESTS",
+        message: "Too many failed attempts. Please go back and try again",
       });
     }
 
     if (existingValidPendingRegistration.code !== code) {
+      await this.db
+        .update(pendingRegistrations)
+        .set({ attempts: existingValidPendingRegistration.attempts + 1 })
+        .where(
+          eq(pendingRegistrations.id, existingValidPendingRegistration.id)
+        );
+
       throw new TRPCError({
         code: "UNAUTHORIZED",
         message: "Incorrect code",
