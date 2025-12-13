@@ -8,6 +8,12 @@ import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { JwtPayloadDtoType } from "@repo/common/types-schemas";
 import { initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
+import {
+  createTRPCStoreLimiter,
+  defaultFingerPrint,
+} from "@trpc-limiter/memory";
+
+import { RateLimiterParams } from "./trpc.dto";
 
 export type TrpcContext = {
   req: trpcExpress.CreateExpressContextOptions["req"];
@@ -27,6 +33,7 @@ export const createContext = async (
 @Injectable()
 export class TrpcService {
   trpc;
+  private limiters;
   constructor(
     private readonly jwtService: JwtService,
     private readonly envService: EnvService
@@ -36,30 +43,69 @@ export class TrpcService {
       errorFormatter: ({ error, shape }) =>
         errorFormatter(this.envService, { error, shape }),
     });
+    this.limiters = new Map<
+      string,
+      ReturnType<typeof createTRPCStoreLimiter<typeof this.trpc>>
+    >();
+  }
+
+  rateLimiter(rateLimiterParams: RateLimiterParams) {
+    const { key, windowMs = 15 * 60 * 1000, max = 300 } = rateLimiterParams;
+
+    const cacheKey = `${key}-${windowMs}-${max}`;
+
+    if (!this.limiters.has(cacheKey)) {
+      this.limiters.set(
+        cacheKey,
+        createTRPCStoreLimiter<typeof this.trpc>({
+          fingerprint: (ctx) => defaultFingerPrint(ctx.req),
+          windowMs,
+          max,
+
+          onLimit: (retryAfter) => {
+            throw new TRPCError({
+              code: "TOO_MANY_REQUESTS",
+              message: `Too many requests, please try again in ${retryAfter} seconds`,
+            });
+          },
+        })
+      );
+    }
+
+    return this.limiters.get(cacheKey)!;
   }
 
   // these routes are publicly accessible to everyone
-  publicProcedure() {
-    return this.trpc.procedure;
+  publicProcedure(rateLimiterParams?: RateLimiterParams) {
+    return this.trpc.procedure.use(
+      this.rateLimiter(
+        rateLimiterParams ? rateLimiterParams : { key: "global" }
+      )
+    );
   }
 
   // these routes requires authentication:
+  protectedProcedure(rateLimiterParams?: RateLimiterParams) {
+    const procedure = this.trpc.procedure
+      .use(async (opts) => {
+        const payload = await this.getPayload(opts.ctx);
 
-  protectedProcedure() {
-    const procedure = this.trpc.procedure.use(async (opts) => {
-      const payload = await this.getPayload(opts.ctx);
-
-      if (!payload) {
-        throw new TRPCError({ code: "UNAUTHORIZED" });
-      }
-      // user is authorized
-      return opts.next({
-        ctx: {
-          ...opts.ctx,
-          user: { sub: payload.sub },
-        },
-      });
-    });
+        if (!payload) {
+          throw new TRPCError({ code: "UNAUTHORIZED" });
+        }
+        // user is authorized
+        return opts.next({
+          ctx: {
+            ...opts.ctx,
+            user: { sub: payload.sub },
+          },
+        });
+      })
+      .use(
+        this.rateLimiter(
+          rateLimiterParams ? rateLimiterParams : { key: "global" }
+        )
+      );
     return procedure;
   }
 
