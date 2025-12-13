@@ -2,6 +2,8 @@ import { envSchema } from "src/env";
 
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { APP_GUARD } from "@nestjs/core";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -27,6 +29,15 @@ import { UsersModule } from "./users/users.module";
       isGlobal: true,
       validate: (env) => envSchema.parse(env),
     }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        {
+          name: "default",
+          ttl: 60000,
+          limit: 10,
+        },
+      ],
+    }),
     UsersModule,
     AuthModule,
     DrizzleModule,
@@ -43,7 +54,14 @@ import { UsersModule } from "./users/users.module";
     PasswordResetsModule,
   ],
   controllers: [AppController],
-  providers: [AppService, EnvService],
+  providers: [
+    AppService,
+    EnvService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
   exports: [],
 })
 export class AppModule {}
