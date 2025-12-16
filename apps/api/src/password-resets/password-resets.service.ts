@@ -152,9 +152,9 @@ export class PasswordResetsService {
       });
     }
 
-    const { email: existingValidEmail } = existingValidPasswordReset;
-
-    return existingValidEmail;
+    return {
+      message: "Code verified",
+    };
   }
 
   async deletePasswordResetAfterReset(
