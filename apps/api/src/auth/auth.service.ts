@@ -2,10 +2,6 @@ import * as bcrypt from "bcrypt";
 import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { EnvService } from "src/env/env.service";
-import {
-  CreatePasswordResetDtoType,
-  VerifyCodeDtoType,
-} from "src/password-resets/password-resets.dto";
 import { PasswordResetsService } from "src/password-resets/password-resets.service";
 import { PendingRegistrationsService } from "src/pending-registrations/pending-registrations.service";
 import { TrpcContext } from "src/trpc/trpc.service";
@@ -18,11 +14,13 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import {
+  CreatePasswordResetDtoType,
   CreatePendingRegistrationDtoType,
   JwtPayloadDtoType,
   RegisterUserDtoType,
   ResetPasswordDtoType,
   SignInUserDtoType,
+  VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
@@ -154,8 +152,10 @@ export class AuthService {
     return this.passwordResetsService.create(createPasswordResetDto);
   }
 
-  async verifyResetCode(verifyCodeDto: VerifyCodeDtoType) {
-    return this.passwordResetsService.verifyCode(verifyCodeDto);
+  async verifyPasswordResetCode(
+    verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType
+  ) {
+    return this.passwordResetsService.verifyCode(verifyPasswordResetCodeDto);
   }
 
   async resetPassword(

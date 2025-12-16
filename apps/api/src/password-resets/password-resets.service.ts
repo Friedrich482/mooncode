@@ -7,14 +7,14 @@ import { passwordResets } from "src/drizzle/schema/passwordResets";
 import { EmailService } from "src/email/email.service";
 
 import { Inject, Injectable } from "@nestjs/common";
+import {
+  CreatePasswordResetDtoType,
+  VerifyPasswordResetCodeDtoType,
+} from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
 import { MAX_ATTEMPTS_PASSWORD_RESET } from "./constants";
-import {
-  CreatePasswordResetDtoType,
-  DeletePasswordResetAfterResetDtoType,
-  VerifyCodeDtoType,
-} from "./password-resets.dto";
+import { DeletePasswordResetAfterResetDtoType } from "./password-resets.dto";
 
 @Injectable()
 export class PasswordResetsService {
@@ -92,8 +92,8 @@ export class PasswordResetsService {
     };
   }
 
-  async verifyCode(verifyCodeDto: VerifyCodeDtoType) {
-    const { email, code } = verifyCodeDto;
+  async verifyCode(verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType) {
+    const { email, code } = verifyPasswordResetCodeDto;
 
     // delete any expired password reset tied to this user
     await this.db

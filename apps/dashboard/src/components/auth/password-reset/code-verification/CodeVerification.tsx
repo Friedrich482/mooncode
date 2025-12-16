@@ -3,7 +3,7 @@ import usePageTitle from "@/hooks/usePageTitle";
 import CodeVerificationForm from "./CodeVerificationForm";
 
 const CodeVerification = () => {
-  usePageTitle("Register | Mooncode");
+  usePageTitle("Verify Reset Code | Mooncode");
 
   return <CodeVerificationForm />;
 };

@@ -100,7 +100,7 @@ const LoginForm = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex w-[90%] flex-col gap-5 p-2"
           >
-            <h2 className="flex flex-col items-center justify-center gap-8 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
+            <h2 className="flex flex-col items-center justify-center gap-4 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
               <Logo className="size-12" />
               Login
             </h2>
@@ -155,7 +155,7 @@ const LoginForm = () => {
                 </Link>
               </p>
               <p>
-                <Link to="/reset" className="underline">
+                <Link to="/forgot-password" className="underline">
                   Lost your password?
                 </Link>
               </p>

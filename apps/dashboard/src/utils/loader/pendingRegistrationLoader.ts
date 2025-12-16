@@ -1,9 +1,10 @@
-import { useNavigate } from "react-router";
+import { redirect } from "react-router";
 import z from "zod";
 
-const useParseStoredPendingRegistrationEmail = () => {
-  const navigate = useNavigate();
+import { authRouteLoader } from "./authLoader";
 
+const pendingRegistrationLoader = async () => {
+  await authRouteLoader();
   const storedPendingRegistrationEmail = localStorage.getItem(
     "pendingRegistrationEmail",
   );
@@ -13,11 +14,10 @@ const useParseStoredPendingRegistrationEmail = () => {
     .safeParse(storedPendingRegistrationEmail);
 
   if (!parsedStoredPendingRegistrationEmail.success) {
-    navigate("/register");
-    return undefined as never;
+    throw redirect("/register");
   }
 
   return parsedStoredPendingRegistrationEmail.data;
 };
 
-export default useParseStoredPendingRegistrationEmail;
+export default pendingRegistrationLoader;

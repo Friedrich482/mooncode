@@ -1,7 +1,7 @@
 import { redirect } from "react-router";
 import { z } from "zod";
 
-import getCallbackUrl from "./getCallbackUrl";
+import getCallbackUrl from "../getCallbackUrl";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -28,7 +28,7 @@ export const protectedRouteLoader = async () => {
   }
 };
 
-// prevents a logged in user to access an auth route (login & register)
+// prevents a logged in user to access an auth route
 export const authRouteLoader = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const clientParam = decodeURIComponent(urlParams.get("client") ?? "");

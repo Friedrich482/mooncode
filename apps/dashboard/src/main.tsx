@@ -4,6 +4,9 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 
 import App from "./App";
 import LoginForm from "./components/auth/login-page/LoginForm";
+import PasswordResetCodeVerification from "./components/auth/password-reset/code-verification/CodeVerification";
+import ForgotPasswordForm from "./components/auth/password-reset/forgot-password/ForgotPasswordForm";
+import ResetPassword from "./components/auth/password-reset/reset-password/ResetPassword";
 import CodeVerification from "./components/auth/register-page/code-verification/CodeVerification";
 import RegisterForm from "./components/auth/register-page/RegisterForm";
 import Dashboard from "./components/dashboard-page/Dashboard";
@@ -17,7 +20,9 @@ import {
   googleAuthLoader,
   protectedRouteLoader,
   redirectToVSCodeAfterGoogleAuthLoader,
-} from "./utils/authLoader";
+} from "./utils/loader/authLoader";
+import passwordResetLoader from "./utils/loader/passwordResetLoader";
+import pendingRegistrationLoader from "./utils/loader/pendingRegistrationLoader";
 
 const router = createBrowserRouter([
   {
@@ -66,7 +71,22 @@ const router = createBrowserRouter([
           {
             path: "register/verify",
             element: <CodeVerification />,
+            loader: pendingRegistrationLoader,
+          },
+          {
+            path: "forgot-password",
+            element: <ForgotPasswordForm />,
             loader: authRouteLoader,
+          },
+          {
+            path: "verify-reset-code",
+            element: <PasswordResetCodeVerification />,
+            loader: passwordResetLoader,
+          },
+          {
+            path: "reset-password",
+            element: <ResetPassword />,
+            loader: passwordResetLoader,
           },
           {
             path: "auth/google",

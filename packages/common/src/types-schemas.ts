@@ -33,6 +33,15 @@ export const RegisterUserDto = z.object({
   callbackUrl: z.string().nullable(),
 });
 
+export const CreatePasswordResetDto = z.object({
+  email: z.email(),
+});
+
+export const VerifyPasswordResetCodeDto = z.object({
+  email: z.email(),
+  code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
+});
+
 export const ResetPasswordDto = z.object({
   email: z.email(),
   code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
@@ -77,6 +86,10 @@ export type CreatePendingRegistrationDtoType = z.infer<
   typeof CreatePendingRegistrationDto
 >;
 export type RegisterUserDtoType = z.infer<typeof RegisterUserDto>;
+export type CreatePasswordResetDtoType = z.infer<typeof CreatePasswordResetDto>;
+export type VerifyPasswordResetCodeDtoType = z.infer<
+  typeof VerifyPasswordResetCodeDto
+>;
 export type ResetPasswordDtoType = z.infer<typeof ResetPasswordDto>;
 
 export type TrpcAuthError = {

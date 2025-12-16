@@ -5,12 +5,12 @@ import { Link, useLoaderData, useNavigate } from "react-router";
 import Night from "@/assets/animated-night.svg?react";
 import Logo from "@/components/layout/header/Logo";
 import getCallbackUrl from "@/utils/getCallbackUrl";
-import pendingRegistrationLoader from "@/utils/loader/pendingRegistrationLoader";
+import passwordResetLoader from "@/utils/loader/passwordResetLoader";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  RegisterUserDto,
-  RegisterUserDtoType,
+  VerifyPasswordResetCodeDto,
+  VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -28,20 +28,18 @@ import {
   InputOTPSlot,
 } from "@repo/ui/components/ui/input-otp";
 import { cn } from "@repo/ui/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const CodeVerificationForm = () => {
-  const pendingRegistrationEmail =
-    useLoaderData<typeof pendingRegistrationLoader>();
+  const passwordResetEmail = useLoaderData<typeof passwordResetLoader>();
 
   const callbackUrl = getCallbackUrl();
 
-  const form = useForm<RegisterUserDtoType>({
-    resolver: zodResolver(RegisterUserDto),
+  const form = useForm<VerifyPasswordResetCodeDtoType>({
+    resolver: zodResolver(VerifyPasswordResetCodeDto),
     defaultValues: {
-      email: pendingRegistrationEmail,
+      email: passwordResetEmail,
       code: "",
-      callbackUrl,
     },
   });
   useEffect(() => {
@@ -50,17 +48,15 @@ const CodeVerificationForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
-  const registerMutation = useMutation(
-    trpc.auth.registerUser.mutationOptions(),
+  const verifyPasswordResetCodeMutation = useMutation(
+    trpc.auth.verifyPasswordResetCode.mutationOptions(),
   );
 
-  const onSubmit = async (values: RegisterUserDtoType) => {
-    registerMutation.mutate(
+  const onSubmit = async (values: VerifyPasswordResetCodeDtoType) => {
+    verifyPasswordResetCodeMutation.mutate(
       {
-        email: pendingRegistrationEmail,
+        email: passwordResetEmail,
         code: values.code,
-        callbackUrl,
       },
       {
         onError: (error) => {
@@ -73,19 +69,10 @@ const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ accessToken }) => {
-          localStorage.removeItem("pendingRegistrationEmail");
-
-          await queryClient.invalidateQueries({
-            queryKey: trpc.auth.getUser.queryKey(),
-            exact: true,
-          });
-
-          navigate("/dashboard");
-
-          if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(pendingRegistrationEmail)}`;
-          }
+        onSuccess: async () => {
+          navigate(
+            `/reset-password${callbackUrl ? `?callback=${callbackUrl}` : ""}`,
+          );
         },
       },
     );
@@ -103,7 +90,7 @@ const CodeVerificationForm = () => {
           >
             <h2 className="flex flex-col items-center justify-center gap-2 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
               <Logo className="size-12" />
-              Register
+              Forgotten Password
             </h2>
             <section className="flex w-full flex-1 flex-col items-start gap-8 pt-8">
               <FormField
@@ -141,7 +128,7 @@ const CodeVerificationForm = () => {
                   className={cn("h-10 w-1/2 self-start rounded-lg")}
                 >
                   <Link
-                    to={`/register${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
+                    to={`/forgot-password${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
                   >
                     Back
                   </Link>
