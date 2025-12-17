@@ -3,20 +3,27 @@ import z from "zod";
 
 import { authRouteLoader } from "./authLoader";
 
-const passwordResetLoader = async () => {
+const passwordResetLoader = async ({ request }: { request: Request }) => {
   await authRouteLoader();
 
-  const storedPasswordResetEmail = localStorage.getItem("passwordResetEmail");
+  const urlPasswordResetEmail = new URL(request.url).searchParams.get("email");
+  const urlPasswordResetToken = new URL(request.url).searchParams.get("token");
 
-  const parsedStoredPasswordResetEmail = z
-    .email()
-    .safeParse(storedPasswordResetEmail);
+  const parsedUrlSearchParams = z
+    .object({
+      passwordResetEmail: z.email(),
+      passwordResetToken: z.ulid(),
+    })
+    .safeParse({
+      passwordResetEmail: urlPasswordResetEmail,
+      passwordResetToken: urlPasswordResetToken,
+    });
 
-  if (!parsedStoredPasswordResetEmail.success) {
+  if (!parsedUrlSearchParams.success) {
     throw redirect("/login");
   }
 
-  return parsedStoredPasswordResetEmail.data;
+  return parsedUrlSearchParams.data;
 };
 
 export default passwordResetLoader;

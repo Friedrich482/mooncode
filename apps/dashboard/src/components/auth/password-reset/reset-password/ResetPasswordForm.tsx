@@ -24,24 +24,27 @@ import {
   FormMessage,
 } from "@repo/ui/components/ui/form";
 import { Input } from "@repo/ui/components/ui/input";
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from "@repo/ui/components/ui/input-otp";
 import { cn } from "@repo/ui/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 const CodeVerificationForm = () => {
-  const passwordResetEmail = useLoaderData<typeof passwordResetLoader>();
+  const { passwordResetEmail, passwordResetToken } =
+    useLoaderData<typeof passwordResetLoader>();
 
   const callbackUrl = getCallbackUrl();
+
+  const backLinkParams = new URLSearchParams();
+  backLinkParams.set("email", passwordResetEmail);
+
+  if (callbackUrl) {
+    backLinkParams.set("callback", callbackUrl);
+  }
 
   const form = useForm<ResetPasswordFormSchemaType>({
     resolver: zodResolver(ResetPasswordFormSchema),
     defaultValues: {
       email: passwordResetEmail,
-      code: "",
+      token: passwordResetToken,
       newPassword: "",
       confirmPassword: "",
     },
@@ -60,7 +63,7 @@ const CodeVerificationForm = () => {
     resetPasswordMutation.mutate(
       {
         email: passwordResetEmail,
-        code: values.code,
+        token: passwordResetToken,
         newPassword: values.newPassword,
       },
       {
@@ -68,7 +71,7 @@ const CodeVerificationForm = () => {
           const errorMessage = error.message;
 
           if (errorMessage.toLowerCase().includes("code")) {
-            form.setError("code", { message: errorMessage });
+            form.setError("token", { message: errorMessage });
           } else if (errorMessage.toLowerCase().includes("password")) {
             form.setError("newPassword", { message: errorMessage });
           } else {
@@ -77,8 +80,6 @@ const CodeVerificationForm = () => {
         },
 
         onSuccess: async ({ accessToken }) => {
-          localStorage.removeItem("passwordResetEmail");
-
           await queryClient.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
@@ -109,33 +110,6 @@ const CodeVerificationForm = () => {
               Forgotten Password
             </h2>
             <section className="flex w-full flex-1 flex-col items-start gap-8 pt-8">
-              <FormField
-                control={form.control}
-                name="code"
-                render={({ field }) => (
-                  <FormItem className="place-content-center">
-                    <FormLabel>Verification Code</FormLabel>
-                    <FormControl>
-                      <InputOTP maxLength={8} {...field}>
-                        <InputOTPGroup>
-                          <InputOTPSlot index={0} />
-                          <InputOTPSlot index={1} />
-                          <InputOTPSlot index={2} />
-                          <InputOTPSlot index={3} />
-                          <InputOTPSlot index={4} />
-                          <InputOTPSlot index={5} />
-                          <InputOTPSlot index={6} />
-                          <InputOTPSlot index={7} />
-                        </InputOTPGroup>
-                      </InputOTP>
-                    </FormControl>
-                    <FormDescription>
-                      Please, re-enter the 8-digit code we sent you by email
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="newPassword"
@@ -188,9 +162,7 @@ const CodeVerificationForm = () => {
                   asChild
                   className={cn("h-10 w-1/2 self-start rounded-lg")}
                 >
-                  <Link
-                    to={`/verify-reset-code${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
-                  >
+                  <Link to={`/verify-reset-code?${backLinkParams.toString()}`}>
                     Back
                   </Link>
                 </Button>

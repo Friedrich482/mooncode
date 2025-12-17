@@ -14,7 +14,10 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import { MAX_ATTEMPTS_PASSWORD_RESET } from "./constants";
-import { DeletePasswordResetAfterResetDtoType } from "./password-resets.dto";
+import {
+  DeletePasswordResetAfterResetDtoType,
+  GetPasswordResetDtoType,
+} from "./password-resets.dto";
 
 @Injectable()
 export class PasswordResetsService {
@@ -92,6 +95,28 @@ export class PasswordResetsService {
     };
   }
 
+  async getPasswordReset(getPasswordResetDto: GetPasswordResetDtoType) {
+    const { id } = getPasswordResetDto;
+
+    const [existingPasswordReset] = await this.db
+      .select({
+        email: passwordResets.email,
+        code: passwordResets.code,
+      })
+      .from(passwordResets)
+      .where(eq(passwordResets.id, id));
+
+    if (!existingPasswordReset) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message:
+          "You have no password reset in progress. Go back and try again",
+      });
+    }
+
+    return existingPasswordReset;
+  }
+
   async verifyCode(verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType) {
     const { email, code } = verifyPasswordResetCodeDto;
 
@@ -154,6 +179,7 @@ export class PasswordResetsService {
 
     return {
       message: "Code verified",
+      token: existingValidPasswordReset.id,
     };
   }
 

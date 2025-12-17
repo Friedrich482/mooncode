@@ -21,6 +21,7 @@ import {
   protectedRouteLoader,
   redirectToVSCodeAfterGoogleAuthLoader,
 } from "./utils/loader/authLoader";
+import passwordResetCodeVerificationLoader from "./utils/loader/passwordResetCodeVerificationLoader";
 import passwordResetLoader from "./utils/loader/passwordResetLoader";
 import pendingRegistrationLoader from "./utils/loader/pendingRegistrationLoader";
 
@@ -81,7 +82,7 @@ const router = createBrowserRouter([
           {
             path: "verify-reset-code",
             element: <PasswordResetCodeVerification />,
-            loader: passwordResetLoader,
+            loader: passwordResetCodeVerificationLoader,
           },
           {
             path: "reset-password",

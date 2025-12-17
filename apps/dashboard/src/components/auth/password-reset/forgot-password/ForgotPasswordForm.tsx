@@ -60,11 +60,15 @@ const ForgotPasswordForm = () => {
         },
 
         onSuccess: async () => {
-          localStorage.setItem("passwordResetEmail", values.email);
+          const params = new URLSearchParams();
 
-          navigate(
-            `/verify-reset-code${callbackUrl ? `?callback=${callbackUrl}` : ""}`,
-          );
+          params.set("email", values.email);
+
+          if (callbackUrl) {
+            params.set("callback", callbackUrl);
+          }
+
+          navigate(`/verify-reset-code?${params.toString()}`);
         },
       },
     );
@@ -100,10 +104,8 @@ const ForgotPasswordForm = () => {
                       />
                     </FormControl>
                     <FormDescription>
-                      <FormDescription>
-                        Please enter your email address, we will send you an
-                        email with a code to verify your identity
-                      </FormDescription>
+                      Please enter your email address, we will send you an email
+                      with a code to verify your identity
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

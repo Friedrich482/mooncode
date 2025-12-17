@@ -44,7 +44,7 @@ export const VerifyPasswordResetCodeDto = z.object({
 
 export const ResetPasswordDto = z.object({
   email: z.email(),
-  code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
+  token: z.ulid(),
   newPassword: PasswordSchema,
 });
 

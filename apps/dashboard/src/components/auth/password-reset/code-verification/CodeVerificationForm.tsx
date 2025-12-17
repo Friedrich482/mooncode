@@ -5,7 +5,7 @@ import { Link, useLoaderData, useNavigate } from "react-router";
 import Night from "@/assets/animated-night.svg?react";
 import Logo from "@/components/layout/header/Logo";
 import getCallbackUrl from "@/utils/getCallbackUrl";
-import passwordResetLoader from "@/utils/loader/passwordResetLoader";
+import passwordResetCodeVerificationLoader from "@/utils/loader/passwordResetCodeVerificationLoader";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -31,7 +31,8 @@ import { cn } from "@repo/ui/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
 const CodeVerificationForm = () => {
-  const passwordResetEmail = useLoaderData<typeof passwordResetLoader>();
+  const passwordResetEmail =
+    useLoaderData<typeof passwordResetCodeVerificationLoader>();
 
   const callbackUrl = getCallbackUrl();
 
@@ -69,10 +70,17 @@ const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async () => {
-          navigate(
-            `/reset-password${callbackUrl ? `?callback=${callbackUrl}` : ""}`,
-          );
+        onSuccess: async ({ token }) => {
+          const params = new URLSearchParams();
+
+          params.set("email", values.email);
+          params.set("token", token);
+
+          if (callbackUrl) {
+            params.set("callback", callbackUrl);
+          }
+
+          navigate(`/reset-password?${params.toString()}`);
         },
       },
     );

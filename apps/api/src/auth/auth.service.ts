@@ -162,10 +162,16 @@ export class AuthService {
     resetPasswordDto: ResetPasswordDtoType,
     response: Response
   ) {
-    const { email, code, newPassword } = resetPasswordDto;
+    const { email, token: id, newPassword } = resetPasswordDto;
+
+    const existingPasswordReset =
+      await this.passwordResetsService.getPasswordReset({ id });
 
     // verify if the code is still valid
-    await this.passwordResetsService.verifyCode({ code, email });
+    await this.passwordResetsService.verifyCode({
+      code: existingPasswordReset.code,
+      email,
+    });
 
     const user = await this.usersService.findByEmail({ email });
 
