@@ -89,9 +89,6 @@ export class PendingRegistrationsService {
       });
 
       return {
-        id: existingValidPendingRegistration.id,
-        email: existingValidPendingRegistration.email,
-        username: existingValidPendingRegistration.username,
         message: "Verification code resent",
       };
     }
@@ -100,7 +97,7 @@ export class PendingRegistrationsService {
 
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
-    const [createdPendingRegistration] = await this.db
+    await this.db
       .insert(pendingRegistrations)
       .values({
         email,
@@ -119,7 +116,7 @@ export class PendingRegistrationsService {
       code: generatedCode,
     });
 
-    return { ...createdPendingRegistration, message: "Verification code sent" };
+    return { message: "Verification code sent" };
   }
 
   async findByEmail(

@@ -74,8 +74,6 @@ const CodeVerificationForm = () => {
         },
 
         onSuccess: async ({ accessToken }) => {
-          localStorage.removeItem("pendingRegistrationEmail");
-
           await queryClient.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,

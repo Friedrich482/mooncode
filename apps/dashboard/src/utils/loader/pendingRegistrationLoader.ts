@@ -3,21 +3,22 @@ import z from "zod";
 
 import { authRouteLoader } from "./authLoader";
 
-const pendingRegistrationLoader = async () => {
+const pendingRegistrationLoader = async ({ request }: { request: Request }) => {
   await authRouteLoader();
-  const storedPendingRegistrationEmail = localStorage.getItem(
-    "pendingRegistrationEmail",
+
+  const urlPendingRegistrationEmail = new URL(request.url).searchParams.get(
+    "email",
   );
 
-  const parsedStoredPendingRegistrationEmail = z
+  const parsedUrlPendingRegistrationEmail = z
     .email()
-    .safeParse(storedPendingRegistrationEmail);
+    .safeParse(urlPendingRegistrationEmail);
 
-  if (!parsedStoredPendingRegistrationEmail.success) {
+  if (!parsedUrlPendingRegistrationEmail.success) {
     throw redirect("/register");
   }
 
-  return parsedStoredPendingRegistrationEmail.data;
+  return parsedUrlPendingRegistrationEmail.data;
 };
 
 export default pendingRegistrationLoader;

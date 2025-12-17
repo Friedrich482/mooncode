@@ -69,12 +69,16 @@ const RegisterForm = () => {
           }
         },
 
-        onSuccess: async ({ email }) => {
-          localStorage.setItem("pendingRegistrationEmail", email);
+        onSuccess: async () => {
+          const params = new URLSearchParams();
 
-          navigate(
-            `/register/verify${callbackUrl ? `?callback=${callbackUrl}` : ""}`,
-          );
+          params.set("email", values.email);
+
+          if (callbackUrl) {
+            params.set("callback", callbackUrl);
+          }
+
+          navigate(`/register/verify?${params.toString()}`);
         },
       },
     );
