@@ -8,6 +8,7 @@
     "./tailwind.config": "./tailwind.config.ts",
     "./lib/*": "./src/lib/*.ts",
     "./components/*": "./src/components/*.tsx",
+    "./providers/*": "./src/providers/*.tsx",
     "./index": "./src/index.ts",
     "./utils/*": "./src/utils/*.ts"
   },

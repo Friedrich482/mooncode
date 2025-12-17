@@ -6,11 +6,11 @@ import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import type { AppRouter } from "@repo/trpc/router";
 import { Toaster } from "@repo/ui/components/ui/sonner";
+import { ThemeProvider } from "@repo/ui/providers/themeProvider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
-import { ThemeProvider } from "./providers/themeProvider";
 import { TRPCProvider } from "./utils/trpc";
 
 function makeQueryClient() {

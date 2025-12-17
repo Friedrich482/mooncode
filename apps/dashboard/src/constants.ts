@@ -10,26 +10,13 @@ import {
   subWeeks,
   subYears,
 } from "date-fns";
-import { LayoutDashboard, LucideProps, Monitor, Moon, Sun } from "lucide-react";
+import { LayoutDashboard, LucideProps } from "lucide-react";
 
-import { Theme } from "@/providers/themeProvider";
 import { DATE_LOCALE } from "@repo/common/constants";
 import { GroupBy } from "@repo/common/types-schemas";
 import { ChartConfig } from "@repo/ui/components/ui/chart";
 
 import { FixedArray } from "./types-schemas";
-
-export const THEME_DROPDOWN_ITEMS: {
-  text: string;
-  Icon: React.ForwardRefExoticComponent<
-    Omit<LucideProps, "ref"> & React.RefAttributes<SVGSVGElement>
-  >;
-  theme: Theme;
-}[] = [
-  { text: "Light", Icon: Sun, theme: "light" },
-  { text: "Dark", Icon: Moon, theme: "dark" },
-  { text: "System", Icon: Monitor, theme: "system" },
-];
 
 export const AUTH_DROPDOWN_ITEMS: {
   text: string;
