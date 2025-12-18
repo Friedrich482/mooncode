@@ -3,12 +3,12 @@ import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 import App from "./App";
-import LoginForm from "./components/auth/login-page/LoginForm";
+import Login from "./components/auth/login-page/Login";
 import PasswordResetCodeVerification from "./components/auth/password-reset/code-verification/CodeVerification";
-import ForgotPasswordForm from "./components/auth/password-reset/forgot-password/ForgotPasswordForm";
+import ForgotPassword from "./components/auth/password-reset/forgot-password/ForgotPassword";
 import ResetPassword from "./components/auth/password-reset/reset-password/ResetPassword";
 import CodeVerification from "./components/auth/register-page/code-verification/CodeVerification";
-import RegisterForm from "./components/auth/register-page/RegisterForm";
+import Register from "./components/auth/register-page/Register";
 import Dashboard from "./components/dashboard-page/Dashboard";
 import Layout from "./components/layout/Layout";
 import NotFound from "./components/not-found-page/NotFound";
@@ -61,12 +61,12 @@ const router = createBrowserRouter([
         children: [
           {
             path: "login",
-            element: <LoginForm />,
+            element: <Login />,
             loader: authRouteLoader,
           },
           {
             path: "register",
-            element: <RegisterForm />,
+            element: <Register />,
             loader: authRouteLoader,
           },
           {
@@ -76,7 +76,7 @@ const router = createBrowserRouter([
           },
           {
             path: "forgot-password",
-            element: <ForgotPasswordForm />,
+            element: <ForgotPassword />,
             loader: authRouteLoader,
           },
           {

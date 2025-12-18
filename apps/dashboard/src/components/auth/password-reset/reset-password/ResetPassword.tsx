@@ -1,3 +1,4 @@
+import Night from "@/assets/animated-night.svg?react";
 import usePageTitle from "@/hooks/usePageTitle";
 
 import ResetPasswordForm from "./ResetPasswordForm";
@@ -5,7 +6,15 @@ import ResetPasswordForm from "./ResetPasswordForm";
 const ResetPassword = () => {
   usePageTitle("Reset your password | Mooncode");
 
-  return <ResetPasswordForm />;
+  return (
+    <main className="flex items-center gap-2">
+      <Night className="relative flex size-full h-dvh w-[50%] max-[42.5rem]:hidden" />
+
+      <div className="flex h-dvh w-[50%] items-center justify-center max-[42.5rem]:w-full">
+        <ResetPasswordForm />
+      </div>
+    </main>
+  );
 };
 
 export default ResetPassword;

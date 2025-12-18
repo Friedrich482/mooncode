@@ -1,12 +1,8 @@
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
 
-import Night from "@/assets/animated-night.svg?react";
 import Logo from "@/components/layout/header/Logo";
 import useTogglePassword from "@/hooks/auth/useTogglePassword";
-import usePageTitle from "@/hooks/usePageTitle";
-import displayAuthErrorSonner from "@/utils/displayAuthErrorSonner";
 import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,12 +27,6 @@ import GoogleLoginButton from "../GoogleLoginButton";
 import LoginMethodSeparator from "../LoginMethodSeparator";
 
 const LoginForm = () => {
-  usePageTitle("Login | Mooncode");
-
-  useEffect(() => {
-    displayAuthErrorSonner();
-  }, []);
-
   const callbackUrl = getCallbackUrl();
 
   const form = useForm<SignInUserDtoType>({
@@ -91,92 +81,86 @@ const LoginForm = () => {
   };
 
   return (
-    <main className="flex items-center gap-2">
-      <Night className="relative flex size-full h-dvh w-[50%] max-[42.5rem]:hidden" />
-
-      <div className="flex h-dvh w-[50%] items-center justify-center max-[42.5rem]:w-full">
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="flex w-[90%] flex-col gap-5 p-2"
-          >
-            <h2 className="flex flex-col items-center justify-center gap-4 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
-              <Logo className="size-12" />
-              Login
-            </h2>
-            <GoogleLoginButton callbackUrl={callbackUrl} />
-            <LoginMethodSeparator />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="example@email.com"
-                      {...field}
-                      className="border-border h-10"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="password"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Password</FormLabel>
-                  <div className="relative flex items-center justify-end gap-2">
-                    <FormControl>
-                      <Input
-                        placeholder="**********"
-                        {...field}
-                        type={isPasswordVisible ? "text" : "password"}
-                        className="border-border h-10 flex-nowrap"
-                      />
-                    </FormControl>
-                    <EyeIconComponent />
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <p>
-                Not registered yet ?{" "}
-                <Link
-                  to={`/register${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
-                  className="underline"
-                >
-                  Sign Up
-                </Link>
-              </p>
-              <p>
-                <Link to="/forgot-password" className="underline">
-                  Lost your password?
-                </Link>
-              </p>
-            </div>
-            <Button
-              variant="default"
-              type="submit"
-              disabled={form.formState.isSubmitting}
-              className="h-10 w-1/2 self-center rounded-lg"
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex w-[90%] flex-col gap-5 p-2"
+      >
+        <h2 className="flex flex-col items-center justify-center gap-4 text-center text-3xl font-extrabold max-[42.5rem]:text-2xl">
+          <Logo className="size-12" />
+          Login
+        </h2>
+        <GoogleLoginButton callbackUrl={callbackUrl} />
+        <LoginMethodSeparator />
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Email</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="example@email.com"
+                  {...field}
+                  className="border-border h-10"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Password</FormLabel>
+              <div className="relative flex items-center justify-end gap-2">
+                <FormControl>
+                  <Input
+                    placeholder="**********"
+                    {...field}
+                    type={isPasswordVisible ? "text" : "password"}
+                    className="border-border h-10 flex-nowrap"
+                  />
+                </FormControl>
+                <EyeIconComponent />
+              </div>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <p>
+            Not registered yet ?{" "}
+            <Link
+              to={`/register${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
+              className="underline"
             >
-              Log in
-            </Button>
-            <div className="h-4">
-              {form.formState.errors.root && (
-                <FormMessage>{form.formState.errors.root.message}</FormMessage>
-              )}
-            </div>
-          </form>
-        </Form>
-      </div>
-    </main>
+              Sign Up
+            </Link>
+          </p>
+          <p>
+            <Link to="/forgot-password" className="underline">
+              Lost your password?
+            </Link>
+          </p>
+        </div>
+        <Button
+          variant="default"
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="h-10 w-1/2 self-center rounded-lg"
+        >
+          Log in
+        </Button>
+        <div className="h-4">
+          {form.formState.errors.root && (
+            <FormMessage>{form.formState.errors.root.message}</FormMessage>
+          )}
+        </div>
+      </form>
+    </Form>
   );
 };
 
