@@ -1,12 +1,14 @@
+import { useLoaderData } from "react-router";
+
 import { PERIODS_CONFIG } from "@/constants";
-import { Entry, ProjectParamsSchema } from "@/types-schemas";
+import { Entry } from "@/types-schemas";
+import projectLoader from "@/utils/loader/projectLoader";
 import { useTRPC } from "@/utils/trpc";
 import getLanguageColor from "@repo/ui/utils/getLanguageColor";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { usePeriodStore } from "./store/periodStore";
-import useSafeParams from "./useSafeParams";
 
 const useLanguagesDropDown = ({
   selectedEntries,
@@ -15,7 +17,8 @@ const useLanguagesDropDown = ({
   selectedEntries: Entry[];
   setSelectedEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
 }) => {
-  const { projectName: name } = useSafeParams(ProjectParamsSchema);
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
+
   const trpc = useTRPC();
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);

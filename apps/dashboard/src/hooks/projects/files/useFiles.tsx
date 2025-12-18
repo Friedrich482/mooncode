@@ -1,7 +1,8 @@
+import { useLoaderData } from "react-router";
+
 import { PERIODS_CONFIG } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSafeParams from "@/hooks/useSafeParams";
-import { ProjectParamsSchema } from "@/types-schemas";
+import projectLoader from "@/utils/loader/projectLoader";
 import { useTRPC } from "@/utils/trpc";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -11,7 +12,8 @@ const useFiles = (
   searchTerm: string,
   isSortedDesc: boolean,
 ) => {
-  const { projectName: name } = useSafeParams(ProjectParamsSchema);
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
+
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
   const trpc = useTRPC();
