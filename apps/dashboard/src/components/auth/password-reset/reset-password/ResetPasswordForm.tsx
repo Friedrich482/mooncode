@@ -49,7 +49,12 @@ const CodeVerificationForm = () => {
     },
   });
 
-  const { isPasswordVisible, EyeIconComponent } = useTogglePassword();
+  const { isPasswordVisible, EyeIconComponent: PasswordEyeIconComponent } =
+    useTogglePassword();
+  const {
+    isPasswordVisible: isConfirmPasswordVisible,
+    EyeIconComponent: ConfirmPasswordEyeIconComponent,
+  } = useTogglePassword();
 
   const navigate = useNavigate();
   const trpc = useTRPC();
@@ -120,7 +125,7 @@ const CodeVerificationForm = () => {
                       className="border-border h-10 flex-nowrap"
                     />
                   </FormControl>
-                  <EyeIconComponent />
+                  <PasswordEyeIconComponent />
                 </div>
                 <FormDescription>Enter your new password</FormDescription>
                 <FormMessage />
@@ -138,11 +143,11 @@ const CodeVerificationForm = () => {
                     <Input
                       placeholder="**********"
                       {...field}
-                      type={isPasswordVisible ? "text" : "password"}
+                      type={isConfirmPasswordVisible ? "text" : "password"}
                       className="border-border h-10 flex-nowrap"
                     />
                   </FormControl>
-                  <EyeIconComponent />
+                  <ConfirmPasswordEyeIconComponent />
                 </div>
                 <FormDescription>Confirm the new password</FormDescription>
                 <FormMessage />
