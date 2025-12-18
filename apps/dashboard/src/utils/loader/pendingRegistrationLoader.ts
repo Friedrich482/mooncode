@@ -1,9 +1,9 @@
-import { redirect } from "react-router";
+import { LoaderFunctionArgs, redirect } from "react-router";
 import z from "zod";
 
 import { authRouteLoader } from "./authLoader";
 
-const pendingRegistrationLoader = async ({ request }: { request: Request }) => {
+const pendingRegistrationLoader = async ({ request }: LoaderFunctionArgs) => {
   await authRouteLoader();
 
   const urlPendingRegistrationEmail = new URL(request.url).searchParams.get(

@@ -1,13 +1,11 @@
-import { redirect } from "react-router";
+import { LoaderFunctionArgs, redirect } from "react-router";
 import z from "zod";
 
 import { authRouteLoader } from "./authLoader";
 
 const passwordResetCodeVerificationLoader = async ({
   request,
-}: {
-  request: Request;
-}) => {
+}: LoaderFunctionArgs) => {
   await authRouteLoader();
 
   const urlPasswordResetEmail = new URL(request.url).searchParams.get("email");

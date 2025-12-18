@@ -12,7 +12,6 @@ import Register from "./components/auth/register-page/Register";
 import Dashboard from "./components/dashboard-page/Dashboard";
 import Layout from "./components/layout/Layout";
 import NotFound from "./components/not-found-page/NotFound";
-import RedirectToNotFound from "./components/not-found-page/RedirectToNotFound";
 import Project from "./components/project-page/Project";
 import Root from "./components/root-page/Root";
 import {
@@ -24,6 +23,7 @@ import {
 import passwordResetCodeVerificationLoader from "./utils/loader/passwordResetCodeVerificationLoader";
 import passwordResetLoader from "./utils/loader/passwordResetLoader";
 import pendingRegistrationLoader from "./utils/loader/pendingRegistrationLoader";
+import redirectToNotFoundLoader from "./utils/loader/redirectToNotFoundLoader";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +53,7 @@ const router = createBrowserRouter([
           },
           {
             path: "*",
-            element: <RedirectToNotFound />,
+            loader: redirectToNotFoundLoader,
           },
         ],
       },
