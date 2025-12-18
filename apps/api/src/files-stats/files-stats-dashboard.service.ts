@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 import formatDuration from "@repo/common/formatDuration";
 
 import {
+  CheckProjectExitsDtoType,
   GetPeriodProjectsDtoType,
   GetProjectFilesOnPeriodDtoType,
   GetProjectLanguagesPerDayOfPeriodDtoType,
@@ -20,6 +21,10 @@ import getProjectPerDayOfPeriodGroupByWeeks from "./utils/getProjectPerDayOfPeri
 @Injectable()
 export class FilesStatsDashboardService {
   constructor(private readonly projectsService: ProjectsService) {}
+
+  async checkProjectExits(checkProjectExitsDto: CheckProjectExitsDtoType) {
+    return this.projectsService.checkProjectExists(checkProjectExitsDto);
+  }
 
   async getPeriodProjects(getPeriodProjectsDto: GetPeriodProjectsDtoType) {
     const { userId, start, end } = getPeriodProjectsDto;

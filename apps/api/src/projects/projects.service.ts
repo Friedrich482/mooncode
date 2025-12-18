@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import {
+  CheckProjectExistsDtoType,
   CreateProjectDtoType,
   FindAllRangeProjectsDtoType,
   FindProjectByNameOnRangeDtoType,
@@ -27,6 +28,10 @@ export class ProjectsService {
 
   async findOneProject(findProjectDto: FindProjectDtoType) {
     return this.projectsCrudService.findOneProject(findProjectDto);
+  }
+
+  async checkProjectExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
+    return this.projectsCrudService.checkProjectExists(checkProjectExistsDto);
   }
 
   async findAllRangeProjects(

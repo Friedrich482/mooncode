@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 
 import {
+  CheckProjectExitsDtoType,
   GetDailyFilesStatsForExtensionDtoType,
   GetPeriodProjectsDtoType,
   GetProjectFilesOnPeriodDtoType,
@@ -30,6 +31,12 @@ export class FilesStatsService {
 
   async upsert(upsertFilesDto: UpsertFilesStatsDtoType) {
     return this.filesStatsExtensionService.upsert(upsertFilesDto);
+  }
+
+  async checkProjectExits(checkProjectExitsDto: CheckProjectExitsDtoType) {
+    return this.filesStatsDashboardService.checkProjectExits(
+      checkProjectExitsDto
+    );
   }
 
   async getPeriodProjects(getPeriodProjectsDto: GetPeriodProjectsDtoType) {

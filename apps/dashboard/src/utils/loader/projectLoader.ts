@@ -2,6 +2,7 @@ import { LoaderFunctionArgs, redirect } from "react-router";
 
 import { ProjectParamsSchema } from "@/types-schemas";
 
+import { trpcLoaderClient } from "../trpc";
 import { protectedRouteLoader } from "./authLoader";
 
 const projectLoader = async ({ params }: LoaderFunctionArgs) => {
@@ -9,6 +10,15 @@ const projectLoader = async ({ params }: LoaderFunctionArgs) => {
 
   const result = ProjectParamsSchema.safeParse(params);
   if (!result.success) {
+    throw redirect("/not-found");
+  }
+
+  const projectExists =
+    await trpcLoaderClient.filesStats.checkProjectExits.query({
+      name: result.data.projectName,
+    });
+
+  if (!projectExists) {
     throw redirect("/not-found");
   }
 
