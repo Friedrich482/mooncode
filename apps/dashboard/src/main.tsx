@@ -23,6 +23,7 @@ import {
 import passwordResetCodeVerificationLoader from "./utils/loader/passwordResetCodeVerificationLoader";
 import passwordResetLoader from "./utils/loader/passwordResetLoader";
 import pendingRegistrationLoader from "./utils/loader/pendingRegistrationLoader";
+import projectLoader from "./utils/loader/projectLoader";
 import redirectToNotFoundLoader from "./utils/loader/redirectToNotFoundLoader";
 
 const router = createBrowserRouter([
@@ -45,7 +46,7 @@ const router = createBrowserRouter([
           {
             path: "dashboard/:projectName",
             element: <Project />,
-            loader: protectedRouteLoader,
+            loader: projectLoader,
           },
           {
             path: "not-found",
