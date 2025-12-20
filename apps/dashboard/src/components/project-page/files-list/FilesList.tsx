@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { TriangleAlert } from "lucide-react";
 
@@ -22,7 +22,18 @@ const FilesList = () => {
   const handleCheckChange = () => setIsGrouped((prev) => !prev);
 
   const [limitInput, setLimitInput] = useState("");
-  const [limit, setLimit] = useState<number | undefined>(undefined);
+  const limit = useMemo(() => {
+    if (limitInput.length === 0) {
+      return undefined;
+    }
+
+    const parsedLimit = parseInt(limitInput, 10);
+    if (!isNaN(parsedLimit) && parsedLimit > 0) {
+      return parsedLimit;
+    }
+
+    return undefined;
+  }, [limitInput]);
   const handleLimitInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setLimitInput(e.target.value);
   const debouncedLimit = useDebounce(limit, 500);
@@ -34,20 +45,6 @@ const FilesList = () => {
   const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setSearchTerm(e.target.value);
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
-
-  useEffect(() => {
-    if (limitInput.length === 0) {
-      setLimit(undefined);
-    } else {
-      const parsedLimit = parseInt(limitInput, 10);
-
-      if (!isNaN(parsedLimit) && parsedLimit > 0) {
-        setLimit(parsedLimit);
-      } else {
-        setLimit(undefined);
-      }
-    }
-  }, [limitInput]);
 
   return (
     <div className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border p-3 text-2xl">
