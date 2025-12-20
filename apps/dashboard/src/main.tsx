@@ -13,18 +13,14 @@ import Dashboard from "./components/dashboard-page/Dashboard";
 import Layout from "./components/layout/Layout";
 import NotFound from "./components/not-found-page/NotFound";
 import Project from "./components/project-page/Project";
-import Root from "./components/root-page/Root";
-import {
-  authRouteLoader,
-  googleAuthLoader,
-  protectedRouteLoader,
-  redirectToVSCodeAfterGoogleAuthLoader,
-} from "./utils/loader/authLoader";
+import { authRouteLoader, googleAuthLoader } from "./utils/loader/authLoader";
+import dashboardLoader from "./utils/loader/dashboardLoader";
 import passwordResetCodeVerificationLoader from "./utils/loader/passwordResetCodeVerificationLoader";
 import passwordResetLoader from "./utils/loader/passwordResetLoader";
 import pendingRegistrationLoader from "./utils/loader/pendingRegistrationLoader";
 import projectLoader from "./utils/loader/projectLoader";
 import redirectToNotFoundLoader from "./utils/loader/redirectToNotFoundLoader";
+import rootLoader from "./utils/loader/rootLoader";
 
 const router = createBrowserRouter([
   {
@@ -35,13 +31,12 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <Root />,
-            loader: redirectToVSCodeAfterGoogleAuthLoader,
+            loader: rootLoader,
           },
           {
             path: "dashboard",
             element: <Dashboard />,
-            loader: protectedRouteLoader,
+            loader: dashboardLoader,
           },
           {
             path: "dashboard/:projectName",
