@@ -31,7 +31,7 @@ export const UpsertFilesDto = z.object({
   targetedDate: DateStringDto,
 });
 
-export const checkProjectExitsDto = z.object({
+export const checkProjectExistsDto = z.object({
   name: z.string().min(1),
 });
 
@@ -68,7 +68,7 @@ export type GetDailyFilesStatsForExtensionDtoType = z.infer<
 
 export type UpsertFilesStatsDtoType = z.infer<typeof UpsertFilesDto> & UserId;
 
-export type CheckProjectExitsDtoType = z.infer<typeof checkProjectExitsDto> &
+export type CheckProjectExistsDtoType = z.infer<typeof checkProjectExistsDto> &
   UserId;
 
 export type GetPeriodProjectsDtoType = z.infer<typeof GetPeriodProjectsDto> &
