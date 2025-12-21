@@ -4,7 +4,6 @@ import { ChevronDown } from "lucide-react";
 
 import { PERIODS, WEEK_PERIODS, YEAR_PERIODS } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSynchronizeURL from "@/hooks/useSynchronizeURL";
 import { Period } from "@/types-schemas";
 import { DATE_LOCALE } from "@repo/common/constants";
 import getPeriodResolution from "@repo/common/getPeriodResolution";
@@ -67,8 +66,6 @@ const PeriodDropDown = () => {
       }
     }
   }, [start, end]);
-
-  useSynchronizeURL();
 
   return (
     <DropdownMenu>
