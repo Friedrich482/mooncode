@@ -1,20 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import useUpdateCustomRangeDates from "@/hooks/useUpdateCustomRangeDates";
+import { DATE_LOCALE } from "@repo/common/constants";
+import getPeriodResolution from "@repo/common/getPeriodResolution";
 import { Button } from "@repo/ui/components/ui/button";
 import CalendarPopover from "@repo/ui/components/ui/CalendarPopover";
 
 const CustomRangeDatesSelector = () => {
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
+  const setCustomRange = usePeriodStore((state) => state.setCustomRange);
 
   const [isStartPopoverOpen, setIsStartPopoverOpen] = useState(false);
   const [startDate, setStartDate] = useState(new Date(customRange.start));
   const [isEndPopoverOpen, setIsEndPopoverOpen] = useState(false);
   const [endDate, setEndDate] = useState(new Date(customRange.end));
 
-  useUpdateCustomRangeDates(startDate, endDate);
+  const periodResolution = getPeriodResolution(startDate, endDate);
+
+  useEffect(
+    () =>
+      setCustomRange({
+        start: startDate.toLocaleDateString(DATE_LOCALE),
+        end: customRange.end,
+        periodResolution,
+      }),
+    [startDate],
+  );
+  useEffect(
+    () =>
+      setCustomRange({
+        start: customRange.start,
+        end: endDate.toLocaleDateString(DATE_LOCALE),
+        periodResolution,
+      }),
+    [endDate],
+  );
 
   return (
     period === "Custom Range" && (

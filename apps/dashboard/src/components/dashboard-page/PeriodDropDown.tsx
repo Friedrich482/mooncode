@@ -55,15 +55,13 @@ const PeriodDropDown = () => {
   };
 
   useEffect(() => {
-    if (period === "Custom Range") {
-      if (start && end) {
-        const periodResolution = getPeriodResolution(start, end);
-        setCustomRange({
-          start,
-          end,
-          periodResolution,
-        });
-      }
+    if (period === "Custom Range" && start && end) {
+      const periodResolution = getPeriodResolution(start, end);
+      setCustomRange({
+        start,
+        end,
+        periodResolution,
+      });
     }
   }, [start, end]);
 
