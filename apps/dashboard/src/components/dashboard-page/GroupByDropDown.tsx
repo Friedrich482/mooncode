@@ -1,9 +1,7 @@
-import { useMemo } from "react";
 import { Group } from "lucide-react";
 
-import { GROUP_BY_DROPDOWN_ITEMS, PERIODS_CONFIG } from "@/constants";
+import { GROUP_BY_DROPDOWN_ITEMS } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   DropdownMenu,
@@ -13,20 +11,9 @@ import {
 } from "@repo/ui/components/ui/dropdown-menu";
 
 const GroupByDropDown = () => {
-  const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);
   const setGroupBy = usePeriodStore((state) => state.setGroupBy);
-  const customRange = usePeriodStore((state) => state.customRange);
-
-  const periodResolution = useMemo(() => {
-    if (period === "Custom Range") {
-      return getPeriodResolution(customRange.start, customRange.end);
-    }
-    return getPeriodResolution(
-      PERIODS_CONFIG[period].start,
-      PERIODS_CONFIG[period].end,
-    );
-  }, [period, customRange.start, customRange.end]);
+  const periodResolution = usePeriodStore((state) => state.periodResolution);
 
   return (
     periodResolution !== "day" && (
