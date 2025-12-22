@@ -20,6 +20,7 @@ const validateStateQueryParam = (
 
   try {
     const rawState = request.query["state"];
+
     if (typeof rawState !== "string") {
       return returnUrl;
     }
@@ -33,6 +34,7 @@ const validateStateQueryParam = (
     const stateParam = parsed.data.state;
 
     const parsedUrl = new URL(stateParam, request.headers.origin);
+
     const allowedOrigins = ALLOWED_CLIENTS.map(
       (client) => new URL(client).origin
     );

@@ -1,5 +1,6 @@
+import ToggleThemeDropDown from "@repo/ui/components/ToggleThemeDropDown";
+
 import AuthDropDown from "./AuthDropDown";
-import ToggleThemeDropDown from "./ToggleThemeDropDown";
 
 const NavbarDropDowns = () => {
   return (

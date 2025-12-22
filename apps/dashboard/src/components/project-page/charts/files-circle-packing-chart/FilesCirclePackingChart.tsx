@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
+import { useLoaderData } from "react-router";
 
 import { NUMBER_OF_FILES_TO_SHOW, PERIODS_CONFIG } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSafeParams from "@/hooks/useSafeParams";
-import { ProjectParamsSchema, Tree } from "@/types-schemas";
+import { Tree } from "@/types-schemas";
+import projectLoader from "@/utils/loader/projectLoader";
 import { useTRPC } from "@/utils/trpc";
 import getLanguageName from "@repo/ui/utils/getLanguageName";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -11,7 +12,8 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import CircularPacking from "./CircularPacking";
 
 const FilesCirclePackingChart = () => {
-  const { projectName: name } = useSafeParams(ProjectParamsSchema);
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
+
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
 

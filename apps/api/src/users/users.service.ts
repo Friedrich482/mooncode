@@ -26,7 +26,7 @@ export class UsersService {
     private readonly db: NodePgDatabase
   ) {}
   async create(createUserDto: CreateUserDtoType) {
-    const { email, password, username } = createUserDto;
+    const { email, hashedPassword, username } = createUserDto;
 
     // check if a user with the email already exists
     const [existingUserWithSameEmail] = await this.db
@@ -55,14 +55,14 @@ export class UsersService {
       });
     }
 
-    const hashedPassword = await bcrypt.hash(password, this.saltRounds);
     const [userCreated] = await this.db
       .insert(users)
       .values({
         username,
         email,
-        password: hashedPassword,
+        hashedPassword,
         profilePicture: "picture",
+        emailVerifiedAt: new Date(),
       })
       .returning({
         id: users.id,
@@ -116,11 +116,12 @@ export class UsersService {
       .values({
         username,
         email: googleEmail,
-        password: hashedPassword,
+        hashedPassword,
         profilePicture,
         googleId: googleId,
         googleEmail,
         authMethod: "google",
+        emailVerifiedAt: new Date(),
       })
       .returning({
         id: users.id,
@@ -156,7 +157,7 @@ export class UsersService {
         username: users.username,
         id: users.id,
         profilePicture: users.profilePicture,
-        password: users.password,
+        hashedPassword: users.hashedPassword,
       })
       .from(users)
       .where(eq(users.email, email))
@@ -202,20 +203,27 @@ export class UsersService {
       });
     }
 
-    const [user] = await this.db.select().from(users).where(eq(users.id, id));
+    const [user] = await this.db
+      .select({ email: users.email, hashedPassword: users.hashedPassword })
+      .from(users)
+      .where(eq(users.id, id));
     if (!user)
       throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
 
+    let hashedPassword = "";
+
     if (setFields.password) {
-      setFields.password = await bcrypt.hash(
-        setFields.password,
-        this.saltRounds
-      );
+      hashedPassword = await bcrypt.hash(setFields.password, this.saltRounds);
     }
 
     const [returningUser] = await this.db
       .update(users)
-      .set(setFields)
+      .set({
+        ...setFields,
+        hashedPassword: setFields.password
+          ? hashedPassword
+          : user.hashedPassword,
+      })
       .where(eq(users.id, id))
       .returning({
         username: users.username,

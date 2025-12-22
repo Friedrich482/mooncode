@@ -29,6 +29,11 @@ export const FindProjectByNameOnRangeDto = z.object({
   name: z.string().min(1),
 });
 
+export const CheckProjectExistsDto = z.object({
+  name: z.string().min(1),
+  userId: z.ulid(),
+});
+
 export const FindAllRangeProjectsDto = z.object({
   userId: z.ulid(),
   start: DateStringDto,
@@ -57,6 +62,8 @@ export type FindProjectDtoType = z.infer<typeof FindProjectDto>;
 export type FindProjectByNameOnRangeDtoType = z.infer<
   typeof FindProjectByNameOnRangeDto
 >;
+
+export type CheckProjectExistsDtoType = z.infer<typeof CheckProjectExistsDto>;
 
 export type FindAllRangeProjectsDtoType = z.infer<
   typeof FindAllRangeProjectsDto

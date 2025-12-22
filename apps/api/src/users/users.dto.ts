@@ -1,10 +1,12 @@
 import { z } from "zod";
 import { authMethodEnum } from "src/drizzle/schema/users";
 
-import { RegisterUserDto } from "@repo/common/types-schemas";
+import { PasswordSchema } from "@repo/common/types-schemas";
 
-export const createUserDto = RegisterUserDto.omit({
-  callbackUrl: true,
+export const CreateUserDto = z.object({
+  email: z.email(),
+  hashedPassword: z.string().min(1),
+  username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
 export const CreateGoogleUserDto = z.object({
@@ -15,8 +17,6 @@ export const CreateGoogleUserDto = z.object({
   profilePicture: z.string().min(1),
   authMethod: z.enum(authMethodEnum),
 });
-
-export const UpdateProfileDto = RegisterUserDto.partial();
 
 export const FindByIdDto = z.object({
   id: z.ulid(),
@@ -33,10 +33,7 @@ export const FindByGoogleEmailDto = z.object({
 export const UpdateUserDto = z.object({
   id: z.ulid(),
   email: z.email({ message: "Invalid email format" }).optional(),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .optional(),
+  password: PasswordSchema.optional(),
   username: z
     .string()
     .min(3, "Username must be at least 3 characters")
@@ -50,7 +47,7 @@ export const DeleteUserDto = z.object({
   id: z.ulid(),
 });
 
-export type CreateUserDtoType = z.infer<typeof createUserDto>;
+export type CreateUserDtoType = z.infer<typeof CreateUserDto>;
 
 export type CreateGoogleUserDtoType = z.infer<typeof CreateGoogleUserDto>;
 

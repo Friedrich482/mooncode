@@ -1,3 +1,5 @@
+name: mooncode-local
+
 services:
   database:
     image: postgres:17-alpine

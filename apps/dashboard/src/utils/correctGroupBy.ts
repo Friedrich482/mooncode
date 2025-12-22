@@ -1,20 +1,19 @@
 import { PERIODS_CONFIG } from "@/constants";
 import { Period } from "@/types-schemas";
 import getPeriodResolution from "@repo/common/getPeriodResolution";
-import { GroupBy, PeriodResolution } from "@repo/common/types-schemas";
+import { GroupBy } from "@repo/common/types-schemas";
 
 const correctGroupBy = (
   period: Period,
   customRange: {
     start: string;
     end: string;
-    periodResolution: PeriodResolution;
   },
   groupBy: GroupBy,
 ): GroupBy => {
   const periodResolution =
     period === "Custom Range"
-      ? customRange.periodResolution
+      ? getPeriodResolution(customRange.start, customRange.end)
       : getPeriodResolution(
           PERIODS_CONFIG[period].start,
           PERIODS_CONFIG[period].end,

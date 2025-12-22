@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useLoaderData } from "react-router";
 import {
   AreaChart as AreaChartIcon,
   BarChart as BarChartIcon,
@@ -17,9 +18,8 @@ import { Payload } from "recharts/types/component/DefaultTooltipContent";
 import CustomChartToolTip from "@/components/common/CustomChartToolTip";
 import { chartConfig, PERIODS_CONFIG } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSafeParams from "@/hooks/useSafeParams";
-import { ProjectParamsSchema } from "@/types-schemas";
 import { formatTickForGroupBy } from "@/utils/formatTickForGroupBy";
+import projectLoader from "@/utils/loader/projectLoader";
 import { RouterOutput, useTRPC } from "@/utils/trpc";
 import {
   ChartContainer,
@@ -50,7 +50,7 @@ const tooltipFormatter = (value: string, name: string) =>
     : null;
 
 const ProjectTimeOnPeriodChart = () => {
-  const { projectName: name } = useSafeParams(ProjectParamsSchema);
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { ZodPipe } from "src/common/pipes/zod.pipe";
 
 import { Controller, Get, Query, Req, Res } from "@nestjs/common";
+import { Throttle } from "@nestjs/throttler";
 
 import {
   HandleGoogleQueryDto,
@@ -14,6 +15,7 @@ import { AuthService } from "./auth.service";
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @Get("/google")
   redirectToGoogle(
     @Res() response: Response,
@@ -25,6 +27,7 @@ export class AuthController {
     });
   }
 
+  @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @Get("/google/callback")
   handleGoogleCallBack(
     @Query(new ZodPipe(HandleGoogleQueryDto))

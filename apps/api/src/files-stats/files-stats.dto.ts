@@ -31,6 +31,10 @@ export const UpsertFilesDto = z.object({
   targetedDate: DateStringDto,
 });
 
+export const checkProjectExistsDto = z.object({
+  name: z.string().min(1),
+});
+
 export const GetPeriodProjectsDto = refineSchema(DateRangeSchema);
 
 export const GetProjectOnPeriodDto = refineSchema(
@@ -63,6 +67,9 @@ export type GetDailyFilesStatsForExtensionDtoType = z.infer<
   UserId;
 
 export type UpsertFilesStatsDtoType = z.infer<typeof UpsertFilesDto> & UserId;
+
+export type CheckProjectExistsDtoType = z.infer<typeof checkProjectExistsDto> &
+  UserId;
 
 export type GetPeriodProjectsDtoType = z.infer<typeof GetPeriodProjectsDto> &
   UserId;

@@ -4,10 +4,8 @@ import { ChevronDown } from "lucide-react";
 
 import { PERIODS, WEEK_PERIODS, YEAR_PERIODS } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
-import useSynchronizeURL from "@/hooks/useSynchronizeURL";
 import { Period } from "@/types-schemas";
 import { DATE_LOCALE } from "@repo/common/constants";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
 import { Button } from "@repo/ui/components/ui/button";
 import CalendarPopover from "@repo/ui/components/ui/CalendarPopover";
 import {
@@ -56,19 +54,13 @@ const PeriodDropDown = () => {
   };
 
   useEffect(() => {
-    if (period === "Custom Range") {
-      if (start && end) {
-        const periodResolution = getPeriodResolution(start, end);
-        setCustomRange({
-          start,
-          end,
-          periodResolution,
-        });
-      }
+    if (period === "Custom Range" && start && end) {
+      setCustomRange({
+        start,
+        end,
+      });
     }
   }, [start, end]);
-
-  useSynchronizeURL();
 
   return (
     <DropdownMenu>

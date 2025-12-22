@@ -1,0 +1,1 @@
+ALTER TABLE "pending_registrations" RENAME COLUMN "password" TO "hashed_password";

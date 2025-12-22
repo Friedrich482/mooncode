@@ -1,7 +1,9 @@
-import { compare } from "bcrypt";
+import * as bcrypt from "bcrypt";
 import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { EnvService } from "src/env/env.service";
+import { PasswordResetsService } from "src/password-resets/password-resets.service";
+import { PendingRegistrationsService } from "src/pending-registrations/pending-registrations.service";
 import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
 
@@ -12,9 +14,13 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import {
+  CreatePasswordResetDtoType,
+  CreatePendingRegistrationDtoType,
   JwtPayloadDtoType,
   RegisterUserDtoType,
+  ResetPasswordDtoType,
   SignInUserDtoType,
+  VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
@@ -33,12 +39,27 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
+    private readonly pendingRegistrationService: PendingRegistrationsService,
+    private readonly passwordResetsService: PasswordResetsService
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
   async signIn(signInDto: SignInUserDtoType, response: Response) {
     const { password: pass, email, callbackUrl } = signInDto;
+
+    if (callbackUrl) {
+      //  the request has been sent by the extension, validate it first
+      if (
+        !callbackUrl.startsWith("vscode://") ||
+        !callbackUrl.includes("/auth-callback")
+      ) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Invalid callback url",
+        });
+      }
+    }
 
     const user = await this.usersService.findByEmail({ email });
 
@@ -49,7 +70,7 @@ export class AuthService {
       });
     }
 
-    const isPasswordCorrect = await compare(pass, user.password);
+    const isPasswordCorrect = await bcrypt.compare(pass, user.hashedPassword);
     if (!isPasswordCorrect) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
@@ -68,8 +89,22 @@ export class AuthService {
       maxAge: this.COOKIE_MAX_AGE,
     });
 
+    return {
+      accessToken: token,
+    };
+  }
+
+  async createPendingRegistration(
+    createPendingRegistrationDto: CreatePendingRegistrationDtoType
+  ) {
+    return this.pendingRegistrationService.create(createPendingRegistrationDto);
+  }
+
+  async register(registerDto: RegisterUserDtoType, response: Response) {
+    const { email, code, callbackUrl } = registerDto;
+
     if (callbackUrl) {
-      //  the request has been sent by the extension
+      //  the request has been sent by the extension, validate it first
       if (
         !callbackUrl.startsWith("vscode://") ||
         !callbackUrl.includes("/auth-callback")
@@ -81,17 +116,18 @@ export class AuthService {
       }
     }
 
-    return {
-      accessToken: token,
-    };
-  }
+    const validPendingRegistration =
+      await this.pendingRegistrationService.findByEmail({ email, code });
 
-  async register(registerDto: RegisterUserDtoType, response: Response) {
-    const { username, email, password, callbackUrl } = registerDto;
     const createdUser = await this.usersService.create({
-      username,
-      email,
-      password,
+      username: validPendingRegistration.username,
+      email: validPendingRegistration.email,
+      hashedPassword: validPendingRegistration.hashedPassword,
+    });
+
+    // delete the pending registration associated
+    await this.pendingRegistrationService.deleteAfterRegistration({
+      email: createdUser.email,
     });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: createdUser.id };
@@ -105,18 +141,58 @@ export class AuthService {
       maxAge: this.COOKIE_MAX_AGE,
     });
 
-    if (callbackUrl) {
-      //  the request has been sent by the extension
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid callback url",
-        });
-      }
-    }
+    return {
+      accessToken: token,
+    };
+  }
+
+  async createPasswordReset(
+    createPasswordResetDto: CreatePasswordResetDtoType
+  ) {
+    return this.passwordResetsService.create(createPasswordResetDto);
+  }
+
+  async verifyPasswordResetCode(
+    verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType
+  ) {
+    return this.passwordResetsService.verifyCode(verifyPasswordResetCodeDto);
+  }
+
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDtoType,
+    response: Response
+  ) {
+    const { email, token: id, newPassword } = resetPasswordDto;
+
+    const existingPasswordReset =
+      await this.passwordResetsService.getPasswordReset({ id });
+
+    // verify if the code is still valid
+    await this.passwordResetsService.verifyCode({
+      code: existingPasswordReset.code,
+      email,
+    });
+
+    const user = await this.usersService.findByEmail({ email });
+
+    await this.usersService.update({
+      id: user.id,
+      password: newPassword,
+    });
+
+    // delete the password reset associated
+    await this.passwordResetsService.deletePasswordResetAfterReset({ email });
+
+    const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
+    const token = await this.jwtService.signAsync(payload);
+
+    // Set the HTTP-only cookie
+    response.cookie(this.AUTH_COOKIE_NAME, token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      maxAge: this.COOKIE_MAX_AGE,
+    });
 
     return {
       accessToken: token,
@@ -170,13 +246,13 @@ export class AuthService {
   }
 
   async handleGoogleCallBack(
-    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
+    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType
   ) {
     const { type, request, response } = handleGoogleCallBackDto;
 
     const returnUrl = validateStateQueryParam(
       request,
-      this.envService.get("NODE_ENV"),
+      this.envService.get("NODE_ENV")
     );
     const callbackUrl = validateExtensionCallbackUrl(request);
 
@@ -224,7 +300,7 @@ export class AuthService {
         "https://www.googleapis.com/oauth2/v2/userinfo",
         {
           headers: { Authorization: `Bearer ${accessToken}` },
-        },
+        }
       );
       if (!googleRes.ok) {
         throw new Error("Failed to fetch Google user info");
@@ -275,7 +351,7 @@ export class AuthService {
       });
 
       response.redirect(
-        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString(),
+        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString()
       );
     } catch (error) {
       console.error("Google OAuth error:", error);

@@ -3,6 +3,7 @@ import { TrpcService } from "src/trpc/trpc.service";
 import { Injectable } from "@nestjs/common";
 
 import {
+  checkProjectExistsDto,
   GetDailyFilesStatsForExtensionDto,
   GetPeriodProjectsDto,
   GetProjectFilesOnPeriodDto,
@@ -40,6 +41,16 @@ export class FilesStatsRouter {
           this.filesStatsService.upsert({
             userId: ctx.user.sub,
             ...input,
+          })
+        ),
+
+      checkProjectExists: this.trpcService
+        .protectedProcedure()
+        .input(checkProjectExistsDto)
+        .query(async ({ ctx, input }) =>
+          this.filesStatsService.checkProjectExists({
+            ...input,
+            userId: ctx.user.sub,
           })
         ),
 

@@ -1,15 +1,15 @@
 import { Moon, Sun } from "lucide-react";
 
-import { THEME_DROPDOWN_ITEMS } from "@/constants";
-import { useTheme } from "@/providers/themeProvider";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@repo/ui/components/ui/dropdown-menu";
-import Icon from "@repo/ui/components/ui/Icon";
-import { cn } from "@repo/ui/lib/utils";
+} from "#components/ui/dropdown-menu.tsx";
+import Icon from "#components/ui/Icon.tsx";
+import { THEME_DROPDOWN_ITEMS } from "#constants.ts";
+import { cn } from "#lib/utils.ts";
+import { useTheme } from "#providers/themeProvider.tsx";
 
 const ToggleThemeDropDown = () => {
   const { theme: providedTheme, setTheme, resolvedTheme } = useTheme();

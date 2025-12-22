@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { ResetPasswordDto } from "@repo/common/types-schemas";
+
 import { PERIODS } from "./constants";
 
 export const PeriodSchema = z.enum([...PERIODS]);
@@ -8,6 +10,20 @@ export type Period = z.infer<typeof PeriodSchema>;
 export const ProjectParamsSchema = z.object({
   projectName: z.string().min(1),
 });
+
+export const ResetPasswordFormSchema = z
+  .object({
+    ...ResetPasswordDto.shape,
+    confirmPassword: z.string().trim(),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    error: "Passwords must match",
+    path: ["confirmPassword"],
+  });
+
+export type ResetPasswordFormSchemaType = z.infer<
+  typeof ResetPasswordFormSchema
+>;
 
 export type TreeNode = {
   type: "node";

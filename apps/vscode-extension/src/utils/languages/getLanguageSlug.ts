@@ -1,6 +1,6 @@
 import vscode from "vscode";
 
-import { knownLanguages, languageMapping } from "@/constants";
+import { KNOWN_LANGUAGES, SUBSET_LANGUAGES } from "@/constants";
 
 const getLanguageSlug = (document: vscode.TextDocument | undefined) => {
   if (!document || document.uri.scheme !== "file") {
@@ -15,16 +15,16 @@ const getLanguageSlug = (document: vscode.TextDocument | undefined) => {
   if (languageSlug === "plaintext" || languageSlug === "ignore") {
     const extension = document.uri.fsPath.split(".").pop()?.toLowerCase() ?? "";
 
-    if (Object.hasOwn(knownLanguages, extension)) {
-      return knownLanguages[extension];
+    if (Object.hasOwn(KNOWN_LANGUAGES, extension)) {
+      return KNOWN_LANGUAGES[extension];
     }
   }
 
   // if the languageSlug given by vscode is a subset of a language
   // for example dockerfile (subset of docker)
   // just assign it to the language itself instead of using that subset
-  if (languageMapping[languageSlug]) {
-    languageSlug = languageMapping[languageSlug];
+  if (SUBSET_LANGUAGES[languageSlug]) {
+    languageSlug = SUBSET_LANGUAGES[languageSlug];
   }
 
   return languageSlug;

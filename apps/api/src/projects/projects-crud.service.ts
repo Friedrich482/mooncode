@@ -7,6 +7,7 @@ import { projects } from "src/drizzle/schema/projects";
 import { Inject, Injectable } from "@nestjs/common";
 
 import {
+  CheckProjectExistsDtoType,
   CreateProjectDtoType,
   FindAllRangeProjectsDtoType,
   FindProjectDtoType,
@@ -62,6 +63,20 @@ export class ProjectsCrudService {
     if (!project) return null;
 
     return project;
+  }
+
+  async checkProjectExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
+    const { name, userId } = checkProjectExistsDto;
+
+    const [existingProject] = await this.db
+      .select({
+        name: projects.name,
+      })
+      .from(projects)
+      .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
+      .where(and(eq(dailyData.userId, userId), eq(projects.name, name)));
+
+    return !!existingProject;
   }
 
   async findAllRangeProjects(

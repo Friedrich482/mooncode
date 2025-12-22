@@ -1,0 +1,1 @@
+ALTER TABLE "pending_registrations" ADD COLUMN "code" varchar(8) NOT NULL;

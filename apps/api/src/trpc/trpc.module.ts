@@ -1,10 +1,12 @@
 import { AuthModule } from "src/auth/auth.module";
+import { AuthRouter } from "src/auth/auth.router";
 import { CodingStatsModule } from "src/coding-stats/coding-stats.module";
-import { DailyDataModule } from "src/daily-data/daily-data.module";
+import { CodingStatsRouter } from "src/coding-stats/coding-stats.router";
 import { EnvService } from "src/env/env.service";
 import { FilesStatsModule } from "src/files-stats/files-stats.module";
-import { LanguagesModule } from "src/languages/languages.module";
-import { UsersModule } from "src/users/users.module";
+import { FilesStatsRouter } from "src/files-stats/files-stats.router";
+import { PasswordResetsModule } from "src/password-resets/password-resets.module";
+import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 
 import { Global, Module } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -15,15 +17,21 @@ import { TrpcService } from "./trpc.service";
 @Global()
 @Module({
   imports: [
-    UsersModule,
-    DailyDataModule,
-    CodingStatsModule,
-    LanguagesModule,
     AuthModule,
+    CodingStatsModule,
     FilesStatsModule,
+    PendingRegistrationsModule,
+    PasswordResetsModule,
   ],
-  controllers: [],
-  providers: [TrpcService, TrpcRouter, JwtService, EnvService],
+  providers: [
+    TrpcService,
+    TrpcRouter,
+    JwtService,
+    EnvService,
+    AuthRouter,
+    CodingStatsRouter,
+    FilesStatsRouter,
+  ],
   exports: [TrpcService],
 })
 export class TrpcModule {}

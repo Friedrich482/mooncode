@@ -33,6 +33,11 @@ WORKDIR /app
 
 COPY --from=builder /app/apps/api/dist ./dist
 
+COPY --from=builder /app/apps/api/drizzle ./drizzle
+COPY --from=builder /app/apps/api/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/apps/api/docker-entrypoint.sh ./docker-entrypoint.sh
+RUN chmod +x docker-entrypoint.sh
+
 COPY --from=builder /app/packages ./packages
 
 COPY --from=builder /app/apps/api/package*.json ./
@@ -46,4 +51,5 @@ USER nestjs
 
 EXPOSE 3000
 
+ENTRYPOINT [ "./docker-entrypoint.sh" ]
 CMD ["node", "dist/src/main.js"]

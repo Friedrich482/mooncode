@@ -4,7 +4,7 @@ export const PROD_API_URL = "https://api.mooncode.cc/trpc";
 
 export const MAX_IDLE_TIME = 300; //seconds
 
-export const languageMapping: Record<string, string> = {
+export const SUBSET_LANGUAGES: Record<string, string> = {
   dockercompose: "docker",
   dockerfile: "docker",
   javascriptreact: "javascript",
@@ -15,12 +15,13 @@ export const languageMapping: Record<string, string> = {
   "asm-markdown-codeblock": "assembly",
   "asm-list-markdown-codeblock": "assembly",
   arm: "assembly",
+  "git-commit": "gitattributes",
 };
 
 export let filesData: FileMap = {};
 export const SYNC_DATA_KEY = "mooncodeData";
 
-export const knownLanguages: Record<string, string> = {
+export const KNOWN_LANGUAGES: Record<string, string> = {
   // JVM Languages
   kt: "kotlin",
   kts: "kotlin",

@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 import formatDuration from "@repo/common/formatDuration";
 
 import {
+  CheckProjectExistsDtoType,
   GetPeriodProjectsDtoType,
   GetProjectFilesOnPeriodDtoType,
   GetProjectLanguagesPerDayOfPeriodDtoType,
@@ -21,6 +22,10 @@ import getProjectPerDayOfPeriodGroupByWeeks from "./utils/getProjectPerDayOfPeri
 export class FilesStatsDashboardService {
   constructor(private readonly projectsService: ProjectsService) {}
 
+  async checkProjectExists(checkProjectExitsDto: CheckProjectExistsDtoType) {
+    return this.projectsService.checkProjectExists(checkProjectExitsDto);
+  }
+
   async getPeriodProjects(getPeriodProjectsDto: GetPeriodProjectsDtoType) {
     const { userId, start, end } = getPeriodProjectsDto;
 
@@ -32,7 +37,7 @@ export class FilesStatsDashboardService {
 
     const timeSpentAcrossAllProjects = projectsOnRange.reduce(
       (acc, value) => acc + value.totalTimeSpent,
-      0,
+      0
     );
 
     const finalData = projectsOnRange.map((project) => ({
@@ -44,7 +49,7 @@ export class FilesStatsDashboardService {
               (
                 (project.totalTimeSpent * 100) /
                 timeSpentAcrossAllProjects
-              ).toFixed(2),
+              ).toFixed(2)
             ),
     }));
 
@@ -65,7 +70,7 @@ export class FilesStatsDashboardService {
   }
 
   async getProjectPerDayOfPeriod(
-    getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType,
+    getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType
   ) {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectPerDayOfPeriodDto;
@@ -84,7 +89,7 @@ export class FilesStatsDashboardService {
       case "weeks":
         return getProjectPerDayOfPeriodGroupByWeeks(
           dailyProjectsForPeriod,
-          periodResolution,
+          periodResolution
         );
 
       case "months":
@@ -105,7 +110,7 @@ export class FilesStatsDashboardService {
   }
 
   async getProjectLanguagesTimeOnPeriod(
-    getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType,
+    getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType
   ) {
     const { userId, start, end, name } = getProjectLanguagesTimeOnPeriod;
 
@@ -145,16 +150,14 @@ export class FilesStatsDashboardService {
           totalTimeSpentOnProjectOnPeriod === 0
             ? 0
             : parseFloat(
-                ((timeSpent * 100) / totalTimeSpentOnProjectOnPeriod).toFixed(
-                  2,
-                ),
+                ((timeSpent * 100) / totalTimeSpentOnProjectOnPeriod).toFixed(2)
               ),
       }))
       .sort((a, b) => a.time - b.time);
   }
 
   async getProjectLanguagesPerDayOfPeriod(
-    getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType,
+    getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType
   ) {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectLanguagesPerDayOfPeriodDto;
@@ -182,13 +185,13 @@ export class FilesStatsDashboardService {
         return getProjectLanguagesGroupByWeeks(
           dailyProjectsForPeriod,
           periodResolution,
-          languagesTimesPerDayOfPeriod,
+          languagesTimesPerDayOfPeriod
         );
 
       case "months":
         return getProjectLanguageGroupByMonths(
           dailyProjectsForPeriod,
-          languagesTimesPerDayOfPeriod,
+          languagesTimesPerDayOfPeriod
         );
 
       default:
@@ -204,10 +207,10 @@ export class FilesStatsDashboardService {
   }
 
   async getProjectFilesOnPeriod(
-    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType,
+    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
   ) {
     const data = await this.projectsService.getAllProjectFilesOnPeriod(
-      getProjectFilesOnPeriodDto,
+      getProjectFilesOnPeriodDto
     );
 
     return data;

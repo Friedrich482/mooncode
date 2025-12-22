@@ -1,7 +1,7 @@
 import { redirect } from "react-router";
 import { z } from "zod";
 
-import getCallbackUrl from "./getCallbackUrl";
+import getCallbackUrl from "../getCallbackUrl";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -28,7 +28,7 @@ export const protectedRouteLoader = async () => {
   }
 };
 
-// prevents a logged in user to access an auth route (login & register)
+// prevents a logged in user to access an auth route
 export const authRouteLoader = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const clientParam = decodeURIComponent(urlParams.get("client") ?? "");
@@ -111,32 +111,19 @@ export const googleAuthLoader = async () => {
 };
 
 export const redirectToVSCodeAfterGoogleAuthLoader = async () => {
-  try {
-    const response = await fetch(`${API_URL}/auth.checkAuthStatus`, {
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      if (response.status >= 500 || response.status === 0) {
-        throw new Error("Service temporarily unavailable");
-      } else if (response.status === 401) {
-        throw redirect("/login");
-      } else {
-        throw new Error("Authentication check failed");
-      }
-    }
-  } catch (error) {
-    if (error instanceof Response && error.headers.get("Location")) {
-      throw error;
-    }
-  }
-
   const urlParams = new URLSearchParams(window.location.search);
   const tokenParam = decodeURIComponent(urlParams.get("token") ?? "");
   const emailParam = decodeURIComponent(urlParams.get("email") ?? "");
   const callbackUrl = getCallbackUrl();
 
   if (tokenParam && emailParam && callbackUrl) {
+    if (
+      !callbackUrl.startsWith("vscode://") ||
+      !callbackUrl.includes("/auth-callback")
+    ) {
+      throw new Error("Incorrect callback url");
+    }
+
     const parseVSCodeAuthGoogleParamsSchema = z.object({
       token: z.jwt(),
       email: z.email(),
@@ -148,17 +135,11 @@ export const redirectToVSCodeAfterGoogleAuthLoader = async () => {
         email: emailParam,
       });
 
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new Error("Incorrect callback url");
-      }
-
       window.location.href = `${callbackUrl}&token=${encodeURIComponent(data.token)}&email=${encodeURIComponent(data.email)}`;
     } catch {
       return redirect("/dashboard");
     }
   }
+
   return null;
 };

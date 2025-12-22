@@ -4,13 +4,8 @@ import { PERIODS } from "@/constants";
 import { Period, PeriodSchema } from "@/types-schemas";
 import { DATE_LOCALE } from "@repo/common/constants";
 import { formatZodError } from "@repo/common/formatZodError";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
 import getTodaysLocaleDate from "@repo/common/getTodaysLocalDate";
-import {
-  GroupBy,
-  IsoDateSchema,
-  PeriodResolution,
-} from "@repo/common/types-schemas";
+import { GroupBy, IsoDateSchema } from "@repo/common/types-schemas";
 
 type ReturnType = {
   period: Period;
@@ -18,7 +13,6 @@ type ReturnType = {
   customRange: {
     start: string;
     end: string;
-    periodResolution: PeriodResolution;
   };
 };
 export const getPeriodStoreValuesFromURL = (): ReturnType => {
@@ -29,7 +23,6 @@ export const getPeriodStoreValuesFromURL = (): ReturnType => {
     customRange: {
       start: getTodaysLocaleDate(),
       end: getTodaysLocaleDate(),
-      periodResolution: "month",
     },
   };
 
@@ -88,10 +81,6 @@ export const getPeriodStoreValuesFromURL = (): ReturnType => {
           customRange: {
             start: validStartFromUrl,
             end: validEndFromUrl,
-            periodResolution: getPeriodResolution(
-              validStartFromUrl,
-              validEndFromUrl,
-            ),
           },
           groupBy,
         };
