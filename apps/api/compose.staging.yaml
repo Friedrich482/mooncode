@@ -1,0 +1,34 @@
+name: mooncode-staging
+
+services:
+  api:
+    build:
+      context: ../../
+      dockerfile: apps/api/Dockerfile
+    ports:
+      - "127.0.0.1:3002:3000"
+    env_file:
+      - .env.staging
+    depends_on:
+      - staging-database
+    container_name: mooncode-api-container
+    networks:
+      - mooncode-network
+
+  staging-database:
+    image: postgres:17-alpine
+    container_name: mooncode-database-container
+    volumes:
+      - mooncode-database:/var/lib/postgresql/data
+    env_file:
+      - .env.database
+    networks:
+      - mooncode-network
+
+volumes:
+  mooncode-database:
+    name: mooncode-database
+
+networks:
+  mooncode-network:
+    driver: bridge
