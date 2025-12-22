@@ -5,4 +5,5 @@ BEGIN
 EXCEPTION
     WHEN duplicate_object THEN NULL;
     WHEN undefined_object THEN NULL;
+    WHEN unique_violation THEN NULL;
 END $$;
