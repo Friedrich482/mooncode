@@ -22,7 +22,7 @@ import getProjectPerDayOfPeriodGroupByWeeks from "./utils/getProjectPerDayOfPeri
 export class FilesStatsDashboardService {
   constructor(private readonly projectsService: ProjectsService) {}
 
-  async checkProjectExits(checkProjectExitsDto: CheckProjectExistsDtoType) {
+  async checkProjectExists(checkProjectExitsDto: CheckProjectExistsDtoType) {
     return this.projectsService.checkProjectExists(checkProjectExitsDto);
   }
 

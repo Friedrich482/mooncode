@@ -33,9 +33,9 @@ export class FilesStatsService {
     return this.filesStatsExtensionService.upsert(upsertFilesDto);
   }
 
-  async checkProjectExits(checkProjectExitsDto: CheckProjectExistsDtoType) {
-    return this.filesStatsDashboardService.checkProjectExits(
-      checkProjectExitsDto
+  async checkProjectExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
+    return this.filesStatsDashboardService.checkProjectExists(
+      checkProjectExistsDto
     );
   }
 

@@ -44,11 +44,11 @@ export class FilesStatsRouter {
           })
         ),
 
-      checkProjectExits: this.trpcService
+      checkProjectExists: this.trpcService
         .protectedProcedure()
         .input(checkProjectExistsDto)
         .query(async ({ ctx, input }) =>
-          this.filesStatsService.checkProjectExits({
+          this.filesStatsService.checkProjectExists({
             ...input,
             userId: ctx.user.sub,
           })
