@@ -1,10 +1,6 @@
 DO $$
 BEGIN
-    ALTER TABLE "pending_registrations" RENAME COLUMN "password" TO "hashed_password";--> statement-breakpoint
+    ALTER TABLE "pending_registrations" RENAME COLUMN "password" TO "hashed_password";
 EXCEPTION
-    WHEN undefined_column THEN 
-        NULL;
-        
-    WHEN duplicate_column THEN 
-        NULL;
+    WHEN undefined_column OR duplicate_column THEN NULL;
 END $$;

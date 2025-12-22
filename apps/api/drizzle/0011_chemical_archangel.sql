@@ -1,10 +1,7 @@
 DO $$
 BEGIN
-    ALTER TABLE "users" RENAME COLUMN "password" TO "hashed_password";--> statement-breakpoint
+    ALTER TABLE "users" RENAME COLUMN "password" TO "hashed_password";
 EXCEPTION
-    WHEN undefined_column THEN 
-        NULL;
-        
-    WHEN duplicate_column THEN 
-        NULL;
+    WHEN undefined_column OR duplicate_column THEN NULL;
 END $$;
+--> statement-breakpoint
