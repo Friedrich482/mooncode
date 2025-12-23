@@ -131,7 +131,7 @@ export class UsersService {
     return userCreated;
   }
 
-  async findOne(findByIdDto: FindByIdDtoType) {
+  async findById(findByIdDto: FindByIdDtoType) {
     const { id } = findByIdDto;
 
     const [user] = await this.db
@@ -143,8 +143,11 @@ export class UsersService {
       .from(users)
       .where(eq(users.id, id))
       .limit(1);
-    if (!user)
-      throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+
+    if (!user) {
+      return null;
+    }
+
     return user;
   }
 
@@ -163,11 +166,10 @@ export class UsersService {
       .where(eq(users.email, email))
       .limit(1);
 
-    if (!user)
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message: "User not found",
-      });
+    if (!user) {
+      return null;
+    }
+
     return user;
   }
 
@@ -183,6 +185,10 @@ export class UsersService {
       .from(users)
       .where(eq(users.googleEmail, googleEmail))
       .limit(1);
+
+    if (!user) {
+      return null;
+    }
 
     return user;
   }
