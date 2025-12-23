@@ -1,16 +1,11 @@
-dist
 **/dist
 tsconfig.tsbuildinfo
 **/tsconfig.tsbuildinfo
 .log
-packages/ui/node_modules
 **/.env*
-.env
 .dockerignore
 **/Dockerfile
-**/compose.yaml
-node_modules
+**/compose.*.yaml
 **/node_modules
 packages/eslint-config
-eslint.config.ts
 **/eslint.config.ts
