@@ -38,7 +38,8 @@ COPY --from=builder /app/apps/api/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /app/apps/api/docker-entrypoint.sh ./docker-entrypoint.sh
 RUN chmod +x docker-entrypoint.sh
 
-COPY --from=builder /app/packages/common/dist ./packages/common
+COPY --from=builder /app/packages/common/dist ./packages/common/dist
+COPY --from=builder /app/packages/common/package.json ./packages/common/package.json
 COPY --from=builder /app/packages/trpc ./packages/trpc
 COPY --from=builder /app/apps/api/package*.json ./
 
