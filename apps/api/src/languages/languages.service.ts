@@ -18,7 +18,7 @@ export class LanguagesService {
     @Inject(DrizzleAsyncProvider)
     private readonly db: NodePgDatabase
   ) {}
-  async createLanguage(createLanguageDto: CreateLanguageDtoType) {
+  async create(createLanguageDto: CreateLanguageDtoType) {
     const { dailyDataId, languageSlug, timeSpent } = createLanguageDto;
 
     const [createdLanguageData] = await this.db
@@ -36,7 +36,7 @@ export class LanguagesService {
     return createdLanguageData;
   }
 
-  async findAllLanguages(findAllLanguagesDto: FindAllLanguagesDtoType) {
+  async findAll(findAllLanguagesDto: FindAllLanguagesDtoType) {
     const { dailyDataId } = findAllLanguagesDto;
 
     const languagesDataArray = await this.db
@@ -60,7 +60,7 @@ export class LanguagesService {
     return languagesDataObject;
   }
 
-  async findOneLanguage(findOneLanguageDto: FindOneLanguageDtoType) {
+  async findOne(findOneLanguageDto: FindOneLanguageDtoType) {
     const { dailyDataId, languageSlug } = findOneLanguageDto;
 
     const [languageData] = await this.db
@@ -82,7 +82,7 @@ export class LanguagesService {
     return languageData;
   }
 
-  async updateLanguage(updateLanguageDto: UpdateLanguageDtoType) {
+  async update(updateLanguageDto: UpdateLanguageDtoType) {
     const { timeSpent, dailyDataId, languageSlug } = updateLanguageDto;
 
     const [updatedLanguageData] = await this.db

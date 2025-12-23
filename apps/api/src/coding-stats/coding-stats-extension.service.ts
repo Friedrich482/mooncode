@@ -31,7 +31,7 @@ export class CodingStatsExtensionService {
         dayLanguagesTime: {},
       };
 
-    const dayLanguagesTime = await this.languagesService.findAllLanguages({
+    const dayLanguagesTime = await this.languagesService.findAll({
       dailyDataId: dayData.id,
     });
 
@@ -84,14 +84,14 @@ export class CodingStatsExtensionService {
     }
 
     for (const [key, value] of Object.entries(timeSpentPerLanguage)) {
-      const existingLanguageData = await this.languagesService.findOneLanguage({
+      const existingLanguageData = await this.languagesService.findOne({
         dailyDataId: returningData.dailyDataId,
         languageSlug: key,
       });
 
       if (!existingLanguageData) {
         // if it doesn't exists, create it for each language
-        const createdLanguageData = await this.languagesService.createLanguage({
+        const createdLanguageData = await this.languagesService.create({
           dailyDataId: returningData.dailyDataId,
           timeSpent: value,
           languageSlug: key,
@@ -102,12 +102,11 @@ export class CodingStatsExtensionService {
       } else {
         // else update it but only if the new timeSpent is greater than the existing one
         if (existingLanguageData.timeSpent < value) {
-          const updatedLanguageData =
-            await this.languagesService.updateLanguage({
-              timeSpent: value,
-              dailyDataId: returningData.dailyDataId,
-              languageSlug: key,
-            });
+          const updatedLanguageData = await this.languagesService.update({
+            timeSpent: value,
+            dailyDataId: returningData.dailyDataId,
+            languageSlug: key,
+          });
           returningData.languages[updatedLanguageData.languageSlug] =
             updatedLanguageData.timeSpent;
         } else {

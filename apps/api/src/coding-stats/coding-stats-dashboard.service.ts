@@ -107,7 +107,7 @@ export class CodingStatsDashboardService {
     const kVLangTime = (
       await Promise.all(
         dailyDataForPeriod.map(({ id }) =>
-          this.languagesService.findAllLanguages({ dailyDataId: id })
+          this.languagesService.findAll({ dailyDataId: id })
         )
       )
     ).reduce((acc, dayStats) => {
@@ -165,7 +165,7 @@ export class CodingStatsDashboardService {
 
     const allLanguages = await Promise.all(
       dailyDataForPeriod.map(({ id }) =>
-        this.languagesService.findAllLanguages({ dailyDataId: id })
+        this.languagesService.findAll({ dailyDataId: id })
       )
     );
 
@@ -193,7 +193,7 @@ export class CodingStatsDashboardService {
         finalData: [],
       };
 
-    const dayLanguagesTime = await this.languagesService.findAllLanguages({
+    const dayLanguagesTime = await this.languagesService.findAll({
       dailyDataId: dayData.id,
     });
 

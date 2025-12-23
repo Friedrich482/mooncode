@@ -106,7 +106,7 @@ export class FilesStatsExtensionService {
         returningProjectData.projectName = existingProject.name;
       }
 
-      const fileLanguage = await this.languagesService.findOneLanguage({
+      const fileLanguage = await this.languagesService.findOne({
         dailyDataId: dailyDataForDay.id,
         languageSlug: file.languageSlug,
       });
