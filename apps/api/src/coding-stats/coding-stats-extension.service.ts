@@ -20,7 +20,7 @@ export class CodingStatsExtensionService {
   ) {
     const { userId, dateString } = getDailyStatsForExtensionDto;
 
-    const dayData = await this.dailyDataService.findOneDailyData({
+    const dayData = await this.dailyDataService.findOne({
       userId,
       date: dateString,
     });
@@ -48,15 +48,18 @@ export class CodingStatsExtensionService {
       date: targetedDate,
       languages: {} as { [languageSlug: string]: number },
     };
-    const existingTimeSpentOnDay = await this.dailyDataService.findOneDailyData(
-      { userId, date: targetedDate }
-    );
+    const existingTimeSpentOnDay = await this.dailyDataService.findOne({
+      userId,
+      date: targetedDate,
+    });
 
     if (!existingTimeSpentOnDay) {
       // create daily data if it doesn't exists
-      const createdTimeSpentOnDay = await this.dailyDataService.createDailyData(
-        { targetedDate, timeSpent: timeSpentOnDay, userId }
-      );
+      const createdTimeSpentOnDay = await this.dailyDataService.create({
+        targetedDate,
+        timeSpent: timeSpentOnDay,
+        userId,
+      });
 
       returningData.dailyDataId = createdTimeSpentOnDay.id;
       returningData.timeSpentOnDay = createdTimeSpentOnDay.timeSpent;
@@ -64,12 +67,11 @@ export class CodingStatsExtensionService {
     } else {
       // else update it but only if the new timeSpent is greater than the existing one
       if (existingTimeSpentOnDay.timeSpent < timeSpentOnDay) {
-        const updatedTimeSpentOnDay =
-          await this.dailyDataService.updateDailyData({
-            timeSpent: timeSpentOnDay,
-            userId,
-            targetedDate,
-          });
+        const updatedTimeSpentOnDay = await this.dailyDataService.update({
+          timeSpent: timeSpentOnDay,
+          userId,
+          targetedDate,
+        });
 
         returningData.dailyDataId = updatedTimeSpentOnDay.id;
         returningData.timeSpentOnDay = updatedTimeSpentOnDay.timeSpent;

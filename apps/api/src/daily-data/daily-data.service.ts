@@ -18,9 +18,9 @@ import {
 export class DailyDataService {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase,
+    private readonly db: NodePgDatabase
   ) {}
-  async createDailyData(createDailyDataDto: CreateDailyDataDtoType) {
+  async create(createDailyDataDto: CreateDailyDataDtoType) {
     const { timeSpent, userId, targetedDate } = createDailyDataDto;
 
     const [createdDailyData] = await this.db
@@ -39,7 +39,7 @@ export class DailyDataService {
     return createdDailyData;
   }
 
-  async findOneDailyData(findOneDailyDataDto: FindOneDailyDataDtoType) {
+  async findOne(findOneDailyDataDto: FindOneDailyDataDtoType) {
     const { date, userId } = findOneDailyDataDto;
 
     const [oneDailyData] = await this.db
@@ -52,7 +52,7 @@ export class DailyDataService {
     return oneDailyData;
   }
 
-  async findRangeDailyData(findRangeDailyDataDto: FindRangeDailyDataDtoType) {
+  async findRange(findRangeDailyDataDto: FindRangeDailyDataDtoType) {
     const { userId, start, end } = findRangeDailyDataDto;
 
     const dbData = await this.db
@@ -63,7 +63,7 @@ export class DailyDataService {
       })
       .from(dailyData)
       .where(
-        and(eq(dailyData.userId, userId), between(dailyData.date, start, end)),
+        and(eq(dailyData.userId, userId), between(dailyData.date, start, end))
       );
 
     const dateRange = eachDayOfInterval({
@@ -72,10 +72,10 @@ export class DailyDataService {
     });
 
     const dataByDate = Object.fromEntries(
-      dbData.map((item) => [item.date, item]),
+      dbData.map((item) => [item.date, item])
     );
 
-    return dateRange.map((date) => {
+    const range = dateRange.map((date) => {
       const formattedDate = convertToISODate(date);
       return (
         dataByDate[formattedDate] || {
@@ -85,9 +85,11 @@ export class DailyDataService {
         }
       );
     });
+
+    return range;
   }
 
-  async updateDailyData(updateDailyDataDto: UpdateDailyDataDtoType) {
+  async update(updateDailyDataDto: UpdateDailyDataDtoType) {
     const { timeSpent, userId, targetedDate } = updateDailyDataDto;
 
     const [updatedDailyData] = await this.db
@@ -97,7 +99,7 @@ export class DailyDataService {
         timeSpent,
       })
       .where(
-        and(eq(dailyData.userId, userId), eq(dailyData.date, targetedDate)),
+        and(eq(dailyData.userId, userId), eq(dailyData.date, targetedDate))
       )
       .returning({
         timeSpent: dailyData.timeSpent,

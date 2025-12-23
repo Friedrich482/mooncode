@@ -8,7 +8,7 @@ export const CreateDailyDataDto = z.object({
   timeSpent: z.number().int().positive(),
 });
 
-export const findOneDailyDataDto = z.object({
+export const FindOneDailyDataDto = z.object({
   date: DateStringDto,
   userId: z.ulid(),
 });
@@ -25,6 +25,6 @@ export type CreateDailyDataDtoType = z.infer<typeof CreateDailyDataDto>;
 
 export type UpdateDailyDataDtoType = z.infer<typeof UpdateDailyDataDto>;
 
-export type FindOneDailyDataDtoType = z.infer<typeof findOneDailyDataDto>;
+export type FindOneDailyDataDtoType = z.infer<typeof FindOneDailyDataDto>;
 
 export type FindRangeDailyDataDtoType = z.infer<typeof FindRangeDailyDataDto>;

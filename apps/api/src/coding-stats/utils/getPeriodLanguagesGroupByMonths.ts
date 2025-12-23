@@ -6,7 +6,7 @@ import { LanguagesService } from "src/languages/languages.service";
 import convertToISODate from "@repo/common/convertToISODate";
 
 const getPeriodLanguagesGroupByMonths = async (
-  data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,
+  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
   languagesService: LanguagesService
 ) => {
   if (data.length === 0) return [];

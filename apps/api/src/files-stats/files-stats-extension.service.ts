@@ -23,7 +23,7 @@ export class FilesStatsExtensionService {
   ) {
     const { userId, dateString } = getDailyFilesStatsForExtensionDto;
 
-    const dayData = await this.dailyDataService.findOneDailyData({
+    const dayData = await this.dailyDataService.findOne({
       userId,
       date: dateString,
     });
@@ -52,7 +52,7 @@ export class FilesStatsExtensionService {
       timeSpent: 0,
     };
 
-    const dailyDataForDay = await this.dailyDataService.findOneDailyData({
+    const dailyDataForDay = await this.dailyDataService.findOne({
       userId,
       date: targetedDate,
     });

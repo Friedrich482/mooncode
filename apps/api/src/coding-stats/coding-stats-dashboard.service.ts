@@ -36,7 +36,7 @@ export class CodingStatsDashboardService {
   ) {
     const { userId, start, end } = getTimeSpentOnPeriodDto;
 
-    const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
+    const dailyDataForPeriod = await this.dailyDataService.findRange({
       userId,
       start,
       end,
@@ -55,7 +55,7 @@ export class CodingStatsDashboardService {
     const { userId, start, end, groupBy, periodResolution } =
       getDaysOfPeriodStatsDto;
 
-    const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
+    const dailyDataForPeriod = await this.dailyDataService.findRange({
       userId,
       start,
       end,
@@ -92,7 +92,7 @@ export class CodingStatsDashboardService {
   ) {
     const { userId, start, end } = getPeriodLanguagesTimeDto;
 
-    const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
+    const dailyDataForPeriod = await this.dailyDataService.findRange({
       userId,
       start,
       end,
@@ -137,7 +137,7 @@ export class CodingStatsDashboardService {
     const { userId, start, end, groupBy, periodResolution } =
       getPeriodLanguagesPerDayDto;
 
-    const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
+    const dailyDataForPeriod = await this.dailyDataService.findRange({
       userId,
       start,
       end,
@@ -182,7 +182,7 @@ export class CodingStatsDashboardService {
   ) {
     const { userId, dateString } = getDailyStatsForChartDto;
 
-    const dayData = await this.dailyDataService.findOneDailyData({
+    const dayData = await this.dailyDataService.findOne({
       userId,
       date: dateString,
     });
@@ -222,7 +222,7 @@ export class CodingStatsDashboardService {
     const { userId, start, end, todaysDateString, groupBy, periodResolution } =
       getPeriodGeneralStatsDto;
 
-    const dailyDataForPeriod = await this.dailyDataService.findRangeDailyData({
+    const dailyDataForPeriod = await this.dailyDataService.findRange({
       userId,
       start,
       end,
@@ -275,7 +275,7 @@ export class CodingStatsDashboardService {
 
     const timeSpentToday =
       (
-        await this.dailyDataService.findOneDailyData({
+        await this.dailyDataService.findOne({
           userId,
           date: todaysDateString,
         })
