@@ -1,1 +1,1 @@
-ALTER TABLE "pending_registrations" ADD COLUMN "code" varchar(8) NOT NULL;
+ALTER TABLE "pending_registrations" ADD COLUMN IF NOT EXISTS "code" varchar(8) NOT NULL;

@@ -1,1 +1,1 @@
-ALTER TABLE "pending_registrations" ADD COLUMN "attempts" integer DEFAULT 0 NOT NULL;
+ALTER TABLE "pending_registrations" ADD COLUMN IF NOT EXISTS "attempts" integer DEFAULT 0 NOT NULL;

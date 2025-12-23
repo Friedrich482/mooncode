@@ -1,1 +1,1 @@
-UPDATE users SET email_verified_at = NOW();
+UPDATE users SET email_verified_at = NOW() WHERE email_verified_at IS NULL;

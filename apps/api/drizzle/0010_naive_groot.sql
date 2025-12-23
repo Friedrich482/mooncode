@@ -1,1 +1,1 @@
-ALTER TABLE "pending_registrations" ADD COLUMN "expires_at" timestamp DEFAULT now() + interval '30 minutes' NOT NULL;
+ALTER TABLE "pending_registrations" ADD COLUMN IF NOT EXISTS "expires_at" timestamp DEFAULT (now() + interval '30 minutes') NOT NULL;

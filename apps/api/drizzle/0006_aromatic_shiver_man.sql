@@ -1,1 +1,2 @@
-ALTER TABLE "users" ADD COLUMN "email_verified_at" timestamp DEFAULT NULL;
+ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "email_verified_at" timestamp DEFAULT NULL;
+--> statement-breakpoint
