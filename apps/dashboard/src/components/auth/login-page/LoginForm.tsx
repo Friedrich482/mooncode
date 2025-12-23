@@ -141,7 +141,10 @@ const LoginForm = () => {
             </Link>
           </p>
           <p>
-            <Link to="/forgot-password" className="underline">
+            <Link
+              to={`/forgot-password${callbackUrl ? `?callback=${callbackUrl}` : ""}`}
+              className="underline"
+            >
               Lost your password?
             </Link>
           </p>
