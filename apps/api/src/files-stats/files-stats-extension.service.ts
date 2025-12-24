@@ -32,7 +32,7 @@ export class FilesStatsExtensionService {
       return {};
     }
 
-    const filesData = await this.filesService.findAllFilesOnDay({
+    const filesData = await this.filesService.findAllOnDay({
       dailyDataId: dayData.id,
     });
 
@@ -62,7 +62,7 @@ export class FilesStatsExtensionService {
       return {};
     }
 
-    const returningData = await this.filesService.findAllFilesOnDay({
+    const returningData = await this.filesService.findAllOnDay({
       dailyDataId: dailyDataForDay.id,
     });
 
@@ -116,7 +116,7 @@ export class FilesStatsExtensionService {
         continue;
       }
 
-      const existingFileData = await this.filesService.findOneFile({
+      const existingFileData = await this.filesService.findOne({
         projectId: returningProjectData.projectId,
         name: file.fileName,
         path,
@@ -125,7 +125,7 @@ export class FilesStatsExtensionService {
 
       if (!existingFileData) {
         // if the data for this file doesn't exist, create one
-        await this.filesService.createFile({
+        await this.filesService.create({
           projectId: returningProjectData.projectId,
           languageId: fileLanguage.languageId,
           name: file.fileName,
@@ -143,7 +143,7 @@ export class FilesStatsExtensionService {
       } else {
         // else just update the file data but only if the new timeSpent is greater than the existing one
         if (existingFileData.timeSpent <= file.timeSpent) {
-          await this.filesService.updateFile({
+          await this.filesService.update({
             projectId: returningProjectData.projectId,
             languageId: fileLanguage.languageId,
             path,
