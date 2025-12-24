@@ -67,7 +67,7 @@ export class FilesStatsExtensionService {
     });
 
     for (const [path, file] of Object.entries(filesData)) {
-      const existingProject = await this.projectsService.findOneProject({
+      const existingProject = await this.projectsService.findOne({
         dailyDataId: dailyDataForDay.id,
         name: file.projectName,
         path: file.projectPath,
@@ -75,7 +75,7 @@ export class FilesStatsExtensionService {
 
       if (!existingProject) {
         // if the project doesn't exist, let's create it
-        const createdProject = await this.projectsService.createProject({
+        const createdProject = await this.projectsService.create({
           dailyDataId: dailyDataForDay.id,
           name: file.projectName,
           path: file.projectPath,
@@ -90,7 +90,7 @@ export class FilesStatsExtensionService {
         if (
           existingProject.timeSpent <= timeSpentPerProject[file.projectPath]
         ) {
-          await this.projectsService.updateProject({
+          await this.projectsService.update({
             dailyDataId: dailyDataForDay.id,
             name: file.projectName,
             path: file.projectPath,

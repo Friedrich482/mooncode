@@ -6,9 +6,9 @@ import convertToISODate from "@repo/common/convertToISODate";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
 const getProjectLanguagesGroupByWeeks = async (
-  data: Awaited<ReturnType<ProjectsService["findProjectByNameOnRange"]>>,
+  data: Awaited<ReturnType<ProjectsService["findByNameOnRange"]>>,
   periodResolution: PeriodResolution,
-  languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>,
+  languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];
   const weeklyMap = new Map<
@@ -86,7 +86,7 @@ const getProjectLanguagesGroupByWeeks = async (
       ...languages,
       originalDate: rest.weekRange,
       date: rest.weekRange,
-    }),
+    })
   );
 };
 

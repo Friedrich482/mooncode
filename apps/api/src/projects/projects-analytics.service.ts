@@ -13,7 +13,7 @@ import { TRPCError } from "@trpc/server";
 
 import {
   FindProjectByNameOnRangeDtoType,
-  GetAllProjectFilesOnPeriodDtoType,
+  GetProjectFilesOnPeriodDtoType,
   GetProjectLanguagesTimeOnPeriodDtoType,
   GetProjectLanguagesTimePerDayOfPeriodDtoType,
   GroupAndAggregateProjectByNameDtoType,
@@ -26,7 +26,7 @@ export class ProjectsAnalyticsService {
     private readonly db: NodePgDatabase
   ) {}
 
-  async groupAndAggregateProjectByName(
+  async groupAndAggregateByName(
     groupAndAggregateProjectByNameDto: GroupAndAggregateProjectByNameDtoType
   ) {
     const { userId, name, start, end } = groupAndAggregateProjectByNameDto;
@@ -69,7 +69,7 @@ export class ProjectsAnalyticsService {
     return projectAggregatedOnPeriod;
   }
 
-  async findProjectByNameOnRange(
+  async findByNameOnRange(
     findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType
   ) {
     const { userId, name, start, end } = findProjectByNameOnRangeDto;
@@ -110,7 +110,7 @@ export class ProjectsAnalyticsService {
     });
   }
 
-  async getProjectLanguagesTimeOnPeriod(
+  async getLanguagesTimeOnPeriod(
     getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType
   ) {
     const { userId, name, start, end } = getProjectLanguagesTimeOnPeriodDto;
@@ -141,7 +141,7 @@ export class ProjectsAnalyticsService {
     return result;
   }
 
-  async getProjectLanguagesTimePerDayOfPeriod(
+  async getLanguagesTimePerDayOfPeriod(
     getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType
   ) {
     const { userId, name, start, end } =
@@ -179,8 +179,8 @@ export class ProjectsAnalyticsService {
     return result;
   }
 
-  async getAllProjectFilesOnPeriod(
-    getAllProjectFilesOnPeriodDto: GetAllProjectFilesOnPeriodDtoType
+  async getFilesOnPeriod(
+    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
   ) {
     const {
       userId,
@@ -189,7 +189,7 @@ export class ProjectsAnalyticsService {
       end,
       amount,
       languages: languagesArray,
-    } = getAllProjectFilesOnPeriodDto;
+    } = getProjectFilesOnPeriodDto;
 
     const baseQuery = this.db
       .select({

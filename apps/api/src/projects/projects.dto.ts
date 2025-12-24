@@ -34,7 +34,7 @@ export const CheckProjectExistsDto = z.object({
   userId: z.ulid(),
 });
 
-export const FindAllRangeProjectsDto = z.object({
+export const FindRangeProjectsDto = z.object({
   userId: z.ulid(),
   start: DateStringDto,
   end: DateStringDto,
@@ -47,7 +47,7 @@ export const getProjectLanguagesTimeOnPeriodDto = FindProjectByNameOnRangeDto;
 export const getProjectLanguagesTimePerDayOfPeriodDto =
   FindProjectByNameOnRangeDto;
 
-export const GetAllProjectFilesOnPeriodDto = z.object({
+export const GetProjectFilesOnPeriodDto = z.object({
   ...FindProjectByNameOnRangeDto.shape,
   amount: z.number().optional(),
   languages: z.array(z.string()).optional(),
@@ -65,9 +65,7 @@ export type FindProjectByNameOnRangeDtoType = z.infer<
 
 export type CheckProjectExistsDtoType = z.infer<typeof CheckProjectExistsDto>;
 
-export type FindAllRangeProjectsDtoType = z.infer<
-  typeof FindAllRangeProjectsDto
->;
+export type FindRangeProjectsDtoType = z.infer<typeof FindRangeProjectsDto>;
 
 export type GroupAndAggregateProjectByNameDtoType = z.infer<
   typeof GroupAndAggregateProjectByNameDto
@@ -81,6 +79,6 @@ export type GetProjectLanguagesTimePerDayOfPeriodDtoType = z.infer<
   typeof getProjectLanguagesTimePerDayOfPeriodDto
 >;
 
-export type GetAllProjectFilesOnPeriodDtoType = z.infer<
-  typeof GetAllProjectFilesOnPeriodDto
+export type GetProjectFilesOnPeriodDtoType = z.infer<
+  typeof GetProjectFilesOnPeriodDto
 >;

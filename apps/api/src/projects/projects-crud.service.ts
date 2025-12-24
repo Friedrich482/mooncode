@@ -9,8 +9,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import {
   CheckProjectExistsDtoType,
   CreateProjectDtoType,
-  FindAllRangeProjectsDtoType,
   FindProjectDtoType,
+  FindRangeProjectsDtoType,
   UpdateProjectDtoType,
 } from "./projects.dto";
 
@@ -21,7 +21,7 @@ export class ProjectsCrudService {
     private readonly db: NodePgDatabase
   ) {}
 
-  async createProject(createProjectDto: CreateProjectDtoType) {
+  async create(createProjectDto: CreateProjectDtoType) {
     const { dailyDataId, name, path, timeSpent } = createProjectDto;
 
     const [createdProject] = await this.db
@@ -41,7 +41,7 @@ export class ProjectsCrudService {
     return createdProject;
   }
 
-  async findOneProject(findProjectDto: FindProjectDtoType) {
+  async findOne(findProjectDto: FindProjectDtoType) {
     const { dailyDataId, name, path } = findProjectDto;
 
     const [project] = await this.db
@@ -65,7 +65,7 @@ export class ProjectsCrudService {
     return project;
   }
 
-  async checkProjectExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
+  async checkExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
     const { name, userId } = checkProjectExistsDto;
 
     const [existingProject] = await this.db
@@ -79,10 +79,8 @@ export class ProjectsCrudService {
     return !!existingProject;
   }
 
-  async findAllRangeProjects(
-    findAllRangeProjectsDto: FindAllRangeProjectsDtoType
-  ) {
-    const { userId, start, end } = findAllRangeProjectsDto;
+  async findRange(findRangeProjectsDto: FindRangeProjectsDtoType) {
+    const { userId, start, end } = findRangeProjectsDto;
 
     const timeSpentPerProject = await this.db
       .select({
@@ -100,7 +98,8 @@ export class ProjectsCrudService {
 
     return timeSpentPerProject;
   }
-  async updateProject(updateProjectDto: UpdateProjectDtoType) {
+
+  async update(updateProjectDto: UpdateProjectDtoType) {
     const { dailyDataId, timeSpent, path, name } = updateProjectDto;
 
     const [updatedProject] = await this.db

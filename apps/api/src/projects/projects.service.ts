@@ -3,10 +3,10 @@ import { Injectable } from "@nestjs/common";
 import {
   CheckProjectExistsDtoType,
   CreateProjectDtoType,
-  FindAllRangeProjectsDtoType,
   FindProjectByNameOnRangeDtoType,
   FindProjectDtoType,
-  GetAllProjectFilesOnPeriodDtoType,
+  FindRangeProjectsDtoType,
+  GetProjectFilesOnPeriodDtoType,
   GetProjectLanguagesTimeOnPeriodDtoType,
   GetProjectLanguagesTimePerDayOfPeriodDtoType,
   GroupAndAggregateProjectByNameDtoType,
@@ -22,66 +22,62 @@ export class ProjectsService {
     private readonly projectsAnalyticsService: ProjectsAnalyticsService
   ) {}
 
-  async createProject(createProjectDto: CreateProjectDtoType) {
-    return this.projectsCrudService.createProject(createProjectDto);
+  async create(createProjectDto: CreateProjectDtoType) {
+    return this.projectsCrudService.create(createProjectDto);
   }
 
-  async findOneProject(findProjectDto: FindProjectDtoType) {
-    return this.projectsCrudService.findOneProject(findProjectDto);
+  async findOne(findProjectDto: FindProjectDtoType) {
+    return this.projectsCrudService.findOne(findProjectDto);
   }
 
-  async checkProjectExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
-    return this.projectsCrudService.checkProjectExists(checkProjectExistsDto);
+  async checkExists(checkProjectExistsDto: CheckProjectExistsDtoType) {
+    return this.projectsCrudService.checkExists(checkProjectExistsDto);
   }
 
-  async findAllRangeProjects(
-    findAllRangeProjectsDto: FindAllRangeProjectsDtoType
-  ) {
-    return this.projectsCrudService.findAllRangeProjects(
-      findAllRangeProjectsDto
-    );
+  async findRange(findRangeProjectsDto: FindRangeProjectsDtoType) {
+    return this.projectsCrudService.findRange(findRangeProjectsDto);
   }
 
-  async updateProject(updateProjectDto: UpdateProjectDtoType) {
-    return this.projectsCrudService.updateProject(updateProjectDto);
+  async update(updateProjectDto: UpdateProjectDtoType) {
+    return this.projectsCrudService.update(updateProjectDto);
   }
 
-  async groupAndAggregateProjectByName(
+  async groupAndAggregateByName(
     groupAndAggregateProjectByNameDto: GroupAndAggregateProjectByNameDtoType
   ) {
-    return this.projectsAnalyticsService.groupAndAggregateProjectByName(
+    return this.projectsAnalyticsService.groupAndAggregateByName(
       groupAndAggregateProjectByNameDto
     );
   }
 
-  async findProjectByNameOnRange(
+  async findByNameOnRange(
     findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType
   ) {
-    return this.projectsAnalyticsService.findProjectByNameOnRange(
+    return this.projectsAnalyticsService.findByNameOnRange(
       findProjectByNameOnRangeDto
     );
   }
 
-  async getProjectLanguagesTimeOnPeriod(
+  async getLanguagesTimeOnPeriod(
     getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType
   ) {
-    return this.projectsAnalyticsService.getProjectLanguagesTimeOnPeriod(
+    return this.projectsAnalyticsService.getLanguagesTimeOnPeriod(
       getProjectLanguagesTimeOnPeriodDto
     );
   }
 
-  async getProjectLanguagesTimePerDayOfPeriod(
+  async getLanguagesTimePerDayOfPeriod(
     getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType
   ) {
-    return this.projectsAnalyticsService.getProjectLanguagesTimePerDayOfPeriod(
+    return this.projectsAnalyticsService.getLanguagesTimePerDayOfPeriod(
       getProjectLanguagesTimePerDayOfPeriodDto
     );
   }
-  async getAllProjectFilesOnPeriod(
-    getAllProjectFilesOnPeriodDto: GetAllProjectFilesOnPeriodDtoType
+  async getFilesOnPeriod(
+    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
   ) {
-    return this.projectsAnalyticsService.getAllProjectFilesOnPeriod(
-      getAllProjectFilesOnPeriodDto
+    return this.projectsAnalyticsService.getFilesOnPeriod(
+      getProjectFilesOnPeriodDto
     );
   }
 }
