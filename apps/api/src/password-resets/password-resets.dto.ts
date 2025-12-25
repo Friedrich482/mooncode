@@ -1,14 +1,14 @@
 import z from "zod";
 
-export const DeletePasswordResetAfterResetDto = z.object({
+export const DeletePasswordResetDto = z.object({
   email: z.email(),
 });
 
-export const GetPasswordResetDto = z.object({
+export const FindOnePasswordResetDto = z.object({
   id: z.ulid(),
 });
 
-export type DeletePasswordResetAfterResetDtoType = z.infer<
-  typeof DeletePasswordResetAfterResetDto
+export type FindOnePasswordResetDtoType = z.infer<
+  typeof FindOnePasswordResetDto
 >;
-export type GetPasswordResetDtoType = z.infer<typeof GetPasswordResetDto>;
+export type DeletePasswordResetDtoType = z.infer<typeof DeletePasswordResetDto>;

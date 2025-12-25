@@ -15,8 +15,8 @@ import { TRPCError } from "@trpc/server";
 
 import { MAX_ATTEMPTS_PASSWORD_RESET } from "./constants";
 import {
-  DeletePasswordResetAfterResetDtoType,
-  GetPasswordResetDtoType,
+  DeletePasswordResetDtoType,
+  FindOnePasswordResetDtoType,
 } from "./password-resets.dto";
 
 @Injectable()
@@ -95,8 +95,8 @@ export class PasswordResetsService {
     };
   }
 
-  async getPasswordReset(getPasswordResetDto: GetPasswordResetDtoType) {
-    const { id } = getPasswordResetDto;
+  async findOne(findOnePasswordResetDto: FindOnePasswordResetDtoType) {
+    const { id } = findOnePasswordResetDto;
 
     const [existingPasswordReset] = await this.db
       .select({
@@ -183,10 +183,8 @@ export class PasswordResetsService {
     };
   }
 
-  async deletePasswordResetAfterReset(
-    deletePasswordResetAfterResetDto: DeletePasswordResetAfterResetDtoType
-  ) {
-    const { email } = deletePasswordResetAfterResetDto;
+  async delete(deletePasswordResetDto: DeletePasswordResetDtoType) {
+    const { email } = deletePasswordResetDto;
 
     await this.db.delete(passwordResets).where(eq(passwordResets.email, email));
   }

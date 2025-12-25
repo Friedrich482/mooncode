@@ -164,8 +164,9 @@ export class AuthService {
   ) {
     const { email, token: id, newPassword } = resetPasswordDto;
 
-    const existingPasswordReset =
-      await this.passwordResetsService.getPasswordReset({ id });
+    const existingPasswordReset = await this.passwordResetsService.findOne({
+      id,
+    });
 
     // verify if the code is still valid
     await this.passwordResetsService.verifyCode({
@@ -188,7 +189,7 @@ export class AuthService {
     });
 
     // delete the password reset associated
-    await this.passwordResetsService.deletePasswordResetAfterReset({ email });
+    await this.passwordResetsService.delete({ email });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
     const token = await this.jwtService.signAsync(payload);
