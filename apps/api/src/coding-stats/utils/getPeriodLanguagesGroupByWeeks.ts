@@ -7,7 +7,7 @@ import convertToISODate from "@repo/common/convertToISODate";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
 const getPeriodLanguagesGroupByWeeks = async (
-  data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,
+  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
   periodResolution: PeriodResolution,
   languagesService: LanguagesService
 ) => {
@@ -30,7 +30,7 @@ const getPeriodLanguagesGroupByWeeks = async (
   const entriesWithLanguages = await Promise.all(
     data.map(async (entry) => ({
       ...entry,
-      languages: await languagesService.findAllLanguages({
+      languages: await languagesService.findAll({
         dailyDataId: entry.id,
       }),
     }))

@@ -16,9 +16,7 @@ const getGeneralStatsOnPeriodGroupByWeeks = async (
   end: string,
   todaysDateString: string,
   codingStatsDashboardService: CodingStatsDashboardService,
-  dailyDataForPeriod: Awaited<
-    ReturnType<DailyDataService["findRangeDailyData"]>
-  >,
+  dailyDataForPeriod: Awaited<ReturnType<DailyDataService["findRange"]>>,
   periodResolution: PeriodResolution
 ) => {
   const numberOfWeeks = countStrictWeeks(new Date(start), new Date(end));

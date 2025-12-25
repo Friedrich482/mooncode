@@ -23,7 +23,7 @@ export class FilesStatsExtensionService {
   ) {
     const { userId, dateString } = getDailyFilesStatsForExtensionDto;
 
-    const dayData = await this.dailyDataService.findOneDailyData({
+    const dayData = await this.dailyDataService.findOne({
       userId,
       date: dateString,
     });
@@ -32,7 +32,7 @@ export class FilesStatsExtensionService {
       return {};
     }
 
-    const filesData = await this.filesService.findAllFilesOnDay({
+    const filesData = await this.filesService.findAllOnDay({
       dailyDataId: dayData.id,
     });
 
@@ -52,7 +52,7 @@ export class FilesStatsExtensionService {
       timeSpent: 0,
     };
 
-    const dailyDataForDay = await this.dailyDataService.findOneDailyData({
+    const dailyDataForDay = await this.dailyDataService.findOne({
       userId,
       date: targetedDate,
     });
@@ -62,12 +62,12 @@ export class FilesStatsExtensionService {
       return {};
     }
 
-    const returningData = await this.filesService.findAllFilesOnDay({
+    const returningData = await this.filesService.findAllOnDay({
       dailyDataId: dailyDataForDay.id,
     });
 
     for (const [path, file] of Object.entries(filesData)) {
-      const existingProject = await this.projectsService.findOneProject({
+      const existingProject = await this.projectsService.findOne({
         dailyDataId: dailyDataForDay.id,
         name: file.projectName,
         path: file.projectPath,
@@ -75,7 +75,7 @@ export class FilesStatsExtensionService {
 
       if (!existingProject) {
         // if the project doesn't exist, let's create it
-        const createdProject = await this.projectsService.createProject({
+        const createdProject = await this.projectsService.create({
           dailyDataId: dailyDataForDay.id,
           name: file.projectName,
           path: file.projectPath,
@@ -90,7 +90,7 @@ export class FilesStatsExtensionService {
         if (
           existingProject.timeSpent <= timeSpentPerProject[file.projectPath]
         ) {
-          await this.projectsService.updateProject({
+          await this.projectsService.update({
             dailyDataId: dailyDataForDay.id,
             name: file.projectName,
             path: file.projectPath,
@@ -106,7 +106,7 @@ export class FilesStatsExtensionService {
         returningProjectData.projectName = existingProject.name;
       }
 
-      const fileLanguage = await this.languagesService.findOneLanguage({
+      const fileLanguage = await this.languagesService.findOne({
         dailyDataId: dailyDataForDay.id,
         languageSlug: file.languageSlug,
       });
@@ -116,7 +116,7 @@ export class FilesStatsExtensionService {
         continue;
       }
 
-      const existingFileData = await this.filesService.findOneFile({
+      const existingFileData = await this.filesService.findOne({
         projectId: returningProjectData.projectId,
         name: file.fileName,
         path,
@@ -125,7 +125,7 @@ export class FilesStatsExtensionService {
 
       if (!existingFileData) {
         // if the data for this file doesn't exist, create one
-        await this.filesService.createFile({
+        await this.filesService.create({
           projectId: returningProjectData.projectId,
           languageId: fileLanguage.languageId,
           name: file.fileName,
@@ -143,7 +143,7 @@ export class FilesStatsExtensionService {
       } else {
         // else just update the file data but only if the new timeSpent is greater than the existing one
         if (existingFileData.timeSpent <= file.timeSpent) {
-          await this.filesService.updateFile({
+          await this.filesService.update({
             projectId: returningProjectData.projectId,
             languageId: fileLanguage.languageId,
             path,

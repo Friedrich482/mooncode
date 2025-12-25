@@ -6,7 +6,7 @@ import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 
 const getDaysOfPeriodStatsGroupByMonths = (
-  data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>
+  data: Awaited<ReturnType<DailyDataService["findRange"]>>
 ) => {
   const monthlyMap = new Map<
     string,

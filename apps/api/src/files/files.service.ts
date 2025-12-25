@@ -21,7 +21,7 @@ export class FilesService {
     private readonly db: NodePgDatabase
   ) {}
 
-  async createFile(createFileDto: CreateFileDtoType) {
+  async create(createFileDto: CreateFileDtoType) {
     const { languageId, projectId, name, timeSpent, path } = createFileDto;
 
     const [createdFileData] = await this.db
@@ -42,7 +42,7 @@ export class FilesService {
     return createdFileData;
   }
 
-  async findOneFile(findOneFileDto: FindOneFileDtoType) {
+  async findOne(findOneFileDto: FindOneFileDtoType) {
     const { languageId, projectId, name, path } = findOneFileDto;
 
     const [fileData] = await this.db
@@ -66,7 +66,7 @@ export class FilesService {
     return fileData;
   }
 
-  async findAllFilesOnDay(findAllFilesOnDayDto: FindAllFilesOnDayDtoType) {
+  async findAllOnDay(findAllFilesOnDayDto: FindAllFilesOnDayDtoType) {
     const { dailyDataId } = findAllFilesOnDayDto;
 
     const filesDataArray = await this.db
@@ -91,7 +91,7 @@ export class FilesService {
     return filesDataObject;
   }
 
-  async updateFile(updateFileDto: UpdateFileDtoType) {
+  async update(updateFileDto: UpdateFileDtoType) {
     const { timeSpent, projectId, languageId, name, path } = updateFileDto;
 
     const [updatedFileData] = await this.db

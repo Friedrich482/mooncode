@@ -15,9 +15,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   end: string,
   todaysDateString: string,
   codingStatsDashboardService: CodingStatsDashboardService,
-  dailyDataForPeriod: Awaited<
-    ReturnType<DailyDataService["findRangeDailyData"]>
-  >
+  dailyDataForPeriod: Awaited<ReturnType<DailyDataService["findRange"]>>
 ) => {
   const numberOfMonths = differenceInMonths(end, start) + 1;
   const timeSpentOnPeriod = (

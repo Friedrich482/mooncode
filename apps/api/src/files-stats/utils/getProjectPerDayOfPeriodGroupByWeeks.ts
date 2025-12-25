@@ -7,7 +7,7 @@ import formatDuration from "@repo/common/formatDuration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
 const getProjectPerDayOfPeriodGroupByWeeks = (
-  data: Awaited<ReturnType<ProjectsService["findProjectByNameOnRange"]>>,
+  data: Awaited<ReturnType<ProjectsService["findByNameOnRange"]>>,
   periodResolution: PeriodResolution
 ) => {
   const weeklyMap = new Map<

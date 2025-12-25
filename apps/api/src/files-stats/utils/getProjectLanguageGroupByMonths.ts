@@ -5,7 +5,7 @@ import { ProjectsService } from "src/projects/projects.service";
 import convertToISODate from "@repo/common/convertToISODate";
 
 const getProjectLanguageGroupByMonths = (
-  data: Awaited<ReturnType<ProjectsService["findProjectByNameOnRange"]>>,
+  data: Awaited<ReturnType<ProjectsService["findByNameOnRange"]>>,
   languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];

@@ -23,13 +23,13 @@ export class FilesStatsDashboardService {
   constructor(private readonly projectsService: ProjectsService) {}
 
   async checkProjectExists(checkProjectExitsDto: CheckProjectExistsDtoType) {
-    return this.projectsService.checkProjectExists(checkProjectExitsDto);
+    return this.projectsService.checkExists(checkProjectExitsDto);
   }
 
   async getPeriodProjects(getPeriodProjectsDto: GetPeriodProjectsDtoType) {
     const { userId, start, end } = getPeriodProjectsDto;
 
-    const projectsOnRange = await this.projectsService.findAllRangeProjects({
+    const projectsOnRange = await this.projectsService.findRange({
       userId,
       start,
       end,
@@ -59,7 +59,7 @@ export class FilesStatsDashboardService {
   async getProjectOnPeriod(getProjectOnPeriodDto: GetProjectOnPeriodDtoType) {
     const { userId, start, end, name } = getProjectOnPeriodDto;
 
-    const project = await this.projectsService.groupAndAggregateProjectByName({
+    const project = await this.projectsService.groupAndAggregateByName({
       start,
       end,
       userId,
@@ -75,13 +75,14 @@ export class FilesStatsDashboardService {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectPerDayOfPeriodDto;
 
-    const dailyProjectsForPeriod =
-      await this.projectsService.findProjectByNameOnRange({
+    const dailyProjectsForPeriod = await this.projectsService.findByNameOnRange(
+      {
         userId,
         start,
         end,
         name,
-      });
+      }
+    );
 
     if (dailyProjectsForPeriod.length === 0) return [];
 
@@ -114,13 +115,14 @@ export class FilesStatsDashboardService {
   ) {
     const { userId, start, end, name } = getProjectLanguagesTimeOnPeriod;
 
-    const dailyProjectsForPeriod =
-      await this.projectsService.findProjectByNameOnRange({
+    const dailyProjectsForPeriod = await this.projectsService.findByNameOnRange(
+      {
         userId,
         start,
         end,
         name,
-      });
+      }
+    );
 
     if (dailyProjectsForPeriod.length === 0) return [];
 
@@ -134,7 +136,7 @@ export class FilesStatsDashboardService {
     ).totalTimeSpent;
 
     const aggregatedLanguageTime =
-      await this.projectsService.getProjectLanguagesTimeOnPeriod({
+      await this.projectsService.getLanguagesTimeOnPeriod({
         userId,
         start,
         end,
@@ -162,18 +164,19 @@ export class FilesStatsDashboardService {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectLanguagesPerDayOfPeriodDto;
 
-    const dailyProjectsForPeriod =
-      await this.projectsService.findProjectByNameOnRange({
+    const dailyProjectsForPeriod = await this.projectsService.findByNameOnRange(
+      {
         userId,
         start,
         end,
         name,
-      });
+      }
+    );
 
     if (dailyProjectsForPeriod.length === 0) return [];
 
     const languagesTimesPerDayOfPeriod =
-      await this.projectsService.getProjectLanguagesTimePerDayOfPeriod({
+      await this.projectsService.getLanguagesTimePerDayOfPeriod({
         userId,
         start,
         end,
@@ -209,7 +212,7 @@ export class FilesStatsDashboardService {
   async getProjectFilesOnPeriod(
     getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
   ) {
-    const data = await this.projectsService.getAllProjectFilesOnPeriod(
+    const data = await this.projectsService.getFilesOnPeriod(
       getProjectFilesOnPeriodDto
     );
 

@@ -175,6 +175,13 @@ export class AuthService {
 
     const user = await this.usersService.findByEmail({ email });
 
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: USER_NOT_FOUND_MESSAGE,
+      });
+    }
+
     await this.usersService.update({
       id: user.id,
       password: newPassword,
@@ -211,16 +218,20 @@ export class AuthService {
         message: "User not found",
       });
     }
+
     const { sub } = ctx.user;
-    const { email, id, username } = await this.usersService.findOne({
+    const user = await this.usersService.findById({
       id: sub,
     });
 
-    return {
-      email,
-      id,
-      username,
-    };
+    if (!user) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: USER_NOT_FOUND_MESSAGE,
+      });
+    }
+
+    return user;
   }
 
   async logOut(response: Response) {
@@ -316,7 +327,6 @@ export class AuthService {
       const user: { userId: string; email: string } = { userId: "", email: "" };
 
       if (existingUser) {
-        // TODO fix this update, do we need to update ?
         const { email } = await this.usersService.update({
           id: existingUser.id,
           googleId: googleUser.id,

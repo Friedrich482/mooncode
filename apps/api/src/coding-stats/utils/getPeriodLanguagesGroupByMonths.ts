@@ -6,7 +6,7 @@ import { LanguagesService } from "src/languages/languages.service";
 import convertToISODate from "@repo/common/convertToISODate";
 
 const getPeriodLanguagesGroupByMonths = async (
-  data: Awaited<ReturnType<DailyDataService["findRangeDailyData"]>>,
+  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
   languagesService: LanguagesService
 ) => {
   if (data.length === 0) return [];
@@ -30,7 +30,7 @@ const getPeriodLanguagesGroupByMonths = async (
   const entriesWithLanguages = await Promise.all(
     data.map(async (entry) => ({
       ...entry,
-      languages: await languagesService.findAllLanguages({
+      languages: await languagesService.findAll({
         dailyDataId: entry.id,
       }),
     }))
