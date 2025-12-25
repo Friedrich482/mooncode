@@ -117,7 +117,7 @@ export class AuthService {
     }
 
     const validPendingRegistration =
-      await this.pendingRegistrationService.findByEmail({ email, code });
+      await this.pendingRegistrationService.findOne({ email, code });
 
     const createdUser = await this.usersService.create({
       username: validPendingRegistration.username,
@@ -126,7 +126,7 @@ export class AuthService {
     });
 
     // delete the pending registration associated
-    await this.pendingRegistrationService.deleteAfterRegistration({
+    await this.pendingRegistrationService.delete({
       email: createdUser.email,
     });
 
