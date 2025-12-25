@@ -21,9 +21,9 @@ export class AuthRouter {
 
   procedures = {
     auth: this.trpcService.trpc.router({
-      signInUser: this.trpcService
+      signIn: this.trpcService
         .publicProcedure({
-          key: "auth.signInUser",
+          key: "auth.signIn",
           windowMs: 5 * 60 * 1000,
           max: 10,
         })
@@ -43,9 +43,9 @@ export class AuthRouter {
           this.authService.createPendingRegistration(input)
         ),
 
-      registerUser: this.trpcService
+      register: this.trpcService
         .publicProcedure({
-          key: "auth.registerUser",
+          key: "auth.register",
           windowMs: 5 * 60 * 1000,
           max: 10,
         })

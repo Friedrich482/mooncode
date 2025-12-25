@@ -43,7 +43,7 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const loginMutation = useMutation(trpc.auth.signInUser.mutationOptions());
+  const loginMutation = useMutation(trpc.auth.signIn.mutationOptions());
 
   const onSubmit = async (values: SignInUserDtoType) => {
     loginMutation.mutate(

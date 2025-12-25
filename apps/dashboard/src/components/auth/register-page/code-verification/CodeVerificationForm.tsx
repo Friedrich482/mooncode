@@ -50,9 +50,7 @@ const CodeVerificationForm = () => {
   const navigate = useNavigate();
   const trpc = useTRPC();
   const queryClient = useQueryClient();
-  const registerMutation = useMutation(
-    trpc.auth.registerUser.mutationOptions(),
-  );
+  const registerMutation = useMutation(trpc.auth.register.mutationOptions());
 
   const onSubmit = async (values: RegisterUserDtoType) => {
     registerMutation.mutate(
