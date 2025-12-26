@@ -7,10 +7,7 @@ import getCallbackUrl from "@/utils/getCallbackUrl";
 import pendingRegistrationLoader from "@/utils/loader/pendingRegistrationLoader";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  RegisterUserDto,
-  RegisterUserDtoType,
-} from "@repo/common/types-schemas";
+import { RegisterUser,RegisterUserSchema } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -35,8 +32,8 @@ const CodeVerificationForm = () => {
   const pendingRegistrationEmail =
     useLoaderData<typeof pendingRegistrationLoader>();
 
-  const form = useForm<RegisterUserDtoType>({
-    resolver: zodResolver(RegisterUserDto),
+  const form = useForm<RegisterUser>({
+    resolver: zodResolver(RegisterUserSchema),
     defaultValues: {
       email: pendingRegistrationEmail,
       code: "",
@@ -52,7 +49,7 @@ const CodeVerificationForm = () => {
   const queryClient = useQueryClient();
   const registerMutation = useMutation(trpc.auth.register.mutationOptions());
 
-  const onSubmit = async (values: RegisterUserDtoType) => {
+  const onSubmit = async (values: RegisterUser) => {
     registerMutation.mutate(
       {
         email: pendingRegistrationEmail,

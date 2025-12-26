@@ -1,8 +1,8 @@
 import z from "zod";
 
-import { RegisterUserDto } from "@repo/common/types-schemas";
+import { RegisterUserSchema } from "@repo/common/types-schemas";
 
-export const FindOnePendingRegistrationDto = RegisterUserDto.omit({
+export const FindOnePendingRegistrationDto = RegisterUserSchema.omit({
   callbackUrl: true,
 });
 

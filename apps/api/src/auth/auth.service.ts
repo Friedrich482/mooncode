@@ -14,13 +14,13 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import {
-  CreatePasswordResetDtoType,
-  CreatePendingRegistrationDtoType,
+  CreatePasswordReset as CreatePasswordResetDtoType,
+  CreatePendingRegistration as CreatePendingRegistrationDtoType,
   JwtPayloadDtoType,
-  RegisterUserDtoType,
-  ResetPasswordDtoType,
+  RegisterUser as RegisterUserDtoType,
+  ResetPassword as ResetPasswordDtoType,
   SignInUser as SignInUserDtoType,
-  VerifyPasswordResetCodeDtoType,
+  VerifyPasswordResetCode as VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 

@@ -8,8 +8,8 @@ import passwordResetCodeVerificationLoader from "@/utils/loader/passwordResetCod
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  VerifyPasswordResetCodeDto,
-  VerifyPasswordResetCodeDtoType,
+  VerifyPasswordResetCode,
+  VerifyPasswordResetCodeSchema,
 } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -35,8 +35,8 @@ const CodeVerificationForm = () => {
   const passwordResetEmail =
     useLoaderData<typeof passwordResetCodeVerificationLoader>();
 
-  const form = useForm<VerifyPasswordResetCodeDtoType>({
-    resolver: zodResolver(VerifyPasswordResetCodeDto),
+  const form = useForm<VerifyPasswordResetCode>({
+    resolver: zodResolver(VerifyPasswordResetCodeSchema),
     defaultValues: {
       email: passwordResetEmail,
       code: "",
@@ -52,7 +52,7 @@ const CodeVerificationForm = () => {
     trpc.auth.verifyPasswordResetCode.mutationOptions(),
   );
 
-  const onSubmit = async (values: VerifyPasswordResetCodeDtoType) => {
+  const onSubmit = async (values: VerifyPasswordResetCode) => {
     verifyPasswordResetCodeMutation.mutate(
       {
         email: passwordResetEmail,

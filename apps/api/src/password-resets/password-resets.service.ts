@@ -8,8 +8,8 @@ import { EmailService } from "src/email/email.service";
 
 import { Inject, Injectable } from "@nestjs/common";
 import {
-  CreatePasswordResetDtoType,
-  VerifyPasswordResetCodeDtoType,
+  CreatePasswordReset as CreatePasswordResetDtoType,
+  VerifyPasswordResetCode as VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 

@@ -52,28 +52,28 @@ export const SignInUserSchema = z.object({
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
-export const CreatePendingRegistrationDto = z.object({
+export const CreatePendingRegistrationSchema = z.object({
   email: z.email(),
   password: PasswordSchema,
   username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
-export const RegisterUserDto = z.object({
+export const RegisterUserSchema = z.object({
   email: z.email(),
   code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
-export const CreatePasswordResetDto = z.object({
+export const CreatePasswordResetSchema = z.object({
   email: z.email(),
 });
 
-export const VerifyPasswordResetCodeDto = z.object({
+export const VerifyPasswordResetCodeSchema = z.object({
   email: z.email(),
   code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
 });
 
-export const ResetPasswordDto = z.object({
+export const ResetPasswordSchema = z.object({
   email: z.email(),
   token: z.ulid(),
   newPassword: PasswordSchema,
@@ -113,12 +113,12 @@ export type PeriodResolution = "day" | "week" | "month" | "year";
 
 export type JwtPayloadDtoType = z.infer<typeof JWTDto>;
 export type SignInUser = z.infer<typeof SignInUserSchema>;
-export type CreatePendingRegistrationDtoType = z.infer<
-  typeof CreatePendingRegistrationDto
+export type CreatePendingRegistration = z.infer<
+  typeof CreatePendingRegistrationSchema
 >;
-export type RegisterUserDtoType = z.infer<typeof RegisterUserDto>;
-export type CreatePasswordResetDtoType = z.infer<typeof CreatePasswordResetDto>;
-export type VerifyPasswordResetCodeDtoType = z.infer<
-  typeof VerifyPasswordResetCodeDto
+export type RegisterUser = z.infer<typeof RegisterUserSchema>;
+export type CreatePasswordReset = z.infer<typeof CreatePasswordResetSchema>;
+export type VerifyPasswordResetCode = z.infer<
+  typeof VerifyPasswordResetCodeSchema
 >;
-export type ResetPasswordDtoType = z.infer<typeof ResetPasswordDto>;
+export type ResetPassword = z.infer<typeof ResetPasswordSchema>;

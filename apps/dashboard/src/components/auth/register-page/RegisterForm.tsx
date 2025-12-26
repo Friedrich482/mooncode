@@ -7,8 +7,8 @@ import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  CreatePendingRegistrationDto,
-  CreatePendingRegistrationDtoType,
+  CreatePendingRegistration,
+  CreatePendingRegistrationSchema,
 } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -28,8 +28,8 @@ import LoginMethodSeparator from "../LoginMethodSeparator";
 const RegisterForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const form = useForm<CreatePendingRegistrationDtoType>({
-    resolver: zodResolver(CreatePendingRegistrationDto),
+  const form = useForm<CreatePendingRegistration>({
+    resolver: zodResolver(CreatePendingRegistrationSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -45,7 +45,7 @@ const RegisterForm = () => {
     trpc.auth.createPendingRegistration.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreatePendingRegistrationDtoType) => {
+  const onSubmit = async (values: CreatePendingRegistration) => {
     createPendingRegistrationMutation.mutate(
       {
         email: values.email,

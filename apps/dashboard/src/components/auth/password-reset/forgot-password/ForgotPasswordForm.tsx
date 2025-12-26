@@ -6,8 +6,8 @@ import getCallbackUrl from "@/utils/getCallbackUrl";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  CreatePasswordResetDto,
-  CreatePasswordResetDtoType,
+  CreatePasswordReset,
+  CreatePasswordResetSchema,
 } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -26,8 +26,8 @@ import { useMutation } from "@tanstack/react-query";
 const ForgotPasswordForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const form = useForm<CreatePasswordResetDtoType>({
-    resolver: zodResolver(CreatePasswordResetDto),
+  const form = useForm<CreatePasswordReset>({
+    resolver: zodResolver(CreatePasswordResetSchema),
     defaultValues: {
       email: "",
     },
@@ -39,7 +39,7 @@ const ForgotPasswordForm = () => {
     trpc.auth.createPasswordReset.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreatePasswordResetDtoType) => {
+  const onSubmit = async (values: CreatePasswordReset) => {
     createPasswordResetMutation.mutate(
       {
         email: values.email,

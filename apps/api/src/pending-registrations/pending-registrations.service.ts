@@ -7,7 +7,7 @@ import { pendingRegistrations, users } from "src/drizzle/schema";
 import { EmailService } from "src/email/email.service";
 
 import { Inject, Injectable } from "@nestjs/common";
-import { CreatePendingRegistrationDtoType } from "@repo/common/types-schemas";
+import { CreatePendingRegistration as CreatePendingRegistrationDtoType } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
 import { MAX_ATTEMPTS_PENDING_REGISTRATION_VALID_CODE } from "./constants";

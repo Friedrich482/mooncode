@@ -2,12 +2,12 @@ import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
 import {
-  CreatePasswordResetDto,
-  CreatePendingRegistrationDto,
-  RegisterUserDto,
-  ResetPasswordDto,
+  CreatePasswordResetSchema as CreatePasswordResetDto,
+  CreatePendingRegistrationSchema as CreatePendingRegistrationDto,
+  RegisterUserSchema as RegisterUserDto,
+  ResetPasswordSchema as ResetPasswordDto,
   SignInUserSchema as SignInUserDto,
-  VerifyPasswordResetCodeDto,
+  VerifyPasswordResetCodeSchema as VerifyPasswordResetCodeDto,
 } from "@repo/common/types-schemas";
 
 import { AuthService } from "./auth.service";

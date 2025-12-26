@@ -11,7 +11,7 @@ import getCallbackUrl from "@/utils/getCallbackUrl";
 import passwordResetLoader from "@/utils/loader/passwordResetLoader";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ResetPasswordDtoType } from "@repo/common/types-schemas";
+import { ResetPassword } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -63,7 +63,7 @@ const CodeVerificationForm = () => {
     trpc.auth.resetPassword.mutationOptions(),
   );
 
-  const onSubmit = async (values: ResetPasswordDtoType) => {
+  const onSubmit = async (values: ResetPassword) => {
     resetPasswordMutation.mutate(
       {
         email: passwordResetEmail,
