@@ -1,6 +1,6 @@
 import { ZodSafeParseResult } from "zod";
 
-import { JwtPayload,JwtPayloadSchema } from "@repo/common/types-schemas";
+import { JwtPayload, JwtPayloadSchema } from "@repo/common/types-schemas";
 
 const parseJwtPayload = (
   token: string | undefined
