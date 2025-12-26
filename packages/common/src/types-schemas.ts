@@ -1,48 +1,79 @@
 import z from "zod";
 
 import {
+  EXTENSION_ID,
   PASSWORD_RESET_CODE_LENGTH,
   PENDING_REGISTRATION_CODE_LENGTH,
+  PUBLISHER,
 } from "./constants";
 
 export const PasswordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters");
 
-export const JWTDto = z.object({
+export const VSCodeCallbackUrlSchema = z
+  .url()
+  .startsWith("vscode://")
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const [publisher] = url.hostname.split(".");
+      return publisher === PUBLISHER;
+    },
+    { error: "Invalid publisher", abort: true }
+  )
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const [, extensionId] = url.hostname.split(".");
+      return extensionId === EXTENSION_ID;
+    },
+    { error: "Invalid extension id", abort: true }
+  )
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const state = url.searchParams.get("state");
+
+      return state;
+    },
+    { error: "State parameter is required" }
+  );
+
+export const JwtPayloadSchema = z.object({
   sub: z.ulid(),
   iat: z.number().int(),
   exp: z.number().int(),
 });
 
-export const SignInUserDto = z.object({
+export const SignInUserSchema = z.object({
   email: z.email(),
   password: z.string().min(1, "Password is required"),
-  callbackUrl: z.string().nullable(),
+  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
-export const CreatePendingRegistrationDto = z.object({
+export const CreatePendingRegistrationSchema = z.object({
   email: z.email(),
   password: PasswordSchema,
   username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
-export const RegisterUserDto = z.object({
+export const RegisterUserSchema = z.object({
   email: z.email(),
   code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
-  callbackUrl: z.string().nullable(),
+  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
-export const CreatePasswordResetDto = z.object({
+export const CreatePasswordResetSchema = z.object({
   email: z.email(),
 });
 
-export const VerifyPasswordResetCodeDto = z.object({
+export const VerifyPasswordResetCodeSchema = z.object({
   email: z.email(),
   code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
 });
 
-export const ResetPasswordDto = z.object({
+export const ResetPasswordSchema = z.object({
   email: z.email(),
   token: z.ulid(),
   newPassword: PasswordSchema,
@@ -67,35 +98,26 @@ export const IsoDateStringSchema = z
         date.getUTCDate() === day
       );
     },
-    { message: "Invalid date" }
+    { error: "Invalid date" }
   );
 
 export const IsoDateSchema = IsoDateStringSchema.transform(
   (dateStr) => new Date(dateStr)
 );
-export const DateStringDto = IsoDateStringSchema;
 
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];
 
 export type PeriodResolution = "day" | "week" | "month" | "year";
 
-export type JwtPayloadDtoType = z.infer<typeof JWTDto>;
-export type SignInUserDtoType = z.infer<typeof SignInUserDto>;
-export type CreatePendingRegistrationDtoType = z.infer<
-  typeof CreatePendingRegistrationDto
+export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
+export type SignInUser = z.infer<typeof SignInUserSchema>;
+export type CreatePendingRegistration = z.infer<
+  typeof CreatePendingRegistrationSchema
 >;
-export type RegisterUserDtoType = z.infer<typeof RegisterUserDto>;
-export type CreatePasswordResetDtoType = z.infer<typeof CreatePasswordResetDto>;
-export type VerifyPasswordResetCodeDtoType = z.infer<
-  typeof VerifyPasswordResetCodeDto
+export type RegisterUser = z.infer<typeof RegisterUserSchema>;
+export type CreatePasswordReset = z.infer<typeof CreatePasswordResetSchema>;
+export type VerifyPasswordResetCode = z.infer<
+  typeof VerifyPasswordResetCodeSchema
 >;
-export type ResetPasswordDtoType = z.infer<typeof ResetPasswordDto>;
-
-export type TrpcAuthError = {
-  error: {
-    json: {
-      message: string;
-    };
-  };
-};
+export type ResetPassword = z.infer<typeof ResetPasswordSchema>;

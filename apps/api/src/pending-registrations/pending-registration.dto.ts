@@ -1,19 +1,19 @@
 import z from "zod";
 
-import { RegisterUserDto } from "@repo/common/types-schemas";
+import { RegisterUserSchema } from "@repo/common/types-schemas";
 
-export const FindPendingRegistrationByEmailDto = RegisterUserDto.omit({
+export const FindOnePendingRegistrationDto = RegisterUserSchema.omit({
   callbackUrl: true,
 });
 
-export const DeletePendingRegistrationAfterRegistrationDto = z.object({
+export const DeletePendingRegistrationDto = z.object({
   email: z.email(),
 });
 
-export type FindPendingRegistrationByEmailDtoType = z.infer<
-  typeof FindPendingRegistrationByEmailDto
+export type FindOnePendingRegistrationDtoType = z.infer<
+  typeof FindOnePendingRegistrationDto
 >;
 
-export type DeletePendingRegistrationAfterRegistrationDtoType = z.infer<
-  typeof DeletePendingRegistrationAfterRegistrationDto
+export type DeletePendingRegistrationDtoType = z.infer<
+  typeof DeletePendingRegistrationDto
 >;

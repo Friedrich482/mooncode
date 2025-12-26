@@ -2,12 +2,12 @@ import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
 import {
-  CreatePasswordResetDto,
-  CreatePendingRegistrationDto,
-  RegisterUserDto,
-  ResetPasswordDto,
-  SignInUserDto,
-  VerifyPasswordResetCodeDto,
+  CreatePasswordResetSchema as CreatePasswordResetDto,
+  CreatePendingRegistrationSchema as CreatePendingRegistrationDto,
+  RegisterUserSchema as RegisterUserDto,
+  ResetPasswordSchema as ResetPasswordDto,
+  SignInUserSchema as SignInUserDto,
+  VerifyPasswordResetCodeSchema as VerifyPasswordResetCodeDto,
 } from "@repo/common/types-schemas";
 
 import { AuthService } from "./auth.service";
@@ -21,9 +21,9 @@ export class AuthRouter {
 
   procedures = {
     auth: this.trpcService.trpc.router({
-      signInUser: this.trpcService
+      signIn: this.trpcService
         .publicProcedure({
-          key: "auth.signInUser",
+          key: "auth.signIn",
           windowMs: 5 * 60 * 1000,
           max: 10,
         })
@@ -43,9 +43,9 @@ export class AuthRouter {
           this.authService.createPendingRegistration(input)
         ),
 
-      registerUser: this.trpcService
+      register: this.trpcService
         .publicProcedure({
-          key: "auth.registerUser",
+          key: "auth.register",
           windowMs: 5 * 60 * 1000,
           max: 10,
         })

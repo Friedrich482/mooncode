@@ -1,6 +1,8 @@
 import { redirect } from "react-router";
 import { z } from "zod";
 
+import { VSCodeCallbackUrlSchema } from "@repo/common/types-schemas";
+
 import getCallbackUrl from "../getCallbackUrl";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -34,12 +36,11 @@ export const authRouteLoader = async () => {
   const clientParam = decodeURIComponent(urlParams.get("client") ?? "");
   const callbackUrl = getCallbackUrl();
 
-  if (clientParam === "vscode" && callbackUrl) {
-    if (
-      !callbackUrl.startsWith("vscode://") ||
-      !callbackUrl.includes("/auth-callback")
-    ) {
-      return redirect("/dashboard");
+  if (callbackUrl && clientParam === "vscode") {
+    const validatedCallBackUrl = VSCodeCallbackUrlSchema.safeParse(callbackUrl);
+
+    if (!validatedCallBackUrl.success) {
+      throw redirect("/dashboard");
     }
 
     // in the case of a vscode login attempt, logout the user from the dashboard
@@ -95,17 +96,24 @@ export const googleAuthLoader = async () => {
 
     if (callbackUrl && clientParam === "vscode") {
       // the login request comes from the extension
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new Error("Incorrect callback url");
+      const validatedCallBackUrl =
+        VSCodeCallbackUrlSchema.safeParse(callbackUrl);
+
+      if (!validatedCallBackUrl.success) {
+        throw new Error(
+          validatedCallBackUrl.error.issues.reduce(
+            (acc, curr) => acc + curr.message,
+            "",
+          ),
+        );
       }
-      authUrl = `${AUTH_GOOGLE_URL}?state=${encodeURIComponent(origin)}&callback=${encodeURIComponent(callbackUrl)}`;
+
+      authUrl = `${AUTH_GOOGLE_URL}?state=${encodeURIComponent(origin)}&callback=${encodeURIComponent(validatedCallBackUrl.data)}`;
     }
 
     window.location.href = authUrl;
-  } catch {
+  } catch (error) {
+    console.error(error);
     return null;
   }
 };
@@ -117,28 +125,30 @@ export const redirectToVSCodeAfterGoogleAuthLoader = async () => {
   const callbackUrl = getCallbackUrl();
 
   if (tokenParam && emailParam && callbackUrl) {
-    if (
-      !callbackUrl.startsWith("vscode://") ||
-      !callbackUrl.includes("/auth-callback")
-    ) {
-      throw new Error("Incorrect callback url");
+    const validatedCallBackUrl = VSCodeCallbackUrlSchema.safeParse(callbackUrl);
+
+    if (!validatedCallBackUrl.success) {
+      throw new Error(
+        validatedCallBackUrl.error.issues.reduce(
+          (acc, curr) => acc + curr.message,
+          "",
+        ),
+      );
     }
 
     const parseVSCodeAuthGoogleParamsSchema = z.object({
       token: z.jwt(),
       email: z.email(),
     });
+    const parsedGoogleAuthParams = parseVSCodeAuthGoogleParamsSchema.safeParse({
+      token: tokenParam,
+      email: emailParam,
+    });
 
-    try {
-      const data = parseVSCodeAuthGoogleParamsSchema.parse({
-        token: tokenParam,
-        email: emailParam,
-      });
-
-      window.location.href = `${callbackUrl}&token=${encodeURIComponent(data.token)}&email=${encodeURIComponent(data.email)}`;
-    } catch {
-      return redirect("/dashboard");
+    if (!parsedGoogleAuthParams.success) {
+      throw redirect("/dashboard");
     }
+    window.location.href = `${validatedCallBackUrl.data}&token=${encodeURIComponent(parsedGoogleAuthParams.data.token)}&email=${encodeURIComponent(parsedGoogleAuthParams.data.email)}`;
   }
 
   return null;

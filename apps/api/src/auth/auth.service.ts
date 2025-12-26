@@ -14,13 +14,13 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import {
-  CreatePasswordResetDtoType,
-  CreatePendingRegistrationDtoType,
-  JwtPayloadDtoType,
-  RegisterUserDtoType,
-  ResetPasswordDtoType,
-  SignInUserDtoType,
-  VerifyPasswordResetCodeDtoType,
+  CreatePasswordReset as CreatePasswordResetDtoType,
+  CreatePendingRegistration as CreatePendingRegistrationDtoType,
+  JwtPayload as JwtPayloadDtoType,
+  RegisterUser as RegisterUserDtoType,
+  ResetPassword as ResetPasswordDtoType,
+  SignInUser as SignInUserDtoType,
+  VerifyPasswordResetCode as VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
@@ -46,20 +46,7 @@ export class AuthService {
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
   async signIn(signInDto: SignInUserDtoType, response: Response) {
-    const { password: pass, email, callbackUrl } = signInDto;
-
-    if (callbackUrl) {
-      //  the request has been sent by the extension, validate it first
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid callback url",
-        });
-      }
-    }
+    const { password: pass, email } = signInDto;
 
     const user = await this.usersService.findByEmail({ email });
 
@@ -101,23 +88,10 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterUserDtoType, response: Response) {
-    const { email, code, callbackUrl } = registerDto;
-
-    if (callbackUrl) {
-      //  the request has been sent by the extension, validate it first
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid callback url",
-        });
-      }
-    }
+    const { email, code } = registerDto;
 
     const validPendingRegistration =
-      await this.pendingRegistrationService.findByEmail({ email, code });
+      await this.pendingRegistrationService.findOne({ email, code });
 
     const createdUser = await this.usersService.create({
       username: validPendingRegistration.username,
@@ -126,7 +100,7 @@ export class AuthService {
     });
 
     // delete the pending registration associated
-    await this.pendingRegistrationService.deleteAfterRegistration({
+    await this.pendingRegistrationService.delete({
       email: createdUser.email,
     });
 
@@ -164,8 +138,9 @@ export class AuthService {
   ) {
     const { email, token: id, newPassword } = resetPasswordDto;
 
-    const existingPasswordReset =
-      await this.passwordResetsService.getPasswordReset({ id });
+    const existingPasswordReset = await this.passwordResetsService.findOne({
+      id,
+    });
 
     // verify if the code is still valid
     await this.passwordResetsService.verifyCode({
@@ -188,7 +163,7 @@ export class AuthService {
     });
 
     // delete the password reset associated
-    await this.passwordResetsService.deletePasswordResetAfterReset({ email });
+    await this.passwordResetsService.delete({ email });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
     const token = await this.jwtService.signAsync(payload);

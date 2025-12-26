@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { ResetPasswordDto } from "@repo/common/types-schemas";
+import { ResetPasswordSchema } from "@repo/common/types-schemas";
 
 import { PERIODS } from "./constants";
 
@@ -13,7 +13,7 @@ export const ProjectParamsSchema = z.object({
 
 export const ResetPasswordFormSchema = z
   .object({
-    ...ResetPasswordDto.shape,
+    ...ResetPasswordSchema.shape,
     confirmPassword: z.string().trim(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {

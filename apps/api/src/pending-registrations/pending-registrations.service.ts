@@ -7,13 +7,13 @@ import { pendingRegistrations, users } from "src/drizzle/schema";
 import { EmailService } from "src/email/email.service";
 
 import { Inject, Injectable } from "@nestjs/common";
-import { CreatePendingRegistrationDtoType } from "@repo/common/types-schemas";
+import { CreatePendingRegistration as CreatePendingRegistrationDtoType } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
 
 import { MAX_ATTEMPTS_PENDING_REGISTRATION_VALID_CODE } from "./constants";
 import {
-  DeletePendingRegistrationAfterRegistrationDtoType,
-  FindPendingRegistrationByEmailDtoType,
+  DeletePendingRegistrationDtoType,
+  FindOnePendingRegistrationDtoType,
 } from "./pending-registration.dto";
 
 @Injectable()
@@ -119,10 +119,10 @@ export class PendingRegistrationsService {
     return { message: "Verification code sent" };
   }
 
-  async findByEmail(
-    findPendingRegistrationByEmailType: FindPendingRegistrationByEmailDtoType
+  async findOne(
+    findOnePendingRegistrationDto: FindOnePendingRegistrationDtoType
   ) {
-    const { email, code } = findPendingRegistrationByEmailType;
+    const { email, code } = findOnePendingRegistrationDto;
 
     // delete any expired pending registration tied to this user
     await this.db
@@ -196,10 +196,8 @@ export class PendingRegistrationsService {
     return remaining;
   }
 
-  async deleteAfterRegistration(
-    deletePendingRegistrationAfterRegistrationDto: DeletePendingRegistrationAfterRegistrationDtoType
-  ) {
-    const { email } = deletePendingRegistrationAfterRegistrationDto;
+  async delete(deletePendingRegistrationDto: DeletePendingRegistrationDtoType) {
+    const { email } = deletePendingRegistrationDto;
 
     await this.db
       .delete(pendingRegistrations)
