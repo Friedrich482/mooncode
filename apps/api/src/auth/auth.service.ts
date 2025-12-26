@@ -46,20 +46,7 @@ export class AuthService {
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
   async signIn(signInDto: SignInUserDtoType, response: Response) {
-    const { password: pass, email, callbackUrl } = signInDto;
-
-    if (callbackUrl) {
-      //  the request has been sent by the extension, validate it first
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid callback url",
-        });
-      }
-    }
+    const { password: pass, email } = signInDto;
 
     const user = await this.usersService.findByEmail({ email });
 
@@ -101,20 +88,7 @@ export class AuthService {
   }
 
   async register(registerDto: RegisterUserDtoType, response: Response) {
-    const { email, code, callbackUrl } = registerDto;
-
-    if (callbackUrl) {
-      //  the request has been sent by the extension, validate it first
-      if (
-        !callbackUrl.startsWith("vscode://") ||
-        !callbackUrl.includes("/auth-callback")
-      ) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Invalid callback url",
-        });
-      }
-    }
+    const { email, code } = registerDto;
 
     const validPendingRegistration =
       await this.pendingRegistrationService.findOne({ email, code });

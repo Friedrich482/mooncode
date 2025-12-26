@@ -15,8 +15,7 @@ const login = async () => {
       await context.secrets.store("authState", state);
     }
 
-    const publisher = context.extension.id.split(".")[0];
-    const extensionId = context.extension.id.split(".")[1];
+    const [publisher, extensionId] = context.extension.id.split(".");
 
     const callbackUri = await vscode.env.asExternalUri(
       vscode.Uri.parse(

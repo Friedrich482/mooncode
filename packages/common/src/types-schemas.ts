@@ -1,13 +1,44 @@
 import z from "zod";
 
 import {
+  EXTENSION_ID,
   PASSWORD_RESET_CODE_LENGTH,
   PENDING_REGISTRATION_CODE_LENGTH,
+  PUBLISHER,
 } from "./constants";
 
 export const PasswordSchema = z
   .string()
   .min(8, "Password must be at least 8 characters");
+
+export const VSCodeCallbackUrlSchema = z
+  .url()
+  .startsWith("vscode://")
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const [publisher] = url.hostname.split(".");
+      return publisher === PUBLISHER;
+    },
+    { error: "Invalid publisher", abort: true }
+  )
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const [, extensionId] = url.hostname.split(".");
+      return extensionId === EXTENSION_ID;
+    },
+    { error: "Invalid extension id", abort: true }
+  )
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const state = url.searchParams.get("state");
+
+      return state;
+    },
+    { error: "State parameter is required" }
+  );
 
 export const JWTDto = z.object({
   sub: z.ulid(),
@@ -18,7 +49,7 @@ export const JWTDto = z.object({
 export const SignInUserDto = z.object({
   email: z.email(),
   password: z.string().min(1, "Password is required"),
-  callbackUrl: z.string().nullable(),
+  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
 export const CreatePendingRegistrationDto = z.object({
@@ -30,7 +61,7 @@ export const CreatePendingRegistrationDto = z.object({
 export const RegisterUserDto = z.object({
   email: z.email(),
   code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
-  callbackUrl: z.string().nullable(),
+  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
 export const CreatePasswordResetDto = z.object({
@@ -91,11 +122,3 @@ export type VerifyPasswordResetCodeDtoType = z.infer<
   typeof VerifyPasswordResetCodeDto
 >;
 export type ResetPasswordDtoType = z.infer<typeof ResetPasswordDto>;
-
-export type TrpcAuthError = {
-  error: {
-    json: {
-      message: string;
-    };
-  };
-};
