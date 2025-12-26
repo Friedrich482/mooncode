@@ -98,7 +98,7 @@ export const IsoDateStringSchema = z
         date.getUTCDate() === day
       );
     },
-    { message: "Invalid date" }
+    { error: "Invalid date" }
   );
 
 export const IsoDateSchema = IsoDateStringSchema.transform(

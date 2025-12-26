@@ -19,7 +19,7 @@ export const refineSchema = <T extends z.ZodType<z.infer<typeof BaseSchema>>>(
   schema: T
 ) => {
   return schema.refine((input) => !isAfter(input.start, input.end), {
-    message: INCOHERENT_DATE_RANGE_ERROR_MESSAGE,
+    error: INCOHERENT_DATE_RANGE_ERROR_MESSAGE,
   });
 };
 
