@@ -40,7 +40,7 @@ export const VSCodeCallbackUrlSchema = z
     { error: "State parameter is required" }
   );
 
-export const JWTDto = z.object({
+export const JwtPayloadSchema = z.object({
   sub: z.ulid(),
   iat: z.number().int(),
   exp: z.number().int(),
@@ -111,7 +111,7 @@ export type GroupBy = (typeof GroupByEnum)[number];
 
 export type PeriodResolution = "day" | "week" | "month" | "year";
 
-export type JwtPayloadDtoType = z.infer<typeof JWTDto>;
+export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
 export type SignInUser = z.infer<typeof SignInUserSchema>;
 export type CreatePendingRegistration = z.infer<
   typeof CreatePendingRegistrationSchema

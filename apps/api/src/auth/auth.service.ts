@@ -16,7 +16,7 @@ import {
 import {
   CreatePasswordReset as CreatePasswordResetDtoType,
   CreatePendingRegistration as CreatePendingRegistrationDtoType,
-  JwtPayloadDtoType,
+  JwtPayload as JwtPayloadDtoType,
   RegisterUser as RegisterUserDtoType,
   ResetPassword as ResetPasswordDtoType,
   SignInUser as SignInUserDtoType,
