@@ -6,7 +6,7 @@ import {
   CreatePendingRegistrationDto,
   RegisterUserDto,
   ResetPasswordDto,
-  SignInUserDto,
+  SignInUserSchema as SignInUserDto,
   VerifyPasswordResetCodeDto,
 } from "@repo/common/types-schemas";
 

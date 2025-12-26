@@ -46,7 +46,7 @@ export const JWTDto = z.object({
   exp: z.number().int(),
 });
 
-export const SignInUserDto = z.object({
+export const SignInUserSchema = z.object({
   email: z.email(),
   password: z.string().min(1, "Password is required"),
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
@@ -112,7 +112,7 @@ export type GroupBy = (typeof GroupByEnum)[number];
 export type PeriodResolution = "day" | "week" | "month" | "year";
 
 export type JwtPayloadDtoType = z.infer<typeof JWTDto>;
-export type SignInUserDtoType = z.infer<typeof SignInUserDto>;
+export type SignInUser = z.infer<typeof SignInUserSchema>;
 export type CreatePendingRegistrationDtoType = z.infer<
   typeof CreatePendingRegistrationDto
 >;

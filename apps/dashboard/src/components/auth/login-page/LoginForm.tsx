@@ -10,7 +10,7 @@ import {
   INCORRECT_PASSWORD_MESSAGE,
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
-import { SignInUserDto, SignInUserDtoType } from "@repo/common/types-schemas";
+import { SignInUser, SignInUserSchema } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -29,8 +29,8 @@ import LoginMethodSeparator from "../LoginMethodSeparator";
 const LoginForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const form = useForm<SignInUserDtoType>({
-    resolver: zodResolver(SignInUserDto),
+  const form = useForm<SignInUser>({
+    resolver: zodResolver(SignInUserSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -45,7 +45,7 @@ const LoginForm = () => {
   const queryClient = useQueryClient();
   const loginMutation = useMutation(trpc.auth.signIn.mutationOptions());
 
-  const onSubmit = async (values: SignInUserDtoType) => {
+  const onSubmit = async (values: SignInUser) => {
     loginMutation.mutate(
       {
         email: values.email,

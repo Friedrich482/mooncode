@@ -19,7 +19,7 @@ import {
   JwtPayloadDtoType,
   RegisterUserDtoType,
   ResetPasswordDtoType,
-  SignInUserDtoType,
+  SignInUser as SignInUserDtoType,
   VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
