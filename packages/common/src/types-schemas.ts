@@ -104,7 +104,6 @@ export const IsoDateStringSchema = z
 export const IsoDateSchema = IsoDateStringSchema.transform(
   (dateStr) => new Date(dateStr)
 );
-export const DateStringDto = IsoDateStringSchema;
 
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];

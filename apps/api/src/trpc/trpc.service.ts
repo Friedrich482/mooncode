@@ -5,7 +5,7 @@ import { errorFormatter } from "src/trpc/filters/errorFormatter";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
-import { JwtPayloadDtoType } from "@repo/common/types-schemas";
+import { JwtPayload as JwtPayloadDtoType } from "@repo/common/types-schemas";
 import { initTRPC, TRPCError } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import {
