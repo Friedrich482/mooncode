@@ -1,6 +1,5 @@
 import { AnalyticsModule } from "src/analytics/analytics.module";
-import { GeneralAnalyticsRouter } from "src/analytics/routers/general-analytics.router";
-import { ProjectAnalyticsRouter } from "src/analytics/routers/projects-analytics.router";
+import { AnalyticsRouter } from "src/analytics/routers/analytics.router";
 import { AuthModule } from "src/auth/auth.module";
 import { AuthRouter } from "src/auth/auth.router";
 import { EnvService } from "src/env/env.service";
@@ -27,8 +26,7 @@ import { TrpcService } from "./trpc.service";
     JwtService,
     EnvService,
     AuthRouter,
-    GeneralAnalyticsRouter,
-    ProjectAnalyticsRouter,
+    AnalyticsRouter,
   ],
   exports: [TrpcService],
 })
