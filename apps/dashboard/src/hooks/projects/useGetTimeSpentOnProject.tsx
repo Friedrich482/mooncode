@@ -15,7 +15,7 @@ const useGetTimeSpentOnProject = () => {
   const customRange = usePeriodStore((state) => state.customRange);
 
   const { data } = useSuspenseQuery(
-    trpc.filesStats.getProjectOnPeriod.queryOptions(
+    trpc.analytics.projects.getProjectOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,

@@ -80,7 +80,7 @@ const periodicSyncData = async (
     )) {
       // we send the data of older dates if found
       if (!isEqual(new Date(dateString), new Date(todaysDateString))) {
-        await trpc.codingStats.upsert.mutate({
+        await trpc.extension.upsertLanguages.mutate({
           targetedDate: dateString,
           timeSpentOnDay: data.timeSpentOnDay,
           timeSpentPerLanguage: data.timeSpentPerLanguage,
@@ -93,7 +93,7 @@ const periodicSyncData = async (
           },
           {} as Record<string, number>
         );
-        await trpc.filesStats.upsert.mutate({
+        await trpc.extension.upsertFiles.mutate({
           filesData: data.dayFilesData,
           targetedDate: dateString,
           timeSpentPerProject: perProject,
@@ -101,7 +101,7 @@ const periodicSyncData = async (
       }
     }
 
-    const upsertedLanguagesData = await trpc.codingStats.upsert.mutate({
+    const upsertedLanguagesData = await trpc.extension.upsertLanguages.mutate({
       targetedDate: todaysDateString,
       timeSpentOnDay: timeSpentToday,
       timeSpentPerLanguage: timeSpentPerLanguageToday,
@@ -109,7 +109,7 @@ const periodicSyncData = async (
 
     timeSpentOnDay = upsertedLanguagesData.timeSpentOnDay;
 
-    const files = await trpc.filesStats.upsert.mutate({
+    const files = await trpc.extension.upsertFiles.mutate({
       filesData: todayFilesData,
       targetedDate: todaysDateString,
       timeSpentPerProject,

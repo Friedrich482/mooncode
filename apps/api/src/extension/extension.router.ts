@@ -42,7 +42,7 @@ export class ExtensionRouter {
       upsertLanguages: this.trpcService
         .protectedProcedure()
         .input(UpsertLanguagesDto)
-        .query(async ({ ctx, input }) =>
+        .mutation(async ({ ctx, input }) =>
           this.extensionService.upsertLanguages({
             ...input,
             userId: ctx.user.sub,
@@ -52,7 +52,7 @@ export class ExtensionRouter {
       upsertFiles: this.trpcService
         .protectedProcedure()
         .input(UpsertFilesDto)
-        .query(async ({ ctx, input }) =>
+        .mutation(async ({ ctx, input }) =>
           this.extensionService.upsertFiles({ ...input, userId: ctx.user.sub })
         ),
     }),

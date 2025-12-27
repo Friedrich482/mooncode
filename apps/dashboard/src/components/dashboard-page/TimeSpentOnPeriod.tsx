@@ -9,7 +9,7 @@ const TimeSpentOnPeriod = () => {
   const trpc = useTRPC();
 
   const { data } = useSuspenseQuery(
-    trpc.codingStats.getTimeSpentOnPeriod.queryOptions(
+    trpc.analytics.general.getTimeSpentOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,

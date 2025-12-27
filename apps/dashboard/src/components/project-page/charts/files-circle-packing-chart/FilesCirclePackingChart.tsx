@@ -23,7 +23,7 @@ const FilesCirclePackingChart = () => {
   const trpc = useTRPC();
 
   const { data: fetched } = useSuspenseQuery(
-    trpc.filesStats.getProjectFilesOnPeriod.queryOptions(
+    trpc.analytics.projects.getProjectFilesOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
             name,

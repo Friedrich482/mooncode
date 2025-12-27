@@ -32,7 +32,7 @@ const DayLanguagesChart = () => {
   const trpc = useTRPC();
 
   const { data } = useSuspenseQuery(
-    trpc.codingStats.getDailyStatsForChart.queryOptions({
+    trpc.analytics.general.getDailyStats.queryOptions({
       dateString,
     }),
   );

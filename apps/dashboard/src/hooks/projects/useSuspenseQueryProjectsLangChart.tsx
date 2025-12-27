@@ -16,7 +16,7 @@ const useSuspenseQueryProjectsLangChart = () => {
 
   const trpc = useTRPC();
   const { data: pieChart } = useSuspenseQuery(
-    trpc.filesStats.getProjectLanguagesTimeOnPeriod.queryOptions(
+    trpc.analytics.projects.getProjectLanguagesTimeOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,
@@ -32,7 +32,7 @@ const useSuspenseQueryProjectsLangChart = () => {
   );
 
   const { data: barChartData } = useSuspenseQuery(
-    trpc.filesStats.getProjectLanguagesPerDayOfPeriod.queryOptions(
+    trpc.analytics.projects.getProjectLanguagesPerDayOfPeriod.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,
