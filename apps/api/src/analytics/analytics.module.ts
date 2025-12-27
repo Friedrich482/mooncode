@@ -4,9 +4,10 @@ import { LanguagesModule } from "src/languages/languages.module";
 import { Module } from "@nestjs/common";
 
 import { GeneralAnalyticsService } from "./general-analytics.service";
+import { ProjectsAnalyticsService } from "./projects-analytics.service";
 
 @Module({
   imports: [DailyDataModule, LanguagesModule],
-  providers: [GeneralAnalyticsService],
+  providers: [GeneralAnalyticsService, ProjectsAnalyticsService],
 })
 export class AnalyticsModule {}

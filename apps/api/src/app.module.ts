@@ -15,6 +15,7 @@ import { DrizzleModule } from "./drizzle/drizzle.module";
 import { EmailModule } from "./email/email.module";
 import { EnvModule } from "./env/env.module";
 import { EnvService } from "./env/env.service";
+import { ExtensionModule } from './extension/extension.module';
 import { FilesModule } from "./files/files.module";
 import { FilesStatsModule } from "./files-stats/files-stats.module";
 import { LanguagesModule } from "./languages/languages.module";
@@ -54,6 +55,7 @@ import { UsersModule } from "./users/users.module";
     EmailModule,
     PasswordResetsModule,
     AnalyticsModule,
+    ExtensionModule,
   ],
   controllers: [AppController],
   providers: [
