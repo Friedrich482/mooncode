@@ -3,6 +3,8 @@ import { AnalyticsRouter } from "src/analytics/routers/analytics.router";
 import { AuthModule } from "src/auth/auth.module";
 import { AuthRouter } from "src/auth/auth.router";
 import { EnvService } from "src/env/env.service";
+import { ExtensionModule } from "src/extension/extension.module";
+import { ExtensionRouter } from "src/extension/extension.router";
 import { PasswordResetsModule } from "src/password-resets/password-resets.module";
 import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 
@@ -17,6 +19,7 @@ import { TrpcService } from "./trpc.service";
   imports: [
     AuthModule,
     AnalyticsModule,
+    ExtensionModule,
     PendingRegistrationsModule,
     PasswordResetsModule,
   ],
@@ -27,6 +30,7 @@ import { TrpcService } from "./trpc.service";
     EnvService,
     AuthRouter,
     AnalyticsRouter,
+    ExtensionRouter,
   ],
   exports: [TrpcService],
 })

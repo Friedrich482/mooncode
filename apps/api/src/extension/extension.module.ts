@@ -5,10 +5,12 @@ import { ProjectsModule } from "src/projects/projects.module";
 
 import { Module } from "@nestjs/common";
 
+import { ExtensionRouter } from "./extension.router";
 import { ExtensionService } from "./extension.service";
 
 @Module({
   imports: [DailyDataModule, LanguagesModule, ProjectsModule, FilesModule],
-  providers: [ExtensionService],
+  providers: [ExtensionService, ExtensionRouter],
+  exports: [ExtensionService, ExtensionRouter],
 })
 export class ExtensionModule {}
