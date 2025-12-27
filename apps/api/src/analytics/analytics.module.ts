@@ -5,11 +5,24 @@ import { ProjectsModule } from "src/projects/projects.module";
 
 import { Module } from "@nestjs/common";
 
-import { GeneralAnalyticsService } from "./general-analytics.service";
-import { ProjectsAnalyticsService } from "./projects-analytics.service";
+import { GeneralAnalyticsRouter } from "./routers/general-analytics.router";
+import { ProjectAnalyticsRouter } from "./routers/projects-analytics.router";
+import { GeneralAnalyticsService } from "./services/general-analytics.service";
+import { ProjectsAnalyticsService } from "./services/projects-analytics.service";
 
 @Module({
   imports: [DrizzleModule, DailyDataModule, LanguagesModule, ProjectsModule],
-  providers: [GeneralAnalyticsService, ProjectsAnalyticsService],
+  providers: [
+    GeneralAnalyticsRouter,
+    ProjectAnalyticsRouter,
+    GeneralAnalyticsService,
+    ProjectsAnalyticsService,
+  ],
+  exports: [
+    GeneralAnalyticsRouter,
+    ProjectAnalyticsRouter,
+    GeneralAnalyticsService,
+    ProjectsAnalyticsService,
+  ],
 })
 export class AnalyticsModule {}

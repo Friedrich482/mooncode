@@ -1,7 +1,20 @@
 import { differenceInDays } from "date-fns";
-import getDaysOfPeriodStatsGroupByWeeks from "src/coding-stats/utils/getDaysOfPeriodStatsGroupByWeeks";
-import getPeriodLanguagesGroupByWeeks from "src/coding-stats/utils/getPeriodLanguagesGroupByWeeks";
-import { NAString } from "src/common/dto";
+import { NAString } from "src/analytics/dto/common";
+import {
+  GetDailyStatsDtoType,
+  GetDaysOfPeriodStatsDtoType,
+  GetPeriodGeneralStatsDtoType,
+  GetPeriodLanguagesPerDayDtoType,
+  GetPeriodLanguagesTimeDtoType,
+  GetTimeSpentOnPeriodDtoType,
+} from "src/analytics/dto/general-analytics.dto";
+import getDaysOfPeriodStatsGroupByMonths from "src/analytics/utils/general/getDaysOfPeriodStatsGroupByMonths";
+import getDaysOfPeriodStatsGroupByWeeks from "src/analytics/utils/general/getDaysOfPeriodStatsGroupByWeeks";
+import getGeneralStatsOnPeriodGroupByMonths from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupByMonths";
+import getGeneralStatsOnPeriodGroupByWeeks from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupByWeeks";
+import getMostUsedLanguageOnPeriod from "src/analytics/utils/general/getMostUsedLanguageOnPeriod";
+import getPeriodLanguagesGroupByMonths from "src/analytics/utils/general/getPeriodLanguagesGroupByMonths";
+import getPeriodLanguagesGroupByWeeks from "src/analytics/utils/general/getPeriodLanguagesGroupByWeeks";
 import getWeekDayName from "src/common/utils/getWeekdayName";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { LanguagesService } from "src/languages/languages.service";
@@ -10,22 +23,8 @@ import { Injectable } from "@nestjs/common";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 
-import {
-  GetDailyStatsForChartDtoType,
-  GetDaysOfPeriodStatsDtoType,
-  GetPeriodGeneralStatsDtoType,
-  GetPeriodLanguagesPerDayDtoType,
-  GetPeriodLanguagesTimeDtoType,
-  GetTimeSpentOnPeriodDtoType,
-} from "./coding-stats.dto";
-import getDaysOfPeriodStatsGroupByMonths from "./utils/getDaysOfPeriodStatsGroupByMonths";
-import getGeneralStatsOnPeriodGroupByMonths from "./utils/getGeneralStatsOnPeriodGroupByMonths";
-import getGeneralStatsOnPeriodGroupByWeeks from "./utils/getGeneralStatsOnPeriodGroupByWeeks";
-import getMostUsedLanguageOnPeriod from "./utils/getMostUsedLanguageOnPeriod";
-import getPeriodLanguagesGroupByMonths from "./utils/getPeriodLanguagesGroupByMonths";
-
 @Injectable()
-export class CodingStatsDashboardService {
+export class GeneralAnalyticsService {
   constructor(
     private readonly dailyDataService: DailyDataService,
     private readonly languagesService: LanguagesService
@@ -177,10 +176,8 @@ export class CodingStatsDashboardService {
     }));
   }
 
-  async getDailyStatsForChart(
-    getDailyStatsForChartDto: GetDailyStatsForChartDtoType
-  ) {
-    const { userId, dateString } = getDailyStatsForChartDto;
+  async getDailyStats(getDailyStatsDto: GetDailyStatsDtoType) {
+    const { userId, dateString } = getDailyStatsDto;
 
     const dayData = await this.dailyDataService.findOne({
       userId,

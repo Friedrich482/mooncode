@@ -1,5 +1,5 @@
 import { endOfWeek, startOfWeek } from "date-fns";
-import { GeneralAnalyticsService } from "src/analytics/general-analytics.service";
+import { GeneralAnalyticsService } from "src/analytics/services/general-analytics.service";
 import countStrictWeeks from "src/common/utils/countStrictWeeks";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 

@@ -1,6 +1,6 @@
 import { differenceInMonths, endOfMonth, startOfMonth } from "date-fns";
-import { GeneralAnalyticsService } from "src/analytics/general-analytics.service";
-import { NAString } from "src/common/dto";
+import { NAString } from "src/analytics/dto/common";
+import { GeneralAnalyticsService } from "src/analytics/services/general-analytics.service";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 
 import convertToISODate from "@repo/common/convertToISODate";

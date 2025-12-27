@@ -1,11 +1,11 @@
 import { endOfMonth, startOfMonth } from "date-fns";
+import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
 import formatShortDate from "src/common/utils/formatShortDate";
-import { ProjectsService } from "src/projects/projects.service";
 
 import convertToISODate from "@repo/common/convertToISODate";
 
 const getProjectLanguageGroupByMonths = (
-  data: Awaited<ReturnType<ProjectsService["findByNameOnRange"]>>,
+  data: Awaited<ReturnType<ProjectsAnalyticsService["findByNameOnRange"]>>,
   languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];

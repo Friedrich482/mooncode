@@ -1,16 +1,6 @@
 import { eachDayOfInterval } from "date-fns";
 import { and, between, desc, eq, inArray, sum } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import getWeekDayName from "src/common/utils/getWeekdayName";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { dailyData, files, languages, projects } from "src/drizzle/schema";
-import { ProjectsService } from "src/projects/projects.service";
-
-import { Inject, Injectable } from "@nestjs/common";
-import convertToISODate from "@repo/common/convertToISODate";
-import formatDuration from "@repo/common/formatDuration";
-import { TRPCError } from "@trpc/server";
-
 import {
   CheckProjectExistsDtoType,
   FindProjectByNameOnRangeDtoType,
@@ -22,11 +12,20 @@ import {
   GetProjectLanguagesTimePerDayOfPeriodDtoType,
   GetProjectOnPeriodDtoType,
   GetProjectPerDayOfPeriodDtoType,
-} from "./projects-analytics.dto";
-import getProjectLanguageGroupByMonths from "./utils/projects/getProjectLanguageGroupByMonths";
-import getProjectLanguagesGroupByWeeks from "./utils/projects/getProjectLanguagesGroupByWeeks";
-import getProjectPerDayOfPeriodGroupByMonths from "./utils/projects/getProjectPerDayOfPeriodGroupByMonths";
-import getProjectPerDayOfPeriodGroupByWeeks from "./utils/projects/getProjectPerDayOfPeriodGroupByWeeks";
+} from "src/analytics/dto/projects-analytics.dto";
+import getProjectLanguageGroupByMonths from "src/analytics/utils/projects/getProjectLanguageGroupByMonths";
+import getProjectLanguagesGroupByWeeks from "src/analytics/utils/projects/getProjectLanguagesGroupByWeeks";
+import getProjectPerDayOfPeriodGroupByMonths from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupByMonths";
+import getProjectPerDayOfPeriodGroupByWeeks from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupByWeeks";
+import getWeekDayName from "src/common/utils/getWeekdayName";
+import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
+import { dailyData, files, languages, projects } from "src/drizzle/schema";
+import { ProjectsService } from "src/projects/projects.service";
+
+import { Inject, Injectable } from "@nestjs/common";
+import convertToISODate from "@repo/common/convertToISODate";
+import formatDuration from "@repo/common/formatDuration";
+import { TRPCError } from "@trpc/server";
 
 @Injectable()
 export class ProjectsAnalyticsService {
@@ -146,63 +145,6 @@ export class ProjectsAnalyticsService {
     );
 
     return result;
-  }
-
-  async getFilesOnPeriod(
-    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
-  ) {
-    const {
-      userId,
-      name,
-      start,
-      end,
-      amount,
-      languages: languagesArray,
-    } = getProjectFilesOnPeriodDto;
-
-    const baseQuery = this.db
-      .select({
-        totalTimeSpent: sum(files.timeSpent).mapWith(Number),
-        languageSlug: languages.languageSlug,
-        projectName: projects.name,
-        name: files.name,
-        path: files.path,
-      })
-      .from(files)
-      .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
-      .where(
-        and(
-          eq(dailyData.userId, userId),
-          eq(projects.name, name),
-          between(dailyData.date, start, end),
-          languagesArray
-            ? inArray(languages.languageSlug, languagesArray)
-            : undefined
-        )
-      )
-      .groupBy(files.path, languages.languageSlug, projects.name, files.name)
-      .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
-    const finalQuery = amount ? baseQuery.limit(amount) : baseQuery;
-    const result = await finalQuery.execute();
-
-    const resultObject: {
-      [filePath: string]: {
-        totalTimeSpent: number;
-        languageSlug: string;
-        name: string;
-      };
-    } = {};
-    for (const entry of result) {
-      resultObject[entry.path] = {
-        totalTimeSpent: entry.totalTimeSpent,
-        languageSlug: entry.languageSlug,
-        name: entry.name,
-      };
-    }
-
-    return resultObject;
   }
 
   async checkProjectExists(checkProjectExitsDto: CheckProjectExistsDtoType) {
@@ -419,5 +361,61 @@ export class ProjectsAnalyticsService {
       date: getWeekDayName(date),
       ...(languagesTimesPerDayOfPeriod[date] ?? {}),
     }));
+  }
+  async getFilesOnPeriod(
+    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
+  ) {
+    const {
+      userId,
+      name,
+      start,
+      end,
+      amount,
+      languages: languagesArray,
+    } = getProjectFilesOnPeriodDto;
+
+    const baseQuery = this.db
+      .select({
+        totalTimeSpent: sum(files.timeSpent).mapWith(Number),
+        languageSlug: languages.languageSlug,
+        projectName: projects.name,
+        name: files.name,
+        path: files.path,
+      })
+      .from(files)
+      .innerJoin(projects, eq(projects.id, files.projectId))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+      .innerJoin(languages, eq(languages.id, files.languageId))
+      .where(
+        and(
+          eq(dailyData.userId, userId),
+          eq(projects.name, name),
+          between(dailyData.date, start, end),
+          languagesArray
+            ? inArray(languages.languageSlug, languagesArray)
+            : undefined
+        )
+      )
+      .groupBy(files.path, languages.languageSlug, projects.name, files.name)
+      .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
+    const finalQuery = amount ? baseQuery.limit(amount) : baseQuery;
+    const result = await finalQuery.execute();
+
+    const resultObject: {
+      [filePath: string]: {
+        totalTimeSpent: number;
+        languageSlug: string;
+        name: string;
+      };
+    } = {};
+    for (const entry of result) {
+      resultObject[entry.path] = {
+        totalTimeSpent: entry.totalTimeSpent,
+        languageSlug: entry.languageSlug,
+        name: entry.name,
+      };
+    }
+
+    return resultObject;
   }
 }

@@ -1,20 +1,34 @@
 import { z } from "zod";
+import { DateStringDto, UserId } from "src/common/dto";
+
 import {
   BaseDto,
   DateRangeDto,
   refineAndTransformDto,
   refineDto,
-  UserId,
-} from "src/common/dto";
-import { FindProjectByNameOnRangeDto } from "src/projects/projects.dto";
+} from "./common";
 
-export const GetProjectLanguagesTimeOnPeriodDto = FindProjectByNameOnRangeDto;
+export const FindProjectByNameOnRangeDto = z.object({
+  userId: z.ulid(),
+  start: DateStringDto,
+  end: DateStringDto,
+  name: z.string().min(1),
+});
 
-export const GetProjectLanguagesTimePerDayOfPeriodDto =
-  FindProjectByNameOnRangeDto;
+export const GetProjectLanguagesTimePerDayOfPeriodDto = z.object({
+  userId: z.ulid(),
+  start: DateStringDto,
+  end: DateStringDto,
+  name: z.string().min(1),
+});
 
 export const GetProjectFilesOnPeriodDto = z.object({
-  ...FindProjectByNameOnRangeDto.shape,
+  ...refineDto(
+    z.object({
+      ...DateRangeDto.shape,
+      name: z.string().min(1),
+    })
+  ).shape,
   amount: z.number().optional(),
   languages: z.array(z.string()).optional(),
 });
@@ -39,7 +53,19 @@ export const GetProjectPerDayOfPeriodDto = refineAndTransformDto(
   })
 );
 
-export const GetProjectLanguagesPerDayOfPeriodDto = GetProjectPerDayOfPeriodDto;
+export const GetProjectLanguagesTimeOnPeriodDto = refineDto(
+  z.object({
+    ...DateRangeDto.shape,
+    name: z.string().min(1),
+  })
+);
+
+export const GetProjectLanguagesPerDayOfPeriodDto = refineAndTransformDto(
+  z.object({
+    ...BaseDto.shape,
+    name: z.string().min(1),
+  })
+);
 
 export type FindProjectByNameOnRangeDtoType = z.infer<
   typeof FindProjectByNameOnRangeDto
@@ -47,7 +73,8 @@ export type FindProjectByNameOnRangeDtoType = z.infer<
 
 export type GetProjectLanguagesTimeOnPeriodDtoType = z.infer<
   typeof GetProjectLanguagesTimeOnPeriodDto
->;
+> &
+  UserId;
 
 export type GetProjectLanguagesTimePerDayOfPeriodDtoType = z.infer<
   typeof GetProjectLanguagesTimePerDayOfPeriodDto
@@ -55,7 +82,8 @@ export type GetProjectLanguagesTimePerDayOfPeriodDtoType = z.infer<
 
 export type GetProjectFilesOnPeriodDtoType = z.infer<
   typeof GetProjectFilesOnPeriodDto
->;
+> &
+  UserId;
 
 export type CheckProjectExistsDtoType = z.infer<typeof CheckProjectExistsDto> &
   UserId;

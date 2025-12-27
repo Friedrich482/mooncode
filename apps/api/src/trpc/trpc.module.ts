@@ -1,10 +1,9 @@
+import { AnalyticsModule } from "src/analytics/analytics.module";
+import { GeneralAnalyticsRouter } from "src/analytics/routers/general-analytics.router";
+import { ProjectAnalyticsRouter } from "src/analytics/routers/projects-analytics.router";
 import { AuthModule } from "src/auth/auth.module";
 import { AuthRouter } from "src/auth/auth.router";
-import { CodingStatsModule } from "src/coding-stats/coding-stats.module";
-import { CodingStatsRouter } from "src/coding-stats/coding-stats.router";
 import { EnvService } from "src/env/env.service";
-import { FilesStatsModule } from "src/files-stats/files-stats.module";
-import { FilesStatsRouter } from "src/files-stats/files-stats.router";
 import { PasswordResetsModule } from "src/password-resets/password-resets.module";
 import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 
@@ -18,8 +17,7 @@ import { TrpcService } from "./trpc.service";
 @Module({
   imports: [
     AuthModule,
-    CodingStatsModule,
-    FilesStatsModule,
+    AnalyticsModule,
     PendingRegistrationsModule,
     PasswordResetsModule,
   ],
@@ -29,8 +27,8 @@ import { TrpcService } from "./trpc.service";
     JwtService,
     EnvService,
     AuthRouter,
-    CodingStatsRouter,
-    FilesStatsRouter,
+    GeneralAnalyticsRouter,
+    ProjectAnalyticsRouter,
   ],
   exports: [TrpcService],
 })

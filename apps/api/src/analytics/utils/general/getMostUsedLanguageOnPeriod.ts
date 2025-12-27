@@ -1,5 +1,5 @@
-import { GeneralAnalyticsService } from "src/analytics/general-analytics.service";
-import { NAString } from "src/common/dto";
+import { NAString } from "src/analytics/dto/common";
+import { GeneralAnalyticsService } from "src/analytics/services/general-analytics.service";
 
 const getMostUsedLanguageOnPeriod = async (
   generalAnalyticsService: GeneralAnalyticsService,

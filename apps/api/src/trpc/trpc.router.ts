@@ -1,6 +1,6 @@
+import { GeneralAnalyticsRouter } from "src/analytics/routers/general-analytics.router";
+import { ProjectAnalyticsRouter } from "src/analytics/routers/projects-analytics.router";
 import { AuthRouter } from "src/auth/auth.router";
-import { CodingStatsRouter } from "src/coding-stats/coding-stats.router";
-import { FilesStatsRouter } from "src/files-stats/files-stats.router";
 
 import { INestApplication, Injectable } from "@nestjs/common";
 import * as trpcExpress from "@trpc/server/adapters/express";
@@ -12,14 +12,14 @@ export class TrpcRouter {
   constructor(
     private readonly trpcService: TrpcService,
     private readonly authRouter: AuthRouter,
-    private readonly codingStatsRouter: CodingStatsRouter,
-    private readonly filesStatsRouter: FilesStatsRouter
+    private readonly generalAnalyticsRouter: GeneralAnalyticsRouter,
+    private readonly projectAnalyticsRouter: ProjectAnalyticsRouter
   ) {}
 
   appRouter = this.trpcService.trpc.router({
     ...this.authRouter.procedures,
-    ...this.codingStatsRouter.procedures,
-    ...this.filesStatsRouter.procedures,
+    ...this.generalAnalyticsRouter.procedures,
+    ...this.projectAnalyticsRouter.procedures,
   });
 
   async applyMiddleware(app: INestApplication) {
