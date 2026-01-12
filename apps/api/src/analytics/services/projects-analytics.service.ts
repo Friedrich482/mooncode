@@ -35,7 +35,7 @@ export class ProjectsAnalyticsService {
     private readonly projectsService: ProjectsService
   ) {}
 
-  async findByNameOnRange(
+  async findProjectByNameOnRange(
     findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType
   ) {
     const { userId, name, start, end } = findProjectByNameOnRangeDto;
@@ -65,7 +65,7 @@ export class ProjectsAnalyticsService {
       data.map((item) => [item.date, item])
     );
 
-    const projectsGroupedByNameOnRange = dateRange.map((date) => {
+    const projectOnDaysOnPeriod = dateRange.map((date) => {
       const formattedDate = convertToISODate(date);
       return (
         dataByDate[formattedDate] || {
@@ -75,7 +75,7 @@ export class ProjectsAnalyticsService {
       );
     });
 
-    return projectsGroupedByNameOnRange;
+    return projectOnDaysOnPeriod;
   }
 
   async getLanguagesTimeOnPeriod(
@@ -102,11 +102,15 @@ export class ProjectsAnalyticsService {
       .groupBy(languages.languageSlug)
       .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
 
-    const result: { [languageSlug: string]: number } = Object.fromEntries(
-      aggregated.map(({ languageSlug, totalTime }) => [languageSlug, totalTime])
-    );
+    const languagesTimesOnPeriod: { [languageSlug: string]: number } =
+      Object.fromEntries(
+        aggregated.map(({ languageSlug, totalTime }) => [
+          languageSlug,
+          totalTime,
+        ])
+      );
 
-    return result;
+    return languagesTimesOnPeriod;
   }
 
   async getLanguagesTimePerDayOfPeriod(
@@ -115,7 +119,7 @@ export class ProjectsAnalyticsService {
     const { userId, name, start, end } =
       getProjectLanguagesTimePerDayOfPeriodDto;
 
-    const languagesPerDayOfPeriod = await this.db
+    const data = await this.db
       .select({
         languageSlug: languages.languageSlug,
         timeSpent: files.timeSpent,
@@ -133,7 +137,7 @@ export class ProjectsAnalyticsService {
         )
       );
 
-    const result = languagesPerDayOfPeriod.reduce(
+    const languagesPerDayOfPeriod = data.reduce(
       (acc, { date, languageSlug, timeSpent }) => {
         if (!acc[date]) {
           acc[date] = {};
@@ -144,7 +148,7 @@ export class ProjectsAnalyticsService {
       {} as { [date: string]: { [languageSlug: string]: number } }
     );
 
-    return result;
+    return languagesPerDayOfPeriod;
   }
 
   async checkProjectExists(checkProjectExitsDto: CheckProjectExistsDtoType) {
@@ -165,7 +169,7 @@ export class ProjectsAnalyticsService {
       0
     );
 
-    const finalData = projectsOnRange.map((project) => ({
+    const periodProjects = projectsOnRange.map((project) => ({
       ...project,
       percentage:
         timeSpentAcrossAllProjects === 0
@@ -178,7 +182,7 @@ export class ProjectsAnalyticsService {
             ),
     }));
 
-    return finalData;
+    return periodProjects;
   }
 
   async getProjectOnPeriod(getProjectOnPeriodDto: GetProjectOnPeriodDtoType) {
@@ -230,39 +234,43 @@ export class ProjectsAnalyticsService {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectPerDayOfPeriodDto;
 
-    const dailyProjectsForPeriod = await this.findByNameOnRange({
+    const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
       name,
     });
 
-    if (dailyProjectsForPeriod.length === 0) {
+    if (projectOnDaysOnPeriod.length === 0) {
       return [];
     }
 
     switch (groupBy) {
       case "weeks":
         return getProjectPerDayOfPeriodGroupByWeeks(
-          dailyProjectsForPeriod,
+          projectOnDaysOnPeriod,
           periodResolution
         );
 
       case "months":
-        return getProjectPerDayOfPeriodGroupByMonths(dailyProjectsForPeriod);
+        return getProjectPerDayOfPeriodGroupByMonths(projectOnDaysOnPeriod);
 
       default:
         break;
     }
 
-    return dailyProjectsForPeriod.map(({ timeSpent, date }) => ({
-      timeSpentLine: timeSpent,
-      timeSpentBar: timeSpent,
-      timeSpentArea: timeSpent,
-      value: formatDuration(timeSpent),
-      originalDate: new Date(date).toDateString(),
-      date: getWeekDayName(date),
-    }));
+    const projectsPerDayOfPeriod = projectOnDaysOnPeriod.map(
+      ({ timeSpent, date }) => ({
+        timeSpentLine: timeSpent,
+        timeSpentBar: timeSpent,
+        timeSpentArea: timeSpent,
+        value: formatDuration(timeSpent),
+        originalDate: new Date(date).toDateString(),
+        date: getWeekDayName(date),
+      })
+    );
+
+    return projectsPerDayOfPeriod;
   }
 
   async getProjectLanguagesTimeOnPeriod(
@@ -270,14 +278,14 @@ export class ProjectsAnalyticsService {
   ) {
     const { userId, start, end, name } = getProjectLanguagesTimeOnPeriod;
 
-    const dailyProjectsForPeriod = await this.findByNameOnRange({
+    const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
       name,
     });
 
-    if (dailyProjectsForPeriod.length === 0) {
+    if (projectOnDaysOnPeriod.length === 0) {
       return [];
     }
 
@@ -297,7 +305,7 @@ export class ProjectsAnalyticsService {
       name,
     });
 
-    return Object.entries(aggregatedLanguageTime)
+    const projectLanguagesTimeOnPeriod = Object.entries(aggregatedLanguageTime)
       .map(([languageSlug, timeSpent]) => ({
         languageSlug,
         time: timeSpent,
@@ -310,6 +318,8 @@ export class ProjectsAnalyticsService {
               ),
       }))
       .sort((a, b) => a.time - b.time);
+
+    return projectLanguagesTimeOnPeriod;
   }
 
   async getProjectLanguagesPerDayOfPeriod(
@@ -318,14 +328,14 @@ export class ProjectsAnalyticsService {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectLanguagesPerDayOfPeriodDto;
 
-    const dailyProjectsForPeriod = await this.findByNameOnRange({
+    const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
       name,
     });
 
-    if (dailyProjectsForPeriod.length === 0) {
+    if (projectOnDaysOnPeriod.length === 0) {
       return [];
     }
 
@@ -340,14 +350,14 @@ export class ProjectsAnalyticsService {
     switch (groupBy) {
       case "weeks":
         return getProjectLanguagesGroupByWeeks(
-          dailyProjectsForPeriod,
+          projectOnDaysOnPeriod,
           periodResolution,
           languagesTimesPerDayOfPeriod
         );
 
       case "months":
         return getProjectLanguageGroupByMonths(
-          dailyProjectsForPeriod,
+          projectOnDaysOnPeriod,
           languagesTimesPerDayOfPeriod
         );
 
@@ -355,12 +365,16 @@ export class ProjectsAnalyticsService {
         break;
     }
 
-    return dailyProjectsForPeriod.map(({ timeSpent, date }) => ({
-      timeSpent,
-      originalDate: new Date(date).toDateString(),
-      date: getWeekDayName(date),
-      ...(languagesTimesPerDayOfPeriod[date] ?? {}),
-    }));
+    const periodLanguagesPerDayOfPeriod = projectOnDaysOnPeriod.map(
+      ({ timeSpent, date }) => ({
+        timeSpent,
+        originalDate: new Date(date).toDateString(),
+        date: getWeekDayName(date),
+        ...(languagesTimesPerDayOfPeriod[date] ?? {}),
+      })
+    );
+
+    return periodLanguagesPerDayOfPeriod;
   }
   async getFilesOnPeriod(
     getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
@@ -401,7 +415,7 @@ export class ProjectsAnalyticsService {
     const finalQuery = amount ? baseQuery.limit(amount) : baseQuery;
     const result = await finalQuery.execute();
 
-    const resultObject: {
+    const projectFilesOnPeriod: {
       [filePath: string]: {
         totalTimeSpent: number;
         languageSlug: string;
@@ -409,13 +423,13 @@ export class ProjectsAnalyticsService {
       };
     } = {};
     for (const entry of result) {
-      resultObject[entry.path] = {
+      projectFilesOnPeriod[entry.path] = {
         totalTimeSpent: entry.totalTimeSpent,
         languageSlug: entry.languageSlug,
         name: entry.name,
       };
     }
 
-    return resultObject;
+    return projectFilesOnPeriod;
   }
 }

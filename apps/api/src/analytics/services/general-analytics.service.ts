@@ -76,7 +76,7 @@ export class GeneralAnalyticsService {
         break;
     }
 
-    return dailyDataForPeriod.map(({ timeSpent, date }) => ({
+    const daysOfPeriodStats = dailyDataForPeriod.map(({ timeSpent, date }) => ({
       timeSpentLine: timeSpent,
       originalDate: new Date(date).toDateString(),
       date: getWeekDayName(date),
@@ -84,6 +84,8 @@ export class GeneralAnalyticsService {
       timeSpentArea: timeSpent,
       value: formatDuration(timeSpent),
     }));
+
+    return daysOfPeriodStats;
   }
 
   async getPeriodLanguagesTime(
@@ -116,7 +118,7 @@ export class GeneralAnalyticsService {
       return acc;
     }, {});
 
-    const finalData = Object.entries(kVLangTime)
+    const periodLanguagesTime = Object.entries(kVLangTime)
       .map(([languageSlug, timeSpent]) => ({
         languageSlug,
         time: timeSpent,
@@ -127,7 +129,7 @@ export class GeneralAnalyticsService {
       }))
       .sort((a, b) => a.time - b.time);
 
-    return finalData;
+    return periodLanguagesTime;
   }
 
   async getPeriodLanguagesPerDay(
@@ -168,12 +170,16 @@ export class GeneralAnalyticsService {
       )
     );
 
-    return dailyDataForPeriod.map(({ date, timeSpent }, index) => ({
-      originalDate: new Date(date).toDateString(),
-      date: getWeekDayName(date),
-      timeSpent,
-      ...allLanguages[index],
-    }));
+    const periodLanguagesPerDay = dailyDataForPeriod.map(
+      ({ date, timeSpent }, index) => ({
+        originalDate: new Date(date).toDateString(),
+        date: getWeekDayName(date),
+        timeSpent,
+        ...allLanguages[index],
+      })
+    );
+
+    return periodLanguagesPerDay;
   }
 
   async getDailyStats(getDailyStatsDto: GetDailyStatsDtoType) {
