@@ -5,7 +5,9 @@ import formatShortDate from "src/common/utils/formatShortDate";
 import convertToISODate from "@repo/common/convertToISODate";
 
 const getProjectLanguageGroupByMonths = (
-  data: Awaited<ReturnType<ProjectsAnalyticsService["findByNameOnRange"]>>,
+  data: Awaited<
+    ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
+  >,
   languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];

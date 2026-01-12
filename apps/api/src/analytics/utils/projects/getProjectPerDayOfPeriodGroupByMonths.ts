@@ -6,7 +6,9 @@ import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 
 const getProjectPerDayOfPeriodGroupByMonths = (
-  data: Awaited<ReturnType<ProjectsAnalyticsService["findByNameOnRange"]>>
+  data: Awaited<
+    ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
+  >
 ) => {
   const monthlyMap = new Map<
     string,
