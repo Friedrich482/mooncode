@@ -8,13 +8,13 @@ import {
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
 } from "src/analytics/dto/general-analytics.dto";
-import getDaysOfPeriodStatsGroupByMonths from "src/analytics/utils/general/getDaysOfPeriodStatsGroupByMonths";
-import getDaysOfPeriodStatsGroupByWeeks from "src/analytics/utils/general/getDaysOfPeriodStatsGroupByWeeks";
-import getGeneralStatsOnPeriodGroupByMonths from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupByMonths";
-import getGeneralStatsOnPeriodGroupByWeeks from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupByWeeks";
+import getDaysOfPeriodStatsGroupedByMonths from "src/analytics/utils/general/getDaysOfPeriodStatsGroupedByMonths";
+import getDaysOfPeriodStatsGroupedByWeeks from "src/analytics/utils/general/getDaysOfPeriodStatsGroupedByWeeks";
+import getGeneralStatsOnPeriodGroupedByMonths from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupedByMonths";
+import getGeneralStatsOnPeriodGroupedByWeeks from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupedByWeeks";
 import getMostUsedLanguageOnPeriod from "src/analytics/utils/general/getMostUsedLanguageOnPeriod";
-import getPeriodLanguagesGroupByMonths from "src/analytics/utils/general/getPeriodLanguagesGroupByMonths";
-import getPeriodLanguagesGroupByWeeks from "src/analytics/utils/general/getPeriodLanguagesGroupByWeeks";
+import getPeriodLanguagesGroupedByMonths from "src/analytics/utils/general/getPeriodLanguagesGroupedByMonths";
+import getPeriodLanguagesGroupedByWeeks from "src/analytics/utils/general/getPeriodLanguagesGroupedByWeeks";
 import getWeekDayName from "src/common/utils/getWeekdayName";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { LanguagesService } from "src/languages/languages.service";
@@ -64,13 +64,13 @@ export class GeneralAnalyticsService {
 
     switch (groupBy) {
       case "weeks":
-        return getDaysOfPeriodStatsGroupByWeeks(
+        return getDaysOfPeriodStatsGroupedByWeeks(
           dailyDataForPeriod,
           periodResolution
         );
 
       case "months":
-        return getDaysOfPeriodStatsGroupByMonths(dailyDataForPeriod);
+        return getDaysOfPeriodStatsGroupedByMonths(dailyDataForPeriod);
 
       default:
         break;
@@ -148,14 +148,14 @@ export class GeneralAnalyticsService {
 
     switch (groupBy) {
       case "weeks":
-        return getPeriodLanguagesGroupByWeeks(
+        return getPeriodLanguagesGroupedByWeeks(
           dailyDataForPeriod,
           periodResolution,
           this.languagesService
         );
 
       case "months":
-        return getPeriodLanguagesGroupByMonths(
+        return getPeriodLanguagesGroupedByMonths(
           dailyDataForPeriod,
           this.languagesService
         );
@@ -241,7 +241,7 @@ export class GeneralAnalyticsService {
 
     switch (groupBy) {
       case "weeks":
-        return getGeneralStatsOnPeriodGroupByWeeks(
+        return getGeneralStatsOnPeriodGroupedByWeeks(
           userId,
           start,
           end,
@@ -252,7 +252,7 @@ export class GeneralAnalyticsService {
         );
 
       case "months":
-        return getGeneralStatsOnPeriodGroupByMonths(
+        return getGeneralStatsOnPeriodGroupedByMonths(
           userId,
           start,
           end,

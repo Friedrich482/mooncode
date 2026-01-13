@@ -6,7 +6,7 @@ import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-const getProjectPerDayOfPeriodGroupByWeeks = (
+const getProjectPerDayOfPeriodGroupedByWeeks = (
   data: Awaited<
     ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
   >,
@@ -77,7 +77,9 @@ const getProjectPerDayOfPeriodGroupByWeeks = (
     });
   });
 
-  return Array.from(weeklyMap.values()).map(({ timeSpent, weekRange }) => ({
+  const projectPerDayOfPeriodGroupedByWeeks = Array.from(
+    weeklyMap.values()
+  ).map(({ timeSpent, weekRange }) => ({
     timeSpentLine: timeSpent,
     timeSpentBar: timeSpent,
     timeSpentArea: timeSpent,
@@ -85,6 +87,8 @@ const getProjectPerDayOfPeriodGroupByWeeks = (
     date: weekRange,
     value: formatDuration(timeSpent),
   }));
+
+  return projectPerDayOfPeriodGroupedByWeeks;
 };
 
-export default getProjectPerDayOfPeriodGroupByWeeks;
+export default getProjectPerDayOfPeriodGroupedByWeeks;

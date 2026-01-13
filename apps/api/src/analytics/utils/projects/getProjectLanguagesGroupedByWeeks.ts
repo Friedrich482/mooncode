@@ -1,18 +1,18 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
+import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
 import formatShortDate from "src/common/utils/formatShortDate";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { LanguagesService } from "src/languages/languages.service";
 
 import convertToISODate from "@repo/common/convertToISODate";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-const getPeriodLanguagesGroupByWeeks = async (
-  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
+const getProjectLanguagesGroupedByWeeks = async (
+  data: Awaited<
+    ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
+  >,
   periodResolution: PeriodResolution,
-  languagesService: LanguagesService
+  languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];
-
   const weeklyMap = new Map<
     string,
     {
@@ -27,14 +27,10 @@ const getPeriodLanguagesGroupByWeeks = async (
   const startDate = new Date(data[0].date);
   const endDate = new Date(data[data.length - 1].date);
 
-  const entriesWithLanguages = await Promise.all(
-    data.map(async (entry) => ({
-      ...entry,
-      languages: await languagesService.findAll({
-        dailyDataId: entry.id,
-      }),
-    }))
-  );
+  const entriesWithLanguages = data.map((entry) => ({
+    ...entry,
+    languages: languagesTimesPerDayOfPeriod[entry.date] || {},
+  }));
 
   for (const [, entry] of entriesWithLanguages.entries()) {
     const date = new Date(entry.date);
@@ -86,7 +82,7 @@ const getPeriodLanguagesGroupByWeeks = async (
     }
   }
 
-  return Array.from(weeklyMap.values()).map(
+  const projectLanguagesGroupedByWeeks = Array.from(weeklyMap.values()).map(
     ({ languages, timeSpent, ...rest }) => ({
       timeSpent,
       ...languages,
@@ -94,6 +90,8 @@ const getPeriodLanguagesGroupByWeeks = async (
       date: rest.weekRange,
     })
   );
+
+  return projectLanguagesGroupedByWeeks;
 };
 
-export default getPeriodLanguagesGroupByWeeks;
+export default getProjectLanguagesGroupedByWeeks;

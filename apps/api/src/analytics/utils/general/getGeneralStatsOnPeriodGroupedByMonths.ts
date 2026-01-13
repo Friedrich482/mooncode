@@ -6,10 +6,10 @@ import { DailyDataService } from "src/daily-data/daily-data.service";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 
-import getDaysOfPeriodStatsGroupByMonths from "./getDaysOfPeriodStatsGroupByMonths";
+import getDaysOfPeriodStatsGroupedByMonths from "./getDaysOfPeriodStatsGroupedByMonths";
 import getMostUsedLanguageOnPeriod from "./getMostUsedLanguageOnPeriod";
 
-const getGeneralStatsOnPeriodGroupByMonths = async (
+const getGeneralStatsOnPeriodGroupedByMonths = async (
   userId: string,
   start: string,
   end: string,
@@ -27,7 +27,7 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   ).rawTime;
   const mean = timeSpentOnPeriod / numberOfMonths;
 
-  const monthlyDataForPeriod = getDaysOfPeriodStatsGroupByMonths(
+  const monthlyDataForPeriod = getDaysOfPeriodStatsGroupedByMonths(
     dailyDataForPeriod
   ).map((entry) => ({
     timeSpent: entry.timeSpentBar,
@@ -74,4 +74,4 @@ const getGeneralStatsOnPeriodGroupByMonths = async (
   };
 };
 
-export default getGeneralStatsOnPeriodGroupByMonths;
+export default getGeneralStatsOnPeriodGroupedByMonths;

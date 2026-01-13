@@ -13,10 +13,10 @@ import {
   GetProjectOnPeriodDtoType,
   GetProjectPerDayOfPeriodDtoType,
 } from "src/analytics/dto/projects-analytics.dto";
-import getProjectLanguageGroupByMonths from "src/analytics/utils/projects/getProjectLanguageGroupByMonths";
-import getProjectLanguagesGroupByWeeks from "src/analytics/utils/projects/getProjectLanguagesGroupByWeeks";
-import getProjectPerDayOfPeriodGroupByMonths from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupByMonths";
-import getProjectPerDayOfPeriodGroupByWeeks from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupByWeeks";
+import getProjectLanguagesGroupedByMonths from "src/analytics/utils/projects/getProjectLanguagesGroupedByMonths";
+import getProjectLanguagesGroupedByWeeks from "src/analytics/utils/projects/getProjectLanguagesGroupedByWeeks";
+import getProjectPerDayOfPeriodGroupedByMonths from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupedByMonths";
+import getProjectPerDayOfPeriodGroupedByWeeks from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupedByWeeks";
 import getWeekDayName from "src/common/utils/getWeekdayName";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { dailyData, files, languages, projects } from "src/drizzle/schema";
@@ -247,13 +247,13 @@ export class ProjectsAnalyticsService {
 
     switch (groupBy) {
       case "weeks":
-        return getProjectPerDayOfPeriodGroupByWeeks(
+        return getProjectPerDayOfPeriodGroupedByWeeks(
           projectOnDaysOnPeriod,
           periodResolution
         );
 
       case "months":
-        return getProjectPerDayOfPeriodGroupByMonths(projectOnDaysOnPeriod);
+        return getProjectPerDayOfPeriodGroupedByMonths(projectOnDaysOnPeriod);
 
       default:
         break;
@@ -349,14 +349,14 @@ export class ProjectsAnalyticsService {
 
     switch (groupBy) {
       case "weeks":
-        return getProjectLanguagesGroupByWeeks(
+        return getProjectLanguagesGroupedByWeeks(
           projectOnDaysOnPeriod,
           periodResolution,
           languagesTimesPerDayOfPeriod
         );
 
       case "months":
-        return getProjectLanguageGroupByMonths(
+        return getProjectLanguagesGroupedByMonths(
           projectOnDaysOnPeriod,
           languagesTimesPerDayOfPeriod
         );

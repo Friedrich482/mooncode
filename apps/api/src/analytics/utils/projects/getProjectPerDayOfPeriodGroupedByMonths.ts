@@ -5,7 +5,7 @@ import formatShortDate from "src/common/utils/formatShortDate";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 
-const getProjectPerDayOfPeriodGroupByMonths = (
+const getProjectPerDayOfPeriodGroupedByMonths = (
   data: Awaited<
     ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
   >
@@ -38,7 +38,9 @@ const getProjectPerDayOfPeriodGroupByMonths = (
     });
   });
 
-  return Array.from(monthlyMap.values()).map(({ timeSpent, month }) => ({
+  const projectPerDayOfPeriodGroupedByMonths = Array.from(
+    monthlyMap.values()
+  ).map(({ timeSpent, month }) => ({
     timeSpentLine: timeSpent,
     timeSpentBar: timeSpent,
     timeSpentArea: timeSpent,
@@ -46,6 +48,8 @@ const getProjectPerDayOfPeriodGroupByMonths = (
     date: month,
     value: formatDuration(timeSpent),
   }));
+
+  return projectPerDayOfPeriodGroupedByMonths;
 };
 
-export default getProjectPerDayOfPeriodGroupByMonths;
+export default getProjectPerDayOfPeriodGroupedByMonths;

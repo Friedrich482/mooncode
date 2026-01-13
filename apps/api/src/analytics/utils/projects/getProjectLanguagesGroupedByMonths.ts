@@ -1,13 +1,14 @@
 import { endOfMonth, startOfMonth } from "date-fns";
+import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
 import formatShortDate from "src/common/utils/formatShortDate";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { LanguagesService } from "src/languages/languages.service";
 
 import convertToISODate from "@repo/common/convertToISODate";
 
-const getPeriodLanguagesGroupByMonths = async (
-  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
-  languagesService: LanguagesService
+const getProjectLanguageGroupedByMonths = (
+  data: Awaited<
+    ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
+  >,
+  languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>
 ) => {
   if (data.length === 0) return [];
 
@@ -21,20 +22,18 @@ const getPeriodLanguagesGroupByMonths = async (
       languages: Record<string, number>;
     }
   >();
+
   const lastEntry = data.at(-1);
   if (!lastEntry) {
     return [];
   }
+
   const endDate = new Date(lastEntry.date);
 
-  const entriesWithLanguages = await Promise.all(
-    data.map(async (entry) => ({
-      ...entry,
-      languages: await languagesService.findAll({
-        dailyDataId: entry.id,
-      }),
-    }))
-  );
+  const entriesWithLanguages = data.map((entry) => ({
+    ...entry,
+    languages: languagesTimesPerDayOfPeriod[entry.date] || {},
+  }));
 
   for (const [, entry] of entriesWithLanguages.entries()) {
     const date = new Date(entry.date);
@@ -53,6 +52,7 @@ const getPeriodLanguagesGroupByMonths = async (
         languages: {},
       });
     }
+
     const monthEntry = monthlyMap.get(monthKey) as {
       month: string;
       timeSpent: number;
@@ -66,7 +66,8 @@ const getPeriodLanguagesGroupByMonths = async (
       monthEntry.languages[lang] = (monthEntry.languages[lang] || 0) + time;
     }
   }
-  return Array.from(monthlyMap.values()).map(
+
+  const projectLanguagesGroupedByMonths = Array.from(monthlyMap.values()).map(
     ({ languages, timeSpent, ...rest }) => ({
       timeSpent,
       ...languages,
@@ -74,5 +75,8 @@ const getPeriodLanguagesGroupByMonths = async (
       date: rest.month,
     })
   );
+
+  return projectLanguagesGroupedByMonths;
 };
-export default getPeriodLanguagesGroupByMonths;
+
+export default getProjectLanguageGroupedByMonths;

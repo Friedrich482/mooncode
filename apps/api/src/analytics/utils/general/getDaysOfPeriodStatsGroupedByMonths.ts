@@ -5,7 +5,7 @@ import { DailyDataService } from "src/daily-data/daily-data.service";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 
-const getDaysOfPeriodStatsGroupByMonths = (
+const getDaysOfPeriodStatsGroupedByMonths = (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>
 ) => {
   const monthlyMap = new Map<
@@ -37,14 +37,18 @@ const getDaysOfPeriodStatsGroupByMonths = (
     });
   });
 
-  return Array.from(monthlyMap.values()).map(({ timeSpent, month }) => ({
-    timeSpentLine: timeSpent,
-    originalDate: month,
-    date: month,
-    timeSpentBar: timeSpent,
-    timeSpentArea: timeSpent,
-    value: formatDuration(timeSpent),
-  }));
+  const daysOfPeriodStatsGroupedByMonths = Array.from(monthlyMap.values()).map(
+    ({ timeSpent, month }) => ({
+      originalDate: month,
+      date: month,
+      timeSpentLine: timeSpent,
+      timeSpentBar: timeSpent,
+      timeSpentArea: timeSpent,
+      value: formatDuration(timeSpent),
+    })
+  );
+
+  return daysOfPeriodStatsGroupedByMonths;
 };
 
-export default getDaysOfPeriodStatsGroupByMonths;
+export default getDaysOfPeriodStatsGroupedByMonths;

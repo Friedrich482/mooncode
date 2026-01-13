@@ -6,7 +6,7 @@ import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-const getDaysOfPeriodStatsGroupByWeeks = (
+const getDaysOfPeriodStatsGroupedByWeeks = (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>,
   periodResolution: PeriodResolution
 ) => {
@@ -75,14 +75,18 @@ const getDaysOfPeriodStatsGroupByWeeks = (
     });
   });
 
-  return Array.from(weeklyMap.values()).map(({ timeSpent, weekRange }) => ({
-    timeSpentLine: timeSpent,
-    originalDate: weekRange,
-    date: weekRange,
-    timeSpentBar: timeSpent,
-    timeSpentArea: timeSpent,
-    value: formatDuration(timeSpent),
-  }));
+  const daysOfPeriodStatsGroupedByWeeks = Array.from(weeklyMap.values()).map(
+    ({ timeSpent, weekRange }) => ({
+      timeSpentLine: timeSpent,
+      originalDate: weekRange,
+      date: weekRange,
+      timeSpentBar: timeSpent,
+      timeSpentArea: timeSpent,
+      value: formatDuration(timeSpent),
+    })
+  );
+
+  return daysOfPeriodStatsGroupedByWeeks;
 };
 
-export default getDaysOfPeriodStatsGroupByWeeks;
+export default getDaysOfPeriodStatsGroupedByWeeks;

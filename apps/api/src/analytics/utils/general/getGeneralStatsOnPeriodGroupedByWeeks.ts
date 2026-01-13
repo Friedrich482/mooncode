@@ -7,10 +7,10 @@ import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-import getDaysOfPeriodStatsGroupByWeeks from "./getDaysOfPeriodStatsGroupByWeeks";
+import getDaysOfPeriodStatsGroupedByWeeks from "./getDaysOfPeriodStatsGroupedByWeeks";
 import getMostUsedLanguageOnPeriod from "./getMostUsedLanguageOnPeriod";
 
-const getGeneralStatsOnPeriodGroupByWeeks = async (
+const getGeneralStatsOnPeriodGroupedByWeeks = async (
   userId: string,
   start: string,
   end: string,
@@ -31,7 +31,7 @@ const getGeneralStatsOnPeriodGroupByWeeks = async (
 
   const mean = timeSpentOnPeriod / numberOfWeeks;
 
-  const weeklyDataForPeriod = getDaysOfPeriodStatsGroupByWeeks(
+  const weeklyDataForPeriod = getDaysOfPeriodStatsGroupedByWeeks(
     dailyDataForPeriod,
     periodResolution
   ).map((entry) => ({
@@ -77,4 +77,4 @@ const getGeneralStatsOnPeriodGroupByWeeks = async (
     mostUsedLanguageSlug,
   };
 };
-export default getGeneralStatsOnPeriodGroupByWeeks;
+export default getGeneralStatsOnPeriodGroupedByWeeks;
