@@ -29,7 +29,9 @@ const validateStateQueryParam = (
       JSON.parse(decodeURIComponent(rawState))
     );
 
-    if (!parsed.success) return returnUrl;
+    if (!parsed.success) {
+      return returnUrl;
+    }
 
     const stateParam = parsed.data.state;
 

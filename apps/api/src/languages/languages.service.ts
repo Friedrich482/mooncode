@@ -48,7 +48,7 @@ export class LanguagesService {
       .where(eq(languages.dailyDataId, dailyDataId))
       .orderBy(asc(languages.timeSpent));
 
-    const languagesDataObject: {
+    const languagesData: {
       [languageSlug: string]: number;
     } = Object.fromEntries(
       languagesDataArray.map(({ languageSlug, timeSpent }) => [
@@ -57,7 +57,7 @@ export class LanguagesService {
       ])
     );
 
-    return languagesDataObject;
+    return languagesData;
   }
 
   async findOne(findOneLanguageDto: FindOneLanguageDtoType) {
@@ -77,7 +77,9 @@ export class LanguagesService {
         )
       );
 
-    if (!languageData) return null;
+    if (!languageData) {
+      return null;
+    }
 
     return languageData;
   }

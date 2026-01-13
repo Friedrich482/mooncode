@@ -69,6 +69,7 @@ export class UsersService {
         email: users.email,
         username: users.username,
       });
+
     return userCreated;
   }
 
@@ -128,6 +129,7 @@ export class UsersService {
         email: users.email,
         username: users.username,
       });
+
     return userCreated;
   }
 

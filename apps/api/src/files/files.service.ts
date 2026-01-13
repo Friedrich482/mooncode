@@ -61,7 +61,9 @@ export class FilesService {
         )
       );
 
-    if (!fileData) return null;
+    if (!fileData) {
+      return null;
+    }
 
     return fileData;
   }

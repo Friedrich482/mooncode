@@ -60,7 +60,9 @@ export class ProjectsService {
         )
       );
 
-    if (!project) return null;
+    if (!project) {
+      return null;
+    }
 
     return project;
   }
