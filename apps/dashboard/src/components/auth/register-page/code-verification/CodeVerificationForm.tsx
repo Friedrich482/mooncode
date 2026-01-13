@@ -7,7 +7,7 @@ import getCallbackUrl from "@/utils/getCallbackUrl";
 import pendingRegistrationLoader from "@/utils/loader/pendingRegistrationLoader";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterUser,RegisterUserSchema } from "@repo/common/types-schemas";
+import { RegisterUser, RegisterUserSchema } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -24,7 +24,7 @@ import {
   InputOTPSlot,
 } from "@repo/ui/components/ui/input-otp";
 import { cn } from "@repo/ui/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const CodeVerificationForm = () => {
   const callbackUrl = getCallbackUrl();
@@ -46,7 +46,6 @@ const CodeVerificationForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const registerMutation = useMutation(trpc.auth.register.mutationOptions());
 
   const onSubmit = async (values: RegisterUser) => {
@@ -67,8 +66,8 @@ const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ accessToken }) => {
-          await queryClient.invalidateQueries({
+        onSuccess: async ({ accessToken }, _, __, { client }) => {
+          await client.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
           });
