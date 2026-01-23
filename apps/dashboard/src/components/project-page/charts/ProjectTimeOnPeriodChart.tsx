@@ -29,7 +29,8 @@ import {
 import Icon from "@repo/ui/components/ui/Icon";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-type ChartDataType = RouterOutput["filesStats"]["getProjectPerDayOfPeriod"];
+type ChartDataType =
+  RouterOutput["analytics"]["projects"]["getProjectPerDayOfPeriod"];
 
 const tooltipLabelFormatter = (
   _date: string,
@@ -62,7 +63,7 @@ const ProjectTimeOnPeriodChart = () => {
   const trpc = useTRPC();
 
   const { data: chartData } = useSuspenseQuery(
-    trpc.filesStats.getProjectPerDayOfPeriod.queryOptions(
+    trpc.analytics.projects.getProjectPerDayOfPeriod.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,

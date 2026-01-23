@@ -20,15 +20,13 @@ const fetchInitialData = async () => {
   let serverDataFetchedSuccessfully = false;
 
   try {
-    const { timeSpent } =
-      await trpc.codingStats.getDailyStatsForExtension.query({
-        dateString,
-      });
+    const { timeSpent } = await trpc.extension.getLanguagesTimeForDay.query({
+      dateString,
+    });
 
-    const dayFilesData =
-      await trpc.filesStats.getDailyFilesStatsForExtension.query({
-        dateString,
-      });
+    const dayFilesData = await trpc.extension.getFilesForDay.query({
+      dateString,
+    });
 
     timeSpentFromServer = timeSpent;
     initialFilesDataFromServer = dayFilesData;

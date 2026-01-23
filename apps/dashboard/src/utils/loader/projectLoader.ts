@@ -14,7 +14,7 @@ const projectLoader = async ({ params }: LoaderFunctionArgs) => {
   }
 
   const projectExists =
-    await trpcLoaderClient.filesStats.checkProjectExists.query({
+    await trpcLoaderClient.analytics.projects.checkProjectExists.query({
       name: result.data.projectName,
     });
 

@@ -40,7 +40,7 @@ const GeneralStatsChart = () => {
   const trpc = useTRPC();
 
   const { data } = useSuspenseQuery(
-    trpc.codingStats.getPeriodGeneralStats.queryOptions(
+    trpc.analytics.general.getPeriodGeneralStats.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,

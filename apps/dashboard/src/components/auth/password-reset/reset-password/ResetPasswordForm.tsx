@@ -24,7 +24,7 @@ import {
 } from "@repo/ui/components/ui/form";
 import { Input } from "@repo/ui/components/ui/input";
 import { cn } from "@repo/ui/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 const CodeVerificationForm = () => {
   const callbackUrl = getCallbackUrl();
@@ -58,7 +58,6 @@ const CodeVerificationForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const resetPasswordMutation = useMutation(
     trpc.auth.resetPassword.mutationOptions(),
   );
@@ -83,8 +82,8 @@ const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ accessToken }) => {
-          await queryClient.invalidateQueries({
+        onSuccess: async ({ accessToken }, _, __, { client }) => {
+          await client.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
           });

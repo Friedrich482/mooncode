@@ -24,7 +24,7 @@ const useLanguagesDropDown = ({
   const customRange = usePeriodStore((state) => state.customRange);
 
   const { data: fetchedData } = useSuspenseQuery(
-    trpc.filesStats.getProjectLanguagesTimeOnPeriod.queryOptions(
+    trpc.analytics.projects.getProjectLanguagesTimeOnPeriod.queryOptions(
       period === "Custom Range"
         ? { name, start: customRange.start, end: customRange.end }
         : {

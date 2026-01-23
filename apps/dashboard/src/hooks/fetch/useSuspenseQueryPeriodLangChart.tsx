@@ -12,7 +12,7 @@ const useSuspenseQueryPeriodLangChart = () => {
   const trpc = useTRPC();
 
   const { data: pieChart } = useSuspenseQuery(
-    trpc.codingStats.getPeriodLanguagesTime.queryOptions(
+    trpc.analytics.general.getPeriodLanguagesTime.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,
@@ -26,7 +26,7 @@ const useSuspenseQueryPeriodLangChart = () => {
   );
 
   const { data: barChartData } = useSuspenseQuery(
-    trpc.codingStats.getPeriodLanguagesPerDay.queryOptions(
+    trpc.analytics.general.getPeriodLanguagesPerDay.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,

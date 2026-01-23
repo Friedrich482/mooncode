@@ -16,7 +16,7 @@ const PeriodProjects = () => {
   const trpc = useTRPC();
 
   const { data } = useSuspenseQuery(
-    trpc.filesStats.getPeriodProjects.queryOptions(
+    trpc.analytics.projects.getPeriodProjects.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,

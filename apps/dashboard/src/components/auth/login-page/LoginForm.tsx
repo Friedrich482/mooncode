@@ -21,7 +21,7 @@ import {
   FormMessage,
 } from "@repo/ui/components/ui/form";
 import { Input } from "@repo/ui/components/ui/input";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import GoogleLoginButton from "../GoogleLoginButton";
 import LoginMethodSeparator from "../LoginMethodSeparator";
@@ -42,7 +42,6 @@ const LoginForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const queryClient = useQueryClient();
   const loginMutation = useMutation(trpc.auth.signIn.mutationOptions());
 
   const onSubmit = async (values: SignInUser) => {
@@ -64,8 +63,8 @@ const LoginForm = () => {
             form.setError("root", { message: errorMessage });
           }
         },
-        onSuccess: async ({ accessToken }) => {
-          await queryClient.invalidateQueries({
+        onSuccess: async ({ accessToken }, _, __, { client }) => {
+          await client.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
           });

@@ -106,6 +106,7 @@ export class DailyDataService {
         id: dailyData.id,
         date: dailyData.date,
       });
+
     return updatedDailyData;
   }
 }

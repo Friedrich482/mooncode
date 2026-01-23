@@ -12,14 +12,13 @@ import {
 } from "@repo/ui/components/ui/dropdown-menu";
 import Icon from "@repo/ui/components/ui/Icon";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import GravatarAvatar from "./GravatarAvatar";
 
 const AuthDropDown = () => {
   const trpc = useTRPC();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   const mutation = useMutation(trpc.auth.logOut.mutationOptions());
 
@@ -64,8 +63,8 @@ const AuthDropDown = () => {
           className="cursor-pointer rounded-md py-1 text-base"
           onClick={() => {
             mutation.mutate(undefined, {
-              onSuccess: async () => {
-                await queryClient.invalidateQueries({
+              onSuccess: async (_, __, ___, { client }) => {
+                await client.invalidateQueries({
                   queryKey: trpc.auth.getUser.queryKey(),
                   exact: true,
                 });

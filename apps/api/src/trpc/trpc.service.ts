@@ -84,7 +84,7 @@ export class TrpcService {
     );
   }
 
-  // these routes requires authentication:
+  // these routes requires authentication
   protectedProcedure(rateLimiterParams?: RateLimiterParams) {
     const procedure = this.trpc.procedure
       .use(async (opts) => {

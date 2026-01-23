@@ -2,7 +2,7 @@ import { filesData } from "@/constants";
 import type { AppRouter } from "@repo/trpc/router";
 
 const updateFilesDataAfterSync = (
-  files: Awaited<ReturnType<AppRouter["filesStats"]["upsert"]>>,
+  files: Awaited<ReturnType<AppRouter["extension"]["upsertFiles"]>>
 ) => {
   const now = performance.now();
 
