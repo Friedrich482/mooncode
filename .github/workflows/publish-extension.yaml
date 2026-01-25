@@ -21,6 +21,9 @@ jobs:
         run: npm install
 
       - name: Publish
-        run: npm run publish:patch --workspace=mooncode
+        #   build the dashboard first then the
+        run: |
+          npm run build --workspace=dashboard
+          npm run publish:patch --workspace=mooncode
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
