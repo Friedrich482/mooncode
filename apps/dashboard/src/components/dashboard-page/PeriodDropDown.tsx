@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
 import { ChevronDown } from "lucide-react";
 
-import { PERIODS, WEEK_PERIODS, YEAR_PERIODS } from "@/constants";
+import { PERIODS } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
 import { Period } from "@/types-schemas";
 import { DATE_LOCALE } from "@repo/common/constants";
@@ -17,9 +17,7 @@ import {
 
 const PeriodDropDown = () => {
   const period = usePeriodStore((state) => state.period);
-  const groupBy = usePeriodStore((state) => state.groupBy);
   const setPeriod = usePeriodStore((state) => state.setPeriod);
-  const setGroupBy = usePeriodStore((state) => state.setGroupBy);
   const setCustomRange = usePeriodStore((state) => state.setCustomRange);
 
   const [dateRange, setDateRange] = useState<DateRange>({
@@ -41,16 +39,6 @@ const PeriodDropDown = () => {
       setIsPopoverOpen((prev) => !prev);
     }
     setPeriod(item);
-    // if the period is a week_period, like "Last 7 days" we force the groupBy to be "days"
-    if (WEEK_PERIODS.includes(item)) {
-      setGroupBy("days");
-      return;
-    }
-    // if the item is not a year period, it is in the middle (2 weeks, one month)
-    else if (!YEAR_PERIODS.includes(item) && groupBy === "months") {
-      setGroupBy("weeks");
-      return;
-    }
   };
 
   useEffect(() => {

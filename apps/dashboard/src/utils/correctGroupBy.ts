@@ -27,10 +27,6 @@ const correctGroupBy = (
     return "weeks";
   }
 
-  if (periodResolution === "month" && groupBy === "months") {
-    return "weeks";
-  }
-
   return groupBy;
 };
 

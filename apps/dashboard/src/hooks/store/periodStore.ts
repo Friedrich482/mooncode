@@ -47,6 +47,7 @@ export const usePeriodStore = create<Store>((set, get) => ({
         PERIODS_CONFIG[newPeriod].start,
         PERIODS_CONFIG[newPeriod].end,
       ),
+      groupBy: correctGroupBy(newPeriod, get().customRange, get().groupBy),
     });
 
     updateURLFromState({ ...get(), period: newPeriod });
@@ -66,6 +67,7 @@ export const usePeriodStore = create<Store>((set, get) => ({
         newCustomRange.start,
         newCustomRange.end,
       ),
+      groupBy: correctGroupBy(get().period, newCustomRange, get().groupBy),
     });
     updateURLFromState({ ...get(), customRange: newCustomRange });
   },
