@@ -24,7 +24,6 @@ jobs:
         #   build the dashboard first then the extension
         run: |
           npm run build --workspace=@repo/common
-          npm run build --workspace=@repo/trpc
           npm run build --workspace=dashboard
           npm run publish:patch --workspace=mooncode
         env:
