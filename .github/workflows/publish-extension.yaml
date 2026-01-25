@@ -21,8 +21,12 @@ jobs:
         run: npm install
 
       - name: Publish
-        #   build the dashboard first then the extension
+        #  build the dashboard first then the extension
+        # for that we need to build the trpc and common packages
+        # trpc needs to get its types from the api build
         run: |
+          npm run build --workspace=api
+          npm run build --workspace=@repo/trpc
           npm run build --workspace=@repo/common
           npm run build --workspace=dashboard
           npm run publish:patch --workspace=mooncode
