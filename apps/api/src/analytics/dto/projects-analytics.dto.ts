@@ -27,7 +27,7 @@ export const GetProjectFilesOnPeriodDto = z.object({
     z.object({
       ...DateRangeDto.shape,
       name: z.string().min(1),
-    })
+    }),
   ).shape,
   amount: z.number().optional(),
   languages: z.array(z.string()).optional(),
@@ -37,34 +37,36 @@ export const CheckProjectExistsDto = z.object({
   name: z.string().min(1),
 });
 
-export const GetPeriodProjectsDto = refineDto(DateRangeDto);
+export const GetPeriodProjectsDto = refineDto(
+  z.object({ ...DateRangeDto.shape, page: z.number().int().positive() }),
+);
 
 export const GetProjectOnPeriodDto = refineDto(
   z.object({
     ...DateRangeDto.shape,
     name: z.string().min(1),
-  })
+  }),
 );
 
 export const GetProjectPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
     name: z.string().min(1),
-  })
+  }),
 );
 
 export const GetProjectLanguagesTimeOnPeriodDto = refineDto(
   z.object({
     ...DateRangeDto.shape,
     name: z.string().min(1),
-  })
+  }),
 );
 
 export const GetProjectLanguagesPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
     name: z.string().min(1),
-  })
+  }),
 );
 
 export type FindProjectByNameOnRangeDtoType = z.infer<

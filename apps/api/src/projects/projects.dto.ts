@@ -23,6 +23,7 @@ export const FindRangeProjectsDto = z.object({
   userId: z.ulid(),
   start: DateStringDto,
   end: DateStringDto,
+  page: z.number().int().positive(),
 });
 
 export const UpdateProjectDto = z.object({

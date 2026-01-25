@@ -1,4 +1,4 @@
-import { and, between, desc, eq, sum } from "drizzle-orm";
+import { and, between, count, desc, eq, sum } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { dailyData } from "src/drizzle/schema/dailyData";
@@ -6,6 +6,7 @@ import { projects } from "src/drizzle/schema/projects";
 
 import { Inject, Injectable } from "@nestjs/common";
 
+import { NUMBER_OF_PROJECTS_PER_PAGE } from "./constants";
 import {
   CheckProjectExistsDtoType,
   CreateProjectDtoType,
@@ -18,7 +19,7 @@ import {
 export class ProjectsService {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase
+    private readonly db: NodePgDatabase,
   ) {}
 
   async create(createProjectDto: CreateProjectDtoType) {
@@ -56,8 +57,8 @@ export class ProjectsService {
         and(
           eq(projects.dailyDataId, dailyDataId),
           eq(projects.name, name),
-          eq(projects.path, path)
-        )
+          eq(projects.path, path),
+        ),
       );
 
     if (!project) {
@@ -82,7 +83,7 @@ export class ProjectsService {
   }
 
   async findRange(findRangeProjectsDto: FindRangeProjectsDtoType) {
-    const { userId, start, end } = findRangeProjectsDto;
+    const { userId, start, end, page } = findRangeProjectsDto;
 
     const timeSpentPerProject = await this.db
       .select({
@@ -93,12 +94,34 @@ export class ProjectsService {
       .from(projects)
       .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
       .where(
-        and(eq(dailyData.userId, userId), between(dailyData.date, start, end))
+        and(eq(dailyData.userId, userId), between(dailyData.date, start, end)),
       )
       .groupBy(projects.path, projects.name)
-      .orderBy(desc(sum(projects.timeSpent)));
+      .orderBy(desc(sum(projects.timeSpent)))
+      .offset((page - 1) * NUMBER_OF_PROJECTS_PER_PAGE)
+      .limit(NUMBER_OF_PROJECTS_PER_PAGE);
 
-    return timeSpentPerProject;
+    const [{ count: total }] = await this.db.select({ count: count() }).from(
+      this.db
+        .select({
+          name: projects.name,
+          path: projects.path,
+        })
+        .from(projects)
+        .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
+        .where(
+          and(
+            eq(dailyData.userId, userId),
+            between(dailyData.date, start, end),
+          ),
+        )
+        .groupBy(projects.path, projects.name)
+        .as("grouped_projects"),
+    );
+
+    const hasNext = page * NUMBER_OF_PROJECTS_PER_PAGE < total;
+
+    return { timeSpentPerProject, hasNext };
   }
 
   async update(updateProjectDto: UpdateProjectDtoType) {
@@ -113,8 +136,8 @@ export class ProjectsService {
         and(
           eq(projects.dailyDataId, dailyDataId),
           eq(projects.path, path),
-          eq(projects.name, name)
-        )
+          eq(projects.name, name),
+        ),
       )
       .returning({
         name: projects.name,
