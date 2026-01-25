@@ -23,6 +23,7 @@ jobs:
       - name: Publish
         #   build the dashboard first then the
         run: |
+          npm run build --workspace=@repo/common
           npm run build --workspace=dashboard
           npm run publish:patch --workspace=mooncode
         env:
