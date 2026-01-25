@@ -15,22 +15,22 @@ const CustomRangeDatesSelector = () => {
   const [isEndPopoverOpen, setIsEndPopoverOpen] = useState(false);
   const [endDate, setEndDate] = useState(new Date(customRange.end));
 
-  useEffect(
-    () =>
+  useEffect(() => {
+    if (period === "Custom Range") {
       setCustomRange({
         start: startDate.toLocaleDateString(DATE_LOCALE),
         end: customRange.end,
-      }),
-    [startDate],
-  );
-  useEffect(
-    () =>
+      });
+    }
+  }, [startDate]);
+  useEffect(() => {
+    if (period === "Custom Range") {
       setCustomRange({
         start: customRange.start,
         end: endDate.toLocaleDateString(DATE_LOCALE),
-      }),
-    [endDate],
-  );
+      });
+    }
+  }, [endDate]);
 
   return (
     period === "Custom Range" && (

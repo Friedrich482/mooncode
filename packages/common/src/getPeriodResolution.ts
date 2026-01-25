@@ -4,13 +4,13 @@ import { PeriodResolution } from "./types-schemas";
 
 const getPeriodResolution = (
   start: string | Date,
-  end: string | Date
+  end: string | Date,
 ): PeriodResolution => {
-  const numberOfDays = Math.abs(differenceInDays(start, end));
+  const numberOfDays = Math.abs(differenceInDays(start, end)) + 1;
   const periodResolution =
     numberOfDays < 7
       ? "day"
-      : numberOfDays < 31
+      : numberOfDays < 30
         ? "week"
         : numberOfDays < 365
           ? "month"

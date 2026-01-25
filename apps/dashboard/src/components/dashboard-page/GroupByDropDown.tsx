@@ -36,10 +36,9 @@ const GroupByDropDown = () => {
         <DropdownMenuContent className="w-40 p-2" align="start">
           {GROUP_BY_DROPDOWN_ITEMS.slice(
             0,
-            // we show "Months" only if the periodResolution is "year" (typically "This year" or "Last year")
-            periodResolution === "year"
+            periodResolution === "year" || periodResolution === "month"
               ? undefined
-              : periodResolution === "month" || periodResolution === "week"
+              : periodResolution === "week"
                 ? -1
                 : -2,
           ).map(({ text, groupBy }) => (

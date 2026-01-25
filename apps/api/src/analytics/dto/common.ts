@@ -17,7 +17,7 @@ export const BaseDto = z.object({
 });
 
 export const refineDto = <T extends z.ZodType<z.infer<typeof BaseDto>>>(
-  dto: T
+  dto: T,
 ) => {
   return dto.refine((input) => !isAfter(input.start, input.end), {
     error: INCOHERENT_DATE_RANGE_ERROR_MESSAGE,
@@ -27,7 +27,7 @@ export const refineDto = <T extends z.ZodType<z.infer<typeof BaseDto>>>(
 export const refineAndTransformDto = <
   T extends z.ZodType<z.infer<typeof BaseDto>>,
 >(
-  dto: T
+  dto: T,
 ) => {
   return refineDto(dto).transform((input) => {
     //  this prevent the groupBy attribute to be "weeks" for periods like "Last 7 days", "This week" or "Last week"

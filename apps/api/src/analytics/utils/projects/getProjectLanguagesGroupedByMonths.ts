@@ -4,7 +4,7 @@ import formatShortDate from "src/common/utils/formatShortDate";
 
 import convertToISODate from "@repo/common/convertToISODate";
 
-const getProjectLanguageGroupedByMonths = (
+const getProjectLanguagesGroupedByMonths = (
   data: Awaited<
     ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
   >,
@@ -79,4 +79,4 @@ const getProjectLanguageGroupedByMonths = (
   return projectLanguagesGroupedByMonths;
 };
 
-export default getProjectLanguageGroupedByMonths;
+export default getProjectLanguagesGroupedByMonths;
