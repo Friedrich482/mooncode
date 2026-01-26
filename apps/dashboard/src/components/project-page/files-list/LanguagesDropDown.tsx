@@ -34,22 +34,25 @@ const LanguagesDropDown = ({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-48 p-2" align="start">
-        {languagesToDisplay.map((entry) => (
-          <DropdownMenuCheckboxItem
-            checked={isChecked(entry)}
-            key={entry.languageSlug}
-            onCheckedChange={() => handleCheckEntry(entry)}
-            className="cursor-pointer gap-3 rounded-md py-1 text-base"
-          >
-            <span
-              className="size-4 rounded-full"
-              style={{
-                backgroundColor: entry.color,
-              }}
-            />
-            <span>{entry.languageName}</span>
-          </DropdownMenuCheckboxItem>
-        ))}
+        {languagesToDisplay.length === 0
+          ? "No entry"
+          : languagesToDisplay.map((entry) => (
+              <DropdownMenuCheckboxItem
+                checked={isChecked(entry)}
+                key={entry.languageSlug}
+                onCheckedChange={() => handleCheckEntry(entry)}
+                onSelect={(e) => e.preventDefault()}
+                className="cursor-pointer gap-3 rounded-md py-1 text-base"
+              >
+                <span
+                  className="size-4 rounded-full"
+                  style={{
+                    backgroundColor: entry.color,
+                  }}
+                />
+                <span>{entry.languageName}</span>
+              </DropdownMenuCheckboxItem>
+            ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
