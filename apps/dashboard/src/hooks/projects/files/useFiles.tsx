@@ -8,7 +8,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 const useFiles = (
   languagesToFetch: string[] | undefined,
-  amount: number | undefined,
+  page: number,
   searchTerm: string,
   isSortedDesc: boolean,
 ) => {
@@ -18,7 +18,9 @@ const useFiles = (
   const customRange = usePeriodStore((state) => state.customRange);
   const trpc = useTRPC();
 
-  const { data: filesData } = useSuspenseQuery(
+  const search = searchTerm.trim().toLowerCase();
+
+  const { data } = useSuspenseQuery(
     trpc.analytics.projects.getProjectFilesOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
@@ -26,21 +28,34 @@ const useFiles = (
             start: customRange.start,
             end: customRange.end,
             languages: languagesToFetch,
-            amount,
+            page,
+            type: "paginated",
+            search: search || undefined,
           }
         : {
             name,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             languages: languagesToFetch,
-            amount,
+            page,
+            type: "paginated",
+            search: search || undefined,
           },
     ),
   );
 
-  const files = Object.entries(filesData).filter(([, { name }]) =>
-    name.toLowerCase().includes(searchTerm.trim().toLowerCase()),
-  );
+  const { projectFilesOnPeriod: filesData, hasNext } = data as {
+    projectFilesOnPeriod: {
+      [filePath: string]: {
+        totalTimeSpent: number;
+        languageSlug: string;
+        name: string;
+      };
+    };
+    hasNext: boolean;
+  };
+
+  const files = Object.entries(filesData);
 
   const groups = Object.entries(
     files.reduce(
@@ -86,10 +101,11 @@ const useFiles = (
   );
   // the data initially returned by the server is in DESC order
   return isSortedDesc
-    ? { groups, files }
+    ? { groups, files, hasNext }
     : {
         groups: [...groups].reverse(),
         files: [...files].reverse(),
+        hasNext,
       };
 };
 

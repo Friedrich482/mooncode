@@ -1,0 +1,1 @@
+export const NUMBER_OF_PROJECTS_PER_PAGE = 10;

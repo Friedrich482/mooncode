@@ -30,17 +30,27 @@ const FilesCirclePackingChart = () => {
             start: customRange.start,
             end: customRange.end,
             amount: NUMBER_OF_FILES_TO_SHOW,
+            type: "normal" as const,
           }
         : {
             name,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             amount: NUMBER_OF_FILES_TO_SHOW,
+            type: "normal" as const,
           },
     ),
   );
 
-  const childrenArray = Object.entries(fetched);
+  const childrenArray = Object.entries(
+    fetched as {
+      [filePath: string]: {
+        totalTimeSpent: number;
+        languageSlug: string;
+        name: string;
+      };
+    },
+  );
 
   const groups = Object.entries(
     childrenArray.reduce(

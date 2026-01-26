@@ -1,5 +1,14 @@
 import { eachDayOfInterval } from "date-fns";
-import { and, between, desc, eq, inArray, sum } from "drizzle-orm";
+import {
+  and,
+  between,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  sum,
+} from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
   CheckProjectExistsDtoType,
@@ -27,16 +36,18 @@ import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 import { TRPCError } from "@trpc/server";
 
+import { NUMBER_OF_FILES_PER_PAGE } from "../constants";
+
 @Injectable()
 export class ProjectsAnalyticsService {
   constructor(
     @Inject(DrizzleAsyncProvider)
     private readonly db: NodePgDatabase,
-    private readonly projectsService: ProjectsService
+    private readonly projectsService: ProjectsService,
   ) {}
 
   async findProjectByNameOnRange(
-    findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType
+    findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType,
   ) {
     const { userId, name, start, end } = findProjectByNameOnRangeDto;
 
@@ -51,8 +62,8 @@ export class ProjectsAnalyticsService {
         and(
           eq(dailyData.userId, userId),
           eq(projects.name, name),
-          between(dailyData.date, start, end)
-        )
+          between(dailyData.date, start, end),
+        ),
       )
       .groupBy(dailyData.date);
 
@@ -62,7 +73,7 @@ export class ProjectsAnalyticsService {
     });
 
     const dataByDate = Object.fromEntries(
-      data.map((item) => [item.date, item])
+      data.map((item) => [item.date, item]),
     );
 
     const projectOnDaysOnPeriod = dateRange.map((date) => {
@@ -79,7 +90,7 @@ export class ProjectsAnalyticsService {
   }
 
   async getLanguagesTimeOnPeriod(
-    getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType
+    getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType,
   ) {
     const { userId, name, start, end } = getProjectLanguagesTimeOnPeriodDto;
 
@@ -96,8 +107,8 @@ export class ProjectsAnalyticsService {
         and(
           eq(dailyData.userId, userId),
           eq(projects.name, name),
-          between(dailyData.date, start, end)
-        )
+          between(dailyData.date, start, end),
+        ),
       )
       .groupBy(languages.languageSlug)
       .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
@@ -107,14 +118,14 @@ export class ProjectsAnalyticsService {
         aggregated.map(({ languageSlug, totalTime }) => [
           languageSlug,
           totalTime,
-        ])
+        ]),
       );
 
     return languagesTimesOnPeriod;
   }
 
   async getLanguagesTimePerDayOfPeriod(
-    getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType
+    getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType,
   ) {
     const { userId, name, start, end } =
       getProjectLanguagesTimePerDayOfPeriodDto;
@@ -133,8 +144,8 @@ export class ProjectsAnalyticsService {
         and(
           eq(dailyData.userId, userId),
           eq(projects.name, name),
-          between(dailyData.date, start, end)
-        )
+          between(dailyData.date, start, end),
+        ),
       );
 
     const languagesPerDayOfPeriod = data.reduce(
@@ -145,7 +156,7 @@ export class ProjectsAnalyticsService {
         acc[date][languageSlug] = (acc[date][languageSlug] || 0) + timeSpent;
         return acc;
       },
-      {} as { [date: string]: { [languageSlug: string]: number } }
+      {} as { [date: string]: { [languageSlug: string]: number } },
     );
 
     return languagesPerDayOfPeriod;
@@ -156,17 +167,19 @@ export class ProjectsAnalyticsService {
   }
 
   async getPeriodProjects(getPeriodProjectsDto: GetPeriodProjectsDtoType) {
-    const { userId, start, end } = getPeriodProjectsDto;
+    const { userId, start, end, page } = getPeriodProjectsDto;
 
-    const projectsOnRange = await this.projectsService.findRange({
-      userId,
-      start,
-      end,
-    });
+    const { timeSpentPerProject: projectsOnRange, hasNext } =
+      await this.projectsService.findRange({
+        userId,
+        start,
+        end,
+        page,
+      });
 
     const timeSpentAcrossAllProjects = projectsOnRange.reduce(
       (acc, value) => acc + value.totalTimeSpent,
-      0
+      0,
     );
 
     const periodProjects = projectsOnRange.map((project) => ({
@@ -178,11 +191,11 @@ export class ProjectsAnalyticsService {
               (
                 (project.totalTimeSpent * 100) /
                 timeSpentAcrossAllProjects
-              ).toFixed(2)
+              ).toFixed(2),
             ),
     }));
 
-    return periodProjects;
+    return { periodProjects, hasNext };
   }
 
   async getProjectOnPeriod(getProjectOnPeriodDto: GetProjectOnPeriodDtoType) {
@@ -211,8 +224,8 @@ export class ProjectsAnalyticsService {
         and(
           eq(dailyData.userId, userId),
           between(dailyData.date, start, end),
-          eq(projects.name, name)
-        )
+          eq(projects.name, name),
+        ),
       )
       .groupBy(projects.path, projects.name)
       .orderBy(desc(sum(projects.timeSpent)));
@@ -229,7 +242,7 @@ export class ProjectsAnalyticsService {
   }
 
   async getProjectPerDayOfPeriod(
-    getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType
+    getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType,
   ) {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectPerDayOfPeriodDto;
@@ -249,7 +262,7 @@ export class ProjectsAnalyticsService {
       case "weeks":
         return getProjectPerDayOfPeriodGroupedByWeeks(
           projectOnDaysOnPeriod,
-          periodResolution
+          periodResolution,
         );
 
       case "months":
@@ -267,14 +280,14 @@ export class ProjectsAnalyticsService {
         value: formatDuration(timeSpent),
         originalDate: new Date(date).toDateString(),
         date: getWeekDayName(date),
-      })
+      }),
     );
 
     return projectsPerDayOfPeriod;
   }
 
   async getProjectLanguagesTimeOnPeriod(
-    getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType
+    getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType,
   ) {
     const { userId, start, end, name } = getProjectLanguagesTimeOnPeriod;
 
@@ -314,7 +327,9 @@ export class ProjectsAnalyticsService {
           totalTimeSpentOnProjectOnPeriod === 0
             ? 0
             : parseFloat(
-                ((timeSpent * 100) / totalTimeSpentOnProjectOnPeriod).toFixed(2)
+                ((timeSpent * 100) / totalTimeSpentOnProjectOnPeriod).toFixed(
+                  2,
+                ),
               ),
       }))
       .sort((a, b) => a.time - b.time);
@@ -323,7 +338,7 @@ export class ProjectsAnalyticsService {
   }
 
   async getProjectLanguagesPerDayOfPeriod(
-    getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType
+    getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType,
   ) {
     const { userId, start, end, name, groupBy, periodResolution } =
       getProjectLanguagesPerDayOfPeriodDto;
@@ -352,13 +367,13 @@ export class ProjectsAnalyticsService {
         return getProjectLanguagesGroupedByWeeks(
           projectOnDaysOnPeriod,
           periodResolution,
-          languagesTimesPerDayOfPeriod
+          languagesTimesPerDayOfPeriod,
         );
 
       case "months":
         return getProjectLanguagesGroupedByMonths(
           projectOnDaysOnPeriod,
-          languagesTimesPerDayOfPeriod
+          languagesTimesPerDayOfPeriod,
         );
 
       default:
@@ -371,22 +386,39 @@ export class ProjectsAnalyticsService {
         originalDate: new Date(date).toDateString(),
         date: getWeekDayName(date),
         ...(languagesTimesPerDayOfPeriod[date] ?? {}),
-      })
+      }),
     );
 
     return periodLanguagesPerDayOfPeriod;
   }
-  async getFilesOnPeriod(
-    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType
-  ) {
-    const {
-      userId,
-      name,
-      start,
-      end,
-      amount,
-      languages: languagesArray,
-    } = getProjectFilesOnPeriodDto;
+
+  async getFilesOnPeriod<T extends GetProjectFilesOnPeriodDtoType>(
+    getProjectFilesOnPeriodDto: T,
+  ): Promise<
+    T extends {
+      type: "paginated";
+    }
+      ? {
+          projectFilesOnPeriod: {
+            [filePath: string]: {
+              totalTimeSpent: number;
+              languageSlug: string;
+              name: string;
+            };
+          };
+          hasNext: boolean;
+        }
+      : T extends { type: "normal" }
+        ? {
+            [filePath: string]: {
+              totalTimeSpent: number;
+              languageSlug: string;
+              name: string;
+            };
+          }
+        : never
+  > {
+    const { userId, name, start, end, type } = getProjectFilesOnPeriodDto;
 
     const baseQuery = this.db
       .select({
@@ -399,21 +431,71 @@ export class ProjectsAnalyticsService {
       .from(files)
       .innerJoin(projects, eq(projects.id, files.projectId))
       .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(languages, eq(languages.id, files.languageId));
+
+    // normal case
+    if (type === "normal") {
+      const { amount } = getProjectFilesOnPeriodDto;
+
+      const result = await baseQuery
+        .where(
+          and(
+            eq(dailyData.userId, userId),
+            eq(projects.name, name),
+            between(dailyData.date, start, end),
+          ),
+        )
+        .groupBy(files.path, languages.languageSlug, projects.name, files.name)
+        .orderBy(desc(sum(files.timeSpent).mapWith(Number)))
+        .limit(amount)
+        .execute();
+
+      const projectFilesOnPeriod: {
+        [filePath: string]: {
+          totalTimeSpent: number;
+          languageSlug: string;
+          name: string;
+        };
+      } = Object.fromEntries(
+        result.map((entry) => [
+          entry.path,
+          {
+            totalTimeSpent: entry.totalTimeSpent,
+            languageSlug: entry.languageSlug,
+            name: entry.name,
+          },
+        ]),
+      );
+
+      return projectFilesOnPeriod as Awaited<
+        ReturnType<typeof this.getFilesOnPeriod<T>>
+      >;
+    }
+
+    // paginated case
+    const {
+      languages: languagesArray,
+      page,
+      search,
+    } = getProjectFilesOnPeriodDto;
+
+    const result = await baseQuery
       .where(
         and(
           eq(dailyData.userId, userId),
           eq(projects.name, name),
           between(dailyData.date, start, end),
+          search ? ilike(files.name, `%${search}%`) : undefined,
           languagesArray
             ? inArray(languages.languageSlug, languagesArray)
-            : undefined
-        )
+            : undefined,
+        ),
       )
       .groupBy(files.path, languages.languageSlug, projects.name, files.name)
-      .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
-    const finalQuery = amount ? baseQuery.limit(amount) : baseQuery;
-    const result = await finalQuery.execute();
+      .orderBy(desc(sum(files.timeSpent).mapWith(Number)))
+      .offset((page - 1) * NUMBER_OF_FILES_PER_PAGE)
+      .limit(NUMBER_OF_FILES_PER_PAGE)
+      .execute();
 
     const projectFilesOnPeriod: {
       [filePath: string]: {
@@ -421,15 +503,49 @@ export class ProjectsAnalyticsService {
         languageSlug: string;
         name: string;
       };
-    } = {};
-    for (const entry of result) {
-      projectFilesOnPeriod[entry.path] = {
-        totalTimeSpent: entry.totalTimeSpent,
-        languageSlug: entry.languageSlug,
-        name: entry.name,
-      };
-    }
+    } = Object.fromEntries(
+      result.map((entry) => [
+        entry.path,
+        {
+          totalTimeSpent: entry.totalTimeSpent,
+          languageSlug: entry.languageSlug,
+          name: entry.name,
+        },
+      ]),
+    );
 
-    return projectFilesOnPeriod;
+    const [{ count: total }] = await this.db.select({ count: count() }).from(
+      this.db
+        .select({
+          totalTimeSpent: sum(files.timeSpent).mapWith(Number),
+          languageSlug: languages.languageSlug,
+          projectName: projects.name,
+          name: files.name,
+          path: files.path,
+        })
+        .from(files)
+        .innerJoin(projects, eq(projects.id, files.projectId))
+        .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+        .innerJoin(languages, eq(languages.id, files.languageId))
+        .where(
+          and(
+            eq(dailyData.userId, userId),
+            eq(projects.name, name),
+            between(dailyData.date, start, end),
+            search ? ilike(files.name, `%${search}%`) : undefined,
+            languagesArray
+              ? inArray(languages.languageSlug, languagesArray)
+              : undefined,
+          ),
+        )
+        .groupBy(files.path, languages.languageSlug, projects.name, files.name)
+        .as("grouped_files"),
+    );
+
+    const hasNext = page * NUMBER_OF_FILES_PER_PAGE < total;
+
+    return { projectFilesOnPeriod, hasNext } as Awaited<
+      ReturnType<typeof this.getFilesOnPeriod<T>>
+    >;
   }
 }

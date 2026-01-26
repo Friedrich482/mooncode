@@ -1,6 +1,14 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { Folder, FolderOpen, LayoutGrid, List } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  Folder,
+  FolderOpen,
+  LayoutGrid,
+  List,
+} from "lucide-react";
 
 import { PERIODS_CONFIG } from "@/constants";
 import { usePeriodStore } from "@/hooks/store/periodStore";
@@ -15,16 +23,30 @@ const PeriodProjects = () => {
   const customRange = usePeriodStore((state) => state.customRange);
   const trpc = useTRPC();
 
-  const { data } = useSuspenseQuery(
+  const [page, setPage] = useState(1);
+  const handlePreviousPageButtonClick = () => setPage((prev) => prev - 1);
+  const handleNextPageButtonClick = () => setPage((prev) => prev + 1);
+  const handleGoBackToFirstPageButtonClick = () => setPage(1);
+
+  // Reset page when period or date range changes
+  useEffect(() => {
+    setPage(1);
+  }, [period, customRange.start, customRange.end]);
+
+  const {
+    data: { periodProjects: data, hasNext },
+  } = useSuspenseQuery(
     trpc.analytics.projects.getPeriodProjects.queryOptions(
       period === "Custom Range"
         ? {
             start: customRange.start,
             end: customRange.end,
+            page,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
+            page,
           },
     ),
   );
@@ -111,6 +133,31 @@ const PeriodProjects = () => {
           ))}
         </div>
       )}
+
+      {/* Pagination buttons */}
+      <section className="mt-auto flex items-center justify-end gap-2">
+        {page !== 1 && (
+          <Icon
+            Icon={ChevronsLeft}
+            onClick={handleGoBackToFirstPageButtonClick}
+            title="Go back to first Page"
+          />
+        )}
+        <Icon
+          Icon={ChevronLeft}
+          onClick={handlePreviousPageButtonClick}
+          disabled={page === 1}
+          title="Previous Page"
+          className="disabled:cursor-not-allowed"
+        />
+        <Icon
+          Icon={ChevronRight}
+          onClick={handleNextPageButtonClick}
+          disabled={!hasNext}
+          title="Next Page"
+          className="disabled:cursor-not-allowed"
+        />
+      </section>
     </div>
   );
 };

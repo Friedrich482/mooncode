@@ -5,34 +5,21 @@ import { Checkbox } from "@repo/ui/components/ui/checkbox";
 import { Input } from "@repo/ui/components/ui/input";
 
 const FiltersSection = ({
-  limitInput,
   isGrouped,
   searchTerm,
-  handleLimitInputChange,
   handleCheckChange,
   handleSortButtonClick,
   handleSearchInputChange,
 }: {
-  limitInput: string;
   isGrouped: boolean;
   searchTerm: string;
 
-  handleLimitInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCheckChange: () => void;
   handleSortButtonClick: () => void;
 
   handleSearchInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) => (
   <>
-    <div>
-      <Input
-        value={limitInput}
-        aria-label="limit"
-        placeholder="Enter a limit"
-        onChange={handleLimitInputChange}
-      />
-    </div>
-
     <div className="flex gap-4">
       <p>Group</p>
       <Checkbox
