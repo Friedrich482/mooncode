@@ -21,10 +21,19 @@ jobs:
         run: npm install
 
       - name: Publish
-        #   build the dashboard first then the
+        #  build the dashboard first then the extension
+        # for that we need to build the trpc and common packages
+        # trpc needs to get its types from the api build
         run: |
           npm run build --workspace=@repo/common
+          npm run build --workspace=api
+          npm run build --workspace=@repo/trpc
           npm run build --workspace=dashboard
           npm run publish:patch --workspace=mooncode
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
+          VITE_API_URL: ${{secrets.VITE_API_URL}}
+          VITE_LOGIN_URL: ${{secrets.VITE_LOGIN_URL}}
+          VITE_REGISTER_URL: ${{secrets.VITE_REGISTER_URL}}
+          VITE_LOGOUT_URL: ${{secrets.VITE_LOGOUT_URL}}
+          VITE_AUTH_GOOGLE_URL: ${{secrets.VITE_AUTH_GOOGLE_URL}}
