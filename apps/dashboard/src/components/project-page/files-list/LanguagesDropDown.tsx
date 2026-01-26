@@ -42,7 +42,7 @@ const LanguagesDropDown = ({
                 key={entry.languageSlug}
                 onCheckedChange={() => handleCheckEntry(entry)}
                 onSelect={(e) => e.preventDefault()}
-                className="cursor-pointer gap-3 rounded-md px-3 py-1 text-base"
+                className="cursor-pointer gap-3 rounded-md py-1 text-base"
               >
                 <span
                   className="size-4 shrink-0 rounded-full"
