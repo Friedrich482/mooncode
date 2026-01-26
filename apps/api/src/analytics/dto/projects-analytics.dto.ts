@@ -22,16 +22,33 @@ export const GetProjectLanguagesTimePerDayOfPeriodDto = z.object({
   name: z.string().min(1),
 });
 
-export const GetProjectFilesOnPeriodDto = z.object({
+export const GetProjectFilesOnPeriodBaseDto = z.object({
   ...refineDto(
     z.object({
       ...DateRangeDto.shape,
       name: z.string().min(1),
     }),
   ).shape,
-  amount: z.number().optional(),
-  languages: z.array(z.string()).optional(),
 });
+
+export const GetProjectFilesOnPeriodPaginatedDto = z.object({
+  ...GetProjectFilesOnPeriodBaseDto.shape,
+  page: z.number().int().positive(),
+  languages: z.array(z.string()).optional(),
+  type: z.literal("paginated"),
+  search: z.string().min(1).max(20).optional(),
+});
+
+export const GetProjectFilesOnPeriodNormalDto = z.object({
+  ...GetProjectFilesOnPeriodBaseDto.shape,
+  amount: z.number().int().nonnegative(),
+  type: z.literal("normal"),
+});
+
+export const GetProjectFilesOnPeriodDto = z.discriminatedUnion("type", [
+  GetProjectFilesOnPeriodPaginatedDto,
+  GetProjectFilesOnPeriodNormalDto,
+]);
 
 export const CheckProjectExistsDto = z.object({
   name: z.string().min(1),

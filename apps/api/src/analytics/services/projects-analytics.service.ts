@@ -1,5 +1,14 @@
 import { eachDayOfInterval } from "date-fns";
-import { and, between, desc, eq, inArray, sum } from "drizzle-orm";
+import {
+  and,
+  between,
+  count,
+  desc,
+  eq,
+  ilike,
+  inArray,
+  sum,
+} from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
   CheckProjectExistsDtoType,
@@ -26,6 +35,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import convertToISODate from "@repo/common/convertToISODate";
 import formatDuration from "@repo/common/formatDuration";
 import { TRPCError } from "@trpc/server";
+
+import { NUMBER_OF_FILES_PER_PAGE } from "../constants";
 
 @Injectable()
 export class ProjectsAnalyticsService {
@@ -380,17 +391,34 @@ export class ProjectsAnalyticsService {
 
     return periodLanguagesPerDayOfPeriod;
   }
-  async getFilesOnPeriod(
-    getProjectFilesOnPeriodDto: GetProjectFilesOnPeriodDtoType,
-  ) {
-    const {
-      userId,
-      name,
-      start,
-      end,
-      amount,
-      languages: languagesArray,
-    } = getProjectFilesOnPeriodDto;
+
+  async getFilesOnPeriod<T extends GetProjectFilesOnPeriodDtoType>(
+    getProjectFilesOnPeriodDto: T,
+  ): Promise<
+    T extends {
+      type: "paginated";
+    }
+      ? {
+          projectFilesOnPeriod: {
+            [filePath: string]: {
+              totalTimeSpent: number;
+              languageSlug: string;
+              name: string;
+            };
+          };
+          hasNext: boolean;
+        }
+      : T extends { type: "normal" }
+        ? {
+            [filePath: string]: {
+              totalTimeSpent: number;
+              languageSlug: string;
+              name: string;
+            };
+          }
+        : never
+  > {
+    const { userId, name, start, end, type } = getProjectFilesOnPeriodDto;
 
     const baseQuery = this.db
       .select({
@@ -403,21 +431,71 @@ export class ProjectsAnalyticsService {
       .from(files)
       .innerJoin(projects, eq(projects.id, files.projectId))
       .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(languages, eq(languages.id, files.languageId));
+
+    // normal case
+    if (type === "normal") {
+      const { amount } = getProjectFilesOnPeriodDto;
+
+      const result = await baseQuery
+        .where(
+          and(
+            eq(dailyData.userId, userId),
+            eq(projects.name, name),
+            between(dailyData.date, start, end),
+          ),
+        )
+        .groupBy(files.path, languages.languageSlug, projects.name, files.name)
+        .orderBy(desc(sum(files.timeSpent).mapWith(Number)))
+        .limit(amount)
+        .execute();
+
+      const projectFilesOnPeriod: {
+        [filePath: string]: {
+          totalTimeSpent: number;
+          languageSlug: string;
+          name: string;
+        };
+      } = Object.fromEntries(
+        result.map((entry) => [
+          entry.path,
+          {
+            totalTimeSpent: entry.totalTimeSpent,
+            languageSlug: entry.languageSlug,
+            name: entry.name,
+          },
+        ]),
+      );
+
+      return projectFilesOnPeriod as Awaited<
+        ReturnType<typeof this.getFilesOnPeriod<T>>
+      >;
+    }
+
+    // paginated case
+    const {
+      languages: languagesArray,
+      page,
+      search,
+    } = getProjectFilesOnPeriodDto;
+
+    const result = await baseQuery
       .where(
         and(
           eq(dailyData.userId, userId),
           eq(projects.name, name),
           between(dailyData.date, start, end),
+          search ? ilike(files.name, `%${search}%`) : undefined,
           languagesArray
             ? inArray(languages.languageSlug, languagesArray)
             : undefined,
         ),
       )
       .groupBy(files.path, languages.languageSlug, projects.name, files.name)
-      .orderBy(desc(sum(files.timeSpent).mapWith(Number)));
-    const finalQuery = amount ? baseQuery.limit(amount) : baseQuery;
-    const result = await finalQuery.execute();
+      .orderBy(desc(sum(files.timeSpent).mapWith(Number)))
+      .offset((page - 1) * NUMBER_OF_FILES_PER_PAGE)
+      .limit(NUMBER_OF_FILES_PER_PAGE)
+      .execute();
 
     const projectFilesOnPeriod: {
       [filePath: string]: {
@@ -425,15 +503,49 @@ export class ProjectsAnalyticsService {
         languageSlug: string;
         name: string;
       };
-    } = {};
-    for (const entry of result) {
-      projectFilesOnPeriod[entry.path] = {
-        totalTimeSpent: entry.totalTimeSpent,
-        languageSlug: entry.languageSlug,
-        name: entry.name,
-      };
-    }
+    } = Object.fromEntries(
+      result.map((entry) => [
+        entry.path,
+        {
+          totalTimeSpent: entry.totalTimeSpent,
+          languageSlug: entry.languageSlug,
+          name: entry.name,
+        },
+      ]),
+    );
 
-    return projectFilesOnPeriod;
+    const [{ count: total }] = await this.db.select({ count: count() }).from(
+      this.db
+        .select({
+          totalTimeSpent: sum(files.timeSpent).mapWith(Number),
+          languageSlug: languages.languageSlug,
+          projectName: projects.name,
+          name: files.name,
+          path: files.path,
+        })
+        .from(files)
+        .innerJoin(projects, eq(projects.id, files.projectId))
+        .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+        .innerJoin(languages, eq(languages.id, files.languageId))
+        .where(
+          and(
+            eq(dailyData.userId, userId),
+            eq(projects.name, name),
+            between(dailyData.date, start, end),
+            search ? ilike(files.name, `%${search}%`) : undefined,
+            languagesArray
+              ? inArray(languages.languageSlug, languagesArray)
+              : undefined,
+          ),
+        )
+        .groupBy(files.path, languages.languageSlug, projects.name, files.name)
+        .as("grouped_files"),
+    );
+
+    const hasNext = page * NUMBER_OF_FILES_PER_PAGE < total;
+
+    return { projectFilesOnPeriod, hasNext } as Awaited<
+      ReturnType<typeof this.getFilesOnPeriod<T>>
+    >;
   }
 }

@@ -16,7 +16,7 @@ import { Injectable } from "@nestjs/common";
 export class ProjectsAnalyticsRouter {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly projectsAnalyticsService: ProjectsAnalyticsService
+    private readonly projectsAnalyticsService: ProjectsAnalyticsService,
   ) {}
 
   procedures = {
@@ -28,7 +28,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.checkProjectExists({
             ...input,
             userId: ctx.user.sub,
-          })
+          }),
         ),
 
       getPeriodProjects: this.trpcService
@@ -38,7 +38,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.getPeriodProjects({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getProjectOnPeriod: this.trpcService
@@ -48,7 +48,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.getProjectOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getProjectPerDayOfPeriod: this.trpcService
@@ -58,7 +58,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.getProjectPerDayOfPeriod({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getProjectLanguagesTimeOnPeriod: this.trpcService
@@ -68,7 +68,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.getProjectLanguagesTimeOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getProjectLanguagesPerDayOfPeriod: this.trpcService
@@ -78,7 +78,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getProjectFilesOnPeriod: this.trpcService
@@ -88,7 +88,7 @@ export class ProjectsAnalyticsRouter {
           this.projectsAnalyticsService.getFilesOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
     }),
   };

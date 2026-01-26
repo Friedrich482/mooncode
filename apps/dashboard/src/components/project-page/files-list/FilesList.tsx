@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { TriangleAlert } from "lucide-react";
 
@@ -20,23 +20,6 @@ const FilesList = () => {
 
   const [isGrouped, setIsGrouped] = useState(false);
   const handleCheckChange = () => setIsGrouped((prev) => !prev);
-
-  const [limitInput, setLimitInput] = useState("");
-  const limit = useMemo(() => {
-    if (limitInput.length === 0) {
-      return undefined;
-    }
-
-    const parsedLimit = parseInt(limitInput, 10);
-    if (!isNaN(parsedLimit) && parsedLimit > 0) {
-      return parsedLimit;
-    }
-
-    return undefined;
-  }, [limitInput]);
-  const handleLimitInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setLimitInput(e.target.value);
-  const debouncedLimit = useDebounce(limit, 500);
 
   const [isSortedDesc, setIsSortedDesc] = useState(true);
   const handleSortButtonClick = () => setIsSortedDesc((prev) => !prev);
@@ -75,16 +58,14 @@ const FilesList = () => {
 
         <FiltersSection
           isGrouped={isGrouped}
-          limitInput={limitInput}
           searchTerm={searchTerm}
           handleCheckChange={handleCheckChange}
-          handleLimitInputChange={handleLimitInputChange}
           handleSortButtonClick={handleSortButtonClick}
           handleSearchInputChange={handleSearchInputChange}
         />
       </div>
 
-      <div className="flex w-full gap-4 text-xl max-[42rem]:gap-8">
+      <div className="flex w-full flex-1 flex-col gap-4 text-xl max-[42rem]:gap-8">
         <ErrorBoundary
           FallbackComponent={({ error, resetErrorBoundary }) => (
             <FallBackRender
@@ -98,7 +79,6 @@ const FilesList = () => {
           <SuspenseBoundary className="max-chart:w-full h-208 w-full">
             <Files
               languagesToFetch={languagesToFetch}
-              amount={debouncedLimit}
               searchTerm={debouncedSearchTerm}
               isGrouped={isGrouped}
               isSortedDesc={isSortedDesc}
