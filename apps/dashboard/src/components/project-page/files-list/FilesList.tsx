@@ -17,6 +17,16 @@ const FilesList = () => {
     selectedEntries.length !== 0
       ? selectedEntries.map((entry) => entry.languageSlug)
       : undefined;
+  const handleCheckEntry = (entry: Entry) =>
+    setSelectedEntries((prev) => {
+      const isEntryExisting = prev.some(
+        (elt) => elt.languageSlug === entry.languageSlug,
+      );
+
+      return isEntryExisting
+        ? prev.filter((elt) => elt.languageSlug !== entry.languageSlug)
+        : [...prev, entry];
+    });
 
   const [isGrouped, setIsGrouped] = useState(false);
   const handleCheckChange = () => setIsGrouped((prev) => !prev);
@@ -51,7 +61,7 @@ const FilesList = () => {
           <SuspenseBoundary className="h-9 w-44">
             <LanguagesDropDown
               selectedEntries={selectedEntries}
-              setSelectedEntries={setSelectedEntries}
+              handleCheckEntry={handleCheckEntry}
             />
           </SuspenseBoundary>
         </ErrorBoundary>

@@ -10,13 +10,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 import { usePeriodStore } from "./store/periodStore";
 
-const useLanguagesDropDown = ({
-  selectedEntries,
-  setSelectedEntries,
-}: {
-  selectedEntries: Entry[];
-  setSelectedEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
-}) => {
+const useLanguagesDropDown = () => {
   const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const trpc = useTRPC();
@@ -41,21 +35,7 @@ const useLanguagesDropDown = ({
     languageSlug: entry.languageSlug,
   }));
 
-  const handleCheck = (entry: Entry) =>
-    setSelectedEntries((prev) => {
-      const isEntryExisting = prev.some(
-        (elt) => elt.languageSlug === entry.languageSlug,
-      );
-
-      return isEntryExisting
-        ? prev.filter((elt) => elt.languageSlug !== entry.languageSlug)
-        : [...prev, entry];
-    });
-
-  const isChecked = (entry: Entry) =>
-    selectedEntries.some((elt) => elt.languageSlug === entry.languageSlug);
-
-  return { handleCheck, isChecked, languagesToDisplay };
+  return languagesToDisplay;
 };
 
 export default useLanguagesDropDown;

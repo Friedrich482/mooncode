@@ -12,15 +12,15 @@ import {
 
 const LanguagesDropDown = ({
   selectedEntries,
-  setSelectedEntries,
+  handleCheckEntry,
 }: {
   selectedEntries: Entry[];
-  setSelectedEntries: React.Dispatch<React.SetStateAction<Entry[]>>;
+  handleCheckEntry: (entry: Entry) => void;
 }) => {
-  const { handleCheck, isChecked, languagesToDisplay } = useLanguagesDropDown({
-    selectedEntries,
-    setSelectedEntries,
-  });
+  const languagesToDisplay = useLanguagesDropDown();
+
+  const isChecked = (entry: Entry) =>
+    selectedEntries.some((elt) => elt.languageSlug === entry.languageSlug);
 
   return (
     <DropdownMenu>
@@ -38,7 +38,7 @@ const LanguagesDropDown = ({
           <DropdownMenuCheckboxItem
             checked={isChecked(entry)}
             key={entry.languageSlug}
-            onCheckedChange={() => handleCheck(entry)}
+            onCheckedChange={() => handleCheckEntry(entry)}
             className="cursor-pointer gap-3 rounded-md py-1 text-base"
           >
             <span
