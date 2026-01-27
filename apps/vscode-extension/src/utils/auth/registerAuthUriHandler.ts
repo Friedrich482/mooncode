@@ -3,7 +3,7 @@ import vscode from "vscode";
 import { getExtensionContext } from "@/extension";
 
 import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
-import setLoginContext from "./setLoginContext";
+import { setLoginContext } from "./loginContext";
 import storeJWTToken from "./storeJWTToken";
 
 const registerAuthUriHandler = () => {

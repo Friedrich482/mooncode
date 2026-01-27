@@ -2,6 +2,7 @@ import vscode from "vscode";
 
 import calculateTime from "@/utils/time/calculateTime";
 
+import { getLoginContext } from "./utils/auth/loginContext";
 import registerAuthUriHandler from "./utils/auth/registerAuthUriHandler";
 import initExtensionCommands from "./utils/commands/initExtensionCommands";
 import serveDashboard from "./utils/dashboard/serveDashboard";
@@ -28,7 +29,10 @@ export async function activate(context: vscode.ExtensionContext) {
 
   const { timeSpent, initialFilesData } = await fetchInitialData();
 
-  setStatusBarItem({ type: "time", timeSpentToday: timeSpent });
+  const isLoggedIn = getLoginContext();
+  if (isLoggedIn) {
+    setStatusBarItem({ type: "time", timeSpentToday: timeSpent });
+  }
 
   initializeFiles(initialFilesData);
 
@@ -61,7 +65,7 @@ export const getExtensionContext = () => {
 export const getDashboardPort = () => {
   if (!dashboardPort) {
     throw new Error(
-      "Failed to start the extension. Dashboard could not be served."
+      "Failed to start the extension. Dashboard could not be served.",
     );
   }
   return dashboardPort;

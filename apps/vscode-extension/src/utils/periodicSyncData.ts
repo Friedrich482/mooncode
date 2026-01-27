@@ -4,6 +4,7 @@ import * as vscode from "vscode";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import { TRPCClientError } from "@trpc/client";
 
+import { getLoginContext } from "./auth/loginContext";
 import updateFilesDataAfterSync from "./files/updateFilesDataAfterSync";
 import getGlobalStateData from "./global-state/getGlobalStateData";
 import updateGlobalStateData from "./global-state/updateGlobalStateData";
@@ -13,7 +14,7 @@ import calculateTime from "./time/calculateTime";
 import trpc from "./trpc/client";
 
 const periodicSyncData = async (
-  getTime: Awaited<ReturnType<typeof calculateTime>>
+  getTime: Awaited<ReturnType<typeof calculateTime>>,
 ) => {
   const todaysDateString = getTodaysLocalDate();
   let lastServerSync = new Date();
@@ -24,7 +25,7 @@ const periodicSyncData = async (
 
   const timeSpentToday = Object.values(filesDataToUpsert).reduce(
     (acc, curr) => acc + curr.elapsedTime,
-    0
+    0,
   );
 
   timeSpentOnDay = timeSpentToday;
@@ -34,7 +35,7 @@ const periodicSyncData = async (
       acc[languageSlug] = (acc[languageSlug] || 0) + elapsedTime;
       return acc;
     },
-    {} as { [languageSlug: string]: number }
+    {} as { [languageSlug: string]: number },
   );
 
   const timeSpentPerProject = Object.entries(filesDataToUpsert)
@@ -51,7 +52,7 @@ const periodicSyncData = async (
         }
         return acc;
       },
-      {} as Record<string, number>
+      {} as Record<string, number>,
     );
   const todayFilesData = Object.fromEntries(
     Object.entries(filesDataToUpsert).map(
@@ -67,8 +68,8 @@ const periodicSyncData = async (
           projectPath,
           fileName,
         },
-      ]
-    )
+      ],
+    ),
   );
 
   try {
@@ -76,7 +77,7 @@ const periodicSyncData = async (
 
     // send the languages data to the server
     for (const [dateString, data] of Object.entries(
-      globalStateData.dailyData
+      globalStateData.dailyData,
     )) {
       // we send the data of older dates if found
       if (!isEqual(new Date(dateString), new Date(todaysDateString))) {
@@ -91,7 +92,7 @@ const periodicSyncData = async (
             acc[projectPath] = (acc[projectPath] || 0) + timeSpent;
             return acc;
           },
-          {} as Record<string, number>
+          {} as Record<string, number>,
         );
         await trpc.extension.upsertFiles.mutate({
           filesData: data.dayFilesData,
@@ -136,11 +137,11 @@ const periodicSyncData = async (
   } catch (error) {
     if (error instanceof TRPCClientError) {
       logError(
-        `tRPC Error during sync: ${error.message}, Cause: ${error.cause}.`
+        `tRPC Error during sync: ${error.message}, Cause: ${error.cause}.`,
       );
     } else {
       vscode.window.showWarningMessage(
-        `Unknown error during server sync: ${error}.`
+        `Unknown error during server sync: ${error}.`,
       );
     }
   } finally {
@@ -165,14 +166,18 @@ const periodicSyncData = async (
       });
     } catch (globalStateError) {
       vscode.window.showErrorMessage(
-        `CRITICAL ERROR: Failed to save data to globalState : ${globalStateError}. Please open an issue to the GitHub repo of MoonCode.`
+        `CRITICAL ERROR: Failed to save data to globalState : ${globalStateError}. Please open an issue to the GitHub repo of MoonCode.`,
       );
     }
 
-    setStatusBarItem({
-      type: "time",
-      timeSpentToday: timeSpentOnDay,
-    });
+    const isLoggedIn = getLoginContext();
+
+    if (isLoggedIn) {
+      setStatusBarItem({
+        type: "time",
+        timeSpentToday: timeSpentOnDay,
+      });
+    }
   }
 };
 
