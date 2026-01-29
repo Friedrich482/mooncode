@@ -11,6 +11,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
+import useExtensionWebsocket from "./hooks/useExtensionWebsocket";
 import { TRPCProvider } from "./utils/trpc";
 
 function makeQueryClient() {
@@ -84,6 +85,8 @@ function App() {
       ],
     }),
   );
+
+  useExtensionWebsocket();
 
   return (
     <ThemeProvider>

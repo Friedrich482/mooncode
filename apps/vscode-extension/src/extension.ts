@@ -2,10 +2,11 @@ import vscode from "vscode";
 
 import calculateTime from "@/utils/time/calculateTime";
 
+import { DashboardServer } from "./types-schemas";
 import { getLoginContext } from "./utils/auth/loginContext";
 import registerAuthUriHandler from "./utils/auth/registerAuthUriHandler";
 import initExtensionCommands from "./utils/commands/initExtensionCommands";
-import serveDashboard from "./utils/dashboard/serveDashboard";
+import serveDashboard from "./utils/dashboard/serve-dashboard/serveDashboard";
 import setEnvironmentContext from "./utils/env/setEnvironmentContext";
 import fetchInitialData from "./utils/fetchInitialData";
 import initializeFiles from "./utils/files/initializeFiles";
@@ -15,14 +16,14 @@ import addStatusBarItem from "./utils/status-bar/addStatusBarItem";
 import setStatusBarItem from "./utils/status-bar/setStatusBarItem";
 
 let extensionContext: vscode.ExtensionContext;
-let dashboardPort: number | undefined;
+let dashboardServer: DashboardServer | undefined;
 let statusBarItem: vscode.StatusBarItem;
 
 export async function activate(context: vscode.ExtensionContext) {
   extensionContext = context;
 
   setEnvironmentContext();
-  dashboardPort = await serveDashboard(context);
+  dashboardServer = await serveDashboard(context);
   registerAuthUriHandler();
 
   statusBarItem = addStatusBarItem();
@@ -62,13 +63,13 @@ export const getExtensionContext = () => {
   return extensionContext;
 };
 
-export const getDashboardPort = () => {
-  if (!dashboardPort) {
+export const getDashboardServer = () => {
+  if (!dashboardServer) {
     throw new Error(
       "Failed to start the extension. Dashboard could not be served.",
     );
   }
-  return dashboardPort;
+  return dashboardServer;
 };
 
 export const getStatusBarItem = () => {

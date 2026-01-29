@@ -12,6 +12,7 @@ export const DASHBOARD_PREVIEW_PORT = 4173;
 export const DASHBOARD_PRODUCTION_URL = `http://localhost:${DASHBOARD_PRODUCTION_PORT}`;
 export const DASHBOARD_DEVELOPMENT_URL = `http://localhost:${DASHBOARD_DEVELOPMENT_PORT}`;
 export const DASHBOARD_PREVIEW_URL = `http://localhost:${DASHBOARD_PREVIEW_PORT}`;
+export const DASHBOARD_DEVELOPMENT_WS_PORT = 4318;
 
 export const DATE_LOCALE = "sv-SE";
 export const PENDING_REGISTRATION_CODE_LENGTH = 8;
