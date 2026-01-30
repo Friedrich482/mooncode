@@ -20,6 +20,9 @@ const periodicSyncData = async (
   let lastServerSync = new Date();
   let isServerSynced = false;
   let timeSpentOnDay = 0;
+  let timeSpentPerLanguage: {
+    [languageSlug: string]: number;
+  };
 
   const filesDataToUpsert = getTime();
 
@@ -38,6 +41,8 @@ const periodicSyncData = async (
     {} as { [languageSlug: string]: number },
   );
 
+  timeSpentPerLanguage = timeSpentPerLanguageToday;
+
   const timeSpentPerProject = Object.entries(filesDataToUpsert)
     .map(([, fileData]) => ({
       project: fileData.projectPath,
@@ -54,27 +59,22 @@ const periodicSyncData = async (
       },
       {} as Record<string, number>,
     );
+
   const todayFilesData = Object.fromEntries(
     Object.entries(filesDataToUpsert).map(
-      ([
-        filePath,
-        { elapsedTime, languageSlug, projectName, projectPath, fileName },
-      ]) => [
+      ([filePath, { elapsedTime, ...rest }]) => [
         filePath,
         {
           timeSpent: elapsedTime,
-          languageSlug,
-          projectName,
-          projectPath,
-          fileName,
+          ...rest,
         },
       ],
     ),
   );
 
-  try {
-    const globalStateData = await getGlobalStateData();
+  const globalStateData = await getGlobalStateData();
 
+  try {
     // send the languages data to the server
     for (const [dateString, data] of Object.entries(
       globalStateData.dailyData,
@@ -109,6 +109,7 @@ const periodicSyncData = async (
     });
 
     timeSpentOnDay = upsertedLanguagesData.timeSpentOnDay;
+    timeSpentPerLanguage = upsertedLanguagesData.languages;
 
     const files = await trpc.extension.upsertFiles.mutate({
       filesData: todayFilesData,
@@ -120,16 +121,14 @@ const periodicSyncData = async (
     isServerSynced = true;
     lastServerSync = new Date();
 
-    // ! Remove all the data (in the global state) for days previous to today if they exist
-    // ! They do exist if the user stays offline and we change day
-
+    // Remove all the data for days previous to today - they've been synced
     await updateGlobalStateData({
       lastServerSync,
       dailyData: {
         [todaysDateString]: {
-          timeSpentOnDay: timeSpentToday,
-          timeSpentPerLanguage: timeSpentPerLanguageToday,
-          dayFilesData: todayFilesData,
+          timeSpentOnDay,
+          timeSpentPerLanguage,
+          dayFilesData: files,
           updatedAt: new Date(),
         },
       },
@@ -146,24 +145,21 @@ const periodicSyncData = async (
     }
   } finally {
     try {
-      // save the languages data in the vscode global state
-
-      const globalStateData = await getGlobalStateData();
-
-      await updateGlobalStateData({
-        lastServerSync: isServerSynced
-          ? lastServerSync
-          : globalStateData.lastServerSync,
-        dailyData: {
-          ...globalStateData.dailyData,
-          [todaysDateString]: {
-            timeSpentOnDay: timeSpentToday,
-            timeSpentPerLanguage: timeSpentPerLanguageToday,
-            dayFilesData: todayFilesData,
-            updatedAt: new Date(),
+      // If server sync failed, preserve old data; otherwise only keep today
+      if (!isServerSynced) {
+        await updateGlobalStateData({
+          lastServerSync: globalStateData.lastServerSync,
+          dailyData: {
+            ...globalStateData.dailyData,
+            [todaysDateString]: {
+              timeSpentOnDay,
+              timeSpentPerLanguage,
+              dayFilesData: todayFilesData,
+              updatedAt: new Date(),
+            },
           },
-        },
-      });
+        });
+      }
     } catch (globalStateError) {
       vscode.window.showErrorMessage(
         `CRITICAL ERROR: Failed to save data to globalState : ${globalStateError}. Please open an issue to the GitHub repo of MoonCode.`,
