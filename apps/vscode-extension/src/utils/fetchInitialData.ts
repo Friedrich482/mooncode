@@ -1,11 +1,9 @@
-import * as vscode from "vscode";
-
 import { FileDataSync } from "@/types-schemas";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 import { TRPCClientError } from "@trpc/client";
 
 import getGlobalStateData from "./global-state/getGlobalStateData";
-import { logInfo } from "./logger/logger";
+import { logError, logInfo } from "./logger/logger";
 import trpc from "./trpc/client";
 
 const fetchInitialData = async () => {
@@ -34,13 +32,9 @@ const fetchInitialData = async () => {
     serverDataFetchedSuccessfully = true;
   } catch (error) {
     if (error instanceof TRPCClientError) {
-      vscode.window.showErrorMessage(
-        `tRPC Error: ${error.message}, Cause: ${error.cause}`
-      );
+      logError(`tRPC Error: ${error.message}, Cause: ${error.cause}`);
     } else {
-      vscode.window.showErrorMessage(
-        `Unknown error during server fetch: ${error}`
-      );
+      logError(`Unknown error during server fetch: ${error}`);
     }
   }
 

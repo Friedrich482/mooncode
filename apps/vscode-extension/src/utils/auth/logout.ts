@@ -5,10 +5,9 @@ import updateGlobalStateData from "@/utils/global-state/updateGlobalStateData";
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 
 import deleteFilesDataContent from "../files/deleteFilesDataContent";
-import setStatusBarItem from "../status-bar/setStatusBarItem";
+import setLogoutContextAndStatusBar from "../status-bar/setLogoutContextAndStatusBar";
 import deleteToken from "./deleteToken";
 import login from "./login";
-import setLoginContext from "./setLoginContext";
 
 const logout = async () => {
   try {
@@ -16,8 +15,7 @@ const logout = async () => {
 
     await deleteToken(context);
 
-    await setLoginContext(false);
-    setStatusBarItem({ type: "auth" });
+    await setLogoutContextAndStatusBar();
 
     //  purge the local data of the current user
 
@@ -37,7 +35,7 @@ const logout = async () => {
     });
   } catch (error) {
     vscode.window.showErrorMessage(
-      `Logout failed: ${error instanceof Error ? error.message : error}`
+      `Logout failed: ${error instanceof Error ? error.message : error}`,
     );
     return;
   }
@@ -45,7 +43,7 @@ const logout = async () => {
   const selection = await vscode.window.showInformationMessage(
     "Logged out",
     "Login",
-    "Cancel"
+    "Cancel",
   );
 
   if (selection === "Login") {

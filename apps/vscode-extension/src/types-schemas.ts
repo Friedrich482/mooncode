@@ -43,16 +43,23 @@ export const globalStateInitialDataSchema = z.object({
           languageSlug: z.string().min(1),
           projectName: z.string().min(1),
           fileName: z.string().min(1),
-        })
+        }),
       ),
 
       updatedAt: z.union([
         z.date(),
         z.iso.datetime().transform((str) => new Date(str)),
       ]),
-    })
+    }),
   ),
 });
 export type FileMap = Record<string, FileData>;
 export type GlobalStateData = z.infer<typeof globalStateInitialDataSchema>;
 export type FileDataSync = GlobalStateData["dailyData"][string]["dayFilesData"];
+
+export type DashboardServer = {
+  port: number;
+  navigate: (path: string) => void;
+  isWindowOpen: () => boolean;
+  close: () => void;
+};

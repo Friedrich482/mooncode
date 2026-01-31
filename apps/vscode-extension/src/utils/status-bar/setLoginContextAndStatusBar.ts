@@ -1,9 +1,11 @@
 import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
 
+import { setLoginContext } from "../auth/loginContext";
 import getGlobalStateData from "../global-state/getGlobalStateData";
 import setStatusBarItem from "./setStatusBarItem";
 
-const setStatusBarAfterLogin = async () => {
+const setLoginContextAndStatusBar = async () => {
+  await setLoginContext(true);
   const dateString = getTodaysLocalDate();
 
   const { dailyData } = await getGlobalStateData();
@@ -12,4 +14,4 @@ const setStatusBarAfterLogin = async () => {
   setStatusBarItem({ type: "time", timeSpentToday });
 };
 
-export default setStatusBarAfterLogin;
+export default setLoginContextAndStatusBar;
