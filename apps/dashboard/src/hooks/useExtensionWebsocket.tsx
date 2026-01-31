@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 
 import { DASHBOARD_DEVELOPMENT_WS_PORT } from "@repo/common/constants";
+import { WsData, WsDataSchema } from "@repo/common/types-schemas";
 
 export const initializeWebSocket = () => {
   const isDev = import.meta.env.DEV;
@@ -16,15 +17,24 @@ export const initializeWebSocket = () => {
   const ws = new WebSocket(wsUrl);
 
   ws.onopen = () => {
-    ws.send(JSON.stringify({ type: "ready" }));
+    ws.send(JSON.stringify({ type: "ready" } satisfies WsData));
   };
 
   ws.onmessage = async (event) => {
     try {
       const data = JSON.parse(event.data);
+      const validated = WsDataSchema.safeParse(data);
+      if (!validated.success) {
+        console.error("Invalid message shape");
+        return;
+      }
 
-      if (data.type === "navigate") {
-        window.history.pushState({}, "", data.path);
+      const { type } = validated.data;
+
+      if (type === "navigate") {
+        const { path } = validated.data;
+
+        window.history.pushState({}, "", path);
         window.dispatchEvent(new PopStateEvent("popstate"));
 
         if (window.Notification && Notification.permission === "granted") {
@@ -49,7 +59,7 @@ export const initializeWebSocket = () => {
           window.focus();
         }
 
-        ws.send(JSON.stringify({ type: "navigated", message: data.path }));
+        ws.send(JSON.stringify({ type: "navigated", path } satisfies WsData));
       }
     } catch (error) {
       console.error("Failed to handle WebSocket message:", error);
@@ -72,7 +82,9 @@ const useExtensionWebsocket = () => {
     return () => {
       if (wsRef.current) {
         if (wsRef.current.readyState === WebSocket.OPEN) {
-          wsRef.current.send(JSON.stringify({ type: "closed" }));
+          wsRef.current.send(
+            JSON.stringify({ type: "closed" } satisfies WsData),
+          );
         }
         wsRef.current.close();
       }

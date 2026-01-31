@@ -20,7 +20,7 @@ export const VSCodeCallbackUrlSchema = z
       const [publisher] = url.hostname.split(".");
       return publisher === PUBLISHER;
     },
-    { error: "Invalid publisher", abort: true }
+    { error: "Invalid publisher", abort: true },
   )
   .refine(
     (urlStr) => {
@@ -28,7 +28,7 @@ export const VSCodeCallbackUrlSchema = z
       const [, extensionId] = url.hostname.split(".");
       return extensionId === EXTENSION_ID;
     },
-    { error: "Invalid extension id", abort: true }
+    { error: "Invalid extension id", abort: true },
   )
   .refine(
     (urlStr) => {
@@ -37,7 +37,7 @@ export const VSCodeCallbackUrlSchema = z
 
       return state;
     },
-    { error: "State parameter is required" }
+    { error: "State parameter is required" },
   );
 
 export const JwtPayloadSchema = z.object({
@@ -83,7 +83,7 @@ export const IsoDateStringSchema = z
   .string()
   .regex(
     /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
-    "Date must be in YYYY-MM-DD format"
+    "Date must be in YYYY-MM-DD format",
   )
   .refine(
     (dateStr) => {
@@ -98,12 +98,29 @@ export const IsoDateStringSchema = z
         date.getUTCDate() === day
       );
     },
-    { error: "Invalid date" }
+    { error: "Invalid date" },
   );
 
 export const IsoDateSchema = IsoDateStringSchema.transform(
-  (dateStr) => new Date(dateStr)
+  (dateStr) => new Date(dateStr),
 );
+
+export const WsDataSchema = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("ready"),
+  }),
+  z.object({
+    type: z.literal("closed"),
+  }),
+  z.object({
+    type: z.literal("navigate"),
+    path: z.string().min(1),
+  }),
+  z.object({
+    type: z.literal("navigated"),
+    path: z.string().min(1),
+  }),
+]);
 
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];
@@ -121,3 +138,4 @@ export type VerifyPasswordResetCode = z.infer<
   typeof VerifyPasswordResetCodeSchema
 >;
 export type ResetPassword = z.infer<typeof ResetPasswordSchema>;
+export type WsData = z.infer<typeof WsDataSchema>;

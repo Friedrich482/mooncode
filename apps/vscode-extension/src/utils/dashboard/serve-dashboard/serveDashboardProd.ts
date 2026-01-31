@@ -8,6 +8,7 @@ import { WebSocket, WebSocketServer } from "ws";
 import { DashboardServer } from "@/types-schemas";
 import { logDir, logError, logInfo } from "@/utils/logger/logger";
 import { DASHBOARD_PRODUCTION_PORT } from "@repo/common/constants";
+import { WsData, WsDataSchema } from "@repo/common/types-schemas";
 
 const serveDashboardProd = async (context: vscode.ExtensionContext) => {
   const app = express();
@@ -42,13 +43,22 @@ const serveDashboardProd = async (context: vscode.ExtensionContext) => {
     ws.on("message", (message) => {
       try {
         const data = JSON.parse(message.toString());
+        const validated = WsDataSchema.safeParse(data);
+        if (!validated.success) {
+          console.error("Invalid message shape");
+          return;
+        }
+
         logInfo("Received from dashboard:");
         logDir(data);
 
-        if (data.type === "ready") {
+        const { type } = validated.data;
+
+        if (type === "ready") {
           logInfo("Dashboard is ready");
-        } else if (data.type === "navigated") {
-          logInfo(`Dashboard navigated to: ${data.path}`);
+        } else if (type === "navigated") {
+          const { path } = validated.data;
+          logInfo(`Dashboard navigated to: ${path}`);
         }
       } catch (error) {
         logError(`Error receiving message: ${error}`);
@@ -87,7 +97,7 @@ const serveDashboardProd = async (context: vscode.ExtensionContext) => {
           JSON.stringify({
             type: "navigate",
             path,
-          }),
+          } satisfies WsData),
         );
         logInfo(`Sent navigate command to dashboard: ${path}`);
       } else {
