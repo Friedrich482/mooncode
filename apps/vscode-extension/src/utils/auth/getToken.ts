@@ -1,37 +1,30 @@
 import { getExtensionContext } from "@/extension";
 
-import setStatusBarAfterLogin from "../status-bar/setStatusBarAfterLogin";
-import setStatusBarItem from "../status-bar/setStatusBarItem";
-import { setLoginContext } from "./loginContext";
+import setLoginContextAndStatusBar from "../status-bar/setLoginContextAndStatusBar";
+import setLogoutContextAndStatusBar from "../status-bar/setLogoutContextAndStatusBar";
 import parseJwtPayload from "./parseJwtPayload";
 
 const getToken = async () => {
   const context = getExtensionContext();
 
-  let token = await context.secrets.get("authToken");
+  const token = await context.secrets.get("authToken");
 
   const parsedPayload = parseJwtPayload(token);
 
   if (!parsedPayload.success) {
-    await setLoginContext(false);
-    setStatusBarItem({ type: "auth" });
-
-    token = await context.secrets.get("authToken");
+    await setLogoutContextAndStatusBar();
     return token;
   }
 
   const { exp: expireDate } = parsedPayload.data;
 
   if (!token || expireDate * 1000 < Date.now()) {
-    await setLoginContext(false);
-    setStatusBarItem({ type: "auth" });
-
-    token = await context.secrets.get("authToken");
+    await setLogoutContextAndStatusBar();
+    return token;
   }
 
-  await setLoginContext(true);
-  await setStatusBarAfterLogin();
-
+  await setLoginContextAndStatusBar();
   return token;
 };
+
 export default getToken;
