@@ -38,6 +38,12 @@ const serveDashboardProd = async (context: vscode.ExtensionContext) => {
 
   wss.on("connection", (ws) => {
     logInfo("Dashboard window connected");
+
+    if (activeConnection && activeConnection.readyState === WebSocket.OPEN) {
+      logInfo("Closing previous dashboard connection");
+      activeConnection.close();
+    }
+
     activeConnection = ws;
 
     ws.on("message", (message) => {
