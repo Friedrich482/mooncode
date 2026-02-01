@@ -2,25 +2,26 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
+import { ForgotPassword } from "@/app/pages/auth/forgot-password";
+import { Login } from "@/app/pages/auth/login";
+import { CodeVerification as PasswordResetCodeVerification } from "@/app/pages/auth/password-reset-code-verification";
+import { Register } from "@/app/pages/auth/register";
+import { CodeVerification as RegisterCodeVerification } from "@/app/pages/auth/registration-code-verification";
+import { ResetPassword } from "@/app/pages/auth/reset-password";
+import { Dashboard } from "@/app/pages/dashboard";
+import { NotFound } from "@/app/pages/not-found";
+import { Project } from "@/app/pages/project/project";
+import { authRouteLoader, googleAuthLoader } from "@/loaders/auth-loader";
+import { dashboardLoader } from "@/loaders/dashboard-loader";
+import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
+import { passwordResetLoader } from "@/loaders/password-reset-loader";
+import { pendingRegistrationLoader } from "@/loaders/pending-registration-loader";
+import { projectLoader } from "@/loaders/project-loader";
+import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader";
+import { rootLoader } from "@/loaders/root-loader";
+
 import { App } from "./App";
-import { Login } from "./components/auth/login-page/login";
-import { CodeVerification as PasswordResetCodeVerification } from "./components/auth/password-reset/code-verification/code-verification";
-import { ForgotPassword } from "./components/auth/password-reset/forgot-password/forgot-password";
-import { ResetPassword } from "./components/auth/password-reset/reset-password/reset-password";
-import { CodeVerification as RegisterCodeVerification } from "./components/auth/register-page/code-verification/code-verification";
-import { Register } from "./components/auth/register-page/register";
-import { Dashboard } from "./components/dashboard-page/dashboard";
 import { Layout } from "./components/layout/layout";
-import { NotFound } from "./components/not-found-page/not-found";
-import { Project } from "./components/project-page/project";
-import { authRouteLoader, googleAuthLoader } from "./utils/loader/auth-loader";
-import { dashboardLoader } from "./utils/loader/dashboard-loader";
-import { passwordResetCodeVerificationLoader } from "./utils/loader/password-reset-code-verification-loader";
-import { passwordResetLoader } from "./utils/loader/password-reset-loader";
-import { pendingRegistrationLoader } from "./utils/loader/pending-registration-loader";
-import { projectLoader } from "./utils/loader/project-loader";
-import { redirectToNotFoundLoader } from "./utils/loader/redirect-to-not-found-loader";
-import { rootLoader } from "./utils/loader/root-loader";
 
 const router = createBrowserRouter([
   {

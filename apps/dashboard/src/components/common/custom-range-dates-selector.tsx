@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { usePeriodStore } from "@/hooks/store/period-store";
+import { usePeriodStore } from "@/stores/period/period-store";
 import { DATE_LOCALE } from "@repo/common/constants";
 import { Button } from "@repo/ui/components/ui/button";
 import { CalendarPopover } from "@repo/ui/components/ui/calendar-popover";
