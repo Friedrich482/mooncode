@@ -8,30 +8,30 @@ import {
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
 } from "src/analytics/dto/general-analytics.dto";
-import getDaysOfPeriodStatsGroupedByMonths from "src/analytics/utils/general/getDaysOfPeriodStatsGroupedByMonths";
-import getDaysOfPeriodStatsGroupedByWeeks from "src/analytics/utils/general/getDaysOfPeriodStatsGroupedByWeeks";
-import getGeneralStatsOnPeriodGroupedByMonths from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupedByMonths";
-import getGeneralStatsOnPeriodGroupedByWeeks from "src/analytics/utils/general/getGeneralStatsOnPeriodGroupedByWeeks";
-import getMostUsedLanguageOnPeriod from "src/analytics/utils/general/getMostUsedLanguageOnPeriod";
-import getPeriodLanguagesGroupedByMonths from "src/analytics/utils/general/getPeriodLanguagesGroupedByMonths";
-import getPeriodLanguagesGroupedByWeeks from "src/analytics/utils/general/getPeriodLanguagesGroupedByWeeks";
-import getWeekDayName from "src/common/utils/getWeekdayName";
+import { getDaysOfPeriodStatsGroupedByMonths } from "src/analytics/utils/general/get-days-of-period-stats-grouped-by-months";
+import { getDaysOfPeriodStatsGroupedByWeeks } from "src/analytics/utils/general/get-days-of-period-stats-grouped-by-weeks";
+import { getGeneralStatsOnPeriodGroupedByMonths } from "src/analytics/utils/general/get-general-stats-on-period-grouped-by-months";
+import { getGeneralStatsOnPeriodGroupedByWeeks } from "src/analytics/utils/general/get-general-stats-on-period-grouped-by-weeks";
+import { getMostUsedLanguageOnPeriod } from "src/analytics/utils/general/get-most-used-language-on-period";
+import { getPeriodLanguagesGroupedByMonths } from "src/analytics/utils/general/get-period-languages-grouped-by-months";
+import { getPeriodLanguagesGroupedByWeeks } from "src/analytics/utils/general/get-period-languages-grouped-by-weeks";
+import { getWeekDayName } from "src/common/utils/get-weekday-name";
 import { DailyDataService } from "src/daily-data/daily-data.service";
 import { LanguagesService } from "src/languages/languages.service";
 
 import { Injectable } from "@nestjs/common";
-import convertToISODate from "@repo/common/convertToISODate";
-import formatDuration from "@repo/common/formatDuration";
+import { convertToISODate } from "@repo/common/convert-to-iso-date";
+import { formatDuration } from "@repo/common/format-duration";
 
 @Injectable()
 export class GeneralAnalyticsService {
   constructor(
     private readonly dailyDataService: DailyDataService,
-    private readonly languagesService: LanguagesService
+    private readonly languagesService: LanguagesService,
   ) {}
 
   async getTimeSpentOnPeriod(
-    getTimeSpentOnPeriodDto: GetTimeSpentOnPeriodDtoType
+    getTimeSpentOnPeriodDto: GetTimeSpentOnPeriodDtoType,
   ) {
     const { userId, start, end } = getTimeSpentOnPeriodDto;
 
@@ -49,7 +49,7 @@ export class GeneralAnalyticsService {
   }
 
   async getDaysOfPeriodStats(
-    getDaysOfPeriodStatsDto: GetDaysOfPeriodStatsDtoType
+    getDaysOfPeriodStatsDto: GetDaysOfPeriodStatsDtoType,
   ) {
     const { userId, start, end, groupBy, periodResolution } =
       getDaysOfPeriodStatsDto;
@@ -66,7 +66,7 @@ export class GeneralAnalyticsService {
       case "weeks":
         return getDaysOfPeriodStatsGroupedByWeeks(
           dailyDataForPeriod,
-          periodResolution
+          periodResolution,
         );
 
       case "months":
@@ -89,7 +89,7 @@ export class GeneralAnalyticsService {
   }
 
   async getPeriodLanguagesTime(
-    getPeriodLanguagesTimeDto: GetPeriodLanguagesTimeDtoType
+    getPeriodLanguagesTimeDto: GetPeriodLanguagesTimeDtoType,
   ) {
     const { userId, start, end } = getPeriodLanguagesTimeDto;
 
@@ -108,8 +108,8 @@ export class GeneralAnalyticsService {
     const kVLangTime = (
       await Promise.all(
         dailyDataForPeriod.map(({ id }) =>
-          this.languagesService.findAll({ dailyDataId: id })
-        )
+          this.languagesService.findAll({ dailyDataId: id }),
+        ),
       )
     ).reduce((acc, dayStats) => {
       Object.keys(dayStats).forEach((languageSlug) => {
@@ -124,7 +124,7 @@ export class GeneralAnalyticsService {
         time: timeSpent,
         value: formatDuration(timeSpent),
         percentage: parseFloat(
-          ((timeSpent * 100) / totalTimeSpentOnPeriod).toFixed(2)
+          ((timeSpent * 100) / totalTimeSpentOnPeriod).toFixed(2),
         ),
       }))
       .sort((a, b) => a.time - b.time);
@@ -133,7 +133,7 @@ export class GeneralAnalyticsService {
   }
 
   async getPeriodLanguagesPerDay(
-    getPeriodLanguagesPerDayDto: GetPeriodLanguagesPerDayDtoType
+    getPeriodLanguagesPerDayDto: GetPeriodLanguagesPerDayDtoType,
   ) {
     const { userId, start, end, groupBy, periodResolution } =
       getPeriodLanguagesPerDayDto;
@@ -151,13 +151,13 @@ export class GeneralAnalyticsService {
         return getPeriodLanguagesGroupedByWeeks(
           dailyDataForPeriod,
           periodResolution,
-          this.languagesService
+          this.languagesService,
         );
 
       case "months":
         return getPeriodLanguagesGroupedByMonths(
           dailyDataForPeriod,
-          this.languagesService
+          this.languagesService,
         );
 
       default:
@@ -166,8 +166,8 @@ export class GeneralAnalyticsService {
 
     const allLanguages = await Promise.all(
       dailyDataForPeriod.map(({ id }) =>
-        this.languagesService.findAll({ dailyDataId: id })
-      )
+        this.languagesService.findAll({ dailyDataId: id }),
+      ),
     );
 
     const periodLanguagesPerDay = dailyDataForPeriod.map(
@@ -176,7 +176,7 @@ export class GeneralAnalyticsService {
         date: getWeekDayName(date),
         timeSpent,
         ...allLanguages[index],
-      })
+      }),
     );
 
     return periodLanguagesPerDay;
@@ -220,7 +220,7 @@ export class GeneralAnalyticsService {
   }
 
   async getPeriodGeneralStats(
-    getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType
+    getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType,
   ) {
     const { userId, start, end, todaysDateString, groupBy, periodResolution } =
       getPeriodGeneralStatsDto;
@@ -248,7 +248,7 @@ export class GeneralAnalyticsService {
           todaysDateString,
           this,
           dailyDataForPeriod,
-          periodResolution
+          periodResolution,
         );
 
       case "months":
@@ -258,7 +258,7 @@ export class GeneralAnalyticsService {
           end,
           todaysDateString,
           this,
-          dailyDataForPeriod
+          dailyDataForPeriod,
         );
 
       default:
@@ -299,15 +299,15 @@ export class GeneralAnalyticsService {
         ? "N/A"
         : new Date(
             dailyDataForPeriod.find(
-              (day) => day.timeSpent === maxTimeSpentPerDay
-            )?.date || convertToISODate(new Date(start))
+              (day) => day.timeSpent === maxTimeSpentPerDay,
+            )?.date || convertToISODate(new Date(start)),
           ).toDateString();
 
     const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
       this,
       userId,
       start,
-      end
+      end,
     );
 
     return {

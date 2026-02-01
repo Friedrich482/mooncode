@@ -3,7 +3,7 @@ import * as RechartsPrimitive from "recharts";
 import { Payload } from "recharts/types/component/DefaultLegendContent";
 
 import { cn } from "#lib/utils.ts";
-import getLanguageName from "#utils/getLanguageName.ts";
+import { getLanguageName } from "#utils/get-language-name.ts";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;

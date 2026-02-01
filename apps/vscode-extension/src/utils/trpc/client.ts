@@ -6,7 +6,7 @@ import { PROD_API_URL } from "@/constants";
 import type { AppRouter } from "@repo/trpc/router";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
-import getToken from "../auth/getToken";
+import { getToken } from "../auth/get-token";
 
 // get the API_URL for development,
 dotenv.config({ path: path.join(__dirname, "../.env") });
@@ -15,7 +15,7 @@ const getApiURL = () => {
   return process.env.API_URL || PROD_API_URL;
 };
 
-const trpc = createTRPCClient<AppRouter>({
+export const trpc = createTRPCClient<AppRouter>({
   links: [
     httpBatchLink({
       url: getApiURL(),
@@ -28,5 +28,3 @@ const trpc = createTRPCClient<AppRouter>({
     }),
   ],
 });
-
-export default trpc;

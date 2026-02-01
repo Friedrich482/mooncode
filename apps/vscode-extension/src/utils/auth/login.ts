@@ -1,9 +1,9 @@
-import crypto from "crypto";
+import { randomBytes } from "crypto";
 import * as vscode from "vscode";
 
 import { getDashboardServer, getExtensionContext } from "@/extension";
 
-const login = async () => {
+export const login = async () => {
   const context = getExtensionContext();
   const dashboardServer = getDashboardServer();
 
@@ -11,7 +11,7 @@ const login = async () => {
     let state = await context.secrets.get("authState");
 
     if (!state) {
-      state = crypto.randomBytes(32).toString("base64url");
+      state = randomBytes(32).toString("base64url");
       await context.secrets.store("authState", state);
     }
 
@@ -43,5 +43,3 @@ const login = async () => {
     );
   }
 };
-
-export default login;

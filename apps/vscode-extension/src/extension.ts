@@ -1,19 +1,18 @@
 import vscode from "vscode";
 
-import calculateTime from "@/utils/time/calculateTime";
-
 import { DashboardServer } from "./types-schemas";
-import { getLoginContext } from "./utils/auth/loginContext";
-import registerAuthUriHandler from "./utils/auth/registerAuthUriHandler";
-import initExtensionCommands from "./utils/commands/initExtensionCommands";
-import serveDashboard from "./utils/dashboard/serve-dashboard/serveDashboard";
-import setEnvironmentContext from "./utils/env/setEnvironmentContext";
-import fetchInitialData from "./utils/fetchInitialData";
-import initializeFiles from "./utils/files/initializeFiles";
+import { getLoginContext } from "./utils/auth/login-context";
+import { registerAuthUriHandler } from "./utils/auth/register-auth-uri-handler";
+import { initExtensionCommands } from "./utils/commands/init-extension-commands";
+import { serveDashboard } from "./utils/dashboard/serve-dashboard/serve-dashboard";
+import { setEnvironmentContext } from "./utils/env/set-environment-context";
+import { fetchInitialData } from "./utils/fetch-initial-data";
+import { initializeFiles } from "./utils/files/initialize-files";
 import { logInfo } from "./utils/logger/logger";
-import periodicSyncData from "./utils/periodicSyncData";
-import addStatusBarItem from "./utils/status-bar/addStatusBarItem";
-import setStatusBarItem from "./utils/status-bar/setStatusBarItem";
+import { periodicSyncData } from "./utils/periodic-sync-data";
+import { addStatusBarItem } from "./utils/status-bar/add-status-bar-item";
+import { setStatusBarItem } from "./utils/status-bar/set-status-bar-item";
+import { calculateTime } from "./utils/time/calculate-time";
 
 let extensionContext: vscode.ExtensionContext;
 let dashboardServer: DashboardServer | undefined;

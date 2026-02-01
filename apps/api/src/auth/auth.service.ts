@@ -29,9 +29,9 @@ import {
   HandleGoogleCallBacKDtoType,
   RedirectToGoogleDtoType,
 } from "./auth.dto";
-import handleErrorResponse from "./utils/handleErrorResponse";
-import validateExtensionCallbackUrl from "./utils/validateExtensionCallbackUrl";
-import validateStateQueryParam from "./utils/validateStateQueryParam";
+import { handleErrorResponse } from "./utils/handle-error-response";
+import { validateExtensionCallbackUrl } from "./utils/validate-extension-callback-url";
+import { validateStateQueryParam } from "./utils/validate-state-query-param";
 
 @Injectable()
 export class AuthService {
@@ -40,7 +40,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
     private readonly pendingRegistrationService: PendingRegistrationsService,
-    private readonly passwordResetsService: PasswordResetsService
+    private readonly passwordResetsService: PasswordResetsService,
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
   private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
@@ -82,7 +82,7 @@ export class AuthService {
   }
 
   async createPendingRegistration(
-    createPendingRegistrationDto: CreatePendingRegistrationDtoType
+    createPendingRegistrationDto: CreatePendingRegistrationDtoType,
   ) {
     return this.pendingRegistrationService.create(createPendingRegistrationDto);
   }
@@ -121,20 +121,20 @@ export class AuthService {
   }
 
   async createPasswordReset(
-    createPasswordResetDto: CreatePasswordResetDtoType
+    createPasswordResetDto: CreatePasswordResetDtoType,
   ) {
     return this.passwordResetsService.create(createPasswordResetDto);
   }
 
   async verifyPasswordResetCode(
-    verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType
+    verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType,
   ) {
     return this.passwordResetsService.verifyCode(verifyPasswordResetCodeDto);
   }
 
   async resetPassword(
     resetPasswordDto: ResetPasswordDtoType,
-    response: Response
+    response: Response,
   ) {
     const { email, token: id, newPassword } = resetPasswordDto;
 
@@ -232,13 +232,13 @@ export class AuthService {
   }
 
   async handleGoogleCallBack(
-    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType
+    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
   ) {
     const { type, request, response } = handleGoogleCallBackDto;
 
     const returnUrl = validateStateQueryParam(
       request,
-      this.envService.get("NODE_ENV")
+      this.envService.get("NODE_ENV"),
     );
     const callbackUrl = validateExtensionCallbackUrl(request);
 
@@ -286,7 +286,7 @@ export class AuthService {
         "https://www.googleapis.com/oauth2/v2/userinfo",
         {
           headers: { Authorization: `Bearer ${accessToken}` },
-        }
+        },
       );
       if (!googleRes.ok) {
         throw new Error("Failed to fetch Google user info");
@@ -336,7 +336,7 @@ export class AuthService {
       });
 
       response.redirect(
-        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString()
+        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString(),
       );
     } catch (error) {
       console.error("Google OAuth error:", error);
