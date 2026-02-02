@@ -1,8 +1,8 @@
 import { useLoaderData } from "react-router";
 
+import { projectLoader } from "@/loaders/project-loader";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
-import { projectLoader } from "@/utils/loader/project-loader";
 import { useTRPC } from "@/utils/trpc";
 import { getLanguageColor } from "@repo/ui/utils/get-language-color";
 import { useSuspenseQuery } from "@tanstack/react-query";
