@@ -87,6 +87,20 @@ export default [
               from: "./src/features",
               except: ["./project-title"],
             },
+            {
+              target: "./src/features",
+              from: "./src/app",
+            },
+            {
+              target: [
+                "./src/components",
+                "./src/hooks",
+                "./src/loaders",
+                "./src/stores",
+                "./src/utils",
+              ],
+              from: ["./src/features", "./src/app"],
+            },
           ],
         },
       ],
