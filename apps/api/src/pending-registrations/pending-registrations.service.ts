@@ -1,7 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { and, eq, gt, lt, or } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import generateVerificationCode from "src/common/utils/generateVerificationCode";
+import { generateVerificationCode } from "src/common/utils/generate-verification-code";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { pendingRegistrations, users } from "src/drizzle/schema";
 import { EmailService } from "src/email/email.service";
@@ -23,7 +23,7 @@ export class PendingRegistrationsService {
   constructor(
     @Inject(DrizzleAsyncProvider)
     private readonly db: NodePgDatabase,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
   ) {}
 
   async create(createPendingRegistrationDto: CreatePendingRegistrationDtoType) {
@@ -62,10 +62,10 @@ export class PendingRegistrationsService {
         and(
           or(
             eq(pendingRegistrations.email, email),
-            eq(pendingRegistrations.username, username)
+            eq(pendingRegistrations.username, username),
           ),
-          lt(pendingRegistrations.expiresAt, new Date())
-        )
+          lt(pendingRegistrations.expiresAt, new Date()),
+        ),
       );
 
     const [existingValidPendingRegistration] = await this.db
@@ -75,10 +75,10 @@ export class PendingRegistrationsService {
         and(
           or(
             eq(pendingRegistrations.email, email),
-            eq(pendingRegistrations.username, username)
+            eq(pendingRegistrations.username, username),
           ),
-          gt(pendingRegistrations.expiresAt, new Date())
-        )
+          gt(pendingRegistrations.expiresAt, new Date()),
+        ),
       )
       .limit(1);
 
@@ -120,7 +120,7 @@ export class PendingRegistrationsService {
   }
 
   async findOne(
-    findOnePendingRegistrationDto: FindOnePendingRegistrationDtoType
+    findOnePendingRegistrationDto: FindOnePendingRegistrationDtoType,
   ) {
     const { email, code } = findOnePendingRegistrationDto;
 
@@ -130,8 +130,8 @@ export class PendingRegistrationsService {
       .where(
         and(
           eq(pendingRegistrations.email, email),
-          lt(pendingRegistrations.expiresAt, new Date())
-        )
+          lt(pendingRegistrations.expiresAt, new Date()),
+        ),
       );
 
     const [existingValidPendingRegistration] = await this.db
@@ -147,8 +147,8 @@ export class PendingRegistrationsService {
       .where(
         and(
           eq(pendingRegistrations.email, email),
-          gt(pendingRegistrations.expiresAt, new Date())
-        )
+          gt(pendingRegistrations.expiresAt, new Date()),
+        ),
       )
       .limit(1);
 
@@ -167,7 +167,7 @@ export class PendingRegistrationsService {
       await this.db
         .delete(pendingRegistrations)
         .where(
-          eq(pendingRegistrations.id, existingValidPendingRegistration.id)
+          eq(pendingRegistrations.id, existingValidPendingRegistration.id),
         );
 
       throw new TRPCError({
@@ -181,7 +181,7 @@ export class PendingRegistrationsService {
         .update(pendingRegistrations)
         .set({ attempts: existingValidPendingRegistration.attempts + 1 })
         .where(
-          eq(pendingRegistrations.id, existingValidPendingRegistration.id)
+          eq(pendingRegistrations.id, existingValidPendingRegistration.id),
         );
 
       throw new TRPCError({

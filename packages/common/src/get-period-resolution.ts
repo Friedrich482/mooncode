@@ -1,0 +1,20 @@
+import { differenceInDays } from "date-fns";
+
+import { PeriodResolution } from "./types-schemas";
+
+export const getPeriodResolution = (
+  start: string | Date,
+  end: string | Date,
+): PeriodResolution => {
+  const numberOfDays = Math.abs(differenceInDays(start, end)) + 1;
+  const periodResolution =
+    numberOfDays < 7
+      ? "day"
+      : numberOfDays < 30
+        ? "week"
+        : numberOfDays < 365
+          ? "month"
+          : "year";
+
+  return periodResolution;
+};

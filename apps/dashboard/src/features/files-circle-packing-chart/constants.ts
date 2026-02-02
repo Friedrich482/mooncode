@@ -1,0 +1,36 @@
+import { FixedArray } from "./types-schemas";
+
+export const NUMBER_OF_FILES_TO_SHOW = 30;
+export const bubblesColors: FixedArray<string, typeof NUMBER_OF_FILES_TO_SHOW> =
+  [
+    "#D9BC55",
+    "#8250CE",
+    "#D96C61",
+    "#4A9EB2",
+    "#D99738",
+    "#B25AAB",
+    "#D94F80",
+    "#2C9BCF",
+    "#D97B49",
+    "#B262CE",
+    "#4A9EB2",
+    "#D9804A",
+    "#D95ECA",
+    "#D94A91",
+    "#3F9CD2",
+    "#D9B04A",
+    "#9973CE",
+    "#859CCF",
+    "#D99341",
+    "#BB79CF",
+    "#6A98CF",
+    "#D97258",
+    "#6188B2",
+    "#D99E5C",
+    "#A265D2",
+    "#78B2D9",
+    "#D9658E",
+    "#907BD2",
+    "#D98165",
+    "#64A6D2",
+  ];

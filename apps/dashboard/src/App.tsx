@@ -6,12 +6,12 @@ import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import type { AppRouter } from "@repo/trpc/router";
 import { Toaster } from "@repo/ui/components/ui/sonner";
-import { ThemeProvider } from "@repo/ui/providers/themeProvider";
+import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
-import useExtensionWebsocket from "./hooks/useExtensionWebsocket";
+import { useExtensionWebsocket } from "./hooks/use-extension-websocket";
 import { TRPCProvider } from "./utils/trpc";
 
 function makeQueryClient() {
@@ -66,7 +66,7 @@ function getQueryClient() {
   }
 }
 
-function App() {
+export const App = () => {
   const queryClient = getQueryClient();
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({
@@ -99,6 +99,4 @@ function App() {
       <Toaster />
     </ThemeProvider>
   );
-}
-
-export default App;
+};

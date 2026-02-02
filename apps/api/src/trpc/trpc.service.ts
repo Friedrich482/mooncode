@@ -1,6 +1,6 @@
 import superjson from "superjson";
 import { EnvService } from "src/env/env.service";
-import { errorFormatter } from "src/trpc/filters/errorFormatter";
+import { errorFormatter } from "src/trpc/filters/error-formatter";
 
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -22,7 +22,7 @@ export type TrpcContext = {
 };
 
 export const createContext = async (
-  opts: trpcExpress.CreateExpressContextOptions
+  opts: trpcExpress.CreateExpressContextOptions,
 ): Promise<TrpcContext> => {
   return {
     req: opts.req,
@@ -36,7 +36,7 @@ export class TrpcService {
   private limiters;
   constructor(
     private readonly jwtService: JwtService,
-    private readonly envService: EnvService
+    private readonly envService: EnvService,
   ) {
     this.trpc = initTRPC.context<TrpcContext>().create({
       transformer: superjson,
@@ -68,7 +68,7 @@ export class TrpcService {
               message: `Too many requests, please try again in ${retryAfter} seconds`,
             });
           },
-        })
+        }),
       );
     }
 
@@ -79,8 +79,8 @@ export class TrpcService {
   publicProcedure(rateLimiterParams?: RateLimiterParams) {
     return this.trpc.procedure.use(
       this.rateLimiter(
-        rateLimiterParams ? rateLimiterParams : { key: "global" }
-      )
+        rateLimiterParams ? rateLimiterParams : { key: "global" },
+      ),
     );
   }
 
@@ -103,8 +103,8 @@ export class TrpcService {
       })
       .use(
         this.rateLimiter(
-          rateLimiterParams ? rateLimiterParams : { key: "global" }
-        )
+          rateLimiterParams ? rateLimiterParams : { key: "global" },
+        ),
       );
     return procedure;
   }
@@ -127,7 +127,7 @@ export class TrpcService {
         accessToken,
         {
           secret: this.envService.get("JWT_SECRET"),
-        }
+        },
       );
       return payload;
     } catch (error) {

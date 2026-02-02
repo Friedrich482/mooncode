@@ -2,7 +2,7 @@ import { index, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
 import { ulid } from "ulid";
 
 import { timestamps } from "../columns.helpers";
-import { dailyData } from "./dailyData";
+import { dailyData } from "./daily-data";
 
 export const languages = pgTable(
   "languages",
@@ -22,5 +22,5 @@ export const languages = pgTable(
   (table) => [
     index("language_daily_data_id_index").on(table.dailyDataId),
     index("language_slug_index").on(table.languageSlug),
-  ]
+  ],
 );

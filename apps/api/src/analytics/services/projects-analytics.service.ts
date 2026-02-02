@@ -22,18 +22,18 @@ import {
   GetProjectOnPeriodDtoType,
   GetProjectPerDayOfPeriodDtoType,
 } from "src/analytics/dto/projects-analytics.dto";
-import getProjectLanguagesGroupedByMonths from "src/analytics/utils/projects/getProjectLanguagesGroupedByMonths";
-import getProjectLanguagesGroupedByWeeks from "src/analytics/utils/projects/getProjectLanguagesGroupedByWeeks";
-import getProjectPerDayOfPeriodGroupedByMonths from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupedByMonths";
-import getProjectPerDayOfPeriodGroupedByWeeks from "src/analytics/utils/projects/getProjectPerDayOfPeriodGroupedByWeeks";
-import getWeekDayName from "src/common/utils/getWeekdayName";
+import { getProjectLanguagesGroupedByMonths } from "src/analytics/utils/projects/get-project-languages-grouped-by-months";
+import { getProjectLanguagesGroupedByWeeks } from "src/analytics/utils/projects/get-project-languages-grouped-by-weeks";
+import { getProjectPerDayOfPeriodGroupedByMonths } from "src/analytics/utils/projects/get-project-per-day-of-period-grouped-by-months";
+import { getProjectPerDayOfPeriodGroupedByWeeks } from "src/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
+import { getWeekDayName } from "src/common/utils/get-weekday-name";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { dailyData, files, languages, projects } from "src/drizzle/schema";
 import { ProjectsService } from "src/projects/projects.service";
 
 import { Inject, Injectable } from "@nestjs/common";
-import convertToISODate from "@repo/common/convertToISODate";
-import formatDuration from "@repo/common/formatDuration";
+import { convertToISODate } from "@repo/common/convert-to-iso-date";
+import { formatDuration } from "@repo/common/format-duration";
 import { TRPCError } from "@trpc/server";
 
 import { NUMBER_OF_FILES_PER_PAGE } from "../constants";

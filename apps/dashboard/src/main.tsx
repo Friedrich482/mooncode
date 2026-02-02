@@ -2,25 +2,26 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
-import App from "./App";
-import Login from "./components/auth/login-page/Login";
-import PasswordResetCodeVerification from "./components/auth/password-reset/code-verification/CodeVerification";
-import ForgotPassword from "./components/auth/password-reset/forgot-password/ForgotPassword";
-import ResetPassword from "./components/auth/password-reset/reset-password/ResetPassword";
-import CodeVerification from "./components/auth/register-page/code-verification/CodeVerification";
-import Register from "./components/auth/register-page/Register";
-import Dashboard from "./components/dashboard-page/Dashboard";
-import Layout from "./components/layout/Layout";
-import NotFound from "./components/not-found-page/NotFound";
-import Project from "./components/project-page/Project";
-import { authRouteLoader, googleAuthLoader } from "./utils/loader/authLoader";
-import dashboardLoader from "./utils/loader/dashboardLoader";
-import passwordResetCodeVerificationLoader from "./utils/loader/passwordResetCodeVerificationLoader";
-import passwordResetLoader from "./utils/loader/passwordResetLoader";
-import pendingRegistrationLoader from "./utils/loader/pendingRegistrationLoader";
-import projectLoader from "./utils/loader/projectLoader";
-import redirectToNotFoundLoader from "./utils/loader/redirectToNotFoundLoader";
-import rootLoader from "./utils/loader/rootLoader";
+import { ForgotPassword } from "@/app/pages/auth/forgot-password";
+import { Login } from "@/app/pages/auth/login";
+import { CodeVerification as PasswordResetCodeVerification } from "@/app/pages/auth/password-reset-code-verification";
+import { Register } from "@/app/pages/auth/register";
+import { CodeVerification as RegisterCodeVerification } from "@/app/pages/auth/registration-code-verification";
+import { ResetPassword } from "@/app/pages/auth/reset-password";
+import { Dashboard } from "@/app/pages/dashboard";
+import { NotFound } from "@/app/pages/not-found";
+import { Project } from "@/app/pages/project/project";
+import { authRouteLoader, googleAuthLoader } from "@/loaders/auth-loader";
+import { dashboardLoader } from "@/loaders/dashboard-loader";
+import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
+import { passwordResetLoader } from "@/loaders/password-reset-loader";
+import { pendingRegistrationLoader } from "@/loaders/pending-registration-loader";
+import { projectLoader } from "@/loaders/project-loader";
+import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader";
+import { rootLoader } from "@/loaders/root-loader";
+
+import { App } from "./App";
+import { Layout } from "./components/layout/layout";
 
 const router = createBrowserRouter([
   {
@@ -67,7 +68,7 @@ const router = createBrowserRouter([
           },
           {
             path: "register/verify",
-            element: <CodeVerification />,
+            element: <RegisterCodeVerification />,
             loader: pendingRegistrationLoader,
           },
           {

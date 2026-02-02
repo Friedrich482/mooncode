@@ -3,7 +3,7 @@ import z from "zod";
 import { DateStringDto } from "src/common/dto";
 
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
-import getPeriodResolution from "@repo/common/getPeriodResolution";
+import { getPeriodResolution } from "@repo/common/get-period-resolution";
 import { GroupByEnum } from "@repo/common/types-schemas";
 
 export const DateRangeDto = z.object({

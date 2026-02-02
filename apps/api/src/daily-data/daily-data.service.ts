@@ -2,10 +2,10 @@ import { eachDayOfInterval } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { dailyData } from "src/drizzle/schema/dailyData";
+import { dailyData } from "src/drizzle/schema/daily-data";
 
 import { Inject, Injectable } from "@nestjs/common";
-import convertToISODate from "@repo/common/convertToISODate";
+import { convertToISODate } from "@repo/common/convert-to-iso-date";
 
 import {
   CreateDailyDataDtoType,
@@ -18,7 +18,7 @@ import {
 export class DailyDataService {
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase
+    private readonly db: NodePgDatabase,
   ) {}
   async create(createDailyDataDto: CreateDailyDataDtoType) {
     const { timeSpent, userId, targetedDate } = createDailyDataDto;
@@ -63,7 +63,7 @@ export class DailyDataService {
       })
       .from(dailyData)
       .where(
-        and(eq(dailyData.userId, userId), between(dailyData.date, start, end))
+        and(eq(dailyData.userId, userId), between(dailyData.date, start, end)),
       );
 
     const dateRange = eachDayOfInterval({
@@ -72,7 +72,7 @@ export class DailyDataService {
     });
 
     const dataByDate = Object.fromEntries(
-      dbData.map((item) => [item.date, item])
+      dbData.map((item) => [item.date, item]),
     );
 
     const range = dateRange.map((date) => {
@@ -99,7 +99,7 @@ export class DailyDataService {
         timeSpent,
       })
       .where(
-        and(eq(dailyData.userId, userId), eq(dailyData.date, targetedDate))
+        and(eq(dailyData.userId, userId), eq(dailyData.date, targetedDate)),
       )
       .returning({
         timeSpent: dailyData.timeSpent,

@@ -1,9 +1,9 @@
 import { and, eq, gt, lt } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import generateVerificationCode from "src/common/utils/generateVerificationCode";
+import { generateVerificationCode } from "src/common/utils/generate-verification-code";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { users } from "src/drizzle/schema";
-import { passwordResets } from "src/drizzle/schema/passwordResets";
+import { passwordResets } from "src/drizzle/schema/password-resets";
 import { EmailService } from "src/email/email.service";
 
 import { Inject, Injectable } from "@nestjs/common";
@@ -24,7 +24,7 @@ export class PasswordResetsService {
   constructor(
     @Inject(DrizzleAsyncProvider)
     private readonly db: NodePgDatabase,
-    private readonly emailService: EmailService
+    private readonly emailService: EmailService,
   ) {}
   async create(createPasswordResetDto: CreatePasswordResetDtoType) {
     const { email } = createPasswordResetDto;
@@ -51,8 +51,8 @@ export class PasswordResetsService {
       .where(
         and(
           eq(passwordResets.email, email),
-          lt(passwordResets.expiresAt, new Date())
-        )
+          lt(passwordResets.expiresAt, new Date()),
+        ),
       );
 
     const [existingValidPasswordReset] = await this.db
@@ -61,8 +61,8 @@ export class PasswordResetsService {
       .where(
         and(
           eq(passwordResets.email, email),
-          gt(passwordResets.expiresAt, new Date())
-        )
+          gt(passwordResets.expiresAt, new Date()),
+        ),
       )
       .limit(1);
 
@@ -126,8 +126,8 @@ export class PasswordResetsService {
       .where(
         and(
           eq(passwordResets.email, email),
-          lt(passwordResets.expiresAt, new Date())
-        )
+          lt(passwordResets.expiresAt, new Date()),
+        ),
       );
 
     const [existingValidPasswordReset] = await this.db
@@ -141,8 +141,8 @@ export class PasswordResetsService {
       .where(
         and(
           eq(passwordResets.email, email),
-          gt(passwordResets.expiresAt, new Date())
-        )
+          gt(passwordResets.expiresAt, new Date()),
+        ),
       )
       .limit(1);
 

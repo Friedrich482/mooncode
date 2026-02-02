@@ -1,15 +1,15 @@
 import vscode from "vscode";
 
 import { getExtensionContext } from "@/extension";
-import updateGlobalStateData from "@/utils/global-state/updateGlobalStateData";
-import getTodaysLocalDate from "@repo/common/getTodaysLocalDate";
+import { updateGlobalStateData } from "@/utils/global-state/update-global-state-data";
+import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
 
-import deleteFilesDataContent from "../files/deleteFilesDataContent";
-import setLogoutContextAndStatusBar from "../status-bar/setLogoutContextAndStatusBar";
-import deleteToken from "./deleteToken";
-import login from "./login";
+import { deleteFilesDataContent } from "../files/delete-files-data-content";
+import { setLogoutContextAndStatusBar } from "../status-bar/set-logout-context-and-status-bar";
+import { deleteToken } from "./delete-token";
+import { login } from "./login";
 
-const logout = async () => {
+export const logout = async () => {
   try {
     const context = getExtensionContext();
 
@@ -21,7 +21,7 @@ const logout = async () => {
 
     deleteFilesDataContent();
 
-    const todaysDateString = getTodaysLocalDate();
+    const todaysDateString = getTodaysLocaleDate();
     await updateGlobalStateData({
       lastServerSync: new Date(),
       dailyData: {
@@ -52,4 +52,3 @@ const logout = async () => {
     return;
   }
 };
-export default logout;

@@ -7,15 +7,15 @@ import {
   SendResetPasswordCodeDtoType,
   SendVerificationCodeDtoType,
 } from "./email.dto";
-import getOnboardingEmailBody from "./utils/getOnboardingEmailBody";
-import getPasswordResetEmailBody from "./utils/getPasswordResetEmailBody";
+import { getOnboardingEmailBody } from "./utils/get-onboarding-email-body";
+import { getPasswordResetEmailBody } from "./utils/get-password-reset-email-body";
 
 @Injectable()
 export class EmailService {
   constructor(private readonly envService: EnvService) {}
 
   async sendVerificationCode(
-    sendVerificationCodeDto: SendVerificationCodeDtoType
+    sendVerificationCodeDto: SendVerificationCodeDtoType,
   ) {
     const { code, email } = sendVerificationCodeDto;
 
@@ -30,7 +30,7 @@ export class EmailService {
   }
 
   async sendResetPasswordCode(
-    sendResetPasswordCodeDto: SendResetPasswordCodeDtoType
+    sendResetPasswordCodeDto: SendResetPasswordCodeDtoType,
   ) {
     const { code, email } = sendResetPasswordCodeDto;
 
