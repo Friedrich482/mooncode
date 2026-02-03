@@ -39,7 +39,7 @@ export const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <ProjectTimeOnPeriodChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -53,7 +53,7 @@ export const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <ProjectLanguagesTimeOnPeriodChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -70,7 +70,10 @@ export const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary className="h-182 w-full">
+            <SuspenseBoundary
+              hasCustomSkeleton={false}
+              className="h-182 w-full"
+            >
               <FilesCirclePackingChart />
             </SuspenseBoundary>
           </ErrorBoundary>

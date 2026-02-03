@@ -8,6 +8,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 
 import { Entry } from "../types-schemas";
 import { Files } from "./files";
+import { FilesSkeleton } from "./files-skeleton";
 import { FiltersSection } from "./filters-section";
 import { LanguagesDropDown } from "./languages-dropdown";
 
@@ -58,7 +59,7 @@ export const FilesList = () => {
             />
           )}
         >
-          <SuspenseBoundary className="h-9 w-44">
+          <SuspenseBoundary hasCustomSkeleton={false} className="h-9 w-44">
             <LanguagesDropDown
               selectedEntries={selectedEntries}
               handleCheckEntry={handleCheckEntry}
@@ -86,7 +87,10 @@ export const FilesList = () => {
             />
           )}
         >
-          <SuspenseBoundary className="max-chart:w-full h-208 w-full">
+          <SuspenseBoundary
+            hasCustomSkeleton={true}
+            skeleton={<FilesSkeleton />}
+          >
             <Files
               languagesToFetch={languagesToFetch}
               searchTerm={debouncedSearchTerm}

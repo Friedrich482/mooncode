@@ -36,7 +36,10 @@ export const DashboardTitle = () => (
           />
         )}
       >
-        <SuspenseBoundary className="inline-block h-9 w-44 align-top">
+        <SuspenseBoundary
+          hasCustomSkeleton={false}
+          className="inline-block h-9 w-44 align-top"
+        >
           <TimeSpentOnPeriod />
         </SuspenseBoundary>
       </ErrorBoundary>
