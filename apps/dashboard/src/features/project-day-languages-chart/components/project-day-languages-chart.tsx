@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
+import { useLoaderData } from "react-router";
 import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 
 import { CustomChartToolTip } from "@/components/common/custom-chart-tooltip";
 import { DayChartTitle } from "@/components/common/day-chart-title";
 import { chartConfig } from "@/constants";
+import { projectLoader } from "@/loaders/project-loader";
 import { getNextDayDate } from "@/utils/get-next-day-date";
 import { getPrevDayDate } from "@/utils/get-previous-day-date";
 import { useTRPC } from "@/utils/trpc";
@@ -18,7 +20,9 @@ import { getLanguageColor } from "@repo/ui/utils/get-language-color";
 import { getLanguageName } from "@repo/ui/utils/get-language-name";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-export const DayLanguagesChart = () => {
+export const ProjectDayLanguagesChart = () => {
+  const { projectName } = useLoaderData<typeof projectLoader>();
+
   const [date, setDate] = useState(new Date());
   const dateString = useMemo(
     () => date.toLocaleDateString(DATE_LOCALE),
@@ -31,8 +35,9 @@ export const DayLanguagesChart = () => {
   const trpc = useTRPC();
 
   const { data } = useSuspenseQuery(
-    trpc.analytics.general.getDailyStats.queryOptions({
+    trpc.analytics.projects.getProjectDailyStats.queryOptions({
       dateString,
+      name: projectName,
     }),
   );
 
