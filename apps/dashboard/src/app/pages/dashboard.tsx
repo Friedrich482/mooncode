@@ -43,7 +43,7 @@ export const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <PeriodTimeChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -57,7 +57,7 @@ export const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <PeriodLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -73,7 +73,7 @@ export const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <DayLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -87,7 +87,7 @@ export const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <GeneralStatsChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -104,7 +104,10 @@ export const Dashboard = () => {
               />
             )}
           >
-            <SuspenseBoundary className="max-chart:w-full h-96 w-full">
+            <SuspenseBoundary
+              hasCustomSkeleton={false}
+              className="max-chart:w-full h-96 w-full"
+            >
               <PeriodProjects />
             </SuspenseBoundary>
           </ErrorBoundary>

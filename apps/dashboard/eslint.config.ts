@@ -78,9 +78,19 @@ export default [
               except: ["./project-languages-time-on-period-chart"],
             },
             {
+              target: "./src/features/project-day-languages-chart",
+              from: "./src/features",
+              except: ["./project-day-languages-chart"],
+            },
+            {
               target: "./src/features/project-time-on-period-chart",
               from: "./src/features",
               except: ["./project-time-on-period-chart"],
+            },
+            {
+              target: "./src/features/project-general-stats-charts",
+              from: "./src/features",
+              except: ["./project-general-stats-charts"],
             },
             {
               target: "./src/features/project-title",

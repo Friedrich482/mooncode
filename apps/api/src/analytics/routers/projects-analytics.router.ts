@@ -1,6 +1,8 @@
 import {
   CheckProjectExistsDto,
+  GetPeriodGeneralStatsForProjectDto,
   GetPeriodProjectsDto,
+  GetProjectDailyStatsDto,
   GetProjectFilesOnPeriodDto,
   GetProjectLanguagesPerDayOfPeriodDto,
   GetProjectLanguagesTimeOnPeriodDto,
@@ -76,6 +78,26 @@ export class ProjectsAnalyticsRouter {
         .input(GetProjectLanguagesPerDayOfPeriodDto)
         .query(async ({ ctx, input }) =>
           this.projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod({
+            userId: ctx.user.sub,
+            ...input,
+          }),
+        ),
+
+      getProjectDailyStats: this.trpcService
+        .protectedProcedure()
+        .input(GetProjectDailyStatsDto)
+        .query(async ({ input, ctx }) =>
+          this.projectsAnalyticsService.getProjectDailyStats({
+            userId: ctx.user.sub,
+            ...input,
+          }),
+        ),
+
+      getPeriodGeneralStatsForProject: this.trpcService
+        .protectedProcedure()
+        .input(GetPeriodGeneralStatsForProjectDto)
+        .query(async ({ input, ctx }) =>
+          this.projectsAnalyticsService.getPeriodGeneralStatsForProject({
             userId: ctx.user.sub,
             ...input,
           }),

@@ -5,6 +5,7 @@ import { ChartGroupWrapper } from "@/components/common/chart-group-wrapper";
 import { FallBackRender } from "@/components/errors/error-boundary";
 import { SuspenseBoundary } from "@/components/errors/suspense-boundary";
 import { FilesList } from "@/features/files-list/components/files-list";
+import { ProjectGeneralStatsChart } from "@/features/project-general-stats-charts/components/project-general-stats-chart";
 import { ProjectTitle } from "@/features/project-title/components/project-title";
 
 const ProjectTimeOnPeriodChart = lazy(async () => ({
@@ -16,6 +17,11 @@ const ProjectLanguagesTimeOnPeriodChart = lazy(async () => ({
   default: (
     await import("@/features/project-languages-time-on-period-chart/components/project-languages-time-on-period-chart")
   ).ProjectLanguagesTimeOnPeriodChart,
+}));
+const ProjectDayLanguagesChart = lazy(async () => ({
+  default: (
+    await import("@/features/project-day-languages-chart/components/project-day-languages-chart")
+  ).ProjectDayLanguagesChart,
 }));
 const FilesCirclePackingChart = lazy(async () => ({
   default: (
@@ -39,7 +45,7 @@ export const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <ProjectTimeOnPeriodChart />
             </SuspenseBoundary>
           </ErrorBoundary>
@@ -53,8 +59,37 @@ export const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary>
+            <SuspenseBoundary hasCustomSkeleton={false}>
               <ProjectLanguagesTimeOnPeriodChart />
+            </SuspenseBoundary>
+          </ErrorBoundary>
+        </ChartGroupWrapper>
+
+        <ChartGroupWrapper>
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary hasCustomSkeleton={false}>
+              <ProjectDayLanguagesChart />
+            </SuspenseBoundary>
+          </ErrorBoundary>
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary hasCustomSkeleton={false}>
+              <ProjectGeneralStatsChart />
             </SuspenseBoundary>
           </ErrorBoundary>
         </ChartGroupWrapper>
@@ -70,7 +105,10 @@ export const Project = () => {
               />
             )}
           >
-            <SuspenseBoundary className="h-182 w-full">
+            <SuspenseBoundary
+              hasCustomSkeleton={false}
+              className="h-182 w-full"
+            >
               <FilesCirclePackingChart />
             </SuspenseBoundary>
           </ErrorBoundary>

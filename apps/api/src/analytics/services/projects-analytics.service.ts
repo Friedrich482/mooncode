@@ -1,4 +1,4 @@
-import { eachDayOfInterval } from "date-fns";
+import { differenceInDays, eachDayOfInterval } from "date-fns";
 import {
   and,
   between,
@@ -13,7 +13,9 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
   CheckProjectExistsDtoType,
   FindProjectByNameOnRangeDtoType,
+  GetPeriodGeneralStatsForProjectDtoType,
   GetPeriodProjectsDtoType,
+  GetProjectDailyStatsDtoType,
   GetProjectFilesOnPeriodDtoType,
   GetProjectLanguagesPerDayOfPeriodDtoType,
   GetProjectLanguagesTimeOnPeriodDtoType,
@@ -27,6 +29,7 @@ import { getProjectLanguagesGroupedByWeeks } from "src/analytics/utils/projects/
 import { getProjectPerDayOfPeriodGroupedByMonths } from "src/analytics/utils/projects/get-project-per-day-of-period-grouped-by-months";
 import { getProjectPerDayOfPeriodGroupedByWeeks } from "src/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
 import { getWeekDayName } from "src/common/utils/get-weekday-name";
+import { DailyDataService } from "src/daily-data/daily-data.service";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
 import { dailyData, files, languages, projects } from "src/drizzle/schema";
 import { ProjectsService } from "src/projects/projects.service";
@@ -37,6 +40,10 @@ import { formatDuration } from "@repo/common/format-duration";
 import { TRPCError } from "@trpc/server";
 
 import { NUMBER_OF_FILES_PER_PAGE } from "../constants";
+import { NAString } from "../dto/common";
+import { getProjectGeneralStatsOnPeriodGroupedByMonths } from "../utils/projects/get-project-general-stats-on-period-grouped-by-months";
+import { getProjectGeneralStatsOnPeriodGroupedByWeeks } from "../utils/projects/get-project-general-stats-on-period-grouped-by-weeks";
+import { getProjectMostUsedLanguageOnPeriod } from "../utils/projects/get-project-most-used-language-on-period";
 
 @Injectable()
 export class ProjectsAnalyticsService {
@@ -44,6 +51,7 @@ export class ProjectsAnalyticsService {
     @Inject(DrizzleAsyncProvider)
     private readonly db: NodePgDatabase,
     private readonly projectsService: ProjectsService,
+    private readonly dailyDataService: DailyDataService,
   ) {}
 
   async findProjectByNameOnRange(
@@ -390,6 +398,196 @@ export class ProjectsAnalyticsService {
     );
 
     return periodLanguagesPerDayOfPeriod;
+  }
+
+  async getProjectDailyStats(
+    getProjectDailyStatsDto: GetProjectDailyStatsDtoType,
+  ) {
+    const { dateString, name, userId } = getProjectDailyStatsDto;
+
+    const dayData = await this.dailyDataService.findOne({
+      userId,
+      date: dateString,
+    });
+
+    if (!dayData || dayData.timeSpent === 0) {
+      return {
+        formattedTotalTimeSpent: formatDuration(0),
+        finalData: [],
+      };
+    }
+
+    const rawProjectFilesOnDay = await this.db
+      .select({
+        timeSpent: files.timeSpent,
+        languageSlug: languages.languageSlug,
+        projectPath: projects.path,
+      })
+      .from(files)
+      .innerJoin(projects, eq(projects.id, files.projectId))
+      .innerJoin(languages, eq(languages.id, files.languageId))
+      .where(
+        and(eq(projects.name, name), eq(projects.dailyDataId, dayData.id)),
+      );
+
+    if (rawProjectFilesOnDay.length === 0) {
+      return {
+        formattedTotalTimeSpent: formatDuration(0),
+        finalData: [],
+      };
+    }
+
+    const projectLanguagesOnDay = rawProjectFilesOnDay.reduce(
+      (acc, current) => {
+        acc[current.languageSlug] =
+          (acc[current.languageSlug] || 0) + current.timeSpent;
+        return acc;
+      },
+      {} as { [languageSlug: string]: number },
+    );
+
+    const totalTimeSpent = (
+      await this.projectsService.findOne({
+        dailyDataId: dayData.id,
+        name: name,
+        path: rawProjectFilesOnDay[0].projectPath,
+      })
+    )?.timeSpent;
+
+    if (!totalTimeSpent) {
+      return {
+        formattedTotalTimeSpent: formatDuration(0),
+        finalData: [],
+      };
+    }
+
+    const finalData = Object.entries(projectLanguagesOnDay)
+      .map(([languageSlug, timeSpent]) => ({
+        languageSlug,
+        timeSpent,
+        formattedValue: formatDuration(timeSpent),
+        percentage: parseFloat(((timeSpent * 100) / totalTimeSpent).toFixed(2)),
+      }))
+      .sort((a, b) => b.timeSpent - a.timeSpent);
+
+    const formattedTotalTimeSpent = formatDuration(totalTimeSpent);
+
+    return { finalData, formattedTotalTimeSpent };
+  }
+
+  async getPeriodGeneralStatsForProject(
+    getPeriodGeneralStatsForProjectDto: GetPeriodGeneralStatsForProjectDtoType,
+  ) {
+    const {
+      userId,
+      name,
+      start,
+      end,
+      todaysDateString,
+      groupBy,
+      periodResolution,
+    } = getPeriodGeneralStatsForProjectDto;
+
+    const projectPerDayOfPeriod = await this.findProjectByNameOnRange({
+      name,
+      start,
+      end,
+      userId,
+    });
+
+    if (projectPerDayOfPeriod.length === 0)
+      return {
+        avgTime: formatDuration(0),
+        percentageToAvg: 0,
+        mostActiveDate: "N/A",
+        mostUsedLanguageSlug: "N/A",
+      };
+
+    switch (groupBy) {
+      case "weeks":
+        return getProjectGeneralStatsOnPeriodGroupedByWeeks(
+          userId,
+          start,
+          end,
+          todaysDateString,
+          name,
+          this,
+          projectPerDayOfPeriod,
+          periodResolution,
+        );
+
+      case "months":
+        return getProjectGeneralStatsOnPeriodGroupedByMonths(
+          userId,
+          start,
+          end,
+          todaysDateString,
+          name,
+          this,
+          projectPerDayOfPeriod,
+        );
+
+      default:
+        break;
+    }
+
+    const numberOfDays = differenceInDays(end, start) + 1;
+    const { totalTimeSpent: totalTimeSpentOnPeriod, path } =
+      await this.getProjectOnPeriod({ userId, start, end, name });
+
+    const mean = Math.floor(totalTimeSpentOnPeriod / numberOfDays);
+
+    const todaysDailyDataId = (
+      await this.dailyDataService.findOne({ date: todaysDateString, userId })
+    )?.id;
+
+    let timeSpentOnProjectToday = 0;
+    if (todaysDailyDataId) {
+      timeSpentOnProjectToday =
+        (
+          await this.projectsService.findOne({
+            dailyDataId: todaysDailyDataId || "",
+            name,
+            path,
+          })
+        )?.timeSpent || 0;
+    }
+
+    const percentageToAvg =
+      mean === 0
+        ? 0
+        : parseFloat(
+            (((timeSpentOnProjectToday - mean) / mean) * 100).toFixed(2),
+          );
+
+    const maxTimeSpentPerDay =
+      projectPerDayOfPeriod.length > 0
+        ? Math.max(...projectPerDayOfPeriod.map((day) => day.timeSpent))
+        : 0;
+
+    const mostActiveDate: NAString =
+      maxTimeSpentPerDay === 0
+        ? "N/A"
+        : new Date(
+            projectPerDayOfPeriod.find(
+              (day) => day.timeSpent === maxTimeSpentPerDay,
+            )?.date || convertToISODate(new Date(start)),
+          ).toDateString();
+
+    const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
+      this,
+      name,
+      userId,
+      start,
+      end,
+    );
+
+    return {
+      avgTime: formatDuration(mean),
+      percentageToAvg,
+      mostActiveDate,
+      mostUsedLanguageSlug,
+    };
   }
 
   async getFilesOnPeriod<T extends GetProjectFilesOnPeriodDtoType>(

@@ -6,7 +6,7 @@ import { Button } from "@repo/ui/components/ui/button";
 import { CalendarPopover } from "@repo/ui/components/ui/calendar-popover";
 import { Icon } from "@repo/ui/components/ui/icon";
 
-export const ChartTitle = ({
+export const DayChartTitle = ({
   displayDate,
   formattedTotalTimeSpent,
   handleChevronLeftClick,

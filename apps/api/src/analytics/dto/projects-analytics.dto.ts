@@ -22,6 +22,19 @@ export const GetProjectLanguagesTimePerDayOfPeriodDto = z.object({
   name: z.string().min(1),
 });
 
+export const GetProjectDailyStatsDto = z.object({
+  dateString: DateStringDto,
+  name: z.string().min(1),
+});
+
+export const GetPeriodGeneralStatsForProjectDto = refineAndTransformDto(
+  z.object({
+    ...BaseDto.shape,
+    name: z.string().min(1),
+    todaysDateString: DateStringDto,
+  }),
+);
+
 export const GetProjectFilesOnPeriodBaseDto = z.object({
   ...refineDto(
     z.object({
@@ -98,6 +111,16 @@ export type GetProjectLanguagesTimeOnPeriodDtoType = z.infer<
 export type GetProjectLanguagesTimePerDayOfPeriodDtoType = z.infer<
   typeof GetProjectLanguagesTimePerDayOfPeriodDto
 >;
+
+export type GetProjectDailyStatsDtoType = z.infer<
+  typeof GetProjectDailyStatsDto
+> &
+  UserId;
+
+export type GetPeriodGeneralStatsForProjectDtoType = z.infer<
+  typeof GetPeriodGeneralStatsForProjectDto
+> &
+  UserId;
 
 export type GetProjectFilesOnPeriodDtoType = z.infer<
   typeof GetProjectFilesOnPeriodDto

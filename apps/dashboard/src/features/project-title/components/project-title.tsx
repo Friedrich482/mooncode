@@ -27,7 +27,10 @@ export const ProjectTitle = () => (
         />
       )}
     >
-      <SuspenseBoundary className="bg-accent h-9 w-52">
+      <SuspenseBoundary
+        hasCustomSkeleton={false}
+        className="bg-accent h-9 w-52"
+      >
         <ProjectName />
       </SuspenseBoundary>
     </ErrorBoundary>
@@ -54,7 +57,10 @@ export const ProjectTitle = () => (
             />
           )}
         >
-          <SuspenseBoundary className="inline-block h-9 w-44 align-top">
+          <SuspenseBoundary
+            hasCustomSkeleton={false}
+            className="inline-block h-9 w-44 align-top"
+          >
             <TimeSpentOnProject />
           </SuspenseBoundary>
         </ErrorBoundary>
