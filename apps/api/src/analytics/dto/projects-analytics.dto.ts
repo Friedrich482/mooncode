@@ -27,6 +27,14 @@ export const GetProjectDailyStatsDto = z.object({
   name: z.string().min(1),
 });
 
+export const GetPeriodGeneralStatsForProjectDto = refineAndTransformDto(
+  z.object({
+    ...BaseDto.shape,
+    name: z.string().min(1),
+    todaysDateString: DateStringDto,
+  }),
+);
+
 export const GetProjectFilesOnPeriodBaseDto = z.object({
   ...refineDto(
     z.object({
@@ -106,6 +114,11 @@ export type GetProjectLanguagesTimePerDayOfPeriodDtoType = z.infer<
 
 export type GetProjectDailyStatsDtoType = z.infer<
   typeof GetProjectDailyStatsDto
+> &
+  UserId;
+
+export type GetPeriodGeneralStatsForProjectDtoType = z.infer<
+  typeof GetPeriodGeneralStatsForProjectDto
 > &
   UserId;
 

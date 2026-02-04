@@ -6,6 +6,7 @@ import { FallBackRender } from "@/components/errors/error-boundary";
 import { SuspenseBoundary } from "@/components/errors/suspense-boundary";
 import { FilesList } from "@/features/files-list/components/files-list";
 import { ProjectDayLanguagesChart } from "@/features/project-day-languages-chart/components/project-day-languages-chart";
+import { ProjectGeneralStatsChart } from "@/features/project-general-stats-charts/components/project-general-stats-chart";
 import { ProjectTitle } from "@/features/project-title/components/project-title";
 
 const ProjectTimeOnPeriodChart = lazy(async () => ({
@@ -72,6 +73,19 @@ export const Project = () => {
           >
             <SuspenseBoundary hasCustomSkeleton={false}>
               <ProjectDayLanguagesChart />
+            </SuspenseBoundary>
+          </ErrorBoundary>
+          <ErrorBoundary
+            FallbackComponent={({ error, resetErrorBoundary }) => (
+              <FallBackRender
+                error={error}
+                resetErrorBoundary={resetErrorBoundary}
+                hasCustomChildren={false}
+              />
+            )}
+          >
+            <SuspenseBoundary hasCustomSkeleton={false}>
+              <ProjectGeneralStatsChart />
             </SuspenseBoundary>
           </ErrorBoundary>
         </ChartGroupWrapper>

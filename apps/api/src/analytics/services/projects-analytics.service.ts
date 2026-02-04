@@ -1,4 +1,4 @@
-import { eachDayOfInterval } from "date-fns";
+import { differenceInDays, eachDayOfInterval } from "date-fns";
 import {
   and,
   between,
@@ -13,6 +13,7 @@ import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import {
   CheckProjectExistsDtoType,
   FindProjectByNameOnRangeDtoType,
+  GetPeriodGeneralStatsForProjectDtoType,
   GetPeriodProjectsDtoType,
   GetProjectDailyStatsDtoType,
   GetProjectFilesOnPeriodDtoType,
@@ -39,6 +40,10 @@ import { formatDuration } from "@repo/common/format-duration";
 import { TRPCError } from "@trpc/server";
 
 import { NUMBER_OF_FILES_PER_PAGE } from "../constants";
+import { NAString } from "../dto/common";
+import { getProjectGeneralStatsOnPeriodGroupedByMonths } from "../utils/projects/get-project-general-stats-on-period-grouped-by-months";
+import { getProjectGeneralStatsOnPeriodGroupedByWeeks } from "../utils/projects/get-project-general-stats-on-period-grouped-by-weeks";
+import { getProjectMostUsedLanguageOnPeriod } from "../utils/projects/get-project-most-used-language-on-period";
 
 @Injectable()
 export class ProjectsAnalyticsService {
@@ -461,6 +466,121 @@ export class ProjectsAnalyticsService {
     const formattedTotalTimeSpent = formatDuration(totalTimeSpent);
 
     return { finalData, formattedTotalTimeSpent };
+  }
+
+  async getPeriodGeneralStatsForProject(
+    getPeriodGeneralStatsForProjectDto: GetPeriodGeneralStatsForProjectDtoType,
+  ) {
+    const {
+      userId,
+      name,
+      start,
+      end,
+      todaysDateString,
+      groupBy,
+      periodResolution,
+    } = getPeriodGeneralStatsForProjectDto;
+
+    const projectPerDayOfPeriod = await this.findProjectByNameOnRange({
+      name,
+      start,
+      end,
+      userId,
+    });
+
+    if (projectPerDayOfPeriod.length === 0)
+      return {
+        avgTime: formatDuration(0),
+        percentageToAvg: 0,
+        mostActiveDate: "N/A",
+        mostUsedLanguageSlug: "N/A",
+      };
+
+    switch (groupBy) {
+      case "weeks":
+        return getProjectGeneralStatsOnPeriodGroupedByWeeks(
+          userId,
+          start,
+          end,
+          todaysDateString,
+          name,
+          this,
+          projectPerDayOfPeriod,
+          periodResolution,
+        );
+
+      case "months":
+        return getProjectGeneralStatsOnPeriodGroupedByMonths(
+          userId,
+          start,
+          end,
+          todaysDateString,
+          name,
+          this,
+          projectPerDayOfPeriod,
+        );
+
+      default:
+        break;
+    }
+
+    const numberOfDays = differenceInDays(end, start) + 1;
+    const { totalTimeSpent: totalTimeSpentOnPeriod, path } =
+      await this.getProjectOnPeriod({ userId, start, end, name });
+
+    const mean = Math.floor(totalTimeSpentOnPeriod / numberOfDays);
+
+    const todaysDailyDataId = (
+      await this.dailyDataService.findOne({ date: todaysDateString, userId })
+    )?.id;
+
+    let timeSpentOnProjectToday = 0;
+    if (todaysDailyDataId) {
+      timeSpentOnProjectToday =
+        (
+          await this.projectsService.findOne({
+            dailyDataId: todaysDailyDataId || "",
+            name,
+            path,
+          })
+        )?.timeSpent || 0;
+    }
+
+    const percentageToAvg =
+      mean === 0
+        ? 0
+        : parseFloat(
+            (((timeSpentOnProjectToday - mean) / mean) * 100).toFixed(2),
+          );
+
+    const maxTimeSpentPerDay =
+      projectPerDayOfPeriod.length > 0
+        ? Math.max(...projectPerDayOfPeriod.map((day) => day.timeSpent))
+        : 0;
+
+    const mostActiveDate: NAString =
+      maxTimeSpentPerDay === 0
+        ? "N/A"
+        : new Date(
+            projectPerDayOfPeriod.find(
+              (day) => day.timeSpent === maxTimeSpentPerDay,
+            )?.date || convertToISODate(new Date(start)),
+          ).toDateString();
+
+    const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
+      this,
+      name,
+      userId,
+      start,
+      end,
+    );
+
+    return {
+      avgTime: formatDuration(mean),
+      percentageToAvg,
+      mostActiveDate,
+      mostUsedLanguageSlug,
+    };
   }
 
   async getFilesOnPeriod<T extends GetProjectFilesOnPeriodDtoType>(

@@ -88,6 +88,11 @@ export default [
               except: ["./project-time-on-period-chart"],
             },
             {
+              target: "./src/features/project-general-stats-charts",
+              from: "./src/features",
+              except: ["./project-general-stats-charts"],
+            },
+            {
               target: "./src/features/project-title",
               from: "./src/features",
               except: ["./project-title"],
