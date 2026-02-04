@@ -430,6 +430,13 @@ export class ProjectsAnalyticsService {
         and(eq(projects.name, name), eq(projects.dailyDataId, dayData.id)),
       );
 
+    if (rawProjectFilesOnDay.length === 0) {
+      return {
+        formattedTotalTimeSpent: formatDuration(0),
+        finalData: [],
+      };
+    }
+
     const projectLanguagesOnDay = rawProjectFilesOnDay.reduce(
       (acc, current) => {
         acc[current.languageSlug] =
