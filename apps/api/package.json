@@ -33,7 +33,7 @@
     "@nestjs/throttler": "^6.5.0",
     "@repo/common": "*",
     "@trpc-limiter/memory": "^1.0.0",
-    "@trpc/server": "^11.4.4",
+    "@trpc/server": "^11.7.2",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "date-fns": "^4.1.0",
