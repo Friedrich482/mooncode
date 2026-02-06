@@ -33,9 +33,6 @@
     "apps/*",
     "packages/*"
   ],
-  "dependencies": {
-    "superjson": "^2.2.2"
-  },
   "overrides": {
     "braces": "^3.0.3",
     "micromatch": "^4.0.8",
