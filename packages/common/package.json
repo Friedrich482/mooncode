@@ -34,10 +34,10 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
-    "typescript": "5.7.3"
+    "typescript": "^5.9.3"
   },
   "dependencies": {
-    "date-fns": "4.1.0",
-    "zod": "^4.0.17"
+    "date-fns": "^4.1.0",
+    "zod": "^4.3.6"
   }
 }
