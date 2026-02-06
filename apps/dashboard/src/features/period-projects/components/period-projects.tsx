@@ -65,7 +65,7 @@ export const PeriodProjects = () => {
             onClick={handleGridLayoutButtonClick}
             className={cn(
               isGridLayout &&
-                "bg-primary hover:bg-primary text-primary-foreground hover:text-primary-foreground",
+                "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary",
             )}
           />
           <Icon
@@ -73,7 +73,7 @@ export const PeriodProjects = () => {
             onClick={handleListLayoutButtonClick}
             className={cn(
               !isGridLayout &&
-                "bg-primary hover:bg-primary text-primary-foreground hover:text-primary-foreground",
+                "bg-primary text-primary-foreground hover:bg-primary hover:text-primary-foreground dark:hover:bg-primary",
             )}
           />
         </div>

@@ -18,7 +18,7 @@ export const Icon = ({
     variant="ghost"
     size="icon"
     {...props}
-    className={cn("size-10 [&_svg]:size-auto", className)}
+    className={cn("size-10 [&_svg:not([class*='size-'])]:size-3/5", className)}
   >
     <Icon />
   </Button>
