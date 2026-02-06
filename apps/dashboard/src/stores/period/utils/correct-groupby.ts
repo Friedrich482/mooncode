@@ -1,7 +1,8 @@
 import { PERIODS_CONFIG } from "@/stores/period/constants";
-import { Period } from "@/types-schemas";
 import { getPeriodResolution } from "@repo/common/get-period-resolution";
 import { GroupBy } from "@repo/common/types-schemas";
+
+import { Period } from "../types-schemas";
 
 export const correctGroupBy = (
   period: Period,
