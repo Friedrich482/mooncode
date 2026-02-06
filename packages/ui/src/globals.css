@@ -193,3 +193,8 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(212 212 212 / var(--tw-bg-opacity, 1));
 }
+
+button:not([disabled]),
+[role="button"]:not([disabled]) {
+  cursor: pointer;
+}
