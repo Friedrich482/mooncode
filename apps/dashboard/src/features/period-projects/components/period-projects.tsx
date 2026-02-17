@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,6 +9,7 @@ import {
   List,
 } from "lucide-react";
 
+import { LinkWithQuery } from "@/components/common/link-with-query";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
@@ -97,7 +97,7 @@ export const PeriodProjects = () => {
       ) : isGridLayout ? (
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 max-[42rem]:grid-cols-1 max-[42rem]:gap-8">
           {data.map((entry) => (
-            <Link key={entry.path} to={`/dashboard/${entry.name}`}>
+            <LinkWithQuery key={entry.path} to={`/dashboard/${entry.name}`}>
               <div className="group hover:border-primary/85 relative flex min-h-40 origin-bottom-right cursor-pointer flex-col items-center justify-center gap-4 rounded-md border p-3 transition-transform duration-150">
                 <Icon
                   Icon={Folder}
@@ -114,15 +114,15 @@ export const PeriodProjects = () => {
                   {formatDuration(entry.totalTimeSpent)} ({entry.percentage}%)
                 </p>
               </div>
-            </Link>
+            </LinkWithQuery>
           ))}
         </div>
       ) : (
         <div className="flex flex-col gap-8">
           {data.map((entry) => (
-            <Link
+            <LinkWithQuery
+              key={entry.path}
               to={`/dashboard/${entry.name}`}
-              key={entry.name}
               className="group hover:border-primary/85 relative flex items-center justify-center gap-4 rounded-md border p-2"
             >
               <h3 className="font-bold group-hover:underline max-[42rem]:text-xl">
@@ -131,7 +131,7 @@ export const PeriodProjects = () => {
               <p className="text-primary/85 text-xl transition duration-150 max-[42rem]:text-base">
                 {formatDuration(entry.totalTimeSpent)} ({entry.percentage}%)
               </p>
-            </Link>
+            </LinkWithQuery>
           ))}
         </div>
       )}

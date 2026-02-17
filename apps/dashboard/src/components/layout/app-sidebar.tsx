@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router";
+import { useLocation } from "react-router";
 import {
   Folder,
   FolderOpen,
@@ -24,6 +24,7 @@ import {
 } from "@repo/ui/components/ui/sidebar";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
+import { LinkWithQuery } from "../common/link-with-query";
 import { GravatarAvatar } from "./header/gravatar-avatar";
 import { Logo } from "./header/logo";
 
@@ -113,10 +114,10 @@ export const AppSidebar = () => {
                   isActive={pathname === "/dashboard"}
                   tooltip="Dashboard"
                 >
-                  <Link to="/dashboard">
+                  <LinkWithQuery to="/dashboard">
                     <LayoutDashboard />
                     <span>Dashboard</span>
-                  </Link>
+                  </LinkWithQuery>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
@@ -157,10 +158,10 @@ export const AppSidebar = () => {
                         isActive={isProjectActive}
                         tooltip={project.name}
                       >
-                        <Link to={`/dashboard/${project.name}`}>
+                        <LinkWithQuery to={`/dashboard/${project.name}`}>
                           {isProjectActive ? <FolderOpen /> : <Folder />}
                           <span>{project.name}</span>
-                        </Link>
+                        </LinkWithQuery>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   );
@@ -192,13 +193,13 @@ export const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton asChild variant="outline" tooltip={email}>
-              <Link to="/profile">
+              <LinkWithQuery to="/profile">
                 <GravatarAvatar
                   email={email}
                   className="group-data-[collapsible=icon]:p-0 [&>img]:size-6 group-data-[collapsible=icon]:[&>img]:size-4!"
                 />
                 <span>{email}</span>
-              </Link>
+              </LinkWithQuery>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
