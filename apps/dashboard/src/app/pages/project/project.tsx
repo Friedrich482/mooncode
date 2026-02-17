@@ -31,7 +31,7 @@ const FilesCirclePackingChart = lazy(async () => ({
 
 export const Project = () => {
   return (
-    <main className="flex flex-col gap-y-4 px-14 pb-4">
+    <main className="flex flex-1 flex-col gap-y-4 pt-2 pr-14 pb-4 pl-1 max-md:pl-14">
       <ProjectTitle />
 
       <div className="flex flex-col gap-x-10 gap-y-12 rounded-md border p-3 pt-14">
@@ -79,6 +79,7 @@ export const Project = () => {
               <ProjectDayLanguagesChart />
             </SuspenseBoundary>
           </ErrorBoundary>
+
           <ErrorBoundary
             FallbackComponent={({ error, resetErrorBoundary }) => (
               <FallBackRender

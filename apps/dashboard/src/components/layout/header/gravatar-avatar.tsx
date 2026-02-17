@@ -1,21 +1,29 @@
 import React from "react";
 import md5 from "js-md5";
 
+import { cn } from "@repo/ui/lib/utils";
+
 type GravatarProps = {
   email: string;
   size?: number;
   defaultType?: string;
+  className?: string;
 };
 
 export const GravatarAvatar = React.forwardRef<
   HTMLImageElement,
   GravatarProps & React.HTMLAttributes<HTMLImageElement>
->(({ email, defaultType = "identicon", ...props }, ref) => {
+>(({ email, className, defaultType = "identicon", ...props }, ref) => {
   const hash = md5.md5(email);
   const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=${defaultType}`;
 
   return (
-    <div className="hover:bg-accent shrink-0 self-center rounded-full p-1">
+    <div
+      className={cn(
+        "hover:bg-accent shrink-0 self-center rounded-full p-1",
+        className,
+      )}
+    >
       <img
         className="hover:bg-accent size-8 cursor-pointer rounded-full"
         src={gravatarUrl}

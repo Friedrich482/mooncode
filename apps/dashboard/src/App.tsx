@@ -5,6 +5,7 @@ import superjson from "superjson";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import type { AppRouter } from "@repo/trpc/router";
+import { SidebarProvider } from "@repo/ui/components/ui/sidebar";
 import { Toaster } from "@repo/ui/components/ui/sonner";
 import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -93,7 +94,9 @@ export const App = () => {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} position="bottom" />
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-          <Outlet />
+          <SidebarProvider>
+            <Outlet />
+          </SidebarProvider>
         </TRPCProvider>
       </QueryClientProvider>
       <Toaster />

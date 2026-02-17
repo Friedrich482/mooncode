@@ -21,7 +21,7 @@ export const FiltersSection = ({
 }) => (
   <>
     <div className="flex gap-4">
-      <p>Group</p>
+      <p className="wrap-anywhere">Group</p>
       <Checkbox
         className="size-8"
         checked={isGrouped}

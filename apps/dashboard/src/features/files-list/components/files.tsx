@@ -106,11 +106,11 @@ export const Files = memo(function Files({
                             <li key={filePath}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <div className="flex min-h-9 gap-4">
-                                    <span className="min-h-9 overflow-hidden font-extrabold text-ellipsis whitespace-nowrap">
+                                  <div className="grid h-9 grid-cols-2 gap-4 truncate">
+                                    <span className="min-w-0 truncate font-extrabold">
                                       &bull; {name}
                                     </span>
-                                    <span className="overflow-hidden font-extralight text-ellipsis whitespace-nowrap">
+                                    <span className="min-w-0 truncate font-extralight">
                                       {formatDuration(totalTimeSpent)}
                                     </span>
                                   </div>
@@ -133,11 +133,11 @@ export const Files = memo(function Files({
               <li key={filePath}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex min-h-9 gap-4">
-                      <span className="min-h-9 overflow-hidden font-extrabold text-ellipsis whitespace-nowrap">
+                    <div className="grid h-9 grid-cols-2 gap-4 truncate">
+                      <span className="min-w-0 truncate font-extrabold">
                         &bull; {name}
                       </span>
-                      <span className="overflow-hidden font-extralight text-ellipsis whitespace-nowrap">
+                      <span className="min-w-0 truncate font-extralight">
                         {formatDuration(totalTimeSpent)}
                       </span>
                     </div>

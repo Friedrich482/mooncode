@@ -55,7 +55,9 @@ export const PeriodLanguagesChart = () => {
         onClick={handleClick}
       />
       <div className="flex min-h-96 flex-col rounded-md border">
-        <h2 className="text-center text-2xl font-bold">Languages</h2>
+        <h2 className="text-center text-2xl font-bold max-[18rem]:text-base">
+          Languages
+        </h2>
         <ChartContainer
           config={chartConfig}
           className="w-full flex-1 border-none"

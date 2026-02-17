@@ -7,7 +7,7 @@ export const FilesSkeleton = () => {
   return (
     <div className="flex h-239 flex-1 flex-col items-start justify-start gap-4 max-[42rem]:gap-8">
       <Skeleton className="max-chart:w-full h-225 w-full" />
-      <div className="mt-auto flex items-center justify-start gap-2">
+      <div className="mt-auto flex flex-wrap items-center justify-start gap-2">
         <Icon
           Icon={ChevronsLeft}
           className="hover:bg-background hover:text-foreground cursor-not-allowed"

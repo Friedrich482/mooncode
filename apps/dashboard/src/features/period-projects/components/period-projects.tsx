@@ -57,9 +57,11 @@ export const PeriodProjects = () => {
 
   return (
     <div className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border p-3 text-2xl">
-      <section className="flex items-center justify-center gap-2 pr-4">
-        <h2 className="flex-1 text-center text-2xl font-bold">Projects</h2>
-        <div className="space-x-2">
+      <section className="flex items-center justify-center gap-2 pr-4 max-[24rem]:flex-col">
+        <h2 className="flex-1 text-center text-2xl font-bold max-[18rem]:text-xl">
+          Projects
+        </h2>
+        <div className="flex gap-2">
           <Icon
             Icon={LayoutGrid}
             onClick={handleGridLayoutButtonClick}
@@ -105,7 +107,7 @@ export const PeriodProjects = () => {
                   Icon={FolderOpen}
                   className="group-hover:text-primary/85 absolute -top-8 left-0 hidden group-hover:block hover:bg-transparent hover:bg-none"
                 />
-                <h3 className="font-bold group-hover:underline max-[42rem]:text-xl">
+                <h3 className="font-bold wrap-anywhere group-hover:underline max-[42rem]:text-xl">
                   {entry.name}
                 </h3>
                 <p className="text-primary/85 text-xl transition duration-150 max-[42rem]:text-base">

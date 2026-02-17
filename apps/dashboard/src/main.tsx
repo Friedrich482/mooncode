@@ -11,6 +11,7 @@ import { ResetPassword } from "@/app/pages/auth/reset-password";
 import { Dashboard } from "@/app/pages/dashboard";
 import { NotFound } from "@/app/pages/not-found";
 import { Project } from "@/app/pages/project/project";
+import { Layout as AuthLayout } from "@/features/auth/components/layout";
 import { authRouteLoader, googleAuthLoader } from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
 import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
@@ -55,6 +56,7 @@ const router = createBrowserRouter([
         ],
       },
       {
+        element: <AuthLayout />,
         children: [
           {
             path: "login",

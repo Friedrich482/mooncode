@@ -58,7 +58,8 @@ export const CircularPacking = ({
         handleResetButtonClick={handleResetButtonClick}
         handleGroupCheckboxChange={handleGroupCheckboxChange}
       />
-      <svg width={width} height={height} className="-translate-x-3">
+
+      <svg width={width} height={height} className="w-full! -translate-x-20">
         {!isGrouped ? (
           bubbles.map((bubble, index) => (
             <LeafSVG

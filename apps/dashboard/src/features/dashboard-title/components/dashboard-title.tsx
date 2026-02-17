@@ -15,7 +15,7 @@ export const DashboardTitle = () => (
     role="heading"
     aria-level={1}
   >
-    <div className="float-left mr-4 mb-4 flex flex-col gap-2">
+    <div className="float-left mr-4 mb-4 flex flex-col gap-2 max-[17rem]:mr-0">
       <PeriodDropDown />
       <GroupByDropDown />
     </div>

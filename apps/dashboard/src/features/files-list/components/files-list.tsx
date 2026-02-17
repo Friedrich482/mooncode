@@ -59,7 +59,10 @@ export const FilesList = () => {
             />
           )}
         >
-          <SuspenseBoundary hasCustomSkeleton={false} className="h-9 w-44">
+          <SuspenseBoundary
+            hasCustomSkeleton={false}
+            className="h-9 w-44 max-[23rem]:w-full"
+          >
             <LanguagesDropDown
               selectedEntries={selectedEntries}
               handleCheckEntry={handleCheckEntry}
