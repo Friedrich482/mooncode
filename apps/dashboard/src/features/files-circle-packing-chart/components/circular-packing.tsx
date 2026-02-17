@@ -31,16 +31,16 @@ export const CircularPacking = ({
     handleToggleAnimationButtonClick,
   } = useAnimateChart(data, width, height, isGrouped);
 
-  const handleWindowResize = () => {
+  const resetSVGDimensions = () => {
     setWidth(parentDivRef.current?.clientWidth ?? (window.innerWidth * 5) / 6);
     setHeight((window.innerWidth * 2) / 3);
   };
 
   useEffect(() => {
-    window.addEventListener("resize", handleWindowResize);
+    window.addEventListener("resize", resetSVGDimensions);
 
     return () => {
-      window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("resize", resetSVGDimensions);
     };
   }, []);
 
@@ -55,9 +55,10 @@ export const CircularPacking = ({
         handleToggleAnimationButtonClick={handleToggleAnimationButtonClick}
         handleResetButtonClick={handleResetButtonClick}
         handleGroupCheckboxChange={handleGroupCheckboxChange}
+        resetSVGDimensions={resetSVGDimensions}
       />
 
-      <svg width={width} height={height} className="w-full! -translate-x-20">
+      <svg width={width} height={height} className="flex max-w-full">
         {!isGrouped ? (
           bubbles.map((bubble, index) => (
             <LeafSVG

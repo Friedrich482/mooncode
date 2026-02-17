@@ -39,10 +39,9 @@ export const useAnimateChart = (
   const animationRef = useRef<number>(0);
   const [isAnimating, setIsAnimating] = useState(true);
 
-  const boundaryMargin = useMemo(
-    () => Math.min(width, height) * 0.001,
-    [width, height],
-  );
+  const boundaryHeightMargin = useMemo(() => height * 1e-9, [height]);
+
+  const boundaryWidthMargin = useMemo(() => width * 1e-9, [width]);
 
   // instantiate the dataSet
   useEffect(() => {
@@ -65,7 +64,6 @@ export const useAnimateChart = (
 
     setBubbles((prevBubbles) => {
       const newBubbles = prevBubbles.map((bubble) => ({ ...bubble }));
-
       const centerX = width / 2;
       const centerY = height / 2;
 
@@ -84,22 +82,21 @@ export const useAnimateChart = (
 
         bubble.x += bubble.vx;
         bubble.y += bubble.vy;
-
         // Keep bubbles in central area
-        if (bubble.x - bubble.r <= boundaryMargin) {
-          bubble.x = boundaryMargin + bubble.r;
+        if (bubble.x - bubble.r <= boundaryWidthMargin) {
+          bubble.x = boundaryWidthMargin + bubble.r;
           bubble.vx = Math.abs(bubble.vx) * 0.5;
         }
-        if (bubble.x + bubble.r >= width - boundaryMargin) {
-          bubble.x = width - boundaryMargin - bubble.r;
+        if (bubble.x + bubble.r >= width - boundaryWidthMargin) {
+          bubble.x = width - boundaryWidthMargin - bubble.r;
           bubble.vx = -Math.abs(bubble.vx) * 0.5;
         }
-        if (bubble.y - bubble.r <= boundaryMargin) {
-          bubble.y = boundaryMargin + bubble.r;
+        if (bubble.y - bubble.r <= boundaryHeightMargin) {
+          bubble.y = boundaryHeightMargin + bubble.r;
           bubble.vy = Math.abs(bubble.vy) * 0.5;
         }
-        if (bubble.y + bubble.r >= height - boundaryMargin) {
-          bubble.y = height - boundaryMargin - bubble.r;
+        if (bubble.y + bubble.r >= height - boundaryHeightMargin) {
+          bubble.y = height - boundaryHeightMargin - bubble.r;
           bubble.vy = -Math.abs(bubble.vy) * 0.5;
         }
 
