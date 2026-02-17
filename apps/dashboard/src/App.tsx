@@ -7,6 +7,7 @@ import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import type { AppRouter } from "@repo/trpc/router";
 import { SidebarProvider } from "@repo/ui/components/ui/sidebar";
 import { Toaster } from "@repo/ui/components/ui/sonner";
+import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
 import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -96,9 +97,11 @@ export const App = () => {
         <ReactQueryDevtools initialIsOpen={false} position="bottom" />
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
           <SidebarProvider>
-            <Wrapper>
-              <Outlet />
-            </Wrapper>
+            <TooltipProvider>
+              <Wrapper>
+                <Outlet />
+              </Wrapper>
+            </TooltipProvider>
           </SidebarProvider>
         </TRPCProvider>
       </QueryClientProvider>

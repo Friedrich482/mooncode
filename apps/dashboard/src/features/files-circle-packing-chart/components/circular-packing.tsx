@@ -1,7 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
 
-import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
-
 import { useAnimateChart } from "../hooks/use-animate-chart";
 import { Tree } from "../types-schemas";
 import { LeafSVG } from "./leaf-svg";
@@ -50,7 +48,7 @@ export const CircularPacking = ({
   const leavesBubbles = bubbles.filter((bubble) => bubble.depth === 2);
 
   return (
-    <TooltipProvider>
+    <>
       <OptionsSection
         isAnimating={isAnimating}
         isGrouped={isGrouped}
@@ -88,6 +86,6 @@ export const CircularPacking = ({
           </>
         )}
       </svg>
-    </TooltipProvider>
+    </>
   );
 };

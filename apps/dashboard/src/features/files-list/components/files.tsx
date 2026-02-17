@@ -6,7 +6,6 @@ import { Icon } from "@repo/ui/components/ui/icon";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
 import { cn } from "@repo/ui/lib/utils";
@@ -71,37 +70,38 @@ export const Files = memo(function Files({
   return (
     <>
       <ul className={cn("flex w-full flex-col", isGrouped && "gap-y-4")}>
-        {isGrouped ? (
-          groups.map(
-            ([{ languageSlug, totalTimeSpentOnLanguage }, groupedFiles]) => {
-              const languageColor = getLanguageColor(languageSlug);
-              const isLanguageCollapsed = getIsLanguageCollapsed(languageSlug);
-              const isLanguageAscSorted = getIsLanguageAscSorted(languageSlug);
-              const sortedGroupedFiles = isLanguageAscSorted
-                ? [...groupedFiles].reverse()
-                : groupedFiles;
+        {isGrouped
+          ? groups.map(
+              ([{ languageSlug, totalTimeSpentOnLanguage }, groupedFiles]) => {
+                const languageColor = getLanguageColor(languageSlug);
+                const isLanguageCollapsed =
+                  getIsLanguageCollapsed(languageSlug);
+                const isLanguageAscSorted =
+                  getIsLanguageAscSorted(languageSlug);
+                const sortedGroupedFiles = isLanguageAscSorted
+                  ? [...groupedFiles].reverse()
+                  : groupedFiles;
 
-              return (
-                <div key={languageSlug} className="flex w-full flex-col">
-                  <FilesGroupHeader
-                    languageColor={languageColor}
-                    languageSlug={languageSlug}
-                    isLanguageAscSorted={isLanguageAscSorted}
-                    isLanguageCollapsed={isLanguageCollapsed}
-                    totalTimeSpentOnLanguage={totalTimeSpentOnLanguage}
-                    handleCollapseButtonClick={handleCollapseButtonClick}
-                    handleSortButtonClick={handleSortButtonClick}
-                  />
-                  <ul
-                    className={cn(
-                      "rounded-md rounded-l-none border-t",
-                      !isLanguageCollapsed && "border p-4",
-                    )}
-                    style={{ borderColor: languageColor }}
-                  >
-                    {!isLanguageCollapsed && (
-                      <TooltipProvider>
-                        {sortedGroupedFiles.map(
+                return (
+                  <div key={languageSlug} className="flex w-full flex-col">
+                    <FilesGroupHeader
+                      languageColor={languageColor}
+                      languageSlug={languageSlug}
+                      isLanguageAscSorted={isLanguageAscSorted}
+                      isLanguageCollapsed={isLanguageCollapsed}
+                      totalTimeSpentOnLanguage={totalTimeSpentOnLanguage}
+                      handleCollapseButtonClick={handleCollapseButtonClick}
+                      handleSortButtonClick={handleSortButtonClick}
+                    />
+                    <ul
+                      className={cn(
+                        "rounded-md rounded-l-none border-t",
+                        !isLanguageCollapsed && "border p-4",
+                      )}
+                      style={{ borderColor: languageColor }}
+                    >
+                      {!isLanguageCollapsed &&
+                        sortedGroupedFiles.map(
                           ({ filePath, name, totalTimeSpent }) => (
                             <li key={filePath}>
                               <Tooltip>
@@ -120,16 +120,12 @@ export const Files = memo(function Files({
                             </li>
                           ),
                         )}
-                      </TooltipProvider>
-                    )}
-                  </ul>
-                </div>
-              );
-            },
-          )
-        ) : (
-          <TooltipProvider>
-            {files.map(([filePath, { name, totalTimeSpent }]) => (
+                    </ul>
+                  </div>
+                );
+              },
+            )
+          : files.map(([filePath, { name, totalTimeSpent }]) => (
               <li key={filePath}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -146,8 +142,6 @@ export const Files = memo(function Files({
                 </Tooltip>
               </li>
             ))}
-          </TooltipProvider>
-        )}
       </ul>
 
       {/* Pagination buttons */}
