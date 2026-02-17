@@ -1,6 +1,7 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft } from "lucide-react";
 
+import { usePeriodStore } from "@/stores/period/period-store";
 import { formatDuration } from "@repo/common/format-duration";
 import { Icon } from "@repo/ui/components/ui/icon";
 import {
@@ -25,10 +26,17 @@ export const Files = memo(function Files({
   isGrouped: boolean;
   isSortedDesc: boolean;
 }) {
+  const period = usePeriodStore((state) => state.period);
+  const customRange = usePeriodStore((state) => state.customRange);
+
   const [page, setPage] = useState(1);
   const handlePreviousPageButtonClick = () => setPage((prev) => prev - 1);
   const handleNextPageButtonClick = () => setPage((prev) => prev + 1);
   const handleGoBackToFirstPageButtonClick = () => setPage(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [period, customRange.start, customRange.end, languagesToFetch]);
 
   const { files, groups, hasNext } = useFiles(
     languagesToFetch,
