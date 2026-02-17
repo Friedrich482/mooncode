@@ -12,6 +12,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
+import { Wrapper } from "./components/layout/navigation-reset-wrapper";
 import { useExtensionWebsocket } from "./hooks/use-extension-websocket";
 import { TRPCProvider } from "./utils/trpc";
 
@@ -95,7 +96,9 @@ export const App = () => {
         <ReactQueryDevtools initialIsOpen={false} position="bottom" />
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
           <SidebarProvider>
-            <Outlet />
+            <Wrapper>
+              <Outlet />
+            </Wrapper>
           </SidebarProvider>
         </TRPCProvider>
       </QueryClientProvider>
