@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { TriangleAlert } from "lucide-react";
 
@@ -14,10 +14,13 @@ import { LanguagesDropDown } from "./languages-dropdown";
 
 export const FilesList = () => {
   const [selectedEntries, setSelectedEntries] = useState<Entry[]>([]);
-  const languagesToFetch =
-    selectedEntries.length !== 0
-      ? selectedEntries.map((entry) => entry.languageSlug)
-      : undefined;
+  const languagesToFetch = useMemo(
+    () =>
+      selectedEntries.length !== 0
+        ? selectedEntries.map((entry) => entry.languageSlug)
+        : undefined,
+    [selectedEntries],
+  );
   const handleCheckEntry = (entry: Entry) =>
     setSelectedEntries((prev) => {
       const isEntryExisting = prev.some(
