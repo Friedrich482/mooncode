@@ -1,7 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
 
-import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
-
 import { useAnimateChart } from "../hooks/use-animate-chart";
 import { Tree } from "../types-schemas";
 import { LeafSVG } from "./leaf-svg";
@@ -33,16 +31,16 @@ export const CircularPacking = ({
     handleToggleAnimationButtonClick,
   } = useAnimateChart(data, width, height, isGrouped);
 
-  const handleWindowResize = () => {
+  const resetSVGDimensions = () => {
     setWidth(parentDivRef.current?.clientWidth ?? (window.innerWidth * 5) / 6);
     setHeight((window.innerWidth * 2) / 3);
   };
 
   useEffect(() => {
-    window.addEventListener("resize", handleWindowResize);
+    window.addEventListener("resize", resetSVGDimensions);
 
     return () => {
-      window.removeEventListener("resize", handleWindowResize);
+      window.removeEventListener("resize", resetSVGDimensions);
     };
   }, []);
 
@@ -50,15 +48,17 @@ export const CircularPacking = ({
   const leavesBubbles = bubbles.filter((bubble) => bubble.depth === 2);
 
   return (
-    <TooltipProvider>
+    <>
       <OptionsSection
         isAnimating={isAnimating}
         isGrouped={isGrouped}
         handleToggleAnimationButtonClick={handleToggleAnimationButtonClick}
         handleResetButtonClick={handleResetButtonClick}
         handleGroupCheckboxChange={handleGroupCheckboxChange}
+        resetSVGDimensions={resetSVGDimensions}
       />
-      <svg width={width} height={height} className="-translate-x-3">
+
+      <svg width={width} height={height} className="flex max-w-full">
         {!isGrouped ? (
           bubbles.map((bubble, index) => (
             <LeafSVG
@@ -87,6 +87,6 @@ export const CircularPacking = ({
           </>
         )}
       </svg>
-    </TooltipProvider>
+    </>
   );
 };

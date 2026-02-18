@@ -66,7 +66,8 @@ export const DayLanguagesChart = () => {
         handleChevronRightClick={handleChevronRightClick}
         date={date}
         setDate={setDate}
-      />{" "}
+      />
+
       {chartData.length === 0 ? (
         <p className="w-full pt-[25%] text-center text-2xl">
           No coding stats for the day

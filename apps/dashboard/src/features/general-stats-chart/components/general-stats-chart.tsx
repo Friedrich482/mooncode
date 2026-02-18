@@ -63,7 +63,7 @@ export const GeneralStatsChart = () => {
   const mostUsedLanguageName = getLanguageName(mostUsedLanguageSlug);
 
   return (
-    <div className="max-chart:w-full flex min-h-96 w-[45%] flex-col gap-y-3 rounded-md border p-3 text-2xl max-[28.125rem]:justify-between max-[28.125rem]:gap-0">
+    <div className="max-chart:w-full flex min-h-96 w-[45%] flex-col gap-y-3 rounded-md border p-3 text-2xl wrap-anywhere max-[28.125rem]:justify-between max-[28.125rem]:gap-0">
       <h2 className="text-center text-2xl font-bold">General stats</h2>
 
       <TwoStatsWrapper>

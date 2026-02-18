@@ -30,7 +30,7 @@ export const LanguagesDropDown = ({
           variant="secondary"
           className="flex items-center justify-center gap-2"
         >
-          <span>Languages</span>
+          <span className="max-[20rem]:hidden">Languages</span>
           <ChevronDown />
         </Button>
       </DropdownMenuTrigger>

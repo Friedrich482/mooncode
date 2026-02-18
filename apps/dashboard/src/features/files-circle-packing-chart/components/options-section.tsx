@@ -10,21 +10,26 @@ export const OptionsSection = memo(function ({
   handleToggleAnimationButtonClick,
   handleResetButtonClick,
   handleGroupCheckboxChange,
+  resetSVGDimensions,
 }: {
   isAnimating: boolean;
   isGrouped: boolean;
   handleToggleAnimationButtonClick: () => void;
   handleResetButtonClick: () => void;
   handleGroupCheckboxChange: () => void;
+  resetSVGDimensions: () => void;
 }) {
   return (
-    <div className="flex w-64 items-center justify-end gap-4 self-end rounded-md border p-1">
+    <div className="flex w-64 items-center justify-end gap-4 self-end rounded-md border p-1 max-[27rem]:w-full max-[26rem]:flex-wrap">
       <div className="flex gap-4">
-        <p>Group</p>
+        <span className="max-[18.75rem]:hidden">Group</span>
         <Checkbox
           className="size-8"
           checked={isGrouped}
-          onCheckedChange={handleGroupCheckboxChange}
+          onCheckedChange={() => {
+            handleGroupCheckboxChange();
+            resetSVGDimensions();
+          }}
         />
       </div>
       <Icon

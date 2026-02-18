@@ -43,6 +43,12 @@
   --font-serif: Inter, sans-serif;
   --font-mono: Inter, sans-serif;
   --radius: 0.5rem;
+  --shadow-x: 0;
+  --shadow-y: 1px;
+  --shadow-blur: 3px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.1;
+  --shadow-color: oklch(0 0 0);
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-sm:
@@ -84,18 +90,24 @@
   --chart-3: oklch(0.6746 0.1414 261.338);
   --chart-4: oklch(0.8269 0.108 211.9627);
   --chart-5: oklch(0.5905 0.1608 148.2409);
-  --sidebar: oklch(0.2303 0.0125 264.2926);
+  --sidebar: oklch(0.21 0.006 285.885);
   --sidebar-foreground: oklch(0.9219 0 0);
-  --sidebar-primary: oklch(0.681 0.162 75.834);
-  --sidebar-primary-foreground: oklch(0.266 0.079 36.259);
-  --sidebar-accent: oklch(0.442 0.017 285.786);
+  --sidebar-primary: oklch(0.9019 0.1404 92.7321);
+  --sidebar-primary-foreground: oklch(0.208 0.042 265.755);
+  --sidebar-accent: oklch(0.371 0 0);
   --sidebar-accent-foreground: oklch(0.971 0.013 17.38);
-  --sidebar-border: oklch(0.269 0 0);
-  --sidebar-ring: oklch(0.6487 0.1538 150.3071);
+  --sidebar-border: oklch(0.439 0 0);
+  --sidebar-ring: oklch(0.9019 0.1404 92.7321);
   --font-sans: Inter, sans-serif;
   --font-serif: Inter, sans-serif;
   --font-mono: Inter, sans-serif;
   --radius: 0.5rem;
+  --shadow-x: 0;
+  --shadow-y: 1px;
+  --shadow-blur: 3px;
+  --shadow-spread: 0px;
+  --shadow-opacity: 0.1;
+  --shadow-color: oklch(0 0 0);
   --shadow-2xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-xs: 0 1px 3px 0px hsl(0 0% 0% / 0.05);
   --shadow-sm:
@@ -179,6 +191,7 @@ body {
 
 ::-webkit-scrollbar {
   width: 0.5rem;
+  height: 0.5rem;
 }
 
 ::-webkit-scrollbar-track {

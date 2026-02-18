@@ -50,7 +50,7 @@ export class TrpcService {
   }
 
   rateLimiter(rateLimiterParams: RateLimiterParams) {
-    const { key, windowMs = 15 * 60 * 1000, max = 300 } = rateLimiterParams;
+    const { key, windowMs = 15 * 60 * 1000, max = 600 } = rateLimiterParams;
 
     const cacheKey = `${key}-${windowMs}-${max}`;
 
@@ -78,9 +78,7 @@ export class TrpcService {
   // these routes are publicly accessible to everyone
   publicProcedure(rateLimiterParams?: RateLimiterParams) {
     return this.trpc.procedure.use(
-      this.rateLimiter(
-        rateLimiterParams ? rateLimiterParams : { key: "global" },
-      ),
+      this.rateLimiter(rateLimiterParams ?? { key: "global" }),
     );
   }
 
@@ -101,11 +99,7 @@ export class TrpcService {
           },
         });
       })
-      .use(
-        this.rateLimiter(
-          rateLimiterParams ? rateLimiterParams : { key: "global" },
-        ),
-      );
+      .use(this.rateLimiter(rateLimiterParams ?? { key: "global" }));
     return procedure;
   }
 

@@ -26,15 +26,17 @@ export const ScrollToTopButton = () => {
 
   return (
     isVisible && (
-      <Button
-        onClick={jumpToTop}
-        variant="default"
-        aria-label="Scroll to top of page"
-        title="Scroll to top"
-        className="fixed right-1 bottom-5 z-50 flex size-12 items-center justify-center rounded-2xl [&_svg]:size-7"
-      >
-        <ChevronUp aria-hidden="true" />
-      </Button>
+      <div className="pointer-events-none fixed bottom-5 flex w-svw items-center justify-end">
+        <Button
+          onClick={jumpToTop}
+          variant="default"
+          aria-label="Scroll to top of page"
+          title="Scroll to top"
+          className="pointer-events-auto relative right-3 z-50 flex size-12 items-center justify-center rounded-2xl [&_svg:not([class*='size-'])]:size-7"
+        >
+          <ChevronUp aria-hidden="true" />
+        </Button>
+      </div>
     )
   );
 };

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router";
-import { LogOut, User } from "lucide-react";
+import { LayoutDashboard, LogOut, User } from "lucide-react";
 
-import { AUTH_DROPDOWN_ITEMS } from "@/constants";
+import { LinkWithQuery } from "@/components/common/link-with-query";
 import { useTRPC } from "@/utils/trpc";
 import {
   DropdownMenu,
@@ -49,16 +49,19 @@ export const AuthDropDown = () => {
           <p className="text-sm opacity-50">{email}</p>
         </div>
         <DropdownMenuSeparator className="w-full" />
-        {AUTH_DROPDOWN_ITEMS.map(({ Icon, text, url }) => (
-          <DropdownMenuItem
-            className="cursor-pointer rounded-md py-1 text-base"
-            key={text}
-          >
-            <Icon className="size-5" />
-            <Link to={url}>{text}</Link>
-          </DropdownMenuItem>
-        ))}
+
+        <DropdownMenuItem
+          asChild
+          className="cursor-pointer rounded-md py-1 text-base"
+        >
+          <LinkWithQuery to="/dashboard">
+            <LayoutDashboard />
+            <span>Dashboard</span>
+          </LinkWithQuery>
+        </DropdownMenuItem>
+
         <DropdownMenuSeparator className="w-full" />
+
         <DropdownMenuItem
           className="cursor-pointer rounded-md py-1 text-base"
           onClick={() => {

@@ -105,7 +105,9 @@ export const ProjectGeneralStatsChart = () => {
                 backgroundColor: mostUsedLanguageColor,
               }}
             />
-            <p className="text-primary/85 font-bold">{mostUsedLanguageName}</p>
+            <p className="text-primary/85 font-bold wrap-anywhere">
+              {mostUsedLanguageName}
+            </p>
           </div>
         </StatWrapper>
       </TwoStatsWrapper>

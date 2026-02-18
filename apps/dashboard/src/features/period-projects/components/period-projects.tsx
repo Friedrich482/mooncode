@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
 import {
   ChevronLeft,
   ChevronRight,
@@ -10,6 +9,7 @@ import {
   List,
 } from "lucide-react";
 
+import { LinkWithQuery } from "@/components/common/link-with-query";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
@@ -57,9 +57,11 @@ export const PeriodProjects = () => {
 
   return (
     <div className="flex min-h-96 w-full flex-col gap-y-6 self-center rounded-md border p-3 text-2xl">
-      <section className="flex items-center justify-center gap-2 pr-4">
-        <h2 className="flex-1 text-center text-2xl font-bold">Projects</h2>
-        <div className="space-x-2">
+      <section className="flex items-center justify-center gap-2 pr-4 max-[24rem]:flex-col">
+        <h2 className="flex-1 text-center text-2xl font-bold max-[18rem]:text-xl">
+          Projects
+        </h2>
+        <div className="flex gap-2">
           <Icon
             Icon={LayoutGrid}
             onClick={handleGridLayoutButtonClick}
@@ -95,7 +97,7 @@ export const PeriodProjects = () => {
       ) : isGridLayout ? (
         <div className="grid grid-cols-2 gap-x-4 gap-y-8 max-[42rem]:grid-cols-1 max-[42rem]:gap-8">
           {data.map((entry) => (
-            <Link key={entry.path} to={`/dashboard/${entry.name}`}>
+            <LinkWithQuery key={entry.path} to={`/dashboard/${entry.name}`}>
               <div className="group hover:border-primary/85 relative flex min-h-40 origin-bottom-right cursor-pointer flex-col items-center justify-center gap-4 rounded-md border p-3 transition-transform duration-150">
                 <Icon
                   Icon={Folder}
@@ -105,22 +107,22 @@ export const PeriodProjects = () => {
                   Icon={FolderOpen}
                   className="group-hover:text-primary/85 absolute -top-8 left-0 hidden group-hover:block hover:bg-transparent hover:bg-none"
                 />
-                <h3 className="font-bold group-hover:underline max-[42rem]:text-xl">
+                <h3 className="font-bold wrap-anywhere group-hover:underline max-[42rem]:text-xl">
                   {entry.name}
                 </h3>
                 <p className="text-primary/85 text-xl transition duration-150 max-[42rem]:text-base">
                   {formatDuration(entry.totalTimeSpent)} ({entry.percentage}%)
                 </p>
               </div>
-            </Link>
+            </LinkWithQuery>
           ))}
         </div>
       ) : (
         <div className="flex flex-col gap-8">
           {data.map((entry) => (
-            <Link
+            <LinkWithQuery
+              key={entry.path}
               to={`/dashboard/${entry.name}`}
-              key={entry.name}
               className="group hover:border-primary/85 relative flex items-center justify-center gap-4 rounded-md border p-2"
             >
               <h3 className="font-bold group-hover:underline max-[42rem]:text-xl">
@@ -129,7 +131,7 @@ export const PeriodProjects = () => {
               <p className="text-primary/85 text-xl transition duration-150 max-[42rem]:text-base">
                 {formatDuration(entry.totalTimeSpent)} ({entry.percentage}%)
               </p>
-            </Link>
+            </LinkWithQuery>
           ))}
         </div>
       )}

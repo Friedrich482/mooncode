@@ -1,12 +1,12 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { ChevronLeft, ChevronRight, ChevronsLeft } from "lucide-react";
 
+import { usePeriodStore } from "@/stores/period/period-store";
 import { formatDuration } from "@repo/common/format-duration";
 import { Icon } from "@repo/ui/components/ui/icon";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@repo/ui/components/ui/tooltip";
 import { cn } from "@repo/ui/lib/utils";
@@ -26,10 +26,17 @@ export const Files = memo(function Files({
   isGrouped: boolean;
   isSortedDesc: boolean;
 }) {
+  const period = usePeriodStore((state) => state.period);
+  const customRange = usePeriodStore((state) => state.customRange);
+
   const [page, setPage] = useState(1);
   const handlePreviousPageButtonClick = () => setPage((prev) => prev - 1);
   const handleNextPageButtonClick = () => setPage((prev) => prev + 1);
   const handleGoBackToFirstPageButtonClick = () => setPage(1);
+
+  useEffect(() => {
+    setPage(1);
+  }, [period, customRange.start, customRange.end, languagesToFetch]);
 
   const { files, groups, hasNext } = useFiles(
     languagesToFetch,
@@ -71,46 +78,47 @@ export const Files = memo(function Files({
   return (
     <>
       <ul className={cn("flex w-full flex-col", isGrouped && "gap-y-4")}>
-        {isGrouped ? (
-          groups.map(
-            ([{ languageSlug, totalTimeSpentOnLanguage }, groupedFiles]) => {
-              const languageColor = getLanguageColor(languageSlug);
-              const isLanguageCollapsed = getIsLanguageCollapsed(languageSlug);
-              const isLanguageAscSorted = getIsLanguageAscSorted(languageSlug);
-              const sortedGroupedFiles = isLanguageAscSorted
-                ? [...groupedFiles].reverse()
-                : groupedFiles;
+        {isGrouped
+          ? groups.map(
+              ([{ languageSlug, totalTimeSpentOnLanguage }, groupedFiles]) => {
+                const languageColor = getLanguageColor(languageSlug);
+                const isLanguageCollapsed =
+                  getIsLanguageCollapsed(languageSlug);
+                const isLanguageAscSorted =
+                  getIsLanguageAscSorted(languageSlug);
+                const sortedGroupedFiles = isLanguageAscSorted
+                  ? [...groupedFiles].reverse()
+                  : groupedFiles;
 
-              return (
-                <div key={languageSlug} className="flex w-full flex-col">
-                  <FilesGroupHeader
-                    languageColor={languageColor}
-                    languageSlug={languageSlug}
-                    isLanguageAscSorted={isLanguageAscSorted}
-                    isLanguageCollapsed={isLanguageCollapsed}
-                    totalTimeSpentOnLanguage={totalTimeSpentOnLanguage}
-                    handleCollapseButtonClick={handleCollapseButtonClick}
-                    handleSortButtonClick={handleSortButtonClick}
-                  />
-                  <ul
-                    className={cn(
-                      "rounded-md rounded-l-none border-t",
-                      !isLanguageCollapsed && "border p-4",
-                    )}
-                    style={{ borderColor: languageColor }}
-                  >
-                    {!isLanguageCollapsed && (
-                      <TooltipProvider>
-                        {sortedGroupedFiles.map(
+                return (
+                  <div key={languageSlug} className="flex w-full flex-col">
+                    <FilesGroupHeader
+                      languageColor={languageColor}
+                      languageSlug={languageSlug}
+                      isLanguageAscSorted={isLanguageAscSorted}
+                      isLanguageCollapsed={isLanguageCollapsed}
+                      totalTimeSpentOnLanguage={totalTimeSpentOnLanguage}
+                      handleCollapseButtonClick={handleCollapseButtonClick}
+                      handleSortButtonClick={handleSortButtonClick}
+                    />
+                    <ul
+                      className={cn(
+                        "rounded-md rounded-l-none border-t",
+                        !isLanguageCollapsed && "border p-4",
+                      )}
+                      style={{ borderColor: languageColor }}
+                    >
+                      {!isLanguageCollapsed &&
+                        sortedGroupedFiles.map(
                           ({ filePath, name, totalTimeSpent }) => (
                             <li key={filePath}>
                               <Tooltip>
                                 <TooltipTrigger asChild>
-                                  <div className="flex min-h-9 gap-4">
-                                    <span className="min-h-9 overflow-hidden font-extrabold text-ellipsis whitespace-nowrap">
+                                  <div className="grid h-9 grid-cols-2 gap-4 truncate">
+                                    <span className="min-w-0 truncate font-extrabold">
                                       &bull; {name}
                                     </span>
-                                    <span className="overflow-hidden font-extralight text-ellipsis whitespace-nowrap">
+                                    <span className="min-w-0 truncate font-extralight">
                                       {formatDuration(totalTimeSpent)}
                                     </span>
                                   </div>
@@ -120,24 +128,20 @@ export const Files = memo(function Files({
                             </li>
                           ),
                         )}
-                      </TooltipProvider>
-                    )}
-                  </ul>
-                </div>
-              );
-            },
-          )
-        ) : (
-          <TooltipProvider>
-            {files.map(([filePath, { name, totalTimeSpent }]) => (
+                    </ul>
+                  </div>
+                );
+              },
+            )
+          : files.map(([filePath, { name, totalTimeSpent }]) => (
               <li key={filePath}>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <div className="flex min-h-9 gap-4">
-                      <span className="min-h-9 overflow-hidden font-extrabold text-ellipsis whitespace-nowrap">
+                    <div className="grid h-9 grid-cols-2 gap-4 truncate">
+                      <span className="min-w-0 truncate font-extrabold">
                         &bull; {name}
                       </span>
-                      <span className="overflow-hidden font-extralight text-ellipsis whitespace-nowrap">
+                      <span className="min-w-0 truncate font-extralight">
                         {formatDuration(totalTimeSpent)}
                       </span>
                     </div>
@@ -146,8 +150,6 @@ export const Files = memo(function Files({
                 </Tooltip>
               </li>
             ))}
-          </TooltipProvider>
-        )}
       </ul>
 
       {/* Pagination buttons */}

@@ -2,6 +2,7 @@ import { redirect } from "react-router";
 import { z } from "zod";
 
 import { getCallbackUrl } from "@/utils/get-callback-url";
+import { formatZodError } from "@repo/common/format-zod-error";
 import { VSCodeCallbackUrlSchema } from "@repo/common/types-schemas";
 
 const API_URL = import.meta.env.VITE_API_URL;
@@ -127,12 +128,7 @@ export const redirectToVSCodeAfterGoogleAuthLoader = async () => {
     const validatedCallBackUrl = VSCodeCallbackUrlSchema.safeParse(callbackUrl);
 
     if (!validatedCallBackUrl.success) {
-      throw new Error(
-        validatedCallBackUrl.error.issues.reduce(
-          (acc, curr) => acc + curr.message,
-          "",
-        ),
-      );
+      throw new Error(formatZodError(validatedCallBackUrl.error));
     }
 
     const parseVSCodeAuthGoogleParamsSchema = z.object({

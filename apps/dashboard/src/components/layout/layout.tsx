@@ -1,10 +1,9 @@
-import { useEffect } from "react";
 import { Outlet, useNavigation } from "react-router";
 import { ClipLoader } from "react-spinners";
 
-import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 import { cn } from "@repo/ui/lib/utils";
 
+import { AppSidebar } from "./app-sidebar";
 import { Footer } from "./footer";
 import { Header } from "./header/header";
 
@@ -19,22 +18,17 @@ export const Layout = () => {
 
   const isLoading = navigation.state === "loading";
 
-  useEffect(() => {
-    document.getElementById("root")?.classList.add("main-layout");
-    return () => {
-      document.getElementById("root")?.classList.remove("main-layout");
-    };
-  }, []);
-
   return (
     <>
-      <Header />
-      <div id="loader" className={cn(isLoading && "opacity-70")}>
-        {isLoading && <GlobalSpinner />}
-        <Outlet />
+      <AppSidebar />
+      <div className="flex-1">
+        <Header />
+        <div id="loader" className={cn(isLoading && "opacity-70")}>
+          {isLoading && <GlobalSpinner />}
+          <Outlet />
+        </div>
+        <Footer />
       </div>
-      <ScrollToTopButton />
-      <Footer />
     </>
   );
 };

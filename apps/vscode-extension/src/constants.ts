@@ -16,6 +16,10 @@ export const SUBSET_LANGUAGES: Record<string, string> = {
   "asm-list-markdown-codeblock": "assembly",
   arm: "assembly",
   "git-commit": "gitattributes",
+  "csv (semicolon)": "csv",
+  "csv (pipe)": "csv",
+  "csv (whitespace)": "csv",
+  "dynamic csv": "csv",
 };
 
 export let filesData: FileMap = {};

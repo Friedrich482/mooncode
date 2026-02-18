@@ -1,6 +1,7 @@
-export const getOnboardingEmailBody = (
-  code: string,
-) => `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+export const getOnboardingEmailBody = (code: string) => {
+  const currentYear = new Date().getFullYear();
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html dir="ltr" lang="en">
   <head>
   <link
@@ -121,7 +122,7 @@ export const getOnboardingEmailBody = (
                     font-family: HelveticaNeue, Helvetica, Arial, sans-serif;
                   "
                 >
-                  MoonCode 2025, &copy; All rights reserved
+                  MoonCode ${currentYear}, &copy; All rights reserved
                 </p>
               </td>
             </tr>
@@ -132,3 +133,4 @@ export const getOnboardingEmailBody = (
   </body>
 </html>
 `;
+};

@@ -16,7 +16,7 @@ import { AuthService } from "./auth.service";
 export class AuthRouter {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
   ) {}
 
   procedures = {
@@ -29,7 +29,7 @@ export class AuthRouter {
         })
         .input(SignInUserDto)
         .mutation(async ({ input, ctx }) =>
-          this.authService.signIn(input, ctx.res)
+          this.authService.signIn(input, ctx.res),
         ),
 
       createPendingRegistration: this.trpcService
@@ -40,7 +40,7 @@ export class AuthRouter {
         })
         .input(CreatePendingRegistrationDto)
         .mutation(async ({ input }) =>
-          this.authService.createPendingRegistration(input)
+          this.authService.createPendingRegistration(input),
         ),
 
       register: this.trpcService
@@ -51,7 +51,7 @@ export class AuthRouter {
         })
         .input(RegisterUserDto)
         .mutation(async ({ input, ctx }) =>
-          this.authService.register(input, ctx.res)
+          this.authService.register(input, ctx.res),
         ),
 
       createPasswordReset: this.trpcService
@@ -62,7 +62,7 @@ export class AuthRouter {
         })
         .input(CreatePasswordResetDto)
         .mutation(async ({ input }) =>
-          this.authService.createPasswordReset(input)
+          this.authService.createPasswordReset(input),
         ),
 
       verifyPasswordResetCode: this.trpcService
@@ -73,7 +73,7 @@ export class AuthRouter {
         })
         .input(VerifyPasswordResetCodeDto)
         .mutation(async ({ input }) =>
-          this.authService.verifyPasswordResetCode(input)
+          this.authService.verifyPasswordResetCode(input),
         ),
 
       resetPassword: this.trpcService
@@ -84,7 +84,7 @@ export class AuthRouter {
         })
         .input(ResetPasswordDto)
         .mutation(async ({ input, ctx }) =>
-          this.authService.resetPassword(input, ctx.res)
+          this.authService.resetPassword(input, ctx.res),
         ),
 
       checkAuthStatus: this.trpcService

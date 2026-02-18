@@ -29,7 +29,7 @@ export const Dashboard = () => {
   usePageTitle("Dashboard | Mooncode");
 
   return (
-    <main className="flex flex-col gap-y-4 px-14 pb-4">
+    <main className="flex flex-col gap-y-4 pt-2 pr-14 pb-4 pl-1 max-md:pl-14">
       <DashboardTitle />
 
       <div className="flex flex-col gap-x-10 gap-y-12 rounded-md border p-3 pt-14">
