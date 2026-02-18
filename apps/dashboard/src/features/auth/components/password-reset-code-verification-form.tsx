@@ -73,7 +73,7 @@ export const CodeVerificationForm = () => {
           const params = new URLSearchParams();
 
           params.set("email", values.email);
-          params.set("token", token);
+          params.set("reset-password-token", token);
 
           if (callbackUrl) {
             params.set("callback", callbackUrl);

@@ -6,8 +6,9 @@ import { authRouteLoader } from "./auth-loader";
 export const passwordResetLoader = async ({ request }: LoaderFunctionArgs) => {
   await authRouteLoader();
 
-  const urlPasswordResetEmail = new URL(request.url).searchParams.get("email");
-  const urlPasswordResetToken = new URL(request.url).searchParams.get("token");
+  const searchParams = new URL(request.url).searchParams;
+  const urlPasswordResetEmail = searchParams.get("email");
+  const urlPasswordResetToken = searchParams.get("reset-password-token");
 
   const parsedUrlSearchParams = z
     .object({
