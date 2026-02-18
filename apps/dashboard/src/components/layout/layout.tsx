@@ -1,7 +1,6 @@
 import { Outlet, useNavigation } from "react-router";
 import { ClipLoader } from "react-spinners";
 
-import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 import { cn } from "@repo/ui/lib/utils";
 
 import { AppSidebar } from "./app-sidebar";
@@ -28,7 +27,6 @@ export const Layout = () => {
           {isLoading && <GlobalSpinner />}
           <Outlet />
         </div>
-        <ScrollToTopButton />
         <Footer />
       </div>
     </>

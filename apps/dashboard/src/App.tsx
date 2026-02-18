@@ -5,6 +5,7 @@ import superjson from "superjson";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import type { AppRouter } from "@repo/trpc/router";
+import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 import { SidebarProvider } from "@repo/ui/components/ui/sidebar";
 import { Toaster } from "@repo/ui/components/ui/sonner";
 import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
@@ -100,6 +101,7 @@ export const App = () => {
             <TooltipProvider>
               <Wrapper>
                 <Outlet />
+                <ScrollToTopButton />
               </Wrapper>
             </TooltipProvider>
           </SidebarProvider>
