@@ -32,7 +32,7 @@ export const ScrollToTopButton = () => {
           variant="default"
           aria-label="Scroll to top of page"
           title="Scroll to top"
-          className="relative right-3 z-50 flex size-12 items-center justify-center rounded-2xl [&_svg:not([class*='size-'])]:size-7"
+          className="pointer-events-auto relative right-3 z-50 flex size-12 items-center justify-center rounded-2xl [&_svg:not([class*='size-'])]:size-7"
         >
           <ChevronUp aria-hidden="true" />
         </Button>
