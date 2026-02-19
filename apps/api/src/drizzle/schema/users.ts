@@ -13,7 +13,7 @@ export const users = pgTable("users", {
     .notNull()
     .$defaultFn(() => ulid().toLowerCase()),
 
-  username: text("name").notNull().unique(),
+  username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   hashedPassword: text("hashed_password").notNull(),
   profilePicture: text("profile_picture").notNull(),

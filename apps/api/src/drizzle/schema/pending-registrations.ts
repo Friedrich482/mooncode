@@ -16,7 +16,7 @@ export const pendingRegistrations = pgTable("pending_registrations", {
     .notNull()
     .$defaultFn(() => ulid().toLowerCase()),
 
-  username: text("name").notNull().unique(),
+  username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   hashedPassword: text("hashed_password").notNull(),
   code: varchar("code", { length: PENDING_REGISTRATION_CODE_LENGTH }).notNull(),
