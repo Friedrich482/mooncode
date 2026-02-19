@@ -18,9 +18,9 @@ import {
   protectedRouteLoader,
 } from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
+import { emailVerificationLoader } from "@/loaders/email-verification-loader";
 import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
 import { passwordResetLoader } from "@/loaders/password-reset-loader";
-import { pendingRegistrationLoader } from "@/loaders/pending-registration-loader";
 import { projectLoader } from "@/loaders/project-loader";
 import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader";
 import { rootLoader } from "@/loaders/root-loader";
@@ -81,7 +81,7 @@ const router = createBrowserRouter([
           {
             path: "register/verify",
             element: <RegisterCodeVerification />,
-            loader: pendingRegistrationLoader,
+            loader: emailVerificationLoader,
           },
           {
             path: "forgot-password",

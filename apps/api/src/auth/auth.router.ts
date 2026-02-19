@@ -2,8 +2,8 @@ import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
 import {
+  CreateEmailVerificationSchema as CreateEmailVerificationDto,
   CreatePasswordResetSchema as CreatePasswordResetDto,
-  CreatePendingRegistrationSchema as CreatePendingRegistrationDto,
   RegisterUserSchema as RegisterUserDto,
   ResetPasswordSchema as ResetPasswordDto,
   SignInUserSchema as SignInUserDto,
@@ -33,15 +33,15 @@ export class AuthRouter {
           this.authService.signIn(input, ctx.res),
         ),
 
-      createPendingRegistration: this.trpcService
+      createEmailVerification: this.trpcService
         .publicProcedure({
-          key: "auth.createPendingRegistration",
+          key: "auth.createEmailVerification",
           windowMs: 60 * 60 * 1000,
           max: 5,
         })
-        .input(CreatePendingRegistrationDto)
+        .input(CreateEmailVerificationDto)
         .mutation(async ({ input }) =>
-          this.authService.createPendingRegistration(input),
+          this.authService.createEmailVerification(input),
         ),
 
       register: this.trpcService

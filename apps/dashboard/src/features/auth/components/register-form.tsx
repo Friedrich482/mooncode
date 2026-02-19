@@ -6,8 +6,8 @@ import { getCallbackUrl } from "@/utils/get-callback-url";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  CreatePendingRegistration,
-  CreatePendingRegistrationSchema,
+  CreateEmailVerification,
+  CreateEmailVerificationSchema,
 } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -28,8 +28,8 @@ import { LoginMethodSeparator } from "./login-method-separator";
 export const RegisterForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const form = useForm<CreatePendingRegistration>({
-    resolver: zodResolver(CreatePendingRegistrationSchema),
+  const form = useForm<CreateEmailVerification>({
+    resolver: zodResolver(CreateEmailVerificationSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -41,12 +41,12 @@ export const RegisterForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const createPendingRegistrationMutation = useMutation(
-    trpc.auth.createPendingRegistration.mutationOptions(),
+  const createEmailVerificationMutation = useMutation(
+    trpc.auth.createEmailVerification.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreatePendingRegistration) => {
-    createPendingRegistrationMutation.mutate(
+  const onSubmit = async (values: CreateEmailVerification) => {
+    createEmailVerificationMutation.mutate(
       {
         email: values.email,
         username: values.username,

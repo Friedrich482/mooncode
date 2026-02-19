@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate } from "react-router";
 
 import { Logo } from "@/components/layout/header/logo";
-import { pendingRegistrationLoader } from "@/loaders/pending-registration-loader";
+import { emailVerificationLoader } from "@/loaders/email-verification-loader";
 import { getCallbackUrl } from "@/utils/get-callback-url";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,13 +29,13 @@ import { useMutation } from "@tanstack/react-query";
 export const CodeVerificationForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const pendingRegistrationEmail =
-    useLoaderData<typeof pendingRegistrationLoader>();
+  const emailVerificationEmail =
+    useLoaderData<typeof emailVerificationLoader>();
 
   const form = useForm<RegisterUser>({
     resolver: zodResolver(RegisterUserSchema),
     defaultValues: {
-      email: pendingRegistrationEmail,
+      email: emailVerificationEmail,
       code: "",
       callbackUrl,
     },
@@ -51,7 +51,7 @@ export const CodeVerificationForm = () => {
   const onSubmit = async (values: RegisterUser) => {
     registerMutation.mutate(
       {
-        email: pendingRegistrationEmail,
+        email: emailVerificationEmail,
         code: values.code,
         callbackUrl,
       },
@@ -75,7 +75,7 @@ export const CodeVerificationForm = () => {
           navigate("/dashboard");
 
           if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(pendingRegistrationEmail)}`;
+            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(emailVerificationEmail)}`;
           }
         },
       },

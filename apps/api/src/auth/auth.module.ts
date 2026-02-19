@@ -1,7 +1,7 @@
+import { EmailVerificationModule } from "src/email-verifications/email-verifications.module";
 import { EnvModule } from "src/env/env.module";
 import { EnvService } from "src/env/env.service";
 import { PasswordResetsModule } from "src/password-resets/password-resets.module";
-import { PendingRegistrationsModule } from "src/pending-registrations/pending-registrations.module";
 import { UsersModule } from "src/users/users.module";
 
 import { Module } from "@nestjs/common";
@@ -16,7 +16,7 @@ import { AuthService } from "./auth.service";
   imports: [
     ConfigModule,
     UsersModule,
-    PendingRegistrationsModule,
+    EmailVerificationModule,
     PasswordResetsModule,
     JwtModule.registerAsync({
       imports: [ConfigModule, EnvModule],

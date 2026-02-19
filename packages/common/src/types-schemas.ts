@@ -1,9 +1,9 @@
 import z from "zod";
 
 import {
+  EMAIL_VERIFICATION_CODE_LENGTH,
   EXTENSION_ID,
   PASSWORD_RESET_CODE_LENGTH,
-  PENDING_REGISTRATION_CODE_LENGTH,
   PUBLISHER,
 } from "./constants";
 
@@ -52,7 +52,7 @@ export const SignInUserSchema = z.object({
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
-export const CreatePendingRegistrationSchema = z.object({
+export const CreateEmailVerificationSchema = z.object({
   email: z.email(),
   password: PasswordSchema,
   username: z.string().min(3, "Username must be at least 3 characters"),
@@ -60,7 +60,7 @@ export const CreatePendingRegistrationSchema = z.object({
 
 export const RegisterUserSchema = z.object({
   email: z.email(),
-  code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
+  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
@@ -134,8 +134,8 @@ export type PeriodResolution = "day" | "week" | "month" | "year";
 
 export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
 export type SignInUser = z.infer<typeof SignInUserSchema>;
-export type CreatePendingRegistration = z.infer<
-  typeof CreatePendingRegistrationSchema
+export type CreateEmailVerification = z.infer<
+  typeof CreateEmailVerificationSchema
 >;
 export type RegisterUser = z.infer<typeof RegisterUserSchema>;
 export type CreatePasswordReset = z.infer<typeof CreatePasswordResetSchema>;

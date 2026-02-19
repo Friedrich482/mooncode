@@ -1,9 +1,9 @@
 import * as bcrypt from "bcrypt";
 import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
+import { EmailVerificationsService } from "src/email-verifications/email-verifications.service";
 import { EnvService } from "src/env/env.service";
 import { PasswordResetsService } from "src/password-resets/password-resets.service";
-import { PendingRegistrationsService } from "src/pending-registrations/pending-registrations.service";
 import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
 
@@ -14,8 +14,8 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import {
+  CreateEmailVerification as CreateEmailVerificationDtoType,
   CreatePasswordReset as CreatePasswordResetDtoType,
-  CreatePendingRegistration as CreatePendingRegistrationDtoType,
   JwtPayload as JwtPayloadDtoType,
   RegisterUser as RegisterUserDtoType,
   ResetPassword as ResetPasswordDtoType,
@@ -40,7 +40,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
-    private readonly pendingRegistrationService: PendingRegistrationsService,
+    private readonly emailVerificationService: EmailVerificationsService,
     private readonly passwordResetsService: PasswordResetsService,
   ) {}
   private readonly AUTH_COOKIE_NAME = "auth_token";
@@ -82,26 +82,28 @@ export class AuthService {
     };
   }
 
-  async createPendingRegistration(
-    createPendingRegistrationDto: CreatePendingRegistrationDtoType,
+  async createEmailVerification(
+    createEmailVerificationDto: CreateEmailVerificationDtoType,
   ) {
-    return this.pendingRegistrationService.create(createPendingRegistrationDto);
+    return this.emailVerificationService.create(createEmailVerificationDto);
   }
 
   async register(registerDto: RegisterUserDtoType, response: Response) {
     const { email, code } = registerDto;
 
-    const validPendingRegistration =
-      await this.pendingRegistrationService.findOne({ email, code });
-
-    const createdUser = await this.usersService.create({
-      username: validPendingRegistration.username,
-      email: validPendingRegistration.email,
-      hashedPassword: validPendingRegistration.hashedPassword,
+    const validEmailVerification = await this.emailVerificationService.findOne({
+      email,
+      code,
     });
 
-    // delete the pending registration associated
-    await this.pendingRegistrationService.delete({
+    const createdUser = await this.usersService.create({
+      username: validEmailVerification.username,
+      email: validEmailVerification.email,
+      hashedPassword: validEmailVerification.hashedPassword,
+    });
+
+    // delete the email verification associated
+    await this.emailVerificationService.delete({
       email: createdUser.email,
     });
 

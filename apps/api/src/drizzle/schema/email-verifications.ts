@@ -6,11 +6,11 @@ import { timestamp } from "drizzle-orm/pg-core";
 import { integer } from "drizzle-orm/pg-core";
 import { ulid } from "ulid";
 
-import { PENDING_REGISTRATION_CODE_LENGTH } from "@repo/common/constants";
+import { EMAIL_VERIFICATION_CODE_LENGTH } from "@repo/common/constants";
 
 import { timestamps } from "../columns.helpers";
 
-export const pendingRegistrations = pgTable("pending_registrations", {
+export const emailVerifications = pgTable("email_verifications", {
   id: varchar("id", { length: 26 })
     .primaryKey()
     .notNull()
@@ -19,7 +19,7 @@ export const pendingRegistrations = pgTable("pending_registrations", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   hashedPassword: text("hashed_password").notNull(),
-  code: varchar("code", { length: PENDING_REGISTRATION_CODE_LENGTH }).notNull(),
+  code: varchar("code", { length: EMAIL_VERIFICATION_CODE_LENGTH }).notNull(),
   attempts: integer().notNull().default(0),
   expiresAt: timestamp("expires_at")
     .notNull()
