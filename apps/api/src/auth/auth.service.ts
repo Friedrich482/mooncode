@@ -20,6 +20,7 @@ import {
   RegisterUser as RegisterUserDtoType,
   ResetPassword as ResetPasswordDtoType,
   SignInUser as SignInUserDtoType,
+  UpdateUsername as UpdateUsernameDtoType,
   VerifyPasswordResetCode as VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
@@ -205,6 +206,45 @@ export class AuthService {
         message: USER_NOT_FOUND_MESSAGE,
       });
     }
+
+    return user;
+  }
+
+  async updateUsername(updateUsernameDto: UpdateUsernameDtoType) {
+    const { email, username } = updateUsernameDto;
+
+    const existingUser = await this.usersService.findByEmail({ email });
+
+    if (!existingUser) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const existingUserWithSameUsername = await this.usersService.findByUsername(
+      { username },
+    );
+
+    if (existingUserWithSameUsername) {
+      if (existingUserWithSameUsername.email === existingUser.email) {
+        // this is the same user
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "The username has not been changed",
+        });
+      }
+
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "This username is already taken",
+      });
+    }
+
+    const user = await this.usersService.update({
+      id: existingUser.id,
+      username,
+    });
 
     return user;
   }

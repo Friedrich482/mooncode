@@ -25,7 +25,7 @@ export const GravatarAvatar = React.forwardRef<
       )}
     >
       <img
-        className="hover:bg-accent size-8 cursor-pointer rounded-full"
+        className="size-8 cursor-pointer rounded-full"
         src={gravatarUrl}
         alt="User Avatar"
         ref={ref}

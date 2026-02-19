@@ -26,6 +26,10 @@ export const FindByEmailDto = z.object({
   email: z.email(),
 });
 
+export const FindByUsernameDto = z.object({
+  username: z.string().min(3, "Username must be at least 3 characters"),
+});
+
 export const FindByGoogleEmailDto = z.object({
   googleEmail: z.email(),
 });
@@ -56,5 +60,7 @@ export type UpdateUserDtoType = z.infer<typeof UpdateUserDto>;
 export type FindByIdDtoType = z.infer<typeof FindByIdDto>;
 
 export type FindByEmailDtoType = z.infer<typeof FindByEmailDto>;
+
+export type FindByUsernameDtoType = z.infer<typeof FindByUsernameDto>;
 
 export type FindByGoogleEmailDtoType = z.infer<typeof FindByGoogleEmailDto>;

@@ -7,6 +7,7 @@ import {
   RegisterUserSchema as RegisterUserDto,
   ResetPasswordSchema as ResetPasswordDto,
   SignInUserSchema as SignInUserDto,
+  UpdateUsernameSchema as UpdateUsernameDto,
   VerifyPasswordResetCodeSchema as VerifyPasswordResetCodeDto,
 } from "@repo/common/types-schemas";
 
@@ -94,6 +95,11 @@ export class AuthRouter {
       getUser: this.trpcService
         .protectedProcedure()
         .query(async ({ ctx }) => this.authService.getUser(ctx)),
+
+      updateUsername: this.trpcService
+        .protectedProcedure()
+        .input(UpdateUsernameDto)
+        .mutation(async ({ input }) => this.authService.updateUsername(input)),
 
       logOut: this.trpcService
         .publicProcedure()

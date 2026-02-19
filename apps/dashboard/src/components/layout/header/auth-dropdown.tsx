@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { LayoutDashboard, LogOut, User } from "lucide-react";
+import { LayoutDashboard, LogOut, User, User2 } from "lucide-react";
 
 import { LinkWithQuery } from "@/components/common/link-with-query";
 import { useTRPC } from "@/utils/trpc";
@@ -57,6 +57,15 @@ export const AuthDropDown = () => {
           <LinkWithQuery to="/dashboard">
             <LayoutDashboard />
             <span>Dashboard</span>
+          </LinkWithQuery>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          className="cursor-pointer rounded-md py-1 text-base"
+        >
+          <LinkWithQuery to="/profile">
+            <User2 />
+            <span>Profile</span>
           </LinkWithQuery>
         </DropdownMenuItem>
 

@@ -79,6 +79,11 @@ export const ResetPasswordSchema = z.object({
   newPassword: PasswordSchema,
 });
 
+export const UpdateUsernameSchema = z.object({
+  email: z.email(),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+});
+
 export const IsoDateStringSchema = z
   .string()
   .regex(
@@ -138,4 +143,5 @@ export type VerifyPasswordResetCode = z.infer<
   typeof VerifyPasswordResetCodeSchema
 >;
 export type ResetPassword = z.infer<typeof ResetPasswordSchema>;
+export type UpdateUsername = z.infer<typeof UpdateUsernameSchema>;
 export type WsData = z.infer<typeof WsDataSchema>;

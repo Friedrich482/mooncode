@@ -12,7 +12,11 @@ import { Dashboard } from "@/app/pages/dashboard";
 import { NotFound } from "@/app/pages/not-found";
 import { Project } from "@/app/pages/project/project";
 import { Layout as AuthLayout } from "@/features/auth/components/layout";
-import { authRouteLoader, googleAuthLoader } from "@/loaders/auth-loader";
+import {
+  authRouteLoader,
+  googleAuthLoader,
+  protectedRouteLoader,
+} from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
 import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
 import { passwordResetLoader } from "@/loaders/password-reset-loader";
@@ -22,6 +26,7 @@ import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader
 import { rootLoader } from "@/loaders/root-loader";
 
 import { App } from "./App";
+import { Profile } from "./app/pages/profile/profile";
 import { Layout } from "./components/layout/layout";
 
 const router = createBrowserRouter([
@@ -44,6 +49,11 @@ const router = createBrowserRouter([
             path: "dashboard/:projectName",
             element: <Project />,
             loader: projectLoader,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+            loader: protectedRouteLoader,
           },
           {
             path: "not-found",

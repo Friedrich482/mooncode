@@ -14,6 +14,7 @@ import {
   FindByEmailDtoType,
   FindByGoogleEmailDtoType,
   FindByIdDtoType,
+  FindByUsernameDtoType,
   UpdateUserDtoType,
 } from "./users.dto";
 
@@ -23,7 +24,7 @@ export class UsersService {
 
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase
+    private readonly db: NodePgDatabase,
   ) {}
   async create(createUserDto: CreateUserDtoType) {
     const { email, hashedPassword, username } = createUserDto;
@@ -84,8 +85,8 @@ export class UsersService {
       .where(
         and(
           or(eq(users.googleEmail, googleEmail), eq(users.email, email)),
-          eq(users.googleId, googleId)
-        )
+          eq(users.googleId, googleId),
+        ),
       )
       .limit(1);
 
@@ -175,6 +176,26 @@ export class UsersService {
     return user;
   }
 
+  async findByUsername(findByUsernameDto: FindByUsernameDtoType) {
+    const { username } = findByUsernameDto;
+
+    const [user] = await this.db
+      .select({
+        email: users.email,
+        username: users.username,
+        id: users.id,
+      })
+      .from(users)
+      .where(eq(users.username, username))
+      .limit(1);
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
   async findByGoogleEmail(findByGoogleEmailDto: FindByGoogleEmailDtoType) {
     const { googleEmail } = findByGoogleEmailDto;
 
@@ -200,8 +221,8 @@ export class UsersService {
 
     const setFields = Object.fromEntries(
       Object.entries(maybeUpdatedFields).filter(
-        ([, value]) => value !== undefined
-      )
+        ([, value]) => value !== undefined,
+      ),
     );
 
     if (Object.keys(setFields).length === 0) {
