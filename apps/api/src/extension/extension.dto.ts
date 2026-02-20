@@ -1,5 +1,7 @@
 import { z } from "zod";
-import { DateStringDto, UserId } from "src/common/dto";
+import { DateStringDto } from "src/common/dto";
+
+import { UserId } from "@repo/common/types-schemas";
 
 export const GetLanguagesTimeForDayDto = z.object({
   dateString: DateStringDto,
@@ -18,7 +20,7 @@ export const UpsertLanguagesDto = z.object({
 export const UpsertFilesDto = z.object({
   timeSpentPerProject: z.record(
     z.string().min(1),
-    z.number().int().nonnegative()
+    z.number().int().nonnegative(),
   ),
   filesData: z.record(
     z.string().min(1),
@@ -28,7 +30,7 @@ export const UpsertFilesDto = z.object({
       projectName: z.string().min(1),
       projectPath: z.string().min(1),
       fileName: z.string().min(1),
-    })
+    }),
   ),
   targetedDate: DateStringDto,
 });

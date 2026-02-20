@@ -213,9 +213,9 @@ export class AuthService {
   }
 
   async updateUsername(updateUsernameDto: UpdateUsernameDtoType) {
-    const { email, username } = updateUsernameDto;
+    const { userId, username } = updateUsernameDto;
 
-    const existingUser = await this.usersService.findByEmail({ email });
+    const existingUser = await this.usersService.findById({ id: userId });
 
     if (!existingUser) {
       throw new TRPCError({

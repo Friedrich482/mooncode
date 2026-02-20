@@ -3,6 +3,7 @@ import { toast } from "sonner";
 
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UpdateUsernameSchema } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -16,22 +17,19 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 
-import {
-  UpdateUsernameFormSchema,
-  UpdateUsernameFormSchemaType,
-} from "../types-schemas";
+import { UpdateUsernameFormSchemaType } from "../types-schemas";
 
 export const UpdateUsernameForm = () => {
   const trpc = useTRPC();
   const {
-    data: { email, username },
+    data: { username },
   } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
   const updateUsernameMutation = useMutation(
     trpc.auth.updateUsername.mutationOptions(),
   );
 
   const form = useForm<UpdateUsernameFormSchemaType>({
-    resolver: zodResolver(UpdateUsernameFormSchema),
+    resolver: zodResolver(UpdateUsernameSchema),
     defaultValues: {
       username,
     },
@@ -40,7 +38,6 @@ export const UpdateUsernameForm = () => {
   const onSubmit = async (values: UpdateUsernameFormSchemaType) => {
     updateUsernameMutation.mutate(
       {
-        email,
         username: values.username,
       },
       {

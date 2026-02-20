@@ -99,7 +99,9 @@ export class AuthRouter {
       updateUsername: this.trpcService
         .protectedProcedure()
         .input(UpdateUsernameDto)
-        .mutation(async ({ input }) => this.authService.updateUsername(input)),
+        .mutation(async ({ input, ctx }) =>
+          this.authService.updateUsername({ ...input, userId: ctx.user.sub }),
+        ),
 
       logOut: this.trpcService
         .publicProcedure()

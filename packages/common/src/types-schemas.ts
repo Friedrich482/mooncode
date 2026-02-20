@@ -80,7 +80,6 @@ export const ResetPasswordSchema = z.object({
 });
 
 export const UpdateUsernameSchema = z.object({
-  email: z.email(),
   username: z.string().min(3, "Username must be at least 3 characters"),
 });
 
@@ -129,6 +128,7 @@ export const WsDataSchema = z.discriminatedUnion("type", [
 
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];
+export type UserId = { userId: string };
 
 export type PeriodResolution = "day" | "week" | "month" | "year";
 
@@ -143,5 +143,5 @@ export type VerifyPasswordResetCode = z.infer<
   typeof VerifyPasswordResetCodeSchema
 >;
 export type ResetPassword = z.infer<typeof ResetPasswordSchema>;
-export type UpdateUsername = z.infer<typeof UpdateUsernameSchema>;
+export type UpdateUsername = z.infer<typeof UpdateUsernameSchema> & UserId;
 export type WsData = z.infer<typeof WsDataSchema>;
