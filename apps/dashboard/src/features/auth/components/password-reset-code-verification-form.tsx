@@ -1,16 +1,13 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Logo } from "@/components/layout/header/logo";
-import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
+import { passwordResetLoader } from "@/loaders/password-reset-loader";
 import { getCallbackUrl } from "@/utils/get-callback-url";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  VerifyPasswordResetCode,
-  VerifyPasswordResetCodeSchema,
-} from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -29,16 +26,19 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
+import {
+  VerifyPasswordResetCodeFormSchema,
+  VerifyPasswordResetCodeFormSchemaType,
+} from "../types-schemas";
+
 export const CodeVerificationForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const passwordResetEmail =
-    useLoaderData<typeof passwordResetCodeVerificationLoader>();
+  const passwordResetToken = useLoaderData<typeof passwordResetLoader>();
 
-  const form = useForm<VerifyPasswordResetCode>({
-    resolver: zodResolver(VerifyPasswordResetCodeSchema),
+  const form = useForm<VerifyPasswordResetCodeFormSchemaType>({
+    resolver: zodResolver(VerifyPasswordResetCodeFormSchema),
     defaultValues: {
-      email: passwordResetEmail,
       code: "",
     },
   });
@@ -52,11 +52,11 @@ export const CodeVerificationForm = () => {
     trpc.auth.verifyPasswordResetCode.mutationOptions(),
   );
 
-  const onSubmit = async (values: VerifyPasswordResetCode) => {
+  const onSubmit = async (values: VerifyPasswordResetCodeFormSchemaType) => {
     verifyPasswordResetCodeMutation.mutate(
       {
-        email: passwordResetEmail,
         code: values.code,
+        id: passwordResetToken,
       },
       {
         onError: (error) => {
@@ -69,11 +69,12 @@ export const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ token }) => {
+        onSuccess: async ({ message }) => {
+          toast.success(message);
+
           const params = new URLSearchParams();
 
-          params.set("email", values.email);
-          params.set("reset-password-token", token);
+          params.set("password-reset-token", passwordResetToken);
 
           if (callbackUrl) {
             params.set("callback", callbackUrl);

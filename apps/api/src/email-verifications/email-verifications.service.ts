@@ -18,8 +18,6 @@ import {
 
 @Injectable()
 export class EmailVerificationsService {
-  private readonly saltRounds = 10;
-
   constructor(
     @Inject(DrizzleAsyncProvider)
     private readonly db: NodePgDatabase,

@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Logo } from "@/components/layout/header/logo";
 import { passwordResetLoader } from "@/loaders/password-reset-loader";
@@ -30,11 +31,10 @@ import {
 export const ResetPasswordForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const { passwordResetEmail, passwordResetToken } =
-    useLoaderData<typeof passwordResetLoader>();
+  const passwordResetToken = useLoaderData<typeof passwordResetLoader>();
 
   const backLinkParams = new URLSearchParams();
-  backLinkParams.set("email", passwordResetEmail);
+  backLinkParams.set("password-reset-token", passwordResetToken);
 
   if (callbackUrl) {
     backLinkParams.set("callback", callbackUrl);
@@ -43,7 +43,6 @@ export const ResetPasswordForm = () => {
   const form = useForm<ResetPasswordFormSchemaType>({
     resolver: zodResolver(ResetPasswordFormSchema),
     defaultValues: {
-      email: passwordResetEmail,
       token: passwordResetToken,
       newPassword: "",
       confirmPassword: "",
@@ -66,7 +65,6 @@ export const ResetPasswordForm = () => {
   const onSubmit = async (values: ResetPassword) => {
     resetPasswordMutation.mutate(
       {
-        email: passwordResetEmail,
         token: passwordResetToken,
         newPassword: values.newPassword,
       },
@@ -83,7 +81,14 @@ export const ResetPasswordForm = () => {
           }
         },
 
-        onSuccess: async ({ accessToken }, _, __, { client }) => {
+        onSuccess: async (
+          { accessToken, email, message },
+          _,
+          __,
+          { client },
+        ) => {
+          toast.success(message);
+
           await client.invalidateQueries({
             queryKey: trpc.auth.getUser.queryKey(),
             exact: true,
@@ -92,7 +97,7 @@ export const ResetPasswordForm = () => {
           navigate("/dashboard");
 
           if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(passwordResetEmail)}`;
+            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(email)}`;
           }
         },
       },

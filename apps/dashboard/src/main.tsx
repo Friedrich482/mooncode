@@ -19,7 +19,6 @@ import {
 } from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
 import { emailVerificationLoader } from "@/loaders/email-verification-loader";
-import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
 import { passwordResetLoader } from "@/loaders/password-reset-loader";
 import { projectLoader } from "@/loaders/project-loader";
 import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader";
@@ -97,7 +96,7 @@ const router = createBrowserRouter([
           {
             path: "verify-reset-code",
             element: <PasswordResetCodeVerification />,
-            loader: passwordResetCodeVerificationLoader,
+            loader: passwordResetLoader,
           },
           {
             path: "reset-password",

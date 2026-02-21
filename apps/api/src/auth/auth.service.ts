@@ -165,24 +165,34 @@ export class AuthService {
     resetPasswordDto: ResetPasswordDtoType,
     response: Response,
   ) {
-    const { email, token: id, newPassword } = resetPasswordDto;
+    const { token: passwordResetId, newPassword } = resetPasswordDto;
 
-    const existingPasswordReset = await this.passwordResetsService.findOne({
-      id,
+    const existingPasswordReset = await this.passwordResetsService.findById({
+      id: passwordResetId,
     });
+
+    if (!existingPasswordReset) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message:
+          "You have no password reset in process. Please go back and try again",
+      });
+    }
 
     // verify if the code is still valid
     await this.passwordResetsService.verifyCode({
       code: existingPasswordReset.code,
-      email,
+      id: passwordResetId,
     });
 
-    const user = await this.usersService.findByEmail({ email });
+    const user = await this.usersService.findByEmail({
+      email: existingPasswordReset.email,
+    });
 
     if (!user) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: USER_NOT_FOUND_MESSAGE,
+        message: "User not found",
       });
     }
 
@@ -192,7 +202,7 @@ export class AuthService {
     });
 
     // delete the password reset associated
-    await this.passwordResetsService.delete({ email });
+    await this.passwordResetsService.delete({ id: passwordResetId });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
     const token = await this.jwtService.signAsync(payload);
@@ -207,6 +217,8 @@ export class AuthService {
 
     return {
       accessToken: token,
+      email: user.email,
+      message: "Password reset successfully",
     };
   }
 

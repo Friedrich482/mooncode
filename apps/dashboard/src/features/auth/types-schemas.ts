@@ -4,6 +4,7 @@ import {
   RegisterUserSchema,
   ResetPasswordSchema,
   VerifyEmailVerificationCodeSchema,
+  VerifyPasswordResetCodeSchema,
 } from "@repo/common/types-schemas";
 
 export const ResetPasswordFormSchema = z
@@ -21,6 +22,9 @@ export const VerifyEmailVerificationCodeFormSchema =
 
 export const RegisterFormSchema = RegisterUserSchema.omit({ token: true });
 
+export const VerifyPasswordResetCodeFormSchema =
+  VerifyPasswordResetCodeSchema.omit({ id: true });
+
 export type ResetPasswordFormSchemaType = z.infer<
   typeof ResetPasswordFormSchema
 >;
@@ -29,3 +33,7 @@ export type VerifyEmailVerificationCodeFormSchemaType = z.infer<
 >;
 
 export type RegisterFormSchemaType = z.infer<typeof RegisterFormSchema>;
+
+export type VerifyPasswordResetCodeFormSchemaType = z.infer<
+  typeof VerifyPasswordResetCodeFormSchema
+>;

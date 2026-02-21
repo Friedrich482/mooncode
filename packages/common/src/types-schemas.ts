@@ -72,12 +72,11 @@ export const CreatePasswordResetSchema = z.object({
 });
 
 export const VerifyPasswordResetCodeSchema = z.object({
-  email: z.email(),
+  id: z.ulid(),
   code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
 });
 
 export const ResetPasswordSchema = z.object({
-  email: z.email(),
   token: z.ulid(),
   newPassword: PasswordSchema,
 });

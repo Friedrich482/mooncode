@@ -16,7 +16,7 @@ import { TRPCError } from "@trpc/server";
 import { MAX_ATTEMPTS_PASSWORD_RESET } from "./constants";
 import {
   DeletePasswordResetDtoType,
-  FindOnePasswordResetDtoType,
+  FindByIdDtoType,
 } from "./password-resets.dto";
 
 @Injectable()
@@ -26,6 +26,7 @@ export class PasswordResetsService {
     private readonly db: NodePgDatabase,
     private readonly emailService: EmailService,
   ) {}
+
   async create(createPasswordResetDto: CreatePasswordResetDtoType) {
     const { email } = createPasswordResetDto;
 
@@ -39,10 +40,10 @@ export class PasswordResetsService {
       .limit(1);
 
     if (!user) {
-      // don't send the email back to avoid email enumeration
-      return {
-        message: "We have sent you a code at your email address",
-      };
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
     }
 
     // delete any expired password reset tied to this user
@@ -56,7 +57,11 @@ export class PasswordResetsService {
       );
 
     const [existingValidPasswordReset] = await this.db
-      .select()
+      .select({
+        id: passwordResets.id,
+        email: passwordResets.email,
+        code: passwordResets.code,
+      })
       .from(passwordResets)
       .where(
         and(
@@ -74,16 +79,22 @@ export class PasswordResetsService {
 
       return {
         message: "Verification code resent",
+        passwordResetToken: existingValidPasswordReset.id,
       };
     }
 
     const generatedCode = generateVerificationCode();
 
-    await this.db.insert(passwordResets).values({
-      email,
-      code: generatedCode,
-      userId: user.id,
-    });
+    const [createdPasswordReset] = await this.db
+      .insert(passwordResets)
+      .values({
+        email,
+        code: generatedCode,
+        userId: user.id,
+      })
+      .returning({
+        id: passwordResets.id,
+      });
 
     await this.emailService.sendResetPasswordCode({
       email,
@@ -91,12 +102,13 @@ export class PasswordResetsService {
     });
 
     return {
+      passwordResetToken: createdPasswordReset.id,
       message: "Verification code sent",
     };
   }
 
-  async findOne(findOnePasswordResetDto: FindOnePasswordResetDtoType) {
-    const { id } = findOnePasswordResetDto;
+  async findById(findByIdDto: FindByIdDtoType) {
+    const { id } = findByIdDto;
 
     const [existingPasswordReset] = await this.db
       .select({
@@ -107,25 +119,21 @@ export class PasswordResetsService {
       .where(eq(passwordResets.id, id));
 
     if (!existingPasswordReset) {
-      throw new TRPCError({
-        code: "NOT_FOUND",
-        message:
-          "You have no password reset in progress. Go back and try again",
-      });
+      return null;
     }
 
     return existingPasswordReset;
   }
 
   async verifyCode(verifyPasswordResetCodeDto: VerifyPasswordResetCodeDtoType) {
-    const { email, code } = verifyPasswordResetCodeDto;
+    const { id, code } = verifyPasswordResetCodeDto;
 
     // delete any expired password reset tied to this user
     await this.db
       .delete(passwordResets)
       .where(
         and(
-          eq(passwordResets.email, email),
+          eq(passwordResets.id, id),
           lt(passwordResets.expiresAt, new Date()),
         ),
       );
@@ -140,7 +148,7 @@ export class PasswordResetsService {
       .from(passwordResets)
       .where(
         and(
-          eq(passwordResets.email, email),
+          eq(passwordResets.id, id),
           gt(passwordResets.expiresAt, new Date()),
         ),
       )
@@ -161,7 +169,8 @@ export class PasswordResetsService {
 
       throw new TRPCError({
         code: "TOO_MANY_REQUESTS",
-        message: "Too many failed attempts. Please request a new reset",
+        message:
+          "Too many failed attempts. Please request a new password reset",
       });
     }
 
@@ -179,13 +188,12 @@ export class PasswordResetsService {
 
     return {
       message: "Code verified",
-      token: existingValidPasswordReset.id,
     };
   }
 
   async delete(deletePasswordResetDto: DeletePasswordResetDtoType) {
-    const { email } = deletePasswordResetDto;
+    const { id } = deletePasswordResetDto;
 
-    await this.db.delete(passwordResets).where(eq(passwordResets.email, email));
+    await this.db.delete(passwordResets).where(eq(passwordResets.id, id));
   }
 }
