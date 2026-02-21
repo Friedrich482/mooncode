@@ -26,6 +26,7 @@ import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader
 import { rootLoader } from "@/loaders/root-loader";
 
 import { App } from "./App";
+import { RegisterFinish } from "./app/pages/auth/register-finish";
 import { Profile } from "./app/pages/profile/profile";
 import { Layout } from "./components/layout/layout";
 
@@ -81,6 +82,11 @@ const router = createBrowserRouter([
           {
             path: "register/verify",
             element: <RegisterCodeVerification />,
+            loader: emailVerificationLoader,
+          },
+          {
+            path: "register/finish",
+            element: <RegisterFinish />,
             loader: emailVerificationLoader,
           },
           {

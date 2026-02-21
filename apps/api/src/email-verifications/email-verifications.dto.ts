@@ -1,17 +1,24 @@
 import { z } from "zod";
 
-import { RegisterUserSchema } from "@repo/common/types-schemas";
+import { EMAIL_VERIFICATION_CODE_LENGTH } from "@repo/common/constants";
 
-export const FindOneEmailVerificationDto = RegisterUserSchema.omit({
-  callbackUrl: true,
+export const FindByIdDto = z.object({
+  id: z.ulid(),
+});
+
+export const VerifyEmailCodeVerificationDto = z.object({
+  id: z.ulid(),
+  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
 });
 
 export const DeleteEmailVerificationDto = z.object({
-  email: z.email(),
+  id: z.ulid(),
 });
 
-export type FindOneEmailVerificationDtoType = z.infer<
-  typeof FindOneEmailVerificationDto
+export type FindByIdDtoType = z.infer<typeof FindByIdDto>;
+
+export type VerifyEmailCodeVerificationDtoType = z.infer<
+  typeof VerifyEmailCodeVerificationDto
 >;
 
 export type DeleteEmailVerificationDtoType = z.infer<

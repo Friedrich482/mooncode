@@ -8,6 +8,7 @@ import {
   ResetPasswordSchema as ResetPasswordDto,
   SignInUserSchema as SignInUserDto,
   UpdateUsernameSchema as UpdateUsernameDto,
+  VerifyEmailVerificationCodeSchema as VerifyEmailVerificationCodeDto,
   VerifyPasswordResetCodeSchema as VerifyPasswordResetCodeDto,
 } from "@repo/common/types-schemas";
 
@@ -42,6 +43,17 @@ export class AuthRouter {
         .input(CreateEmailVerificationDto)
         .mutation(async ({ input }) =>
           this.authService.createEmailVerification(input),
+        ),
+
+      verifyEmailVerificationCode: this.trpcService
+        .publicProcedure({
+          key: "auth.verifyEmailVerificationCode",
+          windowMs: 5 * 60 * 1000,
+          max: 5,
+        })
+        .input(VerifyEmailVerificationCodeDto)
+        .mutation(async ({ input }) =>
+          this.authService.verifyEmailVerificationCode(input),
         ),
 
       register: this.trpcService

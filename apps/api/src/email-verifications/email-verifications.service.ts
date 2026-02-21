@@ -1,5 +1,4 @@
-import * as bcrypt from "bcrypt";
-import { and, eq, gt, lt, or } from "drizzle-orm";
+import { and, eq, gt, lt } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { generateVerificationCode } from "src/common/utils/generate-verification-code";
 import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
@@ -13,7 +12,8 @@ import { TRPCError } from "@trpc/server";
 import { MAX_ATTEMPTS_EMAIL_VERIFICATION_VALID_CODE } from "./constants";
 import {
   DeleteEmailVerificationDtoType,
-  FindOneEmailVerificationDtoType,
+  FindByIdDtoType,
+  VerifyEmailCodeVerificationDtoType,
 } from "./email-verifications.dto";
 
 @Injectable()
@@ -27,10 +27,12 @@ export class EmailVerificationsService {
   ) {}
 
   async create(createEmailVerificationDto: CreateEmailVerificationDtoType) {
-    const { email, username, password } = createEmailVerificationDto;
+    const { email } = createEmailVerificationDto;
 
     const [existingUserWithSameEmail] = await this.db
-      .select()
+      .select({
+        id: users.id,
+      })
       .from(users)
       .where(eq(users.email, email))
       .limit(1);
@@ -41,86 +43,6 @@ export class EmailVerificationsService {
         message: "This email is already used",
       });
     }
-
-    const [existingUserWithSameUsername] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
-
-    if (existingUserWithSameUsername) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This username already exists",
-      });
-    }
-
-    // delete any expired email verification tied to this user
-    await this.db
-      .delete(emailVerifications)
-      .where(
-        and(
-          or(
-            eq(emailVerifications.email, email),
-            eq(emailVerifications.username, username),
-          ),
-          lt(emailVerifications.expiresAt, new Date()),
-        ),
-      );
-
-    const [existingValidEmailVerification] = await this.db
-      .select()
-      .from(emailVerifications)
-      .where(
-        and(
-          or(
-            eq(emailVerifications.email, email),
-            eq(emailVerifications.username, username),
-          ),
-          gt(emailVerifications.expiresAt, new Date()),
-        ),
-      )
-      .limit(1);
-
-    if (existingValidEmailVerification) {
-      await this.emailService.sendVerificationCode({
-        email: existingValidEmailVerification.email,
-        code: existingValidEmailVerification.code,
-      });
-
-      return {
-        message: "Verification code resent",
-      };
-    }
-
-    const generatedCode = generateVerificationCode();
-
-    const hashedPassword = await bcrypt.hash(password, this.saltRounds);
-
-    await this.db
-      .insert(emailVerifications)
-      .values({
-        email,
-        username,
-        hashedPassword,
-        code: generatedCode,
-      })
-      .returning({
-        id: emailVerifications.id,
-        email: emailVerifications.email,
-        username: emailVerifications.username,
-      });
-
-    await this.emailService.sendVerificationCode({
-      email,
-      code: generatedCode,
-    });
-
-    return { message: "Verification code sent" };
-  }
-
-  async findOne(findOneEmailVerificationDto: FindOneEmailVerificationDtoType) {
-    const { email, code } = findOneEmailVerificationDto;
 
     // delete any expired email verification tied to this user
     await this.db
@@ -135,11 +57,8 @@ export class EmailVerificationsService {
     const [existingValidEmailVerification] = await this.db
       .select({
         id: emailVerifications.id,
-        username: emailVerifications.username,
-        hashedPassword: emailVerifications.hashedPassword,
         email: emailVerifications.email,
         code: emailVerifications.code,
-        attempts: emailVerifications.attempts,
       })
       .from(emailVerifications)
       .where(
@@ -150,10 +69,96 @@ export class EmailVerificationsService {
       )
       .limit(1);
 
+    if (existingValidEmailVerification) {
+      await this.emailService.sendVerificationCode({
+        email: existingValidEmailVerification.email,
+        code: existingValidEmailVerification.code,
+      });
+
+      return {
+        verificationToken: existingValidEmailVerification.id,
+        message: "Verification code resent",
+      };
+    }
+
+    const generatedCode = generateVerificationCode();
+
+    const [createdEmailVerification] = await this.db
+      .insert(emailVerifications)
+      .values({
+        email,
+        code: generatedCode,
+      })
+      .returning({
+        id: emailVerifications.id,
+      });
+
+    await this.emailService.sendVerificationCode({
+      email,
+      code: generatedCode,
+    });
+
+    return {
+      verificationToken: createdEmailVerification.id,
+      message: "Verification code sent",
+    };
+  }
+
+  async findById(findByIdDto: FindByIdDtoType) {
+    const { id } = findByIdDto;
+
+    const [emailVerification] = await this.db
+      .select({
+        email: emailVerifications.email,
+        id: emailVerifications.id,
+        verifiedAt: emailVerifications.verifiedAt,
+      })
+      .from(emailVerifications)
+      .where(eq(emailVerifications.id, id));
+
+    if (!emailVerification) {
+      return null;
+    }
+
+    return emailVerification;
+  }
+
+  async verifyCode(
+    verifyEmailCodeVerificationDto: VerifyEmailCodeVerificationDtoType,
+  ) {
+    const { id, code } = verifyEmailCodeVerificationDto;
+
+    // delete any expired email verification tied to this user
+    await this.db
+      .delete(emailVerifications)
+      .where(
+        and(
+          eq(emailVerifications.id, id),
+          lt(emailVerifications.expiresAt, new Date()),
+        ),
+      );
+
+    const [existingValidEmailVerification] = await this.db
+      .select({
+        id: emailVerifications.id,
+        email: emailVerifications.email,
+        code: emailVerifications.code,
+        attempts: emailVerifications.attempts,
+      })
+      .from(emailVerifications)
+      .where(
+        and(
+          eq(emailVerifications.id, id),
+          gt(emailVerifications.expiresAt, new Date()),
+        ),
+      )
+      .limit(1);
+
     if (!existingValidEmailVerification) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "You have no email verification. Please go back and try again",
+        message:
+          "You have no email verification in process. Please go back and try again",
       });
     }
 
@@ -183,17 +188,19 @@ export class EmailVerificationsService {
       });
     }
 
-    const { code: existingValidCode, ...remaining } =
-      existingValidEmailVerification;
+    await this.db
+      .update(emailVerifications)
+      .set({ verifiedAt: new Date() })
+      .where(eq(emailVerifications.id, existingValidEmailVerification.id));
 
-    return remaining;
+    return { message: "Code verified" };
   }
 
   async delete(deleteEmailVerificationDto: DeleteEmailVerificationDtoType) {
-    const { email } = deleteEmailVerificationDto;
+    const { id } = deleteEmailVerificationDto;
 
     await this.db
       .delete(emailVerifications)
-      .where(eq(emailVerifications.email, email));
+      .where(eq(emailVerifications.id, id));
   }
 }

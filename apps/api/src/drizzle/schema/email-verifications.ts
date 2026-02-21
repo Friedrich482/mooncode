@@ -16,13 +16,12 @@ export const emailVerifications = pgTable("email_verifications", {
     .notNull()
     .$defaultFn(() => ulid().toLowerCase()),
 
-  username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
-  hashedPassword: text("hashed_password").notNull(),
   code: varchar("code", { length: EMAIL_VERIFICATION_CODE_LENGTH }).notNull(),
   attempts: integer().notNull().default(0),
   expiresAt: timestamp("expires_at")
     .notNull()
     .default(sql`now() + interval '30 minutes'`),
+  verifiedAt: timestamp("verified_at").default(sql`NULL`),
   ...timestamps,
 });

@@ -21,6 +21,7 @@ import {
   ResetPassword as ResetPasswordDtoType,
   SignInUser as SignInUserDtoType,
   UpdateUsername as UpdateUsernameDtoType,
+  VerifyEmailVerificationCode as VerifyEmailVerificationCodeDtoType,
   VerifyPasswordResetCode as VerifyPasswordResetCodeDtoType,
 } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
@@ -88,23 +89,47 @@ export class AuthService {
     return this.emailVerificationService.create(createEmailVerificationDto);
   }
 
-  async register(registerDto: RegisterUserDtoType, response: Response) {
-    const { email, code } = registerDto;
+  async verifyEmailVerificationCode(
+    verifyEmailVerificationCodeDto: VerifyEmailVerificationCodeDtoType,
+  ) {
+    return this.emailVerificationService.verifyCode(
+      verifyEmailVerificationCodeDto,
+    );
+  }
 
-    const validEmailVerification = await this.emailVerificationService.findOne({
-      email,
-      code,
+  async register(registerDto: RegisterUserDtoType, response: Response) {
+    const { token: emailVerificationId, password, username } = registerDto;
+
+    const emailVerification = await this.emailVerificationService.findById({
+      id: emailVerificationId,
     });
 
+    if (!emailVerification) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message:
+          "You have no email verification in process. Please go back and try again",
+      });
+    }
+
+    if (!emailVerification.verifiedAt) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message:
+          "Please verify your email first. Go back to the start of registration process",
+      });
+    }
+
     const createdUser = await this.usersService.create({
-      username: validEmailVerification.username,
-      email: validEmailVerification.email,
-      hashedPassword: validEmailVerification.hashedPassword,
+      username,
+      email: emailVerification.email,
+      password,
+      emailVerifiedAt: emailVerification.verifiedAt,
     });
 
     // delete the email verification associated
     await this.emailVerificationService.delete({
-      email: createdUser.email,
+      id: emailVerificationId,
     });
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: createdUser.id };
@@ -120,6 +145,7 @@ export class AuthService {
 
     return {
       accessToken: token,
+      email: createdUser.email,
     };
   }
 

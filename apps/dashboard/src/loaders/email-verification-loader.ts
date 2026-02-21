@@ -8,17 +8,15 @@ export const emailVerificationLoader = async ({
 }: LoaderFunctionArgs) => {
   await authRouteLoader();
 
-  const urlEmailVerificationEmail = new URL(request.url).searchParams.get(
-    "email",
+  const urlVerificationToken = new URL(request.url).searchParams.get(
+    "verification-token",
   );
 
-  const parsedUrlEmailVerificationEmail = z
-    .email()
-    .safeParse(urlEmailVerificationEmail);
+  const parsedUrlVerificationToken = z.ulid().safeParse(urlVerificationToken);
 
-  if (!parsedUrlEmailVerificationEmail.success) {
+  if (!parsedUrlVerificationToken.success) {
     throw redirect("/register");
   }
 
-  return parsedUrlEmailVerificationEmail.data;
+  return parsedUrlVerificationToken.data;
 };

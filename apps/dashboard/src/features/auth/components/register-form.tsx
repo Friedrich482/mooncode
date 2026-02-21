@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Logo } from "@/components/layout/header/logo";
 import { getCallbackUrl } from "@/utils/get-callback-url";
@@ -13,6 +14,7 @@ import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -21,7 +23,6 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 
-import { useTogglePassword } from "../hooks/use-toggle-password";
 import { GoogleLoginButton } from "./google-login-button";
 import { LoginMethodSeparator } from "./login-method-separator";
 
@@ -32,12 +33,8 @@ export const RegisterForm = () => {
     resolver: zodResolver(CreateEmailVerificationSchema),
     defaultValues: {
       email: "",
-      password: "",
-      username: "",
     },
   });
-
-  const { isPasswordVisible, EyeIconComponent } = useTogglePassword();
 
   const navigate = useNavigate();
   const trpc = useTRPC();
@@ -49,8 +46,6 @@ export const RegisterForm = () => {
     createEmailVerificationMutation.mutate(
       {
         email: values.email,
-        username: values.username,
-        password: values.password,
       },
       {
         onError: (error) => {
@@ -58,17 +53,17 @@ export const RegisterForm = () => {
 
           if (errorMessage.toLowerCase().includes("email")) {
             form.setError("email", { message: errorMessage });
-          } else if (errorMessage.toLowerCase().includes("username")) {
-            form.setError("username", { message: errorMessage });
           } else {
             form.setError("root", { message: errorMessage });
           }
         },
 
-        onSuccess: async () => {
+        onSuccess: async ({ verificationToken, message }) => {
+          toast.success(message);
+
           const params = new URLSearchParams();
 
-          params.set("email", values.email);
+          params.set("verification-token", verificationToken);
 
           if (callbackUrl) {
             params.set("callback", callbackUrl);
@@ -106,48 +101,12 @@ export const RegisterForm = () => {
                   className="border-border h-10"
                 />
               </FormControl>
+              <FormDescription>
+                Please enter your email address, we will send you an email with
+                a code to verify your identity
+              </FormDescription>
               <FormMessage />
             </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="example"
-                  {...field}
-                  className="border-border h-10"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="password"
-          render={({ field }) => (
-            <>
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <div className="relative flex items-center justify-end gap-2">
-                  <FormControl>
-                    <Input
-                      placeholder="**********"
-                      {...field}
-                      type={isPasswordVisible ? "text" : "password"}
-                      className="border-border h-10 flex-nowrap"
-                    />
-                  </FormControl>
-                  <EyeIconComponent />
-                </div>
-                <FormMessage />
-              </FormItem>
-            </>
           )}
         />
         <p>
@@ -165,7 +124,7 @@ export const RegisterForm = () => {
           disabled={form.formState.isSubmitting}
           className="h-10 w-1/2 self-center rounded-lg"
         >
-          Register
+          Submit
         </Button>
         <div className="h-4">
           {form.formState.errors.root && (

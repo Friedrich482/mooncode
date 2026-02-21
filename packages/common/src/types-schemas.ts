@@ -54,14 +54,17 @@ export const SignInUserSchema = z.object({
 
 export const CreateEmailVerificationSchema = z.object({
   email: z.email(),
-  password: PasswordSchema,
-  username: z.string().min(3, "Username must be at least 3 characters"),
+});
+
+export const VerifyEmailVerificationCodeSchema = z.object({
+  id: z.ulid(),
+  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
 });
 
 export const RegisterUserSchema = z.object({
-  email: z.email(),
-  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
-  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
+  token: z.ulid(),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  password: PasswordSchema,
 });
 
 export const CreatePasswordResetSchema = z.object({
@@ -136,6 +139,9 @@ export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
 export type SignInUser = z.infer<typeof SignInUserSchema>;
 export type CreateEmailVerification = z.infer<
   typeof CreateEmailVerificationSchema
+>;
+export type VerifyEmailVerificationCode = z.infer<
+  typeof VerifyEmailVerificationCodeSchema
 >;
 export type RegisterUser = z.infer<typeof RegisterUserSchema>;
 export type CreatePasswordReset = z.infer<typeof CreatePasswordResetSchema>;

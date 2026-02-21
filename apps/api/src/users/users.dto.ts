@@ -5,8 +5,9 @@ import { PasswordSchema } from "@repo/common/types-schemas";
 
 export const CreateUserDto = z.object({
   email: z.email(),
-  hashedPassword: z.string().min(1),
+  password: PasswordSchema,
   username: z.string().min(3, "Username must be at least 3 characters"),
+  emailVerifiedAt: z.date(),
 });
 
 export const CreateGoogleUserDto = z.object({
