@@ -3,10 +3,9 @@ import { EnvService } from "src/env/env.service";
 
 import { Injectable } from "@nestjs/common";
 
-import {
-  SendResetPasswordCodeDtoType,
-  SendVerificationCodeDtoType,
-} from "./email.dto";
+import { SendEmailDtoType } from "./email.dto";
+import { getEmailUpdateEmailBody } from "./utils/get-email-update-email-body";
+import { getEmailUpdateNoticeEmailBody } from "./utils/get-email-update-notice-email-body";
 import { getOnboardingEmailBody } from "./utils/get-onboarding-email-body";
 import { getPasswordResetEmailBody } from "./utils/get-password-reset-email-body";
 
@@ -14,33 +13,53 @@ import { getPasswordResetEmailBody } from "./utils/get-password-reset-email-body
 export class EmailService {
   constructor(private readonly envService: EnvService) {}
 
-  async sendVerificationCode(
-    sendVerificationCodeDto: SendVerificationCodeDtoType,
-  ) {
-    const { code, email } = sendVerificationCodeDto;
-
+  async sendEmail(sendEmailDto: SendEmailDtoType) {
+    const { type, email } = sendEmailDto;
     const resend = new Resend(this.envService.get("RESEND_API_KEY"));
 
-    resend.emails.send({
-      from: this.envService.get("ONBOARDING_EMAIL"),
-      to: email,
-      subject: "Email verification",
-      html: getOnboardingEmailBody(code),
-    });
-  }
+    switch (type) {
+      case "onboarding":
+        resend.emails.send({
+          from: this.envService.get("ONBOARDING_EMAIL"),
+          to: email,
+          subject: "Email verification",
+          html: getOnboardingEmailBody(sendEmailDto.code),
+        });
 
-  async sendResetPasswordCode(
-    sendResetPasswordCodeDto: SendResetPasswordCodeDtoType,
-  ) {
-    const { code, email } = sendResetPasswordCodeDto;
+        break;
 
-    const resend = new Resend(this.envService.get("RESEND_API_KEY"));
+      case "password reset":
+        resend.emails.send({
+          from: this.envService.get("RESET_PASSWORD_EMAIL"),
+          to: email,
+          subject: "Reset Password",
+          html: getPasswordResetEmailBody(sendEmailDto.code),
+        });
 
-    resend.emails.send({
-      from: this.envService.get("RESET_PASSWORD_EMAIL"),
-      to: email,
-      subject: "Reset Password",
-      html: getPasswordResetEmailBody(code),
-    });
+        break;
+
+      case "email update":
+        resend.emails.send({
+          from: this.envService.get("UPDATE_EMAIL_EMAIL"),
+          to: email,
+          subject: "Email Update",
+          html: getEmailUpdateEmailBody(sendEmailDto.code),
+        });
+
+        break;
+
+      case "notice email update":
+        resend.emails.send({
+          from: this.envService.get("UPDATE_EMAIL_EMAIL"),
+          to: email,
+          subject: "Notice Email Update",
+          html: getEmailUpdateNoticeEmailBody(),
+        });
+
+        break;
+
+      default:
+        throw type satisfies never;
+    }
   }
 }

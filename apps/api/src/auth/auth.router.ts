@@ -2,11 +2,13 @@ import { TrpcService } from "src/trpc/trpc.service";
 
 import { Injectable } from "@nestjs/common";
 import {
+  CreateEmailUpdateSchema as createEmailUpdateDto,
   CreateEmailVerificationSchema as CreateEmailVerificationDto,
   CreatePasswordResetSchema as CreatePasswordResetDto,
   RegisterUserSchema as RegisterUserDto,
   ResetPasswordSchema as ResetPasswordDto,
   SignInUserSchema as SignInUserDto,
+  UpdateEmailSchema as UpdateEmailDto,
   UpdateUsernameSchema as UpdateUsernameDto,
   VerifyEmailVerificationCodeSchema as VerifyEmailVerificationCodeDto,
   VerifyPasswordResetCodeSchema as VerifyPasswordResetCodeDto,
@@ -113,6 +115,31 @@ export class AuthRouter {
         .input(UpdateUsernameDto)
         .mutation(async ({ input, ctx }) =>
           this.authService.updateUsername({ ...input, userId: ctx.user.sub }),
+        ),
+
+      createEmailUpdate: this.trpcService
+        .protectedProcedure({
+          key: "auth.createEmailUpdate",
+          windowMs: 60 * 60 * 1000,
+          max: 5,
+        })
+        .input(createEmailUpdateDto)
+        .mutation(async ({ ctx, input }) =>
+          this.authService.createEmailUpdate({
+            ...input,
+            userId: ctx.user.sub,
+          }),
+        ),
+
+      updateEmail: this.trpcService
+        .protectedProcedure({
+          key: "auth.updateEmail",
+          windowMs: 5 * 60 * 1000,
+          max: 5,
+        })
+        .input(UpdateEmailDto)
+        .mutation(async ({ ctx, input }) =>
+          this.authService.updateEmail({ ...input, userId: ctx.user.sub }),
         ),
 
       logOut: this.trpcService

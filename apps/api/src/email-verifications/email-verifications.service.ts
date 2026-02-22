@@ -13,6 +13,7 @@ import { MAX_ATTEMPTS_EMAIL_VERIFICATION_VALID_CODE } from "./constants";
 import {
   DeleteEmailVerificationDtoType,
   FindByIdDtoType,
+  SendEmailDtoType,
   VerifyEmailCodeVerificationDtoType,
 } from "./email-verifications.dto";
 
@@ -24,8 +25,12 @@ export class EmailVerificationsService {
     private readonly emailService: EmailService,
   ) {}
 
+  async sendEmail(sendEmailDto: SendEmailDtoType) {
+    await this.emailService.sendEmail(sendEmailDto);
+  }
+
   async create(createEmailVerificationDto: CreateEmailVerificationDtoType) {
-    const { email } = createEmailVerificationDto;
+    const { email, type } = createEmailVerificationDto;
 
     const [existingUserWithSameEmail] = await this.db
       .select({
@@ -68,7 +73,8 @@ export class EmailVerificationsService {
       .limit(1);
 
     if (existingValidEmailVerification) {
-      await this.emailService.sendVerificationCode({
+      await this.sendEmail({
+        type,
         email: existingValidEmailVerification.email,
         code: existingValidEmailVerification.code,
       });
@@ -91,7 +97,8 @@ export class EmailVerificationsService {
         id: emailVerifications.id,
       });
 
-    await this.emailService.sendVerificationCode({
+    await this.sendEmail({
+      type,
       email,
       code: generatedCode,
     });

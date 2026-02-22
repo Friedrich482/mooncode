@@ -6,10 +6,6 @@ import { Logo } from "@/components/layout/header/logo";
 import { getCallbackUrl } from "@/utils/get-callback-url";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  CreateEmailVerification,
-  CreateEmailVerificationSchema,
-} from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -23,14 +19,15 @@ import {
 import { Input } from "@repo/ui/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 
+import { RegisterFormSchema, RegisterFormSchemaType } from "../types-schemas";
 import { GoogleLoginButton } from "./google-login-button";
 import { LoginMethodSeparator } from "./login-method-separator";
 
 export const RegisterForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const form = useForm<CreateEmailVerification>({
-    resolver: zodResolver(CreateEmailVerificationSchema),
+  const form = useForm<RegisterFormSchemaType>({
+    resolver: zodResolver(RegisterFormSchema),
     defaultValues: {
       email: "",
     },
@@ -42,10 +39,11 @@ export const RegisterForm = () => {
     trpc.auth.createEmailVerification.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreateEmailVerification) => {
+  const onSubmit = async (values: RegisterFormSchemaType) => {
     createEmailVerificationMutation.mutate(
       {
         email: values.email,
+        type: "onboarding",
       },
       {
         onError: (error) => {

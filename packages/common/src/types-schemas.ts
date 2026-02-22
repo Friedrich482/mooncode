@@ -54,6 +54,7 @@ export const SignInUserSchema = z.object({
 
 export const CreateEmailVerificationSchema = z.object({
   email: z.email(),
+  type: z.enum(["onboarding", "email update"]),
 });
 
 export const VerifyEmailVerificationCodeSchema = z.object({
@@ -83,6 +84,15 @@ export const ResetPasswordSchema = z.object({
 
 export const UpdateUsernameSchema = z.object({
   username: z.string().min(3, "Username must be at least 3 characters"),
+});
+
+export const CreateEmailUpdateSchema = z.object({
+  email: z.email(),
+});
+
+export const UpdateEmailSchema = z.object({
+  token: z.ulid(),
+  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
 });
 
 export const IsoDateStringSchema = z
@@ -149,4 +159,7 @@ export type VerifyPasswordResetCode = z.infer<
 >;
 export type ResetPassword = z.infer<typeof ResetPasswordSchema>;
 export type UpdateUsername = z.infer<typeof UpdateUsernameSchema> & UserId;
+export type CreateEmailUpdate = z.infer<typeof CreateEmailUpdateSchema> &
+  UserId;
+export type UpdateEmail = z.infer<typeof UpdateEmailSchema> & UserId;
 export type WsData = z.infer<typeof WsDataSchema>;

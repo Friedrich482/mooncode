@@ -11,6 +11,7 @@ import { ResetPassword } from "@/app/pages/auth/reset-password";
 import { Dashboard } from "@/app/pages/dashboard";
 import { NotFound } from "@/app/pages/not-found";
 import { Project } from "@/app/pages/project/project";
+import { UpdateEmail } from "@/app/pages/update-email/update-email";
 import { Layout as AuthLayout } from "@/features/auth/components/layout";
 import {
   authRouteLoader,
@@ -18,6 +19,7 @@ import {
   protectedRouteLoader,
 } from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
+import { emailUpdateLoader } from "@/loaders/email-update-loader";
 import { emailVerificationLoader } from "@/loaders/email-verification-loader";
 import { passwordResetLoader } from "@/loaders/password-reset-loader";
 import { projectLoader } from "@/loaders/project-loader";
@@ -102,6 +104,11 @@ const router = createBrowserRouter([
             path: "reset-password",
             element: <ResetPassword />,
             loader: passwordResetLoader,
+          },
+          {
+            path: "update-email/verify",
+            element: <UpdateEmail />,
+            loader: emailUpdateLoader,
           },
           {
             path: "auth/google",

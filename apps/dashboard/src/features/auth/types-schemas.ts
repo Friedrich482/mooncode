@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import {
+  CreateEmailVerificationSchema,
   RegisterUserSchema,
   ResetPasswordSchema,
   VerifyEmailVerificationCodeSchema,
@@ -17,10 +18,16 @@ export const ResetPasswordFormSchema = z
     path: ["confirmPassword"],
   });
 
+export const RegisterFormSchema = CreateEmailVerificationSchema.omit({
+  type: true,
+});
+
 export const VerifyEmailVerificationCodeFormSchema =
   VerifyEmailVerificationCodeSchema.omit({ id: true });
 
-export const RegisterFormSchema = RegisterUserSchema.omit({ token: true });
+export const RegisterFinishFormSchema = RegisterUserSchema.omit({
+  token: true,
+});
 
 export const VerifyPasswordResetCodeFormSchema =
   VerifyPasswordResetCodeSchema.omit({ id: true });
@@ -28,11 +35,16 @@ export const VerifyPasswordResetCodeFormSchema =
 export type ResetPasswordFormSchemaType = z.infer<
   typeof ResetPasswordFormSchema
 >;
+
+export type RegisterFormSchemaType = z.infer<typeof RegisterFormSchema>;
+
 export type VerifyEmailVerificationCodeFormSchemaType = z.infer<
   typeof VerifyEmailVerificationCodeFormSchema
 >;
 
-export type RegisterFormSchemaType = z.infer<typeof RegisterFormSchema>;
+export type RegisterFinishFormSchemaType = z.infer<
+  typeof RegisterFinishFormSchema
+>;
 
 export type VerifyPasswordResetCodeFormSchemaType = z.infer<
   typeof VerifyPasswordResetCodeFormSchema

@@ -19,15 +19,18 @@ import { Input } from "@repo/ui/components/ui/input";
 import { useMutation } from "@tanstack/react-query";
 
 import { useTogglePassword } from "../hooks/use-toggle-password";
-import { RegisterFormSchema, RegisterFormSchemaType } from "../types-schemas";
+import {
+  RegisterFinishFormSchema,
+  RegisterFinishFormSchemaType,
+} from "../types-schemas";
 
 export const RegisterFinishForm = () => {
   const callbackUrl = getCallbackUrl();
 
   const verificationToken = useLoaderData<typeof emailVerificationLoader>();
 
-  const form = useForm<RegisterFormSchemaType>({
-    resolver: zodResolver(RegisterFormSchema),
+  const form = useForm<RegisterFinishFormSchemaType>({
+    resolver: zodResolver(RegisterFinishFormSchema),
     defaultValues: {
       username: "",
       password: "",
@@ -40,7 +43,7 @@ export const RegisterFinishForm = () => {
   const trpc = useTRPC();
   const registerMutation = useMutation(trpc.auth.register.mutationOptions());
 
-  const onSubmit = (values: RegisterFormSchemaType) => {
+  const onSubmit = (values: RegisterFinishFormSchemaType) => {
     registerMutation.mutate(
       {
         username: values.username,

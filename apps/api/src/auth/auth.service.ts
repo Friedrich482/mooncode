@@ -14,12 +14,14 @@ import {
   USER_NOT_FOUND_MESSAGE,
 } from "@repo/common/constants";
 import {
+  CreateEmailUpdate as CreateEmailUpdateDtoType,
   CreateEmailVerification as CreateEmailVerificationDtoType,
   CreatePasswordReset as CreatePasswordResetDtoType,
   JwtPayload as JwtPayloadDtoType,
   RegisterUser as RegisterUserDtoType,
   ResetPassword as ResetPasswordDtoType,
   SignInUser as SignInUserDtoType,
+  UpdateEmail as UpdateEmailDtoType,
   UpdateUsername as UpdateUsernameDtoType,
   VerifyEmailVerificationCode as VerifyEmailVerificationCodeDtoType,
   VerifyPasswordResetCode as VerifyPasswordResetCodeDtoType,
@@ -287,6 +289,94 @@ export class AuthService {
     });
 
     return user;
+  }
+
+  async createEmailUpdate(createEmailUpdateDto: CreateEmailUpdateDtoType) {
+    const { userId, email } = createEmailUpdateDto;
+
+    const existingUser = await this.usersService.findById({ id: userId });
+
+    if (!existingUser) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const existingUserWithSameEmail = await this.usersService.findByEmail({
+      email,
+    });
+
+    if (existingUserWithSameEmail) {
+      if (existingUserWithSameEmail.email === existingUser.email) {
+        // this is the same user
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "The email has not been changed",
+        });
+      }
+
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "This email is already taken",
+      });
+    }
+
+    const { message, verificationToken } = await this.createEmailVerification({
+      email,
+      type: "email update",
+    });
+
+    // send a notification email to the old email address
+    await this.emailVerificationService.sendEmail({
+      type: "notice email update",
+      email: existingUser.email,
+    });
+
+    return { message, verificationToken };
+  }
+
+  async updateEmail(updateEmailDto: UpdateEmailDtoType) {
+    const { code, token, userId } = updateEmailDto;
+
+    const existingUser = await this.usersService.findById({ id: userId });
+
+    if (!existingUser) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    const existingValidEmailVerification =
+      await this.emailVerificationService.findById({ id: token });
+
+    if (!existingValidEmailVerification) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message:
+          "You have no email verification in process. Please go back and try again",
+      });
+    }
+
+    const { message } = await this.verifyEmailVerificationCode({
+      code,
+      id: token,
+    });
+
+    const updatedUser = await this.usersService.update({
+      id: userId,
+      email: existingValidEmailVerification.email,
+    });
+
+    // delete the email verification associated
+    await this.emailVerificationService.delete({
+      id: token,
+    });
+
+    return {
+      message: `${message}. Your email has been updated to ${updatedUser.email}`,
+    };
   }
 
   async logOut(response: Response) {

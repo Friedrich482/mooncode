@@ -72,7 +72,8 @@ export class PasswordResetsService {
       .limit(1);
 
     if (existingValidPasswordReset) {
-      await this.emailService.sendResetPasswordCode({
+      await this.emailService.sendEmail({
+        type: "password reset",
         email: existingValidPasswordReset.email,
         code: existingValidPasswordReset.code,
       });
@@ -96,7 +97,8 @@ export class PasswordResetsService {
         id: passwordResets.id,
       });
 
-    await this.emailService.sendResetPasswordCode({
+    await this.emailService.sendEmail({
+      type: "password reset",
       email,
       code: generatedCode,
     });
