@@ -1,3 +1,4 @@
+import { AuthenticationMethods } from "@/features/profile/components/authentication-methods";
 import { AvatarSection } from "@/features/profile/components/avatar-section";
 import { CreateEmailUpdateForm } from "@/features/profile/components/create-email-update-form";
 import { UpdateUsernameForm } from "@/features/profile/components/update-username-form";
@@ -11,6 +12,7 @@ export const Profile = () => {
       <AvatarSection />
       <UpdateUsernameForm />
       <CreateEmailUpdateForm />
+      <AuthenticationMethods />
     </main>
   );
 };

@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate } from "react-router";
 import { toast } from "sonner";
@@ -37,6 +38,10 @@ export const UpdateEmailForm = () => {
       code: "",
     },
   });
+
+  useEffect(() => {
+    form.setFocus("code");
+  }, []);
 
   const navigate = useNavigate();
   const trpc = useTRPC();

@@ -21,7 +21,7 @@ export const users = pgTable("users", {
   googleEmail: text("google_email").unique(),
   authMethod: text("auth_method", {
     enum: authMethodEnum,
-  }).default("email"),
+  }).notNull(),
   emailVerifiedAt: timestamp("email_verified_at").default(sql`NULL`),
   ...timestamps,
 });

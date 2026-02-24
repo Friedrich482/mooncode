@@ -66,6 +66,7 @@ export class UsersService {
         email,
         hashedPassword,
         profilePicture: "picture",
+        authMethod: "email",
         emailVerifiedAt,
       })
       .returning({
@@ -126,6 +127,7 @@ export class UsersService {
         googleId: googleId,
         googleEmail,
         authMethod: "google",
+        emailVerifiedAt: new Date(),
       })
       .returning({
         id: users.id,
@@ -144,6 +146,7 @@ export class UsersService {
         email: users.email,
         username: users.username,
         id: users.id,
+        authMethod: users.authMethod,
       })
       .from(users)
       .where(eq(users.id, id))

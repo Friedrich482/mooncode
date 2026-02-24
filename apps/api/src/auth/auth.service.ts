@@ -322,6 +322,15 @@ export class AuthService {
       });
     }
 
+    // don't allow the users with google account to add another account
+    if (existingUser.authMethod === "google") {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message:
+          "You are not allowed to perform an email update since you are already connected with your google account",
+      });
+    }
+
     const { message, verificationToken } = await this.createEmailVerification({
       email,
       type: "email update",
