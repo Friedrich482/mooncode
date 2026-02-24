@@ -16,7 +16,7 @@ export const users = pgTable("users", {
   username: text("username").notNull().unique(),
   email: text("email").notNull().unique(),
   hashedPassword: text("hashed_password").notNull(),
-  profilePicture: text("profile_picture").notNull(),
+  profilePicture: text("profile_picture"),
   googleId: text("google_id").unique(),
   googleEmail: text("google_email").unique(),
   authMethod: text("auth_method", {

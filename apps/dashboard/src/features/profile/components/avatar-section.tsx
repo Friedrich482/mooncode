@@ -1,12 +1,10 @@
-import { GravatarAvatar } from "@/components/layout/header/gravatar-avatar";
+import { ProfilePicture } from "@/components/layout/header/profile-picture";
 import { useTRPC } from "@/utils/trpc";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const AvatarSection = () => {
   const trpc = useTRPC();
-  const {
-    data: { email },
-  } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
+  const { data: user } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
 
   return (
     <section className="flex w-full items-center justify-between rounded-md border p-4 max-[25rem]:flex-col">
@@ -15,8 +13,8 @@ export const AvatarSection = () => {
         <p>Here is your profile picture:</p>
       </div>
 
-      <GravatarAvatar
-        email={email}
+      <ProfilePicture
+        user={user}
         className="size-24 place-self-end hover:cursor-auto hover:bg-transparent [&_img]:size-22 [&_img]:cursor-auto [&_img]:hover:bg-none"
       />
     </section>

@@ -134,6 +134,13 @@
       "when": 1771802436168,
       "tag": "0018_bent_union_jack",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1771895616451,
+      "tag": "0019_outgoing_sister_grimm",
+      "breakpoints": true
     }
   ]
 }

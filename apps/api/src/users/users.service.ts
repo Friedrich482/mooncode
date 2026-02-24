@@ -65,7 +65,6 @@ export class UsersService {
         username,
         email,
         hashedPassword,
-        profilePicture: "picture",
         authMethod: "email",
         emailVerifiedAt,
       })
@@ -146,6 +145,7 @@ export class UsersService {
         email: users.email,
         username: users.username,
         id: users.id,
+        profilePicture: users.profilePicture,
         authMethod: users.authMethod,
       })
       .from(users)
