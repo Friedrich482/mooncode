@@ -16,6 +16,7 @@ import { Layout as AuthLayout } from "@/features/auth/components/layout";
 import {
   authRouteLoader,
   googleAuthLoader,
+  linkGoogleAccountLoader,
   protectedRouteLoader,
 } from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
@@ -114,6 +115,11 @@ const router = createBrowserRouter([
             path: "auth/google",
             element: null,
             loader: googleAuthLoader,
+          },
+          {
+            path: "auth/google/linking",
+            element: null,
+            loader: linkGoogleAccountLoader,
           },
         ],
       },

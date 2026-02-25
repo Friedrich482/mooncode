@@ -137,7 +137,24 @@ export class UsersService {
     return userCreated;
   }
 
-  async findById(findByIdDto: FindByIdDtoType) {
+  async findById(findByIdDto: FindByIdDtoType): Promise<
+    | {
+        email: string;
+        username: string;
+        id: string;
+        profilePicture: string;
+        authMethod: "both";
+        googleEmail: string;
+      }
+    | {
+        email: string;
+        username: string;
+        id: string;
+        profilePicture: string | null;
+        authMethod: "email" | "google";
+      }
+    | null
+  > {
     const { id } = findByIdDto;
 
     const [user] = await this.db
@@ -147,6 +164,7 @@ export class UsersService {
         id: users.id,
         profilePicture: users.profilePicture,
         authMethod: users.authMethod,
+        googleEmail: users.googleEmail,
       })
       .from(users)
       .where(eq(users.id, id))
@@ -156,7 +174,25 @@ export class UsersService {
       return null;
     }
 
-    return user;
+    if (user.authMethod === "both") {
+      return user as {
+        email: string;
+        username: string;
+        id: string;
+        profilePicture: string;
+        authMethod: "both";
+        googleEmail: string;
+      };
+    }
+
+    const { googleEmail, ...remaining } = user;
+    return remaining as {
+      email: string;
+      username: string;
+      id: string;
+      profilePicture: string | null;
+      authMethod: "email" | "google";
+    };
   }
 
   async findByEmail(findByEmailDto: FindByEmailDtoType) {

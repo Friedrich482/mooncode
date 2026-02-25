@@ -5,6 +5,7 @@ interface ImportMetaEnv {
   readonly VITE_API_URL: string;
   readonly VITE_LOGOUT_URL: string;
   readonly VITE_AUTH_GOOGLE_URL: string;
+  readonly VITE_LINKING_GOOGLE_ACCOUNT_URL: string;
 }
 
 interface ImportMeta {

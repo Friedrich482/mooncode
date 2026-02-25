@@ -118,6 +118,17 @@ export const googleAuthLoader = async () => {
   }
 };
 
+export const linkGoogleAccountLoader = async () => {
+  await protectedRouteLoader();
+
+  const LINKING_GOOGLE_ACCOUNT_URL = import.meta.env
+    .VITE_LINKING_GOOGLE_ACCOUNT_URL;
+
+  const origin = window.location.origin;
+  const linkingUrl = `${LINKING_GOOGLE_ACCOUNT_URL}?state=${encodeURIComponent(origin)}`;
+  window.location.href = linkingUrl;
+};
+
 export const redirectToVSCodeAfterGoogleAuthLoader = async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const tokenParam = decodeURIComponent(urlParams.get("token") ?? "");

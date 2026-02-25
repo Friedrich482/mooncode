@@ -1,36 +1,36 @@
+import { Link } from "react-router";
 import { Mail } from "lucide-react";
 
 import Google from "@/assets/google.svg?react";
 import { useTRPC } from "@/utils/trpc";
 import { Button } from "@repo/ui/components/ui/button";
+import { Separator } from "@repo/ui/components/ui/separator";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const EmailPasswordOption = ({ email }: { email: string }) => (
-  <>
+  <div className="flex w-full items-center justify-start gap-3">
     <Mail />
     <div>
-      <p className="font-bold">Email</p>
+      <p className="font-bold">Email + Password</p>
       <p className="text-sm font-extralight">{email}</p>
     </div>
-  </>
+  </div>
 );
 
 const GoogleOption = ({ email }: { email: string }) => (
-  <>
+  <div className="flex w-full items-center justify-start gap-3">
     <Google aria-hidden="true" className="size-6" />
 
     <div>
       <p className="font-bold">Google</p>
       <p className="text-sm font-extralight">{email}</p>
     </div>
-  </>
+  </div>
 );
 
 export const AuthenticationMethods = () => {
   const trpc = useTRPC();
-  const {
-    data: { email, authMethod },
-  } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
+  const { data } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
 
   return (
     <section className="rounded-md border">
@@ -40,26 +40,31 @@ export const AuthenticationMethods = () => {
           Link your account to third-party authentication providers
         </p>
 
-        <div className="flex w-full items-center justify-start gap-3">
-          {authMethod === "email" ? (
-            <EmailPasswordOption email={email} />
-          ) : authMethod === "google" ? (
-            <GoogleOption email={email} />
-          ) : (
-            <>
-              <EmailPasswordOption email={email} />
-              <GoogleOption email={email} />
-            </>
-          )}
-        </div>
+        {data.authMethod === "email" ? (
+          <EmailPasswordOption email={data.email} />
+        ) : data.authMethod === "google" ? (
+          <GoogleOption email={data.email} />
+        ) : data.authMethod === "both" ? (
+          <>
+            <EmailPasswordOption email={data.email} />
+            <Separator className="w-1/2! place-self-start" />
+            <GoogleOption email={data.googleEmail} />
+          </>
+        ) : null}
       </div>
 
       <div className="border-t p-4">
         <Button
           className="h-10 w-28 rounded-lg"
-          disabled={authMethod !== "email"}
+          disabled={data.authMethod !== "email"}
         >
-          Link Google
+          <Link
+            to="/auth/google/linking"
+            className="flex items-center gap-2"
+            aria-label="Link Google Account"
+          >
+            <span> Link Google</span>
+          </Link>
         </Button>
       </div>
     </section>

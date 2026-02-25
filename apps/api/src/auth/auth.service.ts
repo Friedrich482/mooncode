@@ -7,7 +7,12 @@ import { PasswordResetsService } from "src/password-resets/password-resets.servi
 import { TrpcContext } from "src/trpc/trpc.service";
 import { UsersService } from "src/users/users.service";
 
-import { Injectable } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
   INCORRECT_PASSWORD_MESSAGE,
@@ -31,7 +36,11 @@ import { TRPCError } from "@trpc/server";
 import {
   GoogleUserSchema,
   HandleGoogleCallBacKDtoType,
+  HandleGoogleLinkingCallBackDtoType,
+  RedirectToGoogleDto,
   RedirectToGoogleDtoType,
+  RedirectToGoogleForLinkingDto,
+  RedirectToGoogleForLinkingDtoType,
 } from "./auth.dto";
 import { handleErrorResponse } from "./utils/handle-error-response";
 import { validateExtensionCallbackUrl } from "./utils/validate-extension-callback-url";
@@ -418,6 +427,7 @@ export class AuthService {
     const returnUrl = validateStateQueryParam(
       request,
       this.envService.get("NODE_ENV"),
+      RedirectToGoogleDto,
     );
     const callbackUrl = validateExtensionCallbackUrl(request);
 
@@ -468,7 +478,9 @@ export class AuthService {
         },
       );
       if (!googleRes.ok) {
-        throw new Error("Failed to fetch Google user info");
+        throw new InternalServerErrorException(
+          "Failed to fetch Google user info",
+        );
       }
 
       const body = await googleRes.json();
@@ -485,7 +497,6 @@ export class AuthService {
           id: existingUser.id,
           googleId: googleUser.id,
           googleEmail: googleUser.email,
-          authMethod: "google",
         });
 
         user.userId = existingUser.id;
@@ -517,6 +528,158 @@ export class AuthService {
       response.redirect(
         `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString(),
       );
+    } catch (error) {
+      console.error("Google OAuth error:", error);
+      if (error instanceof TRPCError) {
+        handleErrorResponse({
+          url: errorUrl,
+          error: error.message,
+          errorDescription: error.cause?.message || "An error occurred",
+          response,
+        });
+      } else if (error instanceof Error) {
+        handleErrorResponse({
+          url: errorUrl,
+          error: error.name,
+          errorDescription: error.message,
+          response,
+        });
+      }
+      return;
+    }
+  }
+
+  async redirectToGoogleForLinking(
+    redirectToGoogleForLinkingDto: RedirectToGoogleForLinkingDtoType,
+  ) {
+    const { state, response } = redirectToGoogleForLinkingDto;
+
+    const googleUrl =
+      `https://accounts.google.com/o/oauth2/v2/auth?` +
+      `client_id=${this.envService.get("GOOGLE_CLIENT_ID")}&` +
+      `redirect_uri=${encodeURIComponent(this.envService.get("GOOGLE_LINKING_REDIRECT_URI"))}&` +
+      `response_type=code&` +
+      `scope=openid email profile&` +
+      `state=${encodeURIComponent(state)}`;
+
+    response.redirect(googleUrl);
+  }
+
+  async handleGoogleLinkingCallBack(
+    handleGoogleLinkingCallBackDto: HandleGoogleLinkingCallBackDtoType,
+  ) {
+    const { request, response, type } = handleGoogleLinkingCallBackDto;
+    const userId = request.user.sub;
+
+    const returnUrl = validateStateQueryParam(
+      request,
+      this.envService.get("NODE_ENV"),
+      RedirectToGoogleForLinkingDto,
+    );
+
+    const url = new URL(returnUrl);
+    const errorUrl = new URL(`${returnUrl}/profile`);
+
+    if (type === "error") {
+      handleErrorResponse({
+        url: errorUrl,
+        error: handleGoogleLinkingCallBackDto.error,
+        errorDescription:
+          "Something went wrong during the authentication process. Please try again",
+        response,
+      });
+
+      return;
+    }
+
+    const code = handleGoogleLinkingCallBackDto.code;
+
+    const client = new OAuth2Client({
+      clientId: this.envService.get("GOOGLE_CLIENT_ID"),
+      clientSecret: this.envService.get("GOOGLE_CLIENT_SECRET"),
+      redirectUri: this.envService.get("GOOGLE_LINKING_REDIRECT_URI"),
+    });
+
+    try {
+      const {
+        tokens: { access_token: accessToken },
+      } = await client.getToken(code);
+
+      if (!accessToken) {
+        handleErrorResponse({
+          url: errorUrl,
+          error: "No access token received from Google",
+          errorDescription:
+            "Something went wrong during the authentication process. Please try again",
+          response,
+        });
+
+        return;
+      }
+
+      const googleRes = await fetch(
+        "https://www.googleapis.com/oauth2/v2/userinfo",
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        },
+      );
+      if (!googleRes.ok) {
+        throw new InternalServerErrorException(
+          "Failed to fetch Google user info",
+        );
+      }
+
+      const body = await googleRes.json();
+
+      const googleUser = GoogleUserSchema.parse(body);
+      const existingGoogleUser = await this.usersService.findByGoogleEmail({
+        googleEmail: googleUser.email,
+      });
+
+      if (existingGoogleUser) {
+        throw new UnauthorizedException(
+          "You have already linked this Google account",
+        );
+      }
+
+      const existingEmailPlusPasswordUser = await this.usersService.findById({
+        id: userId,
+      });
+
+      if (!existingEmailPlusPasswordUser) {
+        throw new NotFoundException("User not found");
+      }
+
+      if (
+        existingEmailPlusPasswordUser.authMethod === "both" ||
+        existingEmailPlusPasswordUser.authMethod === "google"
+      ) {
+        throw new UnauthorizedException(
+          "You have already linked a Google account",
+        );
+      }
+
+      await this.usersService.update({
+        id: existingEmailPlusPasswordUser.id,
+        profilePicture: googleUser.picture,
+        googleId: googleUser.id,
+        googleEmail: googleUser.email,
+        authMethod: "both",
+      });
+
+      const payload: Pick<JwtPayloadDtoType, "sub"> = {
+        sub: existingEmailPlusPasswordUser.id,
+      };
+      const token = await this.jwtService.signAsync(payload);
+
+      response.cookie(this.AUTH_COOKIE_NAME, token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: this.COOKIE_MAX_AGE,
+      });
+
+      response.redirect(url.toString());
     } catch (error) {
       console.error("Google OAuth error:", error);
       if (error instanceof TRPCError) {

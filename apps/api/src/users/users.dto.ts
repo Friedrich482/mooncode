@@ -15,7 +15,7 @@ export const CreateGoogleUserDto = z.object({
   email: z.email(),
   googleEmail: z.email(),
   googleId: z.string().min(1),
-  profilePicture: z.string().min(1),
+  profilePicture: z.url(),
   authMethod: z.enum(authMethodEnum),
 });
 
@@ -46,6 +46,7 @@ export const UpdateUserDto = z.object({
   googleEmail: z.email().optional(),
   googleId: z.string().min(1).optional(),
   authMethod: z.enum(authMethodEnum).optional(),
+  profilePicture: z.url().optional(),
 });
 
 export const DeleteUserDto = z.object({
