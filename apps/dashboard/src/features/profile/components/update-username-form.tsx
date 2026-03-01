@@ -77,7 +77,9 @@ export const UpdateUsernameForm = () => {
             name="username"
             render={({ field }) => (
               <FormItem className="flex flex-col gap-4">
-                <FormLabel className="text-2xl">Your Username</FormLabel>
+                <FormLabel className="text-2xl max-[21rem]:text-xl">
+                  Your Username
+                </FormLabel>
                 <FormDescription>Username</FormDescription>
                 <FormControl>
                   <Input

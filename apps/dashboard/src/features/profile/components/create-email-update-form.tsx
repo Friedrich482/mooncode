@@ -86,7 +86,9 @@ export const CreateEmailUpdateForm = () => {
             name="email"
             render={({ field }) => (
               <FormItem className="flex flex-col gap-4">
-                <FormLabel className="text-2xl">Your Email</FormLabel>
+                <FormLabel className="text-2xl max-[21rem]:text-xl">
+                  Your Email
+                </FormLabel>
                 <FormDescription>Email</FormDescription>
                 <FormControl>
                   <Input

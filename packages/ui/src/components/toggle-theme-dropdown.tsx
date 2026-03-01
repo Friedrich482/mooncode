@@ -16,7 +16,10 @@ export const ToggleThemeDropDown = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Icon Icon={resolvedTheme === "dark" ? Moon : Sun} />
+        <Icon
+          Icon={resolvedTheme === "dark" ? Moon : Sun}
+          className="shrink-0"
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="flex w-32 flex-col gap-1 p-2" align="end">
         {THEME_DROPDOWN_ITEMS.map(({ Icon, text, theme }) => (

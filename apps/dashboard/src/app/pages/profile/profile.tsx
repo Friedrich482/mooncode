@@ -4,6 +4,7 @@ import { displayAuthErrorSonner } from "@/features/auth/utils/display-auth-error
 import { AuthenticationMethods } from "@/features/profile/components/authentication-methods";
 import { AvatarSection } from "@/features/profile/components/avatar-section";
 import { CreateEmailUpdateForm } from "@/features/profile/components/create-email-update-form";
+import { SomeStats } from "@/features/profile/components/some-stats";
 import { UpdateUsernameForm } from "@/features/profile/components/update-username-form";
 import { usePageTitle } from "@/hooks/use-page-title";
 
@@ -20,6 +21,7 @@ export const Profile = () => {
       <UpdateUsernameForm />
       <CreateEmailUpdateForm />
       <AuthenticationMethods />
+      <SomeStats />
     </main>
   );
 };

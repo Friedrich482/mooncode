@@ -12,7 +12,7 @@ const EmailPasswordOption = ({ email }: { email: string }) => (
     <Mail />
     <div>
       <p className="font-bold">Email + Password</p>
-      <p className="text-sm font-extralight">{email}</p>
+      <p className="text-sm font-extralight wrap-anywhere">{email}</p>
     </div>
   </div>
 );
@@ -23,7 +23,7 @@ const GoogleOption = ({ email }: { email: string }) => (
 
     <div>
       <p className="font-bold">Google</p>
-      <p className="text-sm font-extralight">{email}</p>
+      <p className="text-sm font-extralight wrap-anywhere">{email}</p>
     </div>
   </div>
 );
@@ -35,7 +35,9 @@ export const AuthenticationMethods = () => {
   return (
     <section className="rounded-md border">
       <div className="flex flex-col items-center justify-start gap-4 p-4">
-        <h2 className="w-full text-start text-2xl font-bold">Authentication</h2>
+        <h2 className="w-full text-start text-2xl font-bold wrap-anywhere max-[21rem]:text-xl">
+          Authentication
+        </h2>
         <p className="w-full text-start">
           Link your account to third-party authentication providers
         </p>
