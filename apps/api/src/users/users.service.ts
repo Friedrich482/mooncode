@@ -145,6 +145,7 @@ export class UsersService {
         profilePicture: string;
         authMethod: "both";
         googleEmail: string;
+        registrationDate: Date;
       }
     | {
         email: string;
@@ -152,6 +153,7 @@ export class UsersService {
         id: string;
         profilePicture: string | null;
         authMethod: "email" | "google";
+        registrationDate: Date;
       }
     | null
   > {
@@ -165,6 +167,7 @@ export class UsersService {
         profilePicture: users.profilePicture,
         authMethod: users.authMethod,
         googleEmail: users.googleEmail,
+        registrationDate: users.createdAt,
       })
       .from(users)
       .where(eq(users.id, id))
@@ -182,6 +185,7 @@ export class UsersService {
         profilePicture: string;
         authMethod: "both";
         googleEmail: string;
+        registrationDate: Date;
       };
     }
 
@@ -191,6 +195,7 @@ export class UsersService {
       username: string;
       id: string;
       profilePicture: string | null;
+      registrationDate: Date;
       authMethod: "email" | "google";
     };
   }

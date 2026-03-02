@@ -1,5 +1,6 @@
 import { CSSProperties, forwardRef, useMemo } from "react";
 import { subDays } from "date-fns";
+import { Check } from "lucide-react";
 
 import { RouterOutput, useTRPC } from "@/utils/trpc";
 import { DATE_LOCALE } from "@repo/common/constants";
@@ -140,9 +141,10 @@ export const ContributionsGraph = () => {
   );
 
   return (
-    <div className="flex flex-col justify-start gap-4 overflow-x-scroll border-t p-4">
+    <div className="flex w-[98%] flex-col justify-start gap-4 place-self-center overflow-x-scroll rounded-md border p-4">
       {/* title */}
-      <p className="text-xl">
+      <p className="space-x-4 text-xl">
+        <Check className="text-secondary-foreground/80 inline shrink-0" />
         <span className="text-primary">
           {formatDuration(totalTimeSpentCoding)}
         </span>{" "}

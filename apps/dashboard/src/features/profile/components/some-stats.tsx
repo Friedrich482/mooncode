@@ -1,3 +1,4 @@
+import { CodingTimeSinceRegistration } from "./coding-time-since-registration";
 import { ContributionsGraph } from "./contributions-graph";
 
 export const SomeStats = () => {
@@ -9,7 +10,10 @@ export const SomeStats = () => {
         </h2>
       </div>
 
-      <ContributionsGraph />
+      <div className="flex flex-col gap-4 border-t py-2">
+        <ContributionsGraph />
+        <CodingTimeSinceRegistration />
+      </div>
     </section>
   );
 };
