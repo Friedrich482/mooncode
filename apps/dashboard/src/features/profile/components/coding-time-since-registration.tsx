@@ -33,7 +33,7 @@ export const CodingTimeSinceRegistration = () => {
         <span className="text-primary font-bold">
           {user.registrationDate.toDateString()}
         </span>{" "}
-        (your registration date) :{" "}
+        (your registration date):{" "}
         <span className="text-primary">
           {formatDuration(codingTimeSinceRegistration)}
         </span>

@@ -1,5 +1,6 @@
 import { CodingTimeSinceRegistration } from "./coding-time-since-registration";
 import { ContributionsGraph } from "./contributions-graph";
+import { LanguagesUsedSinceRegistration } from "./languages-used-since-registration";
 
 export const SomeStats = () => {
   return (
@@ -13,6 +14,7 @@ export const SomeStats = () => {
       <div className="flex flex-col gap-4 border-t py-2">
         <ContributionsGraph />
         <CodingTimeSinceRegistration />
+        <LanguagesUsedSinceRegistration />
       </div>
     </section>
   );
