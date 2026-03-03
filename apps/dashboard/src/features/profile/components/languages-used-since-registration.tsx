@@ -41,7 +41,13 @@ export const LanguagesUsedSinceRegistration = () => {
     <div className="flex w-[98%] flex-col gap-4 place-self-center rounded-md border p-4">
       <p className="space-x-4 text-xl">
         <Check className="text-secondary-foreground/80 inline shrink-0" />
-        <span>Languages</span>
+        <span>
+          Languages used since the{" "}
+          <span className="text-primary font-bold">
+            {user.registrationDate.toDateString()}
+          </span>{" "}
+          (your registration date)
+        </span>
       </p>
 
       <ChartContainer
@@ -66,6 +72,15 @@ export const LanguagesUsedSinceRegistration = () => {
           <ChartTooltip
             cursor={false}
             content={<ChartTooltipContent labelClassName="font-semibold" />}
+            labelFormatter={() => (
+              <div className="font-semibold">
+                <span className="text-primary/85">
+                  {user.registrationDate.toLocaleDateString(DATE_LOCALE)}
+                </span>{" "}
+                -{" "}
+                <span className="text-primary/85">{getTodaysLocaleDate()}</span>
+              </div>
+            )}
             formatter={(
               value: number,
               _,
