@@ -1,19 +1,23 @@
 import { z } from "zod";
 import { authMethodEnum } from "src/drizzle/schema/users";
 
-import { PasswordSchema } from "@repo/common/types-schemas";
+import {
+  EmailSchema as EmailDto,
+  PasswordSchema as PasswordDto,
+  UsernameSchema as UsernameDto,
+} from "@repo/common/types-schemas";
 
 export const CreateUserDto = z.object({
-  email: z.email(),
-  password: PasswordSchema,
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  email: EmailDto,
+  password: PasswordDto,
+  username: UsernameDto,
   emailVerifiedAt: z.date(),
 });
 
 export const CreateGoogleUserDto = z.object({
   username: z.string().min(1),
-  email: z.email(),
-  googleEmail: z.email(),
+  email: EmailDto,
+  googleEmail: EmailDto,
   googleId: z.string().min(1),
   profilePicture: z.url(),
   authMethod: z.enum(authMethodEnum),
@@ -24,26 +28,23 @@ export const FindByIdDto = z.object({
 });
 
 export const FindByEmailDto = z.object({
-  email: z.email(),
+  email: EmailDto,
 });
 
 export const FindByUsernameDto = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  username: UsernameDto,
 });
 
 export const FindByGoogleEmailDto = z.object({
-  googleEmail: z.email(),
+  googleEmail: EmailDto,
 });
 
 export const UpdateUserDto = z.object({
   id: z.ulid(),
-  email: z.email({ message: "Invalid email format" }).optional(),
-  password: PasswordSchema.optional(),
-  username: z
-    .string()
-    .min(3, "Username must be at least 3 characters")
-    .optional(),
-  googleEmail: z.email().optional(),
+  email: EmailDto.optional(),
+  password: PasswordDto.optional(),
+  username: UsernameDto.optional(),
+  googleEmail: EmailDto.optional(),
   googleId: z.string().min(1).optional(),
   authMethod: z.enum(authMethodEnum).optional(),
   profilePicture: z.url().optional(),

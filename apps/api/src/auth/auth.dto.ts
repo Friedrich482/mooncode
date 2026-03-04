@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { z } from "zod";
 import { environmentEnum } from "src/common/dto";
 
+import { EmailSchema } from "@repo/common/types-schemas";
+
 export const HandleGoogleQueryDto = z.union([
   z.object({ code: z.string().min(1) }),
   z.object({ error: z.string().min(1) }),
@@ -32,7 +34,7 @@ export const RedirectToGoogleForLinkingDto = StateQueryParamSchema;
 
 export const GoogleUserSchema = z.object({
   id: z.string().min(1),
-  email: z.email(),
+  email: EmailSchema,
   verified_email: z.boolean(),
   name: z.string().min(1),
   given_name: z.string().min(1),

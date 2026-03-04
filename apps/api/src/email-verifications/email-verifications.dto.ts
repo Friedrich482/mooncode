@@ -1,20 +1,21 @@
 import { z } from "zod";
 
 import { EMAIL_VERIFICATION_CODE_LENGTH } from "@repo/common/constants";
+import { EmailSchema as EmailDto } from "@repo/common/types-schemas";
 
 export const SendEmailDto = z.discriminatedUnion("type", [
   z.object({
-    email: z.email(),
+    email: EmailDto,
     type: z.literal("onboarding"),
     code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
   }),
   z.object({
-    email: z.email(),
+    email: EmailDto,
     type: z.literal("email update"),
     code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
   }),
   z.object({
-    email: z.email(),
+    email: EmailDto,
     type: z.literal("notice email update"),
   }),
 ]);

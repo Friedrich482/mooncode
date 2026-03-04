@@ -9,7 +9,17 @@ import {
 
 export const PasswordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters");
+  .min(8, "Password must be at least 8 characters")
+  .max(64, "Password must be at most 20 characters");
+
+export const UsernameSchema = z
+  .string()
+  .min(3, "Username must be at least 3 characters")
+  .max(25, "Username must be at most 25 characters");
+
+export const EmailSchema = z
+  .email()
+  .max(320, "Email must be at most 320 characters");
 
 export const VSCodeCallbackUrlSchema = z
   .url()
@@ -47,13 +57,13 @@ export const JwtPayloadSchema = z.object({
 });
 
 export const SignInUserSchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
   password: z.string().min(1, "Password is required"),
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
 export const CreateEmailVerificationSchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
   type: z.enum(["onboarding", "email update"]),
 });
 
@@ -64,12 +74,12 @@ export const VerifyEmailVerificationCodeSchema = z.object({
 
 export const RegisterUserSchema = z.object({
   token: z.ulid(),
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  username: UsernameSchema,
   password: PasswordSchema,
 });
 
 export const CreatePasswordResetSchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
 });
 
 export const VerifyPasswordResetCodeSchema = z.object({
@@ -83,11 +93,11 @@ export const ResetPasswordSchema = z.object({
 });
 
 export const UpdateUsernameSchema = z.object({
-  username: z.string().min(3, "Username must be at least 3 characters"),
+  username: UsernameSchema,
 });
 
 export const CreateEmailUpdateSchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
 });
 
 export const UpdateEmailSchema = z.object({
