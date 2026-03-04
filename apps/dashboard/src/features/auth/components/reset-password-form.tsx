@@ -62,7 +62,7 @@ export const ResetPasswordForm = () => {
     trpc.auth.resetPassword.mutationOptions(),
   );
 
-  const onSubmit = async (values: ResetPassword) => {
+  const onSubmit = (values: ResetPassword) => {
     resetPasswordMutation.mutate(
       {
         token: passwordResetToken,

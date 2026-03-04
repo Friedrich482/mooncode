@@ -45,7 +45,7 @@ export const CreateEmailUpdateForm = () => {
     trpc.auth.createEmailUpdate.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreateEmailUpdateFormSchemaType) => {
+  const onSubmit = (values: CreateEmailUpdateFormSchemaType) => {
     createEmailUpdateMutation.mutate(
       {
         email: values.email,
@@ -61,7 +61,7 @@ export const CreateEmailUpdateForm = () => {
           }
         },
 
-        onSuccess: async ({ message, verificationToken }) => {
+        onSuccess: ({ message, verificationToken }) => {
           toast.success(message);
 
           const params = new URLSearchParams();

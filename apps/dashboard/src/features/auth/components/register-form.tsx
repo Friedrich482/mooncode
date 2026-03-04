@@ -39,7 +39,7 @@ export const RegisterForm = () => {
     trpc.auth.createEmailVerification.mutationOptions(),
   );
 
-  const onSubmit = async (values: RegisterFormSchemaType) => {
+  const onSubmit = (values: RegisterFormSchemaType) => {
     createEmailVerificationMutation.mutate(
       {
         email: values.email,
@@ -56,7 +56,7 @@ export const RegisterForm = () => {
           }
         },
 
-        onSuccess: async ({ verificationToken, message }) => {
+        onSuccess: ({ verificationToken, message }) => {
           toast.success(message);
 
           const params = new URLSearchParams();

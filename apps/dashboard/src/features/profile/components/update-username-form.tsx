@@ -35,7 +35,7 @@ export const UpdateUsernameForm = () => {
     },
   });
 
-  const onSubmit = async (values: UpdateUsernameFormSchemaType) => {
+  const onSubmit = (values: UpdateUsernameFormSchemaType) => {
     updateUsernameMutation.mutate(
       {
         username: values.username,

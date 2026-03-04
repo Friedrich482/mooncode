@@ -40,7 +40,7 @@ export const ForgotPasswordForm = () => {
     trpc.auth.createPasswordReset.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreatePasswordReset) => {
+  const onSubmit = (values: CreatePasswordReset) => {
     createPasswordResetMutation.mutate(
       {
         email: values.email,
@@ -56,7 +56,7 @@ export const ForgotPasswordForm = () => {
           }
         },
 
-        onSuccess: async ({ passwordResetToken, message }) => {
+        onSuccess: ({ passwordResetToken, message }) => {
           toast.success(message);
 
           const params = new URLSearchParams();

@@ -52,9 +52,7 @@ export const CodeVerificationForm = () => {
     trpc.auth.verifyEmailVerificationCode.mutationOptions(),
   );
 
-  const onSubmit = async (
-    values: VerifyEmailVerificationCodeFormSchemaType,
-  ) => {
+  const onSubmit = (values: VerifyEmailVerificationCodeFormSchemaType) => {
     verifyEmailVerificationCodeMutation.mutate(
       {
         code: values.code,
@@ -71,7 +69,7 @@ export const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ message }) => {
+        onSuccess: ({ message }) => {
           toast.success(message);
 
           const params = new URLSearchParams();

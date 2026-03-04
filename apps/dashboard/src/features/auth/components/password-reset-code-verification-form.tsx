@@ -52,7 +52,7 @@ export const CodeVerificationForm = () => {
     trpc.auth.verifyPasswordResetCode.mutationOptions(),
   );
 
-  const onSubmit = async (values: VerifyPasswordResetCodeFormSchemaType) => {
+  const onSubmit = (values: VerifyPasswordResetCodeFormSchemaType) => {
     verifyPasswordResetCodeMutation.mutate(
       {
         code: values.code,
@@ -69,7 +69,7 @@ export const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ message }) => {
+        onSuccess: ({ message }) => {
           toast.success(message);
 
           const params = new URLSearchParams();
