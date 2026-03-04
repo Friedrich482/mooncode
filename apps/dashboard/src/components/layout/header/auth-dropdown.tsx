@@ -46,7 +46,7 @@ export const AuthDropDown = () => {
       <DropdownMenuContent className="flex w-48 -translate-x-2 flex-col gap-1 p-2">
         <div className="flex flex-col px-2 py-1">
           <p>{user.username}</p>
-          <p className="text-sm opacity-50">{user.email}</p>
+          <p className="truncate text-sm opacity-50">{user.email}</p>
         </div>
         <DropdownMenuSeparator className="w-full" />
 

@@ -49,66 +49,71 @@ export const LanguagesUsedSinceRegistration = () => {
           (your registration date)
         </span>
       </p>
-
-      <ChartContainer
-        config={chartConfig}
-        className="min-h-600 w-full max-w-110 overflow-x-hidden border-none max-[48rem]:max-w-120 max-sm:max-w-75 max-[28rem]:max-w-50 max-[24rem]:max-w-35"
-      >
-        <BarChart
-          layout="vertical"
-          data={chartData}
-          margin={{ left: 30 }}
-          accessibilityLayer
+      {chartData.length === 0 ? (
+        <p className="pt-5 text-center text-lg">No programming languages yet</p>
+      ) : (
+        <ChartContainer
+          config={chartConfig}
+          className="min-h-600 w-full max-w-110 overflow-x-hidden border-none max-[48rem]:max-w-120 max-sm:max-w-75 max-[28rem]:max-w-50 max-[24rem]:max-w-35"
         >
-          <CartesianGrid horizontal={false} />
-          <YAxis
-            dataKey="languageName"
-            type="category"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-          />
-          <XAxis dataKey="time" type="number" hide />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent labelClassName="font-semibold" />}
-            labelFormatter={() => (
-              <div className="font-semibold">
-                <span className="text-primary/85">
-                  {user.registrationDate.toLocaleDateString(DATE_LOCALE)}
-                </span>{" "}
-                -{" "}
-                <span className="text-primary/85">{getTodaysLocaleDate()}</span>
-              </div>
-            )}
-            formatter={(
-              value: number,
-              _,
-              { payload }: { payload?: (typeof chartData)[number] },
-            ) => {
-              if (!payload) return null;
+          <BarChart
+            layout="vertical"
+            data={chartData}
+            margin={{ left: 30 }}
+            accessibilityLayer
+          >
+            <CartesianGrid horizontal={false} />
+            <YAxis
+              dataKey="languageName"
+              type="category"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+            />
+            <XAxis dataKey="time" type="number" hide />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent labelClassName="font-semibold" />}
+              labelFormatter={() => (
+                <div className="font-semibold">
+                  <span className="text-primary/85">
+                    {user.registrationDate.toLocaleDateString(DATE_LOCALE)}
+                  </span>{" "}
+                  -{" "}
+                  <span className="text-primary/85">
+                    {getTodaysLocaleDate()}
+                  </span>
+                </div>
+              )}
+              formatter={(
+                value: number,
+                _,
+                { payload }: { payload?: (typeof chartData)[number] },
+              ) => {
+                if (!payload) return null;
 
-              return CustomChartToolTip(
-                value,
-                payload.color,
-                payload.languageSlug,
-                payload.percentage,
-              );
-            }}
-          />
+                return CustomChartToolTip(
+                  value,
+                  payload.color,
+                  payload.languageSlug,
+                  payload.percentage,
+                );
+              }}
+            />
 
-          <Bar dataKey="time" layout="vertical" radius={5}>
-            {chartData.map((entry) => (
-              <Cell
-                fill={entry.color}
-                min={0}
-                key={entry.languageSlug}
-                className="cursor-pointer"
-              />
-            ))}
-          </Bar>
-        </BarChart>
-      </ChartContainer>
+            <Bar dataKey="time" layout="vertical" radius={5}>
+              {chartData.map((entry) => (
+                <Cell
+                  fill={entry.color}
+                  min={0}
+                  key={entry.languageSlug}
+                  className="cursor-pointer"
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ChartContainer>
+      )}
     </div>
   );
 };
