@@ -6,7 +6,7 @@ import { displayAuthErrorSonner } from "@/features/auth/utils/display-auth-error
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const Login = () => {
-  usePageTitle("Login | Mooncode");
+  usePageTitle("Login | MoonCode");
 
   useEffect(() => {
     displayAuthErrorSonner();

@@ -3,7 +3,7 @@ import { CodeVerificationForm } from "@/features/auth/components/registration-co
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const CodeVerification = () => {
-  usePageTitle("Register | Mooncode");
+  usePageTitle("Register | MoonCode");
 
   return (
     <main className="flex items-center gap-2">

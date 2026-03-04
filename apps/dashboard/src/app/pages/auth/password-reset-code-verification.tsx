@@ -3,7 +3,7 @@ import { CodeVerificationForm } from "@/features/auth/components/password-reset-
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const CodeVerification = () => {
-  usePageTitle("Verify Reset Code | Mooncode");
+  usePageTitle("Verify Reset Code | MoonCode");
 
   return (
     <main className="flex items-center gap-2">

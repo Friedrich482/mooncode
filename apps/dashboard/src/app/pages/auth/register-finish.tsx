@@ -3,7 +3,7 @@ import { RegisterFinishForm } from "@/features/auth/components/register-finish-f
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const RegisterFinish = () => {
-  usePageTitle("Register | Mooncode");
+  usePageTitle("Register | MoonCode");
 
   return (
     <main className="flex items-center gap-2">

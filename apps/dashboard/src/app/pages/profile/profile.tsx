@@ -12,7 +12,7 @@ import { UpdateUsernameForm } from "@/features/profile/components/update-usernam
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const Profile = () => {
-  usePageTitle("Profile | Mooncode");
+  usePageTitle("Profile | MoonCode");
 
   useEffect(() => {
     displayAuthErrorSonner();

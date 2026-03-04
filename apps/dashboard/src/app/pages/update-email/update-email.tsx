@@ -3,7 +3,7 @@ import { UpdateEmailForm } from "@/features/profile/components/update-email-form
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const UpdateEmail = () => {
-  usePageTitle("Update email | Mooncode");
+  usePageTitle("Update email | MoonCode");
 
   return (
     <main className="flex items-center gap-2">
