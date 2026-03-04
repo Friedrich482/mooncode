@@ -5,6 +5,7 @@ import Google from "@/assets/google.svg?react";
 import { useTRPC } from "@/utils/trpc";
 import { Button } from "@repo/ui/components/ui/button";
 import { Separator } from "@repo/ui/components/ui/separator";
+import { cn } from "@repo/ui/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 const EmailPasswordOption = ({ email }: { email: string }) => (
@@ -56,16 +57,20 @@ export const AuthenticationMethods = () => {
       </div>
 
       <div className="border-t p-4">
-        <Button
-          className="h-10 w-28 rounded-lg"
-          disabled={data.authMethod !== "email"}
-        >
+        <Button asChild>
           <Link
             to="/auth/google/linking"
-            className="flex items-center gap-2"
+            className={cn(
+              "flex h-10 w-28 items-center gap-2 rounded-lg",
+              data.authMethod !== "email" && "pointer-events-none opacity-50",
+            )}
             aria-label="Link Google Account"
+            aria-disabled={data.authMethod !== "email"}
+            // the link should not be tabbable when the user is already a google user
+            // or if he has already linked a google account
+            tabIndex={data.authMethod !== "email" ? -1 : 0}
           >
-            <span> Link Google</span>
+            <span>Link Google</span>
           </Link>
         </Button>
       </div>

@@ -2,8 +2,9 @@ import { toast } from "sonner";
 
 export const displayAuthErrorSonner = () => {
   const urlParams = new URLSearchParams(window.location.search);
+
   const errorParam = urlParams.get("error");
-  const errorDescriptionParam = urlParams.get("error_description");
+  const errorDescriptionParam = urlParams.get("error-description");
 
   if (errorParam && errorDescriptionParam) {
     setTimeout(() => {
@@ -12,5 +13,7 @@ export const displayAuthErrorSonner = () => {
         position: "top-center",
       });
     });
+
+    window.history.pushState(null, "", window.location.pathname);
   }
 };

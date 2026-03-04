@@ -12,6 +12,6 @@ export const handleErrorResponse = ({
   response: Response;
 }) => {
   url.searchParams.set("error", error);
-  url.searchParams.set("error_description", errorDescription);
+  url.searchParams.set("error-description", errorDescription);
   response.redirect(url.toString());
 };
