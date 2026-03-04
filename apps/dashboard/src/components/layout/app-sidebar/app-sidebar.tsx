@@ -7,6 +7,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
+import { LinkWithQuery } from "@/components/common/link-with-query";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
@@ -24,9 +25,8 @@ import {
 } from "@repo/ui/components/ui/sidebar";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { LinkWithQuery } from "../common/link-with-query";
-import { Logo } from "./header/logo";
-import { ProfilePicture } from "./header/profile-picture";
+import { Logo } from "../header/logo";
+import { ProfilePicture } from "../header/profile-picture";
 
 export const AppSidebar = () => {
   const period = usePeriodStore((state) => state.period);

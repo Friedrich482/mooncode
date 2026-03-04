@@ -53,12 +53,12 @@ export const FilesList = () => {
               error={error}
               resetErrorBoundary={resetErrorBoundary}
               hasCustomChildren={true}
-              customChildren={
+              customChildren={(errorMessage) => (
                 <h3 className="text-destructive flex h-9 items-center justify-center gap-2 p-1">
                   <TriangleAlert className="size-8 shrink-0 max-xl:size-6" />
-                  <span>Error</span>
+                  <span>{errorMessage}</span>
                 </h3>
-              }
+              )}
             />
           )}
         >

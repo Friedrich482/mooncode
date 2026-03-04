@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router";
 import superjson from "superjson";
 
@@ -14,6 +15,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
+import { FallBackRender } from "./components/errors/error-boundary";
 import { Wrapper } from "./components/layout/navigation-reset-wrapper";
 import { useExtensionWebsocket } from "./hooks/use-extension-websocket";
 import { TRPCProvider } from "./utils/trpc";
@@ -99,10 +101,20 @@ export const App = () => {
         <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
           <SidebarProvider>
             <TooltipProvider>
-              <Wrapper>
-                <Outlet />
-                <ScrollToTopButton />
-              </Wrapper>
+              <ErrorBoundary
+                FallbackComponent={({ error, resetErrorBoundary }) => (
+                  <FallBackRender
+                    error={error}
+                    resetErrorBoundary={resetErrorBoundary}
+                    hasCustomChildren={false}
+                  />
+                )}
+              >
+                <Wrapper>
+                  <Outlet />
+                  <ScrollToTopButton />
+                </Wrapper>
+              </ErrorBoundary>
             </TooltipProvider>
           </SidebarProvider>
         </TRPCProvider>

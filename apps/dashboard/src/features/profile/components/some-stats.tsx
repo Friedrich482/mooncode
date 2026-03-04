@@ -1,6 +1,12 @@
+import { lazy } from "react";
+
 import { CodingTimeSinceRegistration } from "./coding-time-since-registration";
 import { ContributionsGraph } from "./contributions-graph";
-import { LanguagesUsedSinceRegistration } from "./languages-used-since-registration";
+
+const LanguagesUsedSinceRegistration = lazy(async () => ({
+  default: (await import("./languages-used-since-registration"))
+    .LanguagesUsedSinceRegistration,
+}));
 
 export const SomeStats = () => {
   return (

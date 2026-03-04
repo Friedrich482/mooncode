@@ -13,7 +13,7 @@ type BaseErrorProps = {
 
 type WithChildrenProps = BaseErrorProps & {
   hasCustomChildren: true;
-  customChildren: React.ReactNode;
+  customChildren: (errorMessage: string) => React.ReactNode;
 };
 
 type WithoutChildrenProps = BaseErrorProps & {
@@ -63,7 +63,7 @@ export const FallBackRender = ({
     if (Array.isArray(parsedErrors)) {
       const errorMessages = parsedErrors.map((err) => err.message);
       return rest.hasCustomChildren ? (
-        rest.customChildren
+        rest.customChildren(error.message)
       ) : (
         <BaseErrorComponent
           className={rest.className}
@@ -73,7 +73,7 @@ export const FallBackRender = ({
     }
 
     return rest.hasCustomChildren ? (
-      rest.customChildren
+      rest.customChildren(error.message)
     ) : (
       <BaseErrorComponent
         className={rest.className}
@@ -82,7 +82,7 @@ export const FallBackRender = ({
     );
   } catch {
     return rest.hasCustomChildren ? (
-      rest.customChildren
+      rest.customChildren(error.message)
     ) : (
       <BaseErrorComponent
         className={rest.className}
