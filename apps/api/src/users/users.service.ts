@@ -14,6 +14,7 @@ import {
   FindByEmailDtoType,
   FindByGoogleEmailDtoType,
   FindByIdDtoType,
+  FindByUsernameDtoType,
   UpdateUserDtoType,
 } from "./users.dto";
 
@@ -23,10 +24,10 @@ export class UsersService {
 
   constructor(
     @Inject(DrizzleAsyncProvider)
-    private readonly db: NodePgDatabase
+    private readonly db: NodePgDatabase,
   ) {}
   async create(createUserDto: CreateUserDtoType) {
-    const { email, hashedPassword, username } = createUserDto;
+    const { email, password, username, emailVerifiedAt } = createUserDto;
 
     // check if a user with the email already exists
     const [existingUserWithSameEmail] = await this.db
@@ -42,6 +43,7 @@ export class UsersService {
       });
     }
 
+    // check if a user with the username already exists
     const [existingUserWithSameUsername] = await this.db
       .select()
       .from(users)
@@ -55,14 +57,16 @@ export class UsersService {
       });
     }
 
+    const hashedPassword = await bcrypt.hash(password, this.saltRounds);
+
     const [userCreated] = await this.db
       .insert(users)
       .values({
         username,
         email,
         hashedPassword,
-        profilePicture: "picture",
-        emailVerifiedAt: new Date(),
+        authMethod: "email",
+        emailVerifiedAt,
       })
       .returning({
         id: users.id,
@@ -84,8 +88,8 @@ export class UsersService {
       .where(
         and(
           or(eq(users.googleEmail, googleEmail), eq(users.email, email)),
-          eq(users.googleId, googleId)
-        )
+          eq(users.googleId, googleId),
+        ),
       )
       .limit(1);
 
@@ -133,7 +137,26 @@ export class UsersService {
     return userCreated;
   }
 
-  async findById(findByIdDto: FindByIdDtoType) {
+  async findById(findByIdDto: FindByIdDtoType): Promise<
+    | {
+        email: string;
+        username: string;
+        id: string;
+        profilePicture: string;
+        authMethod: "both";
+        googleEmail: string;
+        registrationDate: Date;
+      }
+    | {
+        email: string;
+        username: string;
+        id: string;
+        profilePicture: string | null;
+        authMethod: "email" | "google";
+        registrationDate: Date;
+      }
+    | null
+  > {
     const { id } = findByIdDto;
 
     const [user] = await this.db
@@ -141,6 +164,10 @@ export class UsersService {
         email: users.email,
         username: users.username,
         id: users.id,
+        profilePicture: users.profilePicture,
+        authMethod: users.authMethod,
+        googleEmail: users.googleEmail,
+        registrationDate: users.createdAt,
       })
       .from(users)
       .where(eq(users.id, id))
@@ -150,7 +177,27 @@ export class UsersService {
       return null;
     }
 
-    return user;
+    if (user.authMethod === "both") {
+      return user as {
+        email: string;
+        username: string;
+        id: string;
+        profilePicture: string;
+        authMethod: "both";
+        googleEmail: string;
+        registrationDate: Date;
+      };
+    }
+
+    const { googleEmail, ...remaining } = user;
+    return remaining as {
+      email: string;
+      username: string;
+      id: string;
+      profilePicture: string | null;
+      registrationDate: Date;
+      authMethod: "email" | "google";
+    };
   }
 
   async findByEmail(findByEmailDto: FindByEmailDtoType) {
@@ -166,6 +213,26 @@ export class UsersService {
       })
       .from(users)
       .where(eq(users.email, email))
+      .limit(1);
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  }
+
+  async findByUsername(findByUsernameDto: FindByUsernameDtoType) {
+    const { username } = findByUsernameDto;
+
+    const [user] = await this.db
+      .select({
+        email: users.email,
+        username: users.username,
+        id: users.id,
+      })
+      .from(users)
+      .where(eq(users.username, username))
       .limit(1);
 
     if (!user) {
@@ -200,8 +267,8 @@ export class UsersService {
 
     const setFields = Object.fromEntries(
       Object.entries(maybeUpdatedFields).filter(
-        ([, value]) => value !== undefined
-      )
+        ([, value]) => value !== undefined,
+      ),
     );
 
     if (Object.keys(setFields).length === 0) {

@@ -12,13 +12,13 @@ import { AuthModule } from "./auth/auth.module";
 import { DailyDataModule } from "./daily-data/daily-data.module";
 import { DrizzleModule } from "./drizzle/drizzle.module";
 import { EmailModule } from "./email/email.module";
+import { EmailVerificationModule } from "./email-verifications/email-verifications.module";
 import { EnvModule } from "./env/env.module";
 import { EnvService } from "./env/env.service";
 import { ExtensionModule } from "./extension/extension.module";
 import { FilesModule } from "./files/files.module";
 import { LanguagesModule } from "./languages/languages.module";
 import { PasswordResetsModule } from "./password-resets/password-resets.module";
-import { PendingRegistrationsModule } from "./pending-registrations/pending-registrations.module";
 import { ProjectsModule } from "./projects/projects.module";
 import { TrpcModule } from "./trpc/trpc.module";
 import { UsersModule } from "./users/users.module";
@@ -47,7 +47,7 @@ import { UsersModule } from "./users/users.module";
     EnvModule,
     FilesModule,
     ProjectsModule,
-    PendingRegistrationsModule,
+    EmailVerificationModule,
     EmailModule,
     PasswordResetsModule,
     AnalyticsModule,

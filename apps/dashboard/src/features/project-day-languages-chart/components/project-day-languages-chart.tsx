@@ -9,8 +9,7 @@ import { projectLoader } from "@/loaders/project-loader";
 import { getNextDayDate } from "@/utils/get-next-day-date";
 import { getPrevDayDate } from "@/utils/get-previous-day-date";
 import { useTRPC } from "@/utils/trpc";
-import { DATE_LOCALE } from "@repo/common/constants";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import {
   ChartContainer,
   ChartTooltip,
@@ -24,10 +23,7 @@ export const ProjectDayLanguagesChart = () => {
   const { projectName } = useLoaderData<typeof projectLoader>();
 
   const [date, setDate] = useState(new Date());
-  const dateString = useMemo(
-    () => date.toLocaleDateString(DATE_LOCALE),
-    [date],
-  );
+  const dateString = useMemo(() => getLocaleDate(date), [date]);
 
   const handleChevronLeftClick = () => setDate((prev) => getPrevDayDate(prev));
   const handleChevronRightClick = () => setDate((prev) => getNextDayDate(prev));
@@ -42,15 +38,17 @@ export const ProjectDayLanguagesChart = () => {
   );
 
   const displayDate =
-    dateString === getTodaysLocaleDate()
+    dateString === getLocaleDate(new Date())
       ? "Today"
       : // yesterday's date
         dateString ===
-          new Date(
-            new Date().getFullYear(),
-            new Date().getMonth(),
-            new Date().getDate() - 1,
-          ).toLocaleDateString(DATE_LOCALE)
+          getLocaleDate(
+            new Date(
+              new Date().getFullYear(),
+              new Date().getMonth(),
+              new Date().getDate() - 1,
+            ),
+          )
         ? "Yesterday"
         : new Date(dateString).toDateString();
 

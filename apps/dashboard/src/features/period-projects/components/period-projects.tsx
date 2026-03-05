@@ -105,7 +105,7 @@ export const PeriodProjects = () => {
                 />
                 <Icon
                   Icon={FolderOpen}
-                  className="group-hover:text-primary/85 absolute -top-8 left-0 hidden group-hover:block hover:bg-transparent hover:bg-none"
+                  className="group-hover:text-primary/85 absolute -top-8 left-0 hidden group-hover:block hover:bg-transparent!"
                 />
                 <h3 className="font-bold wrap-anywhere group-hover:underline max-[42rem]:text-xl">
                   {entry.name}

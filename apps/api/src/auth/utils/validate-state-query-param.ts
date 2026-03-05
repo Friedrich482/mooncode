@@ -1,17 +1,20 @@
 import { Request } from "express";
+import z from "zod";
 import { ALLOWED_CLIENTS } from "src/common/constants";
-import { type Environment } from "src/common/dto";
 
 import {
   DASHBOARD_DEVELOPMENT_URL,
   DASHBOARD_PRODUCTION_URL,
 } from "@repo/common/constants";
 
-import { RedirectToGoogleDto } from "../auth.dto";
+import { type Environment, StateQueryParamSchema } from "../auth.dto";
 
-export const validateStateQueryParam = (
+export const validateStateQueryParam = <
+  T extends z.ZodType<z.infer<typeof StateQueryParamSchema>>,
+>(
   request: Request,
   environment: Environment,
+  schema: T,
 ) => {
   let returnUrl =
     environment === "development"
@@ -25,9 +28,7 @@ export const validateStateQueryParam = (
       return returnUrl;
     }
 
-    const parsed = RedirectToGoogleDto.safeParse(
-      JSON.parse(decodeURIComponent(rawState)),
-    );
+    const parsed = schema.safeParse(JSON.parse(decodeURIComponent(rawState)));
 
     if (!parsed.success) {
       return returnUrl;

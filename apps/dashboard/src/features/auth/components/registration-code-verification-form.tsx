@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLoaderData, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Logo } from "@/components/layout/header/logo";
-import { pendingRegistrationLoader } from "@/loaders/pending-registration-loader";
+import { emailVerificationLoader } from "@/loaders/email-verification-loader";
 import { getCallbackUrl } from "@/utils/get-callback-url";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RegisterUser, RegisterUserSchema } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
   Form,
@@ -26,18 +26,20 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import { useMutation } from "@tanstack/react-query";
 
+import {
+  VerifyEmailVerificationCodeFormSchema,
+  VerifyEmailVerificationCodeFormSchemaType,
+} from "../types-schemas";
+
 export const CodeVerificationForm = () => {
   const callbackUrl = getCallbackUrl();
 
-  const pendingRegistrationEmail =
-    useLoaderData<typeof pendingRegistrationLoader>();
+  const verificationToken = useLoaderData<typeof emailVerificationLoader>();
 
-  const form = useForm<RegisterUser>({
-    resolver: zodResolver(RegisterUserSchema),
+  const form = useForm<VerifyEmailVerificationCodeFormSchemaType>({
+    resolver: zodResolver(VerifyEmailVerificationCodeFormSchema),
     defaultValues: {
-      email: pendingRegistrationEmail,
       code: "",
-      callbackUrl,
     },
   });
   useEffect(() => {
@@ -46,14 +48,15 @@ export const CodeVerificationForm = () => {
 
   const navigate = useNavigate();
   const trpc = useTRPC();
-  const registerMutation = useMutation(trpc.auth.register.mutationOptions());
+  const verifyEmailVerificationCodeMutation = useMutation(
+    trpc.auth.verifyEmailVerificationCode.mutationOptions(),
+  );
 
-  const onSubmit = async (values: RegisterUser) => {
-    registerMutation.mutate(
+  const onSubmit = (values: VerifyEmailVerificationCodeFormSchemaType) => {
+    verifyEmailVerificationCodeMutation.mutate(
       {
-        email: pendingRegistrationEmail,
         code: values.code,
-        callbackUrl,
+        id: verificationToken,
       },
       {
         onError: (error) => {
@@ -66,17 +69,18 @@ export const CodeVerificationForm = () => {
           }
         },
 
-        onSuccess: async ({ accessToken }, _, __, { client }) => {
-          await client.invalidateQueries({
-            queryKey: trpc.auth.getUser.queryKey(),
-            exact: true,
-          });
+        onSuccess: ({ message }) => {
+          toast.success(message);
 
-          navigate("/dashboard");
+          const params = new URLSearchParams();
 
-          if (callbackUrl && accessToken) {
-            window.location.href = `${callbackUrl}&token=${encodeURIComponent(accessToken)}&email=${encodeURIComponent(pendingRegistrationEmail)}`;
+          params.set("verification-token", verificationToken);
+
+          if (callbackUrl) {
+            params.set("callback", callbackUrl);
           }
+
+          navigate(`/register/finish?${params.toString()}`);
         },
       },
     );

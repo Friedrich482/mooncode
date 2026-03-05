@@ -1,6 +1,12 @@
 import { z } from "zod";
 
-import { ResetPasswordSchema } from "@repo/common/types-schemas";
+import {
+  CreateEmailVerificationSchema,
+  RegisterUserSchema,
+  ResetPasswordSchema,
+  VerifyEmailVerificationCodeSchema,
+  VerifyPasswordResetCodeSchema,
+} from "@repo/common/types-schemas";
 
 export const ResetPasswordFormSchema = z
   .object({
@@ -12,6 +18,34 @@ export const ResetPasswordFormSchema = z
     path: ["confirmPassword"],
   });
 
+export const RegisterFormSchema = CreateEmailVerificationSchema.omit({
+  type: true,
+});
+
+export const VerifyEmailVerificationCodeFormSchema =
+  VerifyEmailVerificationCodeSchema.omit({ id: true });
+
+export const RegisterFinishFormSchema = RegisterUserSchema.omit({
+  token: true,
+});
+
+export const VerifyPasswordResetCodeFormSchema =
+  VerifyPasswordResetCodeSchema.omit({ id: true });
+
 export type ResetPasswordFormSchemaType = z.infer<
   typeof ResetPasswordFormSchema
+>;
+
+export type RegisterFormSchemaType = z.infer<typeof RegisterFormSchema>;
+
+export type VerifyEmailVerificationCodeFormSchemaType = z.infer<
+  typeof VerifyEmailVerificationCodeFormSchema
+>;
+
+export type RegisterFinishFormSchemaType = z.infer<
+  typeof RegisterFinishFormSchema
+>;
+
+export type VerifyPasswordResetCodeFormSchemaType = z.infer<
+  typeof VerifyPasswordResetCodeFormSchema
 >;

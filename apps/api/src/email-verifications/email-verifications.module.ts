@@ -4,11 +4,11 @@ import { EnvModule } from "src/env/env.module";
 
 import { Module } from "@nestjs/common";
 
-import { PendingRegistrationsService } from "./pending-registrations.service";
+import { EmailVerificationsService } from "./email-verifications.service";
 
 @Module({
   imports: [DrizzleModule, EmailModule, EnvModule],
-  providers: [PendingRegistrationsService],
-  exports: [PendingRegistrationsService],
+  providers: [EmailVerificationsService],
+  exports: [EmailVerificationsService],
 })
-export class PendingRegistrationsModule {}
+export class EmailVerificationModule {}

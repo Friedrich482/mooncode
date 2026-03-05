@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { usePeriodStore } from "@/stores/period/period-store";
-import { DATE_LOCALE } from "@repo/common/constants";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { Button } from "@repo/ui/components/ui/button";
 import { CalendarPopover } from "@repo/ui/components/ui/calendar-popover";
 
@@ -18,7 +18,7 @@ export const CustomRangeDatesSelector = () => {
   useEffect(() => {
     if (period === "Custom Range") {
       setCustomRange({
-        start: startDate.toLocaleDateString(DATE_LOCALE),
+        start: getLocaleDate(startDate),
         end: customRange.end,
       });
     }
@@ -27,7 +27,7 @@ export const CustomRangeDatesSelector = () => {
     if (period === "Custom Range") {
       setCustomRange({
         start: customRange.start,
-        end: endDate.toLocaleDateString(DATE_LOCALE),
+        end: getLocaleDate(endDate),
       });
     }
   }, [endDate]);

@@ -1,5 +1,7 @@
 import z from "zod";
-import { DateStringDto, UserId } from "src/common/dto";
+import { DateStringDto } from "src/common/dto";
+
+import { UserId } from "@repo/common/types-schemas";
 
 import {
   BaseDto,
@@ -21,7 +23,7 @@ export const GetDailyStatsDto = z.object({
 });
 
 export const GetPeriodGeneralStatsDto = refineAndTransformDto(
-  z.object({ ...BaseDto.shape, todaysDateString: DateStringDto })
+  z.object({ ...BaseDto.shape, todaysDateString: DateStringDto }),
 );
 
 export type GetTimeSpentOnPeriodDtoType = z.infer<

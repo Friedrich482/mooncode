@@ -44,7 +44,7 @@ export const LoginForm = () => {
   const trpc = useTRPC();
   const loginMutation = useMutation(trpc.auth.signIn.mutationOptions());
 
-  const onSubmit = async (values: SignInUser) => {
+  const onSubmit = (values: SignInUser) => {
     loginMutation.mutate(
       {
         email: values.email,

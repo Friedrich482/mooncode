@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router";
+import { toast } from "sonner";
 
 import { Logo } from "@/components/layout/header/logo";
 import { getCallbackUrl } from "@/utils/get-callback-url";
@@ -39,7 +40,7 @@ export const ForgotPasswordForm = () => {
     trpc.auth.createPasswordReset.mutationOptions(),
   );
 
-  const onSubmit = async (values: CreatePasswordReset) => {
+  const onSubmit = (values: CreatePasswordReset) => {
     createPasswordResetMutation.mutate(
       {
         email: values.email,
@@ -55,10 +56,12 @@ export const ForgotPasswordForm = () => {
           }
         },
 
-        onSuccess: async () => {
+        onSuccess: ({ passwordResetToken, message }) => {
+          toast.success(message);
+
           const params = new URLSearchParams();
 
-          params.set("email", values.email);
+          params.set("password-reset-token", passwordResetToken);
 
           if (callbackUrl) {
             params.set("callback", callbackUrl);

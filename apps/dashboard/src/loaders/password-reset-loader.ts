@@ -6,23 +6,15 @@ import { authRouteLoader } from "./auth-loader";
 export const passwordResetLoader = async ({ request }: LoaderFunctionArgs) => {
   await authRouteLoader();
 
-  const searchParams = new URL(request.url).searchParams;
-  const urlPasswordResetEmail = searchParams.get("email");
-  const urlPasswordResetToken = searchParams.get("reset-password-token");
+  const urlPasswordResetToken = new URL(request.url).searchParams.get(
+    "password-reset-token",
+  );
 
-  const parsedUrlSearchParams = z
-    .object({
-      passwordResetEmail: z.email(),
-      passwordResetToken: z.ulid(),
-    })
-    .safeParse({
-      passwordResetEmail: urlPasswordResetEmail,
-      passwordResetToken: urlPasswordResetToken,
-    });
+  const parsedUrlPasswordResetToken = z.ulid().safeParse(urlPasswordResetToken);
 
-  if (!parsedUrlSearchParams.success) {
+  if (!parsedUrlPasswordResetToken.success) {
     throw redirect("/login");
   }
 
-  return parsedUrlSearchParams.data;
+  return parsedUrlPasswordResetToken.data;
 };

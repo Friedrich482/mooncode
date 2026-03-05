@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router";
-import { LayoutDashboard, LogOut, User } from "lucide-react";
+import { LayoutDashboard, LogOut, User, User2 } from "lucide-react";
 
 import { LinkWithQuery } from "@/components/common/link-with-query";
 import { useTRPC } from "@/utils/trpc";
@@ -14,7 +14,7 @@ import { Icon } from "@repo/ui/components/ui/icon";
 import { Skeleton } from "@repo/ui/components/ui/skeleton";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import { GravatarAvatar } from "./gravatar-avatar";
+import { ProfilePicture } from "./profile-picture";
 
 export const AuthDropDown = () => {
   const trpc = useTRPC();
@@ -36,17 +36,17 @@ export const AuthDropDown = () => {
     );
   }
 
-  const { email, username } = data;
+  const user = data;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <GravatarAvatar email={email} />
+        <ProfilePicture user={user} />
       </DropdownMenuTrigger>
       <DropdownMenuContent className="flex w-48 -translate-x-2 flex-col gap-1 p-2">
         <div className="flex flex-col px-2 py-1">
-          <p>{username}</p>
-          <p className="text-sm opacity-50">{email}</p>
+          <p>{user.username}</p>
+          <p className="truncate text-sm opacity-50">{user.email}</p>
         </div>
         <DropdownMenuSeparator className="w-full" />
 
@@ -57,6 +57,15 @@ export const AuthDropDown = () => {
           <LinkWithQuery to="/dashboard">
             <LayoutDashboard />
             <span>Dashboard</span>
+          </LinkWithQuery>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          asChild
+          className="cursor-pointer rounded-md py-1 text-base"
+        >
+          <LinkWithQuery to="/profile">
+            <User2 />
+            <span>Profile</span>
           </LinkWithQuery>
         </DropdownMenuItem>
 

@@ -3,7 +3,7 @@ import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-f
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const ForgotPassword = () => {
-  usePageTitle("Forgot Password | Mooncode");
+  usePageTitle("Forgot Password | MoonCode");
 
   return (
     <main className="flex items-center gap-2">

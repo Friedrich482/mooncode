@@ -11,17 +11,25 @@ import { ResetPassword } from "@/app/pages/auth/reset-password";
 import { Dashboard } from "@/app/pages/dashboard";
 import { NotFound } from "@/app/pages/not-found";
 import { Project } from "@/app/pages/project/project";
+import { UpdateEmail } from "@/app/pages/update-email/update-email";
 import { Layout as AuthLayout } from "@/features/auth/components/layout";
-import { authRouteLoader, googleAuthLoader } from "@/loaders/auth-loader";
+import {
+  authRouteLoader,
+  googleAuthLoader,
+  linkGoogleAccountLoader,
+  protectedRouteLoader,
+} from "@/loaders/auth-loader";
 import { dashboardLoader } from "@/loaders/dashboard-loader";
-import { passwordResetCodeVerificationLoader } from "@/loaders/password-reset-code-verification-loader";
+import { emailUpdateLoader } from "@/loaders/email-update-loader";
+import { emailVerificationLoader } from "@/loaders/email-verification-loader";
 import { passwordResetLoader } from "@/loaders/password-reset-loader";
-import { pendingRegistrationLoader } from "@/loaders/pending-registration-loader";
 import { projectLoader } from "@/loaders/project-loader";
 import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader";
 import { rootLoader } from "@/loaders/root-loader";
 
 import { App } from "./App";
+import { RegisterFinish } from "./app/pages/auth/register-finish";
+import { Profile } from "./app/pages/profile/profile";
 import { Layout } from "./components/layout/layout";
 
 const router = createBrowserRouter([
@@ -44,6 +52,11 @@ const router = createBrowserRouter([
             path: "dashboard/:projectName",
             element: <Project />,
             loader: projectLoader,
+          },
+          {
+            path: "profile",
+            element: <Profile />,
+            loader: protectedRouteLoader,
           },
           {
             path: "not-found",
@@ -71,7 +84,12 @@ const router = createBrowserRouter([
           {
             path: "register/verify",
             element: <RegisterCodeVerification />,
-            loader: pendingRegistrationLoader,
+            loader: emailVerificationLoader,
+          },
+          {
+            path: "register/finish",
+            element: <RegisterFinish />,
+            loader: emailVerificationLoader,
           },
           {
             path: "forgot-password",
@@ -81,7 +99,7 @@ const router = createBrowserRouter([
           {
             path: "verify-reset-code",
             element: <PasswordResetCodeVerification />,
-            loader: passwordResetCodeVerificationLoader,
+            loader: passwordResetLoader,
           },
           {
             path: "reset-password",
@@ -89,9 +107,19 @@ const router = createBrowserRouter([
             loader: passwordResetLoader,
           },
           {
+            path: "update-email/verify",
+            element: <UpdateEmail />,
+            loader: emailUpdateLoader,
+          },
+          {
             path: "auth/google",
             element: null,
             loader: googleAuthLoader,
+          },
+          {
+            path: "auth/google/linking",
+            element: null,
+            loader: linkGoogleAccountLoader,
           },
         ],
       },

@@ -3,7 +3,7 @@ import { ResetPasswordForm } from "@/features/auth/components/reset-password-for
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const ResetPassword = () => {
-  usePageTitle("Reset your password | Mooncode");
+  usePageTitle("Reset your password | MoonCode");
 
   return (
     <main className="flex items-center gap-2">

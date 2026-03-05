@@ -1,15 +1,25 @@
 import z from "zod";
 
 import {
+  EMAIL_VERIFICATION_CODE_LENGTH,
   EXTENSION_ID,
   PASSWORD_RESET_CODE_LENGTH,
-  PENDING_REGISTRATION_CODE_LENGTH,
   PUBLISHER,
 } from "./constants";
 
 export const PasswordSchema = z
   .string()
-  .min(8, "Password must be at least 8 characters");
+  .min(8, "Password must be at least 8 characters")
+  .max(64, "Password must be at most 20 characters");
+
+export const UsernameSchema = z
+  .string()
+  .min(3, "Username must be at least 3 characters")
+  .max(25, "Username must be at most 25 characters");
+
+export const EmailSchema = z
+  .email()
+  .max(320, "Email must be at most 320 characters");
 
 export const VSCodeCallbackUrlSchema = z
   .url()
@@ -47,36 +57,52 @@ export const JwtPayloadSchema = z.object({
 });
 
 export const SignInUserSchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
   password: z.string().min(1, "Password is required"),
   callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
-export const CreatePendingRegistrationSchema = z.object({
-  email: z.email(),
-  password: PasswordSchema,
-  username: z.string().min(3, "Username must be at least 3 characters"),
+export const CreateEmailVerificationSchema = z.object({
+  email: EmailSchema,
+  type: z.enum(["onboarding", "email update"]),
+});
+
+export const VerifyEmailVerificationCodeSchema = z.object({
+  id: z.ulid(),
+  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
 });
 
 export const RegisterUserSchema = z.object({
-  email: z.email(),
-  code: z.string().length(PENDING_REGISTRATION_CODE_LENGTH),
-  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
+  token: z.ulid(),
+  username: UsernameSchema,
+  password: PasswordSchema,
 });
 
 export const CreatePasswordResetSchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
 });
 
 export const VerifyPasswordResetCodeSchema = z.object({
-  email: z.email(),
+  id: z.ulid(),
   code: z.string().length(PASSWORD_RESET_CODE_LENGTH),
 });
 
 export const ResetPasswordSchema = z.object({
-  email: z.email(),
   token: z.ulid(),
   newPassword: PasswordSchema,
+});
+
+export const UpdateUsernameSchema = z.object({
+  username: UsernameSchema,
+});
+
+export const CreateEmailUpdateSchema = z.object({
+  email: EmailSchema,
+});
+
+export const UpdateEmailSchema = z.object({
+  token: z.ulid(),
+  code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
 });
 
 export const IsoDateStringSchema = z
@@ -124,13 +150,17 @@ export const WsDataSchema = z.discriminatedUnion("type", [
 
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];
+export type UserId = { userId: string };
 
 export type PeriodResolution = "day" | "week" | "month" | "year";
 
 export type JwtPayload = z.infer<typeof JwtPayloadSchema>;
 export type SignInUser = z.infer<typeof SignInUserSchema>;
-export type CreatePendingRegistration = z.infer<
-  typeof CreatePendingRegistrationSchema
+export type CreateEmailVerification = z.infer<
+  typeof CreateEmailVerificationSchema
+>;
+export type VerifyEmailVerificationCode = z.infer<
+  typeof VerifyEmailVerificationCodeSchema
 >;
 export type RegisterUser = z.infer<typeof RegisterUserSchema>;
 export type CreatePasswordReset = z.infer<typeof CreatePasswordResetSchema>;
@@ -138,4 +168,8 @@ export type VerifyPasswordResetCode = z.infer<
   typeof VerifyPasswordResetCodeSchema
 >;
 export type ResetPassword = z.infer<typeof ResetPasswordSchema>;
+export type UpdateUsername = z.infer<typeof UpdateUsernameSchema> & UserId;
+export type CreateEmailUpdate = z.infer<typeof CreateEmailUpdateSchema> &
+  UserId;
+export type UpdateEmail = z.infer<typeof UpdateEmailSchema> & UserId;
 export type WsData = z.infer<typeof WsDataSchema>;

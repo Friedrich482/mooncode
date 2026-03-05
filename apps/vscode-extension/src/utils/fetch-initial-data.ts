@@ -1,5 +1,5 @@
 import { FileDataSync } from "@/types-schemas";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { TRPCClientError } from "@trpc/client";
 
 import { getGlobalStateData } from "./global-state/get-global-state-data";
@@ -7,7 +7,7 @@ import { logError, logInfo } from "./logger/logger";
 import { trpc } from "./trpc/client";
 
 export const fetchInitialData = async () => {
-  const dateString = getTodaysLocaleDate();
+  const dateString = getLocaleDate(new Date());
 
   let timeSpentFromGlobalState = 0;
   let initialFilesDataFromGlobalState: FileDataSync = {};

@@ -5,7 +5,7 @@ import { usePageTitle } from "@/hooks/use-page-title";
 import { Button } from "@repo/ui/components/ui/button";
 
 export const NotFound = () => {
-  usePageTitle("Not Found | Mooncode");
+  usePageTitle("Not Found | MoonCode");
 
   return (
     <main className="flex h-dvh flex-col items-center gap-4 pt-8">

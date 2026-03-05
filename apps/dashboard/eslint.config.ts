@@ -98,6 +98,11 @@ export default [
               except: ["./project-title"],
             },
             {
+              target: "./src/features/profile",
+              from: "./src/features",
+              except: ["./profile"],
+            },
+            {
               target: "./src/features",
               from: "./src/app",
             },

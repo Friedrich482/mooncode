@@ -7,6 +7,7 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 
+import { LinkWithQuery } from "@/components/common/link-with-query";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
@@ -24,9 +25,8 @@ import {
 } from "@repo/ui/components/ui/sidebar";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
-import { LinkWithQuery } from "../common/link-with-query";
-import { GravatarAvatar } from "./header/gravatar-avatar";
-import { Logo } from "./header/logo";
+import { Logo } from "../header/logo";
+import { ProfilePicture } from "../header/profile-picture";
 
 export const AppSidebar = () => {
   const period = usePeriodStore((state) => state.period);
@@ -75,9 +75,7 @@ export const AppSidebar = () => {
     setProjectsToDisplay(periodProjects);
   }, [period, customRange.start, customRange.end]);
 
-  const {
-    data: { email, username },
-  } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
+  const { data: user } = useSuspenseQuery(trpc.auth.getUser.queryOptions());
 
   const { pathname } = useLocation();
 
@@ -91,11 +89,11 @@ export const AppSidebar = () => {
               variant="outline"
               isActive={false}
               size="lg"
-              tooltip={username}
+              tooltip={user.username}
             >
               <div className="flex cursor-pointer items-center justify-start text-lg!">
                 <Logo className="size-6! group-data-[collapsible=icon]:size-4!" />
-                <span>{username}</span>
+                <span>{user.username}</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
@@ -192,13 +190,13 @@ export const AppSidebar = () => {
       <SidebarFooter className="border-t p-2 group-data-[collapsible=icon]:p-2.5">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild variant="outline" tooltip={email}>
+            <SidebarMenuButton asChild variant="outline" tooltip={user.email}>
               <LinkWithQuery to="/profile">
-                <GravatarAvatar
-                  email={email}
+                <ProfilePicture
+                  user={user}
                   className="group-data-[collapsible=icon]:p-0 [&>img]:size-6 group-data-[collapsible=icon]:[&>img]:size-4!"
                 />
-                <span>{email}</span>
+                <span>{user.email}</span>
               </LinkWithQuery>
             </SidebarMenuButton>
           </SidebarMenuItem>

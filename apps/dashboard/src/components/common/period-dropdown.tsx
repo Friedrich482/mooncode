@@ -5,7 +5,7 @@ import { ChevronDown } from "lucide-react";
 import { PERIODS } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { Period } from "@/stores/period/types-schemas";
-import { DATE_LOCALE } from "@repo/common/constants";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { Button } from "@repo/ui/components/ui/button";
 import { CalendarPopover } from "@repo/ui/components/ui/calendar-popover";
 import {
@@ -24,11 +24,11 @@ export const PeriodDropDown = () => {
     from: new Date(),
   });
   const start = useMemo(
-    () => dateRange.from?.toLocaleDateString(DATE_LOCALE),
+    () => (dateRange.from ? getLocaleDate(dateRange.from) : undefined),
     [dateRange.from],
   );
   const end = useMemo(
-    () => dateRange.to?.toLocaleDateString(DATE_LOCALE),
+    () => (dateRange.to ? getLocaleDate(dateRange.to) : undefined),
     [dateRange.to],
   );
 

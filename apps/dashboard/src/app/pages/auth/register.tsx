@@ -3,7 +3,7 @@ import { RegisterForm } from "@/features/auth/components/register-form";
 import { usePageTitle } from "@/hooks/use-page-title";
 
 export const Register = () => {
-  usePageTitle("Register | Mooncode");
+  usePageTitle("Register | MoonCode");
 
   return (
     <main className="flex items-center gap-2">
