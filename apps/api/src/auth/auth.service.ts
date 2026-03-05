@@ -1,5 +1,4 @@
 import * as bcrypt from "bcrypt";
-import { Response } from "express";
 import { OAuth2Client } from "google-auth-library";
 import { EmailVerificationsService } from "src/email-verifications/email-verifications.service";
 import { EnvService } from "src/env/env.service";
@@ -37,14 +36,9 @@ import {
   GoogleUserSchema,
   HandleGoogleCallBacKDtoType,
   HandleGoogleLinkingCallBackDtoType,
-  RedirectToGoogleDto,
   RedirectToGoogleDtoType,
-  RedirectToGoogleForLinkingDto,
   RedirectToGoogleForLinkingDtoType,
 } from "./auth.dto";
-import { handleErrorResponse } from "./utils/handle-error-response";
-import { validateExtensionCallbackUrl } from "./utils/validate-extension-callback-url";
-import { validateStateQueryParam } from "./utils/validate-state-query-param";
 
 @Injectable()
 export class AuthService {
@@ -55,10 +49,8 @@ export class AuthService {
     private readonly emailVerificationService: EmailVerificationsService,
     private readonly passwordResetsService: PasswordResetsService,
   ) {}
-  private readonly AUTH_COOKIE_NAME = "auth_token";
-  private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
-  async signIn(signInDto: SignInUserDtoType, response: Response) {
+  async signIn(signInDto: SignInUserDtoType) {
     const { password: pass, email } = signInDto;
 
     const user = await this.usersService.findByEmail({ email });
@@ -81,14 +73,6 @@ export class AuthService {
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
     const token = await this.jwtService.signAsync(payload);
 
-    // Set the HTTP-only cookie
-    response.cookie(this.AUTH_COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: this.COOKIE_MAX_AGE,
-    });
-
     return {
       accessToken: token,
     };
@@ -108,7 +92,7 @@ export class AuthService {
     );
   }
 
-  async register(registerDto: RegisterUserDtoType, response: Response) {
+  async register(registerDto: RegisterUserDtoType) {
     const { token: emailVerificationId, password, username } = registerDto;
 
     const emailVerification = await this.emailVerificationService.findById({
@@ -146,14 +130,6 @@ export class AuthService {
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: createdUser.id };
     const token = await this.jwtService.signAsync(payload);
 
-    // Set the HTTP-only cookie
-    response.cookie(this.AUTH_COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: this.COOKIE_MAX_AGE,
-    });
-
     return {
       accessToken: token,
       email: createdUser.email,
@@ -172,10 +148,7 @@ export class AuthService {
     return this.passwordResetsService.verifyCode(verifyPasswordResetCodeDto);
   }
 
-  async resetPassword(
-    resetPasswordDto: ResetPasswordDtoType,
-    response: Response,
-  ) {
+  async resetPassword(resetPasswordDto: ResetPasswordDtoType) {
     const { token: passwordResetId, newPassword } = resetPasswordDto;
 
     const existingPasswordReset = await this.passwordResetsService.findById({
@@ -217,14 +190,6 @@ export class AuthService {
 
     const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.id };
     const token = await this.jwtService.signAsync(payload);
-
-    // Set the HTTP-only cookie
-    response.cookie(this.AUTH_COOKIE_NAME, token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: this.COOKIE_MAX_AGE,
-    });
 
     return {
       accessToken: token,
@@ -397,16 +362,8 @@ export class AuthService {
     };
   }
 
-  async logOut(response: Response) {
-    response.clearCookie(this.AUTH_COOKIE_NAME, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-    });
-  }
-
   async redirectToGoogle(redirectToGoogleDto: RedirectToGoogleDtoType) {
-    const { state, response, callback } = redirectToGoogleDto;
+    const { state, callback } = redirectToGoogleDto;
 
     const googleAuthUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -416,34 +373,26 @@ export class AuthService {
       `scope=openid email profile&` +
       `state=${encodeURIComponent(JSON.stringify({ state, callback }))}`;
 
-    response.redirect(googleAuthUrl);
+    return { googleAuthUrl };
   }
 
   async handleGoogleCallBack(
     handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
-  ) {
-    const { type, request, response } = handleGoogleCallBackDto;
-
-    const returnUrl = validateStateQueryParam(
-      request,
-      this.envService.get("NODE_ENV"),
-      RedirectToGoogleDto,
-    );
-    const callbackUrl = validateExtensionCallbackUrl(request);
-
-    const url = new URL(returnUrl);
-    const errorUrl = new URL(`${returnUrl}/login`);
+  ): Promise<
+    | { error: string; errorDescription: string }
+    | {
+        accessToken: string;
+        email: string;
+      }
+  > {
+    const { type } = handleGoogleCallBackDto;
 
     if (type === "error") {
-      handleErrorResponse({
-        url: errorUrl,
+      return {
         error: handleGoogleCallBackDto.error,
         errorDescription:
           "Something went wrong during the authentication process. Please try again",
-        response,
-      });
-
-      return;
+      };
     }
 
     const code = handleGoogleCallBackDto.code;
@@ -460,15 +409,11 @@ export class AuthService {
       } = await client.getToken(code);
 
       if (!accessToken) {
-        handleErrorResponse({
-          url: errorUrl,
+        return {
           error: "No access token received from Google",
           errorDescription:
             "Something went wrong during the authentication process. Please try again",
-          response,
-        });
-
-        return;
+        };
       }
 
       const googleRes = await fetch(
@@ -518,41 +463,31 @@ export class AuthService {
       const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.userId };
       const token = await this.jwtService.signAsync(payload);
 
-      response.cookie(this.AUTH_COOKIE_NAME, token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: this.COOKIE_MAX_AGE,
-      });
-
-      response.redirect(
-        `${url}${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}&token=${token}&email=${encodeURIComponent(user.email)}` : ""}`.toString(),
-      );
+      return { accessToken: token, email: user.email };
     } catch (error) {
       console.error("Google OAuth error:", error);
       if (error instanceof TRPCError) {
-        handleErrorResponse({
-          url: errorUrl,
+        return {
           error: error.message,
           errorDescription: error.cause?.message || "An error occurred",
-          response,
-        });
+        };
       } else if (error instanceof Error) {
-        handleErrorResponse({
-          url: errorUrl,
+        return {
           error: error.name,
           errorDescription: error.message,
-          response,
-        });
+        };
       }
-      return;
+      return {
+        error: "Unknown",
+        errorDescription: "An unknown error occurred",
+      };
     }
   }
 
   async redirectToGoogleForLinking(
     redirectToGoogleForLinkingDto: RedirectToGoogleForLinkingDtoType,
   ) {
-    const { state, response } = redirectToGoogleForLinkingDto;
+    const { state } = redirectToGoogleForLinkingDto;
 
     const googleUrl =
       `https://accounts.google.com/o/oauth2/v2/auth?` +
@@ -562,34 +497,22 @@ export class AuthService {
       `scope=openid email profile&` +
       `state=${encodeURIComponent(state)}`;
 
-    response.redirect(googleUrl);
+    return { googleUrl };
   }
 
   async handleGoogleLinkingCallBack(
     handleGoogleLinkingCallBackDto: HandleGoogleLinkingCallBackDtoType,
-  ) {
-    const { request, response, type } = handleGoogleLinkingCallBackDto;
-    const userId = request.user.sub;
-
-    const returnUrl = validateStateQueryParam(
-      request,
-      this.envService.get("NODE_ENV"),
-      RedirectToGoogleForLinkingDto,
-    );
-
-    const url = new URL(returnUrl);
-    const errorUrl = new URL(`${returnUrl}/profile`);
+  ): Promise<
+    { error: string; errorDescription: string } | { accessToken: string }
+  > {
+    const { type, userId } = handleGoogleLinkingCallBackDto;
 
     if (type === "error") {
-      handleErrorResponse({
-        url: errorUrl,
+      return {
         error: handleGoogleLinkingCallBackDto.error,
         errorDescription:
           "Something went wrong during the authentication process. Please try again",
-        response,
-      });
-
-      return;
+      };
     }
 
     const code = handleGoogleLinkingCallBackDto.code;
@@ -606,15 +529,11 @@ export class AuthService {
       } = await client.getToken(code);
 
       if (!accessToken) {
-        handleErrorResponse({
-          url: errorUrl,
+        return {
           error: "No access token received from Google",
           errorDescription:
             "Something went wrong during the authentication process. Please try again",
-          response,
-        });
-
-        return;
+        };
       }
 
       const googleRes = await fetch(
@@ -672,32 +591,24 @@ export class AuthService {
       };
       const token = await this.jwtService.signAsync(payload);
 
-      response.cookie(this.AUTH_COOKIE_NAME, token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: this.COOKIE_MAX_AGE,
-      });
-
-      response.redirect(url.toString());
+      return { accessToken: token };
     } catch (error) {
       console.error("Google OAuth error:", error);
       if (error instanceof TRPCError) {
-        handleErrorResponse({
-          url: errorUrl,
+        return {
           error: error.message,
           errorDescription: error.cause?.message || "An error occurred",
-          response,
-        });
+        };
       } else if (error instanceof Error) {
-        handleErrorResponse({
-          url: errorUrl,
+        return {
           error: error.name,
           errorDescription: error.message,
-          response,
-        });
+        };
       }
-      return;
+      return {
+        error: "Unknown",
+        errorDescription: "An unknown error occurred",
+      };
     }
   }
 }

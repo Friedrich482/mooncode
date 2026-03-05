@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
 import { z } from "zod";
 import { environmentEnum } from "src/common/dto";
 
-import { EmailSchema } from "@repo/common/types-schemas";
+import { EmailSchema, UserId } from "@repo/common/types-schemas";
 
 export const HandleGoogleQueryDto = z.union([
   z.object({ code: z.string().min(1) }),
@@ -47,18 +46,17 @@ export type HandleGoogleQueryDtoType = z.infer<typeof HandleGoogleQueryDto>;
 
 export type HandleGoogleCallBacKDtoType = z.infer<
   typeof HandleGoogleCallBackDto
-> & { response: Response; request: Request };
+>;
 
 export type HandleGoogleLinkingCallBackDtoType = z.infer<
   typeof HandleGoogleLinkingCallBackDto
-> & { response: Response; request: Request & { user: { sub: string } } };
+> &
+  UserId;
 
-export type RedirectToGoogleDtoType = z.infer<typeof RedirectToGoogleDto> & {
-  response: Response;
-};
+export type RedirectToGoogleDtoType = z.infer<typeof RedirectToGoogleDto>;
 
 export type GoogleUser = z.infer<typeof GoogleUserSchema>;
 
 export type RedirectToGoogleForLinkingDtoType = z.infer<
   typeof RedirectToGoogleForLinkingDto
-> & { response: Response };
+>;

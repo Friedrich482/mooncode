@@ -22,6 +22,8 @@ export class AuthRouter {
     private readonly trpcService: TrpcService,
     private readonly authService: AuthService,
   ) {}
+  private readonly AUTH_COOKIE_NAME = "auth_token";
+  private readonly COOKIE_MAX_AGE = 28 * 24 * 60 * 60 * 1000; // 28 days
 
   procedures = {
     auth: this.trpcService.trpc.router({
@@ -32,9 +34,21 @@ export class AuthRouter {
           max: 10,
         })
         .input(SignInUserDto)
-        .mutation(async ({ input, ctx }) =>
-          this.authService.signIn(input, ctx.res),
-        ),
+        .mutation(async ({ input, ctx }) => {
+          const { accessToken: token } = await this.authService.signIn(input);
+
+          // Set the HTTP-only cookie
+          ctx.res.cookie(this.AUTH_COOKIE_NAME, token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: this.COOKIE_MAX_AGE,
+          });
+
+          return {
+            accessToken: token,
+          };
+        }),
 
       createEmailVerification: this.trpcService
         .publicProcedure({
@@ -65,9 +79,23 @@ export class AuthRouter {
           max: 10,
         })
         .input(RegisterUserDto)
-        .mutation(async ({ input, ctx }) =>
-          this.authService.register(input, ctx.res),
-        ),
+        .mutation(async ({ input, ctx }) => {
+          const { accessToken: token, email } =
+            await this.authService.register(input);
+
+          // Set the HTTP-only cookie
+          ctx.res.cookie(this.AUTH_COOKIE_NAME, token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: this.COOKIE_MAX_AGE,
+          });
+
+          return {
+            accessToken: token,
+            email,
+          };
+        }),
 
       createPasswordReset: this.trpcService
         .publicProcedure({
@@ -98,9 +126,27 @@ export class AuthRouter {
           max: 6,
         })
         .input(ResetPasswordDto)
-        .mutation(async ({ input, ctx }) =>
-          this.authService.resetPassword(input, ctx.res),
-        ),
+        .mutation(async ({ input, ctx }) => {
+          const {
+            accessToken: token,
+            email,
+            message,
+          } = await this.authService.resetPassword(input);
+
+          // Set the HTTP-only cookie
+          ctx.res.cookie(this.AUTH_COOKIE_NAME, token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+            maxAge: this.COOKIE_MAX_AGE,
+          });
+
+          return {
+            accessToken: token,
+            email,
+            message,
+          };
+        }),
 
       checkAuthStatus: this.trpcService
         .protectedProcedure()
@@ -142,9 +188,14 @@ export class AuthRouter {
           this.authService.updateEmail({ ...input, userId: ctx.user.sub }),
         ),
 
-      logOut: this.trpcService
-        .publicProcedure()
-        .mutation(async ({ ctx }) => this.authService.logOut(ctx.res)),
+      logOut: this.trpcService.publicProcedure().mutation(async ({ ctx }) => {
+        // Remove the cookie
+        ctx.res.clearCookie(this.AUTH_COOKIE_NAME, {
+          httpOnly: true,
+          secure: true,
+          sameSite: "none",
+        });
+      }),
     }),
   };
 }
