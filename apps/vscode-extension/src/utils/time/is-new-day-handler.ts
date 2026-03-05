@@ -1,5 +1,5 @@
 import { GlobalStateData } from "@/types-schemas";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 
 import { deleteFilesDataContent } from "../files/delete-files-data-content";
 import { updateGlobalStateData } from "../global-state/update-global-state-data";
@@ -8,7 +8,7 @@ export const isNewDayHandler = async (
   dailyData: GlobalStateData["dailyData"],
   lastServerSync: Date,
 ) => {
-  const todaysDateString = getTodaysLocaleDate();
+  const todaysDateString = getLocaleDate(new Date());
 
   // if the global state doesn't have that date, it means it a new day
   if (!Object.hasOwn(dailyData, todaysDateString)) {

@@ -5,8 +5,7 @@ import { Bar, BarChart, CartesianGrid, Cell, XAxis, YAxis } from "recharts";
 import { CustomChartToolTip } from "@/components/common/custom-chart-tooltip";
 import { chartConfig } from "@/constants";
 import { useTRPC } from "@/utils/trpc";
-import { DATE_LOCALE } from "@repo/common/constants";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import {
   ChartContainer,
   ChartTooltip,
@@ -22,8 +21,8 @@ export const LanguagesUsedSinceRegistration = () => {
 
   const { data } = useSuspenseQuery(
     trpc.analytics.general.getPeriodLanguagesTime.queryOptions({
-      start: user.registrationDate.toLocaleDateString(DATE_LOCALE),
-      end: getTodaysLocaleDate(),
+      start: getLocaleDate(user.registrationDate),
+      end: getLocaleDate(new Date()),
     }),
   );
 
@@ -77,11 +76,11 @@ export const LanguagesUsedSinceRegistration = () => {
               labelFormatter={() => (
                 <div className="font-semibold">
                   <span className="text-primary/85">
-                    {user.registrationDate.toLocaleDateString(DATE_LOCALE)}
+                    {getLocaleDate(user.registrationDate)}
                   </span>{" "}
                   -{" "}
                   <span className="text-primary/85">
-                    {getTodaysLocaleDate()}
+                    {getLocaleDate(new Date())}
                   </span>
                 </div>
               )}

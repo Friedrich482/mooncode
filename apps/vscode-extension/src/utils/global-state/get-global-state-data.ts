@@ -5,7 +5,7 @@ import { SYNC_DATA_KEY } from "@/constants";
 import { getExtensionContext } from "@/extension";
 import { GlobalStateData, globalStateInitialDataSchema } from "@/types-schemas";
 import { formatZodError } from "@repo/common/format-zod-error";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 
 /**
  * This function is a wrapper around the raw `vscode.context.globalState.get(key)`
@@ -15,7 +15,7 @@ import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
 
 export const getGlobalStateData: () => Promise<GlobalStateData> = async () => {
   const context = getExtensionContext();
-  const todaysDateString = getTodaysLocaleDate();
+  const todaysDateString = getLocaleDate(new Date());
 
   try {
     const globalStateData = globalStateInitialDataSchema.parse(

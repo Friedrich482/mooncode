@@ -5,7 +5,7 @@ import { projectLoader } from "@/loaders/project-loader";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { cn } from "@repo/ui/lib/utils";
 import { getLanguageColor } from "@repo/ui/utils/get-language-color";
 import { getLanguageName } from "@repo/ui/utils/get-language-name";
@@ -36,7 +36,7 @@ export const ProjectGeneralStatsChart = () => {
   const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);
   const customRange = usePeriodStore((state) => state.customRange);
-  const todaysDateString = useMemo(getTodaysLocaleDate, []);
+  const todaysDateString = useMemo(() => getLocaleDate(new Date()), []);
   const { projectName } = useLoaderData<typeof projectLoader>();
 
   const trpc = useTRPC();

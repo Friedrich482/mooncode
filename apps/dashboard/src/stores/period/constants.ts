@@ -11,7 +11,7 @@ import {
   subYears,
 } from "date-fns";
 
-import { DATE_LOCALE } from "@repo/common/constants";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { GroupBy } from "@repo/common/types-schemas";
 
 export const PERIODS = [
@@ -29,46 +29,44 @@ export const PERIODS = [
 
 export const PERIODS_CONFIG = {
   "Last 7 days": {
-    start: subDays(new Date(), 6).toLocaleDateString(DATE_LOCALE),
-    end: new Date().toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(subDays(new Date(), 6)),
+    end: getLocaleDate(new Date()),
   },
   "This week": {
-    start: startOfWeek(new Date()).toLocaleDateString(DATE_LOCALE),
-    end: new Date().toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfWeek(new Date())),
+    end: getLocaleDate(new Date()),
   },
   "Last week": {
-    start: startOfWeek(subWeeks(new Date(), 1)).toLocaleDateString(DATE_LOCALE),
-    end: endOfWeek(subWeeks(new Date(), 1)).toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfWeek(subWeeks(new Date(), 1))),
+    end: getLocaleDate(endOfWeek(subWeeks(new Date(), 1))),
   },
   "Last 14 days": {
-    start: subDays(new Date(), 13).toLocaleDateString(DATE_LOCALE),
-    end: new Date().toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(subDays(new Date(), 13)),
+    end: getLocaleDate(new Date()),
   },
   "Last 2 weeks": {
-    start: startOfWeek(subWeeks(new Date(), 2)).toLocaleDateString(DATE_LOCALE),
-    end: endOfWeek(subWeeks(new Date(), 1)).toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfWeek(subWeeks(new Date(), 2))),
+    end: getLocaleDate(endOfWeek(subWeeks(new Date(), 1))),
   },
   "This month": {
-    start: startOfMonth(new Date()).toLocaleDateString(DATE_LOCALE),
-    end: new Date().toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfMonth(new Date())),
+    end: getLocaleDate(new Date()),
   },
   "Last month": {
-    start: startOfMonth(subMonths(new Date(), 1)).toLocaleDateString(
-      DATE_LOCALE,
-    ),
-    end: endOfMonth(subMonths(new Date(), 1)).toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfMonth(subMonths(new Date(), 1))),
+    end: getLocaleDate(endOfMonth(subMonths(new Date(), 1))),
   },
   "This year": {
-    start: startOfYear(new Date()).toLocaleDateString(DATE_LOCALE),
-    end: new Date().toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfYear(new Date())),
+    end: getLocaleDate(new Date()),
   },
   "Last year": {
-    start: startOfYear(subYears(new Date(), 1)).toLocaleDateString(DATE_LOCALE),
-    end: endOfYear(subYears(new Date(), 1)).toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(startOfYear(subYears(new Date(), 1))),
+    end: getLocaleDate(endOfYear(subYears(new Date(), 1))),
   },
   "Custom Range": {
-    start: new Date().toLocaleDateString(DATE_LOCALE),
-    end: new Date().toLocaleDateString(DATE_LOCALE),
+    start: getLocaleDate(new Date()),
+    end: getLocaleDate(new Date()),
   },
 } as const;
 

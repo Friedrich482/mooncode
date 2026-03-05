@@ -2,9 +2,8 @@ import { useMemo } from "react";
 import { Check } from "lucide-react";
 
 import { useTRPC } from "@/utils/trpc";
-import { DATE_LOCALE } from "@repo/common/constants";
 import { formatDuration } from "@repo/common/format-duration";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const CodingTimeSinceRegistration = () => {
@@ -13,8 +12,8 @@ export const CodingTimeSinceRegistration = () => {
 
   const { data } = useSuspenseQuery(
     trpc.analytics.general.getDaysOfPeriodStats.queryOptions({
-      start: user.registrationDate.toLocaleDateString(DATE_LOCALE),
-      end: getTodaysLocaleDate(),
+      start: getLocaleDate(user.registrationDate),
+      end: getLocaleDate(new Date()),
     }),
   );
   const codingTimeSinceRegistration = useMemo(

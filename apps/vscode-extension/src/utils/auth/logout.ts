@@ -2,7 +2,7 @@ import vscode from "vscode";
 
 import { getExtensionContext } from "@/extension";
 import { updateGlobalStateData } from "@/utils/global-state/update-global-state-data";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 
 import { deleteFilesDataContent } from "../files/delete-files-data-content";
 import { setLogoutContextAndStatusBar } from "../status-bar/set-logout-context-and-status-bar";
@@ -21,7 +21,7 @@ export const logout = async () => {
 
     deleteFilesDataContent();
 
-    const todaysDateString = getTodaysLocaleDate();
+    const todaysDateString = getLocaleDate(new Date());
     await updateGlobalStateData({
       lastServerSync: new Date(),
       dailyData: {

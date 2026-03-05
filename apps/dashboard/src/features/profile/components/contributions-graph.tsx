@@ -3,9 +3,8 @@ import { subDays } from "date-fns";
 import { Check } from "lucide-react";
 
 import { RouterOutput, useTRPC } from "@/utils/trpc";
-import { DATE_LOCALE } from "@repo/common/constants";
 import { formatDuration } from "@repo/common/format-duration";
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import {
   Tooltip,
   TooltipContent,
@@ -50,8 +49,8 @@ export const ContributionsGraph = () => {
 
   const { data } = useSuspenseQuery(
     trpc.analytics.general.getDaysOfPeriodStats.queryOptions({
-      start: subDays(new Date(), 364).toLocaleDateString(DATE_LOCALE),
-      end: getTodaysLocaleDate(),
+      start: getLocaleDate(subDays(new Date(), 364)),
+      end: getLocaleDate(new Date()),
     }),
   );
 

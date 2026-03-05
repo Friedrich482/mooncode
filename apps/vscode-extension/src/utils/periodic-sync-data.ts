@@ -1,7 +1,7 @@
 import { isEqual } from "date-fns";
 import * as vscode from "vscode";
 
-import { getTodaysLocaleDate } from "@repo/common/get-todays-locale-date";
+import { getLocaleDate } from "@repo/common/get-locale-date";
 import { TRPCClientError } from "@trpc/client";
 
 import { getLoginContext } from "./auth/login-context";
@@ -16,7 +16,7 @@ import { trpc } from "./trpc/client";
 export const periodicSyncData = async (
   getTime: Awaited<ReturnType<typeof calculateTime>>,
 ) => {
-  const todaysDateString = getTodaysLocaleDate();
+  const todaysDateString = getLocaleDate(new Date());
   let lastServerSync = new Date();
   let isServerSynced = false;
   let timeSpentOnDay = 0;
