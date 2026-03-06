@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
 import { Inter } from "next/font/google";
+
+import { Footer } from "@/components/layout/footer";
+import { Header } from "@/components/layout/header/header";
+import { ThemeProvider } from "@/providers/theme-provider";
 
 import "@repo/ui/globals.css";
 
@@ -18,9 +21,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased`}>
-        <ThemeProvider enableSystem attribute="class" defaultTheme="system">
+      <head />
+      <body className={`${inter.className} flex flex-col antialiased`}>
+        <ThemeProvider
+          enableSystem
+          attribute="class"
+          defaultTheme="system"
+          disableTransitionOnChange
+        >
+          <Header />
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

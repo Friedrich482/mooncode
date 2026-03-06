@@ -1,5 +1,5 @@
 const Home = () => {
-  return <div>MoonCode</div>;
+  return <main className="flex-1 pt-20"></main>;
 };
 
 export default Home;

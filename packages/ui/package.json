@@ -10,7 +10,8 @@
     "./components/*": "./src/components/*.tsx",
     "./providers/*": "./src/providers/*.tsx",
     "./index": "./src/index.ts",
-    "./utils/*": "./src/utils/*.ts"
+    "./utils/*": "./src/utils/*.ts",
+    "./types-schemas": "./src/types-schemas.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0 --fix",

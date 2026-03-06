@@ -1,3 +1,5 @@
+"use client";
+
 import { Moon, Sun } from "lucide-react";
 
 import {
@@ -9,10 +11,17 @@ import {
 import { Icon } from "#components/ui/icon.tsx";
 import { THEME_DROPDOWN_ITEMS } from "#constants.ts";
 import { cn } from "#lib/utils.ts";
-import { useTheme } from "#providers/theme-provider.tsx";
+import { ResolvedTheme, Theme } from "#types-schemas.ts";
 
-export const ToggleThemeDropDown = () => {
-  const { theme: providedTheme, setTheme, resolvedTheme } = useTheme();
+export const ToggleThemeDropDown = ({
+  providedTheme,
+  resolvedTheme,
+  setTheme,
+}: {
+  providedTheme: Theme;
+  resolvedTheme: ResolvedTheme;
+  setTheme: (theme: Theme) => void;
+}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
