@@ -10,7 +10,6 @@ import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 import { SidebarProvider } from "@repo/ui/components/ui/sidebar";
 import { Toaster } from "@repo/ui/components/ui/sonner";
 import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
-import { ThemeProvider } from "@repo/ui/providers/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
@@ -18,6 +17,7 @@ import { createTRPCClient, httpBatchLink } from "@trpc/client";
 import { FallBackRender } from "./components/errors/error-boundary";
 import { Wrapper } from "./components/layout/navigation-reset-wrapper";
 import { useExtensionWebsocket } from "./hooks/use-extension-websocket";
+import { ThemeProvider } from "./providers/theme-provider";
 import { TRPCProvider } from "./utils/trpc";
 
 function makeQueryClient() {
