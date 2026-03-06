@@ -10,7 +10,7 @@ export const Title = () => {
         alt="Logo"
         className="size-10 shrink-0"
       />
-      <span className="text-2xl max-[25rem]:hidden">Mooncode</span>
+      <span className="text-2xl max-[29rem]:hidden">Mooncode</span>
     </p>
   );
 };
