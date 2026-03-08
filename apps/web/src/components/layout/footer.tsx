@@ -20,7 +20,7 @@ export const Footer = () => {
           target="_blank"
           className="underline"
         >
-          Github
+          GitHub
         </Link>
       </p>
     </footer>
