@@ -10,7 +10,7 @@ export const Navbar = () => {
           <li key={entry.text}>
             <Link
               href={entry.href}
-              className="text-muted-foreground/60 hover:text-primary"
+              className="text-muted-foreground hover:text-primary"
             >
               {entry.text}
             </Link>
