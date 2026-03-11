@@ -9,7 +9,7 @@ export const Navbar = () => {
         {NAVBAR_LINKS.map((entry) => (
           <li key={entry.text}>
             <Link
-              href={entry.href}
+              href={`#${entry.href}`}
               className="text-muted-foreground hover:text-primary"
             >
               {entry.text}

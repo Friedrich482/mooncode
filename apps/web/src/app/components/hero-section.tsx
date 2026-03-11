@@ -7,7 +7,7 @@ import { SiGithub } from "@icons-pack/react-simple-icons";
 import { Button } from "@repo/ui/components/ui/button";
 
 export const HeroSection = () => (
-  <section className="relative flex flex-col items-center justify-center gap-12 pt-36 pb-60">
+  <section className="relative flex flex-col items-center justify-center gap-12 pt-20 pb-60">
     <Image
       src={animatedNight as unknown as string}
       alt="Animated night background image"

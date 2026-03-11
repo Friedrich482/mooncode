@@ -28,7 +28,7 @@ const Sidebar = () => {
           {NAVBAR_LINKS.map((entry) => (
             <li key={entry.text}>
               <Link
-                href={entry.href}
+                href={`#${entry.href}`}
                 className="text-muted-foreground hover:text-primary text-xl"
               >
                 {entry.text}

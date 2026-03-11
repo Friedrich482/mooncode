@@ -20,9 +20,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" className="scroll-smooth" suppressHydrationWarning>
       <head />
-      <body className={`${inter.className} flex flex-col antialiased`}>
+      <body
+        className={`${inter.className} flex flex-col antialiased transition duration-300 ease-in-out`}
+      >
         <ThemeProvider
           enableSystem
           attribute="class"
