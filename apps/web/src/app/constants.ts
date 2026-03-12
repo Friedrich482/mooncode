@@ -7,6 +7,10 @@ import {
   WifiOff,
 } from "lucide-react";
 
+import dashboardOverview from "@/assets/dashboard-overview.svg";
+import individualProjectOverview from "@/assets/individual-project-overview.svg";
+import profileOverview from "@/assets/profile-overview.svg";
+
 import { Feature } from "./types-schemas";
 
 export const FEATURES: Feature[] = [
@@ -41,3 +45,26 @@ export const FEATURES: Feature[] = [
     text: "Always up to date stats collection by the extension.",
   },
 ];
+
+export const TABS_ELEMENTS = [
+  {
+    tab: "General",
+    description: "Get an overview of your stats on your desired period.",
+    imageSrc: dashboardOverview as unknown as string,
+    imageAlt: "Dashboard overview image",
+  },
+  {
+    tab: "Projects",
+    description:
+      "Individual summary of each project with individual files and languages stats, still on the period of your choice.",
+    imageSrc: individualProjectOverview as unknown as string,
+    imageAlt: "Individual project overview image",
+  },
+  {
+    tab: "Profile",
+    description:
+      "Customize your credentials and get a general overview of your progress.",
+    imageSrc: profileOverview as unknown as string,
+    imageAlt: "Profile overview image",
+  },
+] as const;
