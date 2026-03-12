@@ -9,6 +9,7 @@ import { FadeContent } from "./motion/fade-content";
 export const CallToAction = () => (
   <FadeContent
     as="section"
+    id="installation"
     className="flex w-full flex-col gap-20 border-t px-14 pt-20 pb-12"
   >
     <div className="flex flex-col gap-8">

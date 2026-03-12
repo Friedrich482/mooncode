@@ -3,19 +3,23 @@
 import * as React from "react";
 import { motion, useInView } from "motion/react";
 
-export const FadeContent = ({
-  direction = "up",
-  children,
-  className = "",
-  staggerChildren = 0.1,
-  as = "div",
-}: {
+type BasicProps = {
   direction?: "up" | "down";
   children: React.ReactNode;
   className?: string;
   staggerChildren?: number;
   as?: keyof typeof motion;
-}) => {
+};
+
+export const FadeContent = ({
+  direction = "up",
+  children,
+  className,
+  staggerChildren = 0.1,
+  as = "div",
+  ...props
+  // the correct type here is `React.ComponentPropsWithoutRef<(typeof motion)[Exclude<BasicProps["as"], undefined>]>` but using it create an infinite nesting type error
+}: BasicProps & React.ComponentPropsWithoutRef<typeof motion.div>) => {
   const fadeVariants = {
     show: { opacity: 1, y: 0, transition: { type: "spring" } },
     hidden: { opacity: 0, y: direction === "down" ? -18 : 18 },
@@ -40,6 +44,7 @@ export const FadeContent = ({
         },
       }}
       className={className}
+      {...props}
     >
       {React.Children.map(children, (child) => {
         if (!React.isValidElement(child)) return child;
