@@ -6,9 +6,17 @@ import "react-medium-image-zoom/dist/styles.css";
 export const Architecture = () => (
   <section
     id="architecture"
-    className="flex w-full flex-col gap-10 px-14 pt-20 pb-12"
+    className="flex w-full flex-col gap-20 px-14 pt-20 pb-12"
   >
-    <h2 className="text-center text-4xl font-bold">Architecture</h2>
+    <div className="flex flex-col gap-8">
+      <h2 className="text-center text-5xl font-bold max-sm:text-4xl">
+        Project Architecture
+      </h2>
+      <p className="text-center font-light">
+        We currently operate through a local dashboard and a NestJS API. It is
+        simple but it gets the job done.
+      </p>
+    </div>
 
     <Zoom wrapElement="span" canSwipeToUnzoom={true}>
       <Image

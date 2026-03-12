@@ -39,6 +39,7 @@ export const HeroSection = () => (
         <Link
           href="https://marketplace.visualstudio.com/items?itemName=Friedrich482.mooncode&ssr=false#review-details"
           target="_blank"
+          className="hover:scale-110"
         >
           <Image
             src={vscode as unknown as string}
@@ -55,7 +56,11 @@ export const HeroSection = () => (
         size="lg"
         variant="outline"
       >
-        <Link href="https://github.com/Friedrich482/mooncode" target="_blank">
+        <Link
+          href="https://github.com/Friedrich482/mooncode"
+          target="_blank"
+          className="duration-300 hover:scale-110"
+        >
           <SiGithub />
           GitHub
         </Link>

@@ -10,8 +10,8 @@ import "@/app/globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MoonCode",
-  description: "Track you coding time, languages and files with ease",
+  title: "MoonCode | Track your coding activity with ease",
+  description: "Track your coding time, languages and files with ease",
 };
 
 export default function RootLayout({
