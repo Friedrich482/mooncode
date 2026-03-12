@@ -11,6 +11,7 @@ export const HeroSection = () => (
     <Image
       src={animatedNight as unknown as string}
       alt="Animated night background image"
+      loading="eager"
       className="-z-30 object-cover object-top-right opacity-80"
       fill
     />
