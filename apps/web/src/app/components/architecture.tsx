@@ -1,6 +1,8 @@
 import Zoom from "react-medium-image-zoom";
 import Image from "next/image";
 
+import { FadeContent } from "./motion/fade-content";
+
 import "react-medium-image-zoom/dist/styles.css";
 
 export const Architecture = () => (
@@ -8,7 +10,7 @@ export const Architecture = () => (
     id="architecture"
     className="flex w-full flex-col gap-20 px-14 pt-20 pb-12"
   >
-    <div className="flex flex-col gap-8">
+    <FadeContent className="flex flex-col gap-8">
       <h2 className="text-center text-5xl font-bold max-sm:text-4xl">
         Project Architecture
       </h2>
@@ -16,7 +18,7 @@ export const Architecture = () => (
         We currently operate through a local dashboard and a NestJS API. It is
         simple but it gets the job done.
       </p>
-    </div>
+    </FadeContent>
 
     <Zoom wrapElement="span" canSwipeToUnzoom={true}>
       <Image

@@ -4,12 +4,18 @@ import Link from "next/link";
 import vscode from "@/assets/vscode.svg";
 import { Button } from "@repo/ui/components/ui/button";
 
+import { FadeContent } from "./motion/fade-content";
+
 export const CallToAction = () => (
-  <section className="flex w-full flex-col gap-20 border-t px-14 pt-20 pb-12">
+  <FadeContent
+    as="section"
+    className="flex w-full flex-col gap-20 border-t px-14 pt-20 pb-12"
+  >
     <div className="flex flex-col gap-8">
       <h2 className="text-center text-5xl font-bold max-sm:text-4xl">
         Ready to jump in?
       </h2>
+
       <p className="text-center font-light">
         Get started by installing the VSCode extension. It is entirely{" "}
         <span className="text-primary">free</span> and{" "}
@@ -34,5 +40,5 @@ export const CallToAction = () => (
         VSCode Extension
       </Link>
     </Button>
-  </section>
+  </FadeContent>
 );
