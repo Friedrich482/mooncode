@@ -13,6 +13,22 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "MoonCode | Track your coding activity with ease",
   description: "Track your coding time, languages and files with ease",
+  metadataBase: new URL("https://mooncode.cc"),
+
+  openGraph: {
+    title: "MoonCode",
+    type: "website",
+    url: "https://mooncode.cc",
+    description: "Track your coding activity with ease",
+    siteName: "MoonCode",
+  },
+
+  twitter: {
+    title: "MoonCode",
+    creator: "@FriedrichC109",
+    description: "Track your coding time, languages and files with ease",
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
