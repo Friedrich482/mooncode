@@ -7,12 +7,11 @@ import { Button } from "@repo/ui/components/ui/button";
 import { FadeContent } from "./motion/fade-content";
 
 export const CallToAction = () => (
-  <FadeContent
-    as="section"
+  <section
     id="installation"
     className="flex w-full flex-col gap-20 border-t px-14 pt-20 pb-12"
   >
-    <div className="flex flex-col gap-8">
+    <FadeContent className="flex flex-col gap-8">
       <h2 className="text-center text-5xl font-bold max-sm:text-4xl">
         Ready to jump in?
       </h2>
@@ -22,7 +21,7 @@ export const CallToAction = () => (
         <span className="text-primary">free</span> and{" "}
         <span className="text-primary">open source</span>.
       </p>
-    </div>
+    </FadeContent>
 
     <Button
       asChild
@@ -41,5 +40,5 @@ export const CallToAction = () => (
         VSCode Extension
       </Link>
     </Button>
-  </FadeContent>
+  </section>
 );

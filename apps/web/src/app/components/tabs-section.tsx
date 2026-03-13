@@ -4,7 +4,7 @@ import { Tabs } from "./tabs";
 export const TabsSection = () => (
   <section className="flex w-full flex-col gap-20 px-14 pt-20 pb-12">
     <FadeContent className="flex flex-col gap-8">
-      <h2 className="text-center text-5xl font-bold max-md:text-4xl">
+      <h2 className="text-center text-5xl font-bold wrap-anywhere max-md:text-4xl">
         Comprehensive overview of your coding activity
       </h2>
       <p className="text-center font-light">

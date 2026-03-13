@@ -14,7 +14,7 @@ export const Architecture = () => (
     className="flex w-full flex-col gap-20 px-14 pt-20 pb-12"
   >
     <FadeContent className="flex flex-col gap-8">
-      <h2 className="text-center text-5xl font-bold max-sm:text-4xl">
+      <h2 className="text-center text-5xl font-bold wrap-anywhere max-sm:text-4xl">
         Project Architecture
       </h2>
       <p className="text-center font-light">
