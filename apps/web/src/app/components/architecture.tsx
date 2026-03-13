@@ -1,6 +1,9 @@
 import Zoom from "react-medium-image-zoom";
 import Image from "next/image";
 
+import mooncodeArchitecture from "@/assets/mooncode-architecture.svg";
+
+import { BLUR_DATA_URL } from "../constants";
 import { FadeContent } from "./motion/fade-content";
 
 import "react-medium-image-zoom/dist/styles.css";
@@ -22,12 +25,14 @@ export const Architecture = () => (
 
     <Zoom wrapElement="span" canSwipeToUnzoom={true}>
       <Image
-        src="/mooncode-architecture.svg"
+        src={mooncodeArchitecture as unknown as string}
         alt="Architecture Diagram"
         width={600}
         height={100}
         loading="lazy"
         className="w-4/5 cursor-zoom-in place-self-center rounded-xl max-md:w-full"
+        placeholder="blur"
+        blurDataURL={BLUR_DATA_URL}
       />
     </Zoom>
   </section>

@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Button } from "@repo/ui/components/ui/button";
 import { cn } from "@repo/ui/lib/utils";
 
-import { TABS_ELEMENTS } from "../constants";
+import { BLUR_DATA_URL, TABS_ELEMENTS } from "../constants";
 
 type TabEntry = (typeof TABS_ELEMENTS)[number];
 
@@ -48,6 +48,8 @@ export const Tabs = () => {
           height={100}
           loading="lazy"
           className="w-full cursor-zoom-in place-self-center rounded-md border"
+          placeholder="blur"
+          blurDataURL={BLUR_DATA_URL}
         />
       </Zoom>
     </div>
