@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 
 import { HEADER_ADDITIONAL_LINKS, NAVBAR_LINKS } from "@/constants";
+import { useOutsideClick } from "@/hooks/use-outside-click";
 import { Icon } from "@repo/ui/components/ui/icon";
 import { cn } from "@repo/ui/lib/utils";
 
@@ -13,8 +14,10 @@ const Sidebar = () => {
 
   const handleClick = () => setIsSidebarOpen((prev) => !prev);
 
+  const ref = useOutsideClick<HTMLDivElement>(setIsSidebarOpen);
+
   return (
-    <div className="relative hidden max-[49rem]:flex">
+    <div className="relative hidden max-[49rem]:flex" ref={ref}>
       <Icon Icon={Menu} onClick={handleClick} />
       <div
         className={cn(

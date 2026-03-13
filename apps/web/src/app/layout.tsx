@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header/header";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 
 import "@/app/globals.css";
 
@@ -39,6 +40,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <ScrollToTopButton />
         </ThemeProvider>
       </body>
     </html>
