@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 
-export const useOutsideClick = (
+export const useOutsideClick = <T extends HTMLElement>(
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
 ) => {
-  const ref = useRef<HTMLElement>(null);
+  const ref = useRef<T>(null);
 
   useEffect(() => {
     const handleOutSideClick = (event: Event) => {

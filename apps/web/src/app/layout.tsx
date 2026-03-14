@@ -4,14 +4,31 @@ import { Inter } from "next/font/google";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header/header";
 import { ThemeProvider } from "@/providers/theme-provider";
+import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 
-import "@repo/ui/globals.css";
+import "@/app/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "MoonCode",
-  description: "Track you coding time, languages and files with ease",
+  title: "MoonCode | Track your coding activity with ease",
+  description: "Track your coding time, languages and files with ease",
+  metadataBase: new URL("https://mooncode.cc"),
+
+  openGraph: {
+    title: "MoonCode",
+    type: "website",
+    url: "https://mooncode.cc",
+    description: "Track your coding activity with ease",
+    siteName: "MoonCode",
+  },
+
+  twitter: {
+    title: "MoonCode",
+    creator: "@FriedrichC109",
+    description: "Track your coding time, languages and files with ease",
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
@@ -20,9 +37,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="scroll-smooth"
+      suppressHydrationWarning
+      data-scroll-behavior="smooth"
+    >
       <head />
-      <body className={`${inter.className} flex flex-col antialiased`}>
+      <body
+        className={`${inter.className} flex w-svw flex-col overflow-x-hidden antialiased transition duration-300 ease-in-out`}
+      >
         <ThemeProvider
           enableSystem
           attribute="class"
@@ -32,6 +56,7 @@ export default function RootLayout({
           <Header />
           {children}
           <Footer />
+          <ScrollToTopButton />
         </ThemeProvider>
       </body>
     </html>

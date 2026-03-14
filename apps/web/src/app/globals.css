@@ -1,1 +1,17 @@
 @import "../../../../packages/ui/src/globals.css";
+
+[data-rmiz-modal]:focus-visible {
+  outline: none;
+}
+
+[data-rmiz-modal-overlay="visible"] {
+  background-color: var(--color-background) !important;
+}
+
+[data-rmiz-modal-img] {
+  scale: 0.9;
+}
+
+[data-rmiz-btn-unzoom] {
+  display: none;
+}

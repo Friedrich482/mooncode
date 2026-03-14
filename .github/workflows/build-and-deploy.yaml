@@ -1,11 +1,11 @@
-name: MoonCode CI/CD Pipeline - Build api docker image and deploy to production
+name: MoonCode CI/CD Pipeline - Build api and web app docker images and deploy to production
 
 on:
   push:
     branches: "main"
 
 jobs:
-  build-and-push-docker-image:
+  build-and-push-docker-images:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,3 +34,4 @@ jobs:
         run: |
           IMAGE_TAG=${{ github.sha }}
           docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/mooncode-api:$IMAGE_TAG -t ${{ secrets.DOCKERHUB_USERNAME }}/mooncode-api:latest --push -f apps/api/Dockerfile .
+          docker buildx build --platform linux/amd64 -t ${{ secrets.DOCKERHUB_USERNAME }}/mooncode-web:$IMAGE_TAG -t ${{ secrets.DOCKERHUB_USERNAME }}/mooncode-web:latest --push -f apps/web/Dockerfile .
