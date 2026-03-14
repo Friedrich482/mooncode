@@ -9,7 +9,7 @@ const NotFound = () => (
     <Image src={brokenMoon as unknown as string} alt="Not found page image " />
 
     <div className="flex flex-col items-center justify-center gap-4">
-      <div className="text-8xl">404</div>
+      <h1 className="text-8xl">404</h1>
 
       <p>This Page Could Not Be Found</p>
 

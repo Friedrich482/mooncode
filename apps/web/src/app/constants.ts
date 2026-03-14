@@ -31,7 +31,7 @@ export const FEATURES: Feature[] = [
   },
   {
     Icon: Activity,
-    title: "Real Time Dashboard Sync",
+    title: "Real Time Dashboard sync",
     text: "Stats in the dashboard always stay fresh and up to date with the data collected by the extension.",
   },
   {
@@ -41,8 +41,8 @@ export const FEATURES: Feature[] = [
   },
   {
     Icon: Timer,
-    title: "Minute accurate time tracking",
-    text: "Always up to date stats collection by the extension.",
+    title: "Minute-accurate time tracking",
+    text: "The extension keeps your stats up to date automatically.",
   },
 ];
 
