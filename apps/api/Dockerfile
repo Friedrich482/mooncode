@@ -1,4 +1,6 @@
-FROM node:24-alpine AS builder
+ARG NODE_VERSION=24.13.0-alpine
+
+FROM node:${NODE_VERSION} AS builder
 
 WORKDIR /app
 
@@ -15,7 +17,7 @@ COPY . .
 RUN npm run build --workspace=@repo/common 
 RUN npm run build --workspace=api          
 
-FROM node:24-alpine AS deps
+FROM node:${NODE_VERSION} AS dependencies
 
 WORKDIR /app
 
@@ -25,9 +27,10 @@ COPY turbo.json ./
 COPY apps/api/package*.json ./apps/api/
 COPY packages/common/package*.json ./packages/common/
 
-RUN npm ci --omit=dev
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --no-audit --no-fund --omit=dev
 
-FROM node:24-alpine AS production
+FROM node:${NODE_VERSION} AS runner
 
 WORKDIR /app
 
@@ -43,12 +46,9 @@ COPY --from=builder /app/packages/common/package.json ./packages/common/package.
 COPY --from=builder /app/packages/trpc ./packages/trpc
 COPY --from=builder /app/apps/api/package*.json ./
 
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=dependencies /app/node_modules ./node_modules
 
-# Create non-root user for security
-RUN addgroup -g 1001 -S nodejs
-RUN adduser -S nestjs -u 1001
-USER nestjs
+USER node
 
 EXPOSE 3000
 

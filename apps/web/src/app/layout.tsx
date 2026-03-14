@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   title: "MoonCode | Track your coding activity with ease",
   description: "Track your coding time, languages and files with ease",
   metadataBase: new URL("https://mooncode.cc"),
+  alternates: {
+    canonical: "/",
+  },
 
   openGraph: {
     title: "MoonCode",
@@ -21,6 +24,7 @@ export const metadata: Metadata = {
     url: "https://mooncode.cc",
     description: "Track your coding activity with ease",
     siteName: "MoonCode",
+    images: "/opengraph-image.png",
   },
 
   twitter: {
@@ -28,6 +32,7 @@ export const metadata: Metadata = {
     creator: "@FriedrichC109",
     description: "Track your coding time, languages and files with ease",
     card: "summary_large_image",
+    images: "/twitter-image.png",
   },
 };
 

@@ -36,7 +36,13 @@ export const Files = memo(function Files({
 
   useEffect(() => {
     setPage(1);
-  }, [period, customRange.start, customRange.end, languagesToFetch]);
+  }, [
+    period,
+    customRange.start,
+    customRange.end,
+    languagesToFetch,
+    searchTerm,
+  ]);
 
   const { files, groups, hasNext } = useFiles(
     languagesToFetch,
