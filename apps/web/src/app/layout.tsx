@@ -45,7 +45,7 @@ export default function RootLayout({
     >
       <head />
       <body
-        className={`${inter.className} flex flex-col antialiased transition duration-300 ease-in-out`}
+        className={`${inter.className} flex w-svw flex-col overflow-x-hidden antialiased transition duration-300 ease-in-out`}
       >
         <ThemeProvider
           enableSystem
