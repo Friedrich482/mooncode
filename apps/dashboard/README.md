@@ -37,13 +37,15 @@ npm install
 
 ### Development
 
-Before continuing you'll need some environment variables: `VITE_API_URL`, `VITE_LOGOUT_URL` and `VITE_AUTH_GOOGLE_URL`.
+Before continuing you'll need some environment variables: `VITE_API_URL`, `VITE_LOGOUT_URL`, `VITE_AUTH_GOOGLE_URL` and `VITE_LINKING_GOOGLE_ACCOUNT_URL`.
+
 Create a `.env.development` :
 
 ```bash
 VITE_API_URL="http://localhost:3000/trpc"
 VITE_LOGOUT_URL="http://localhost:3000/trpc/auth.logOut"
 VITE_AUTH_GOOGLE_URL="http://localhost:3000/auth/google"
+VITE_LINKING_GOOGLE_ACCOUNT_URL="http://localhost:3000/auth/google/linking"
 ```
 
 So to properly run the dashboard in development, the [API](../api) must be also running on `http://localhost:3000`. Then run
@@ -57,12 +59,13 @@ and open `http://localhost:4208` (or the near available port).
 ### Production
 
 To build for production:
-Create a `.env.production` with the same variables as in development and adapt them depending of your API:
+Create a `.env.production` with the same variables as in development and adapt them depending of your API domain:
 
 ```bash
 VITE_API_URL=...
 VITE_LOGOUT_URL=...
 VITE_AUTH_GOOGLE_URL=...
+VITE_LINKING_GOOGLE_ACCOUNT_URL=...
 ```
 
 Then build with:
@@ -73,4 +76,4 @@ npm run build
 
 ## License
 
-[MIT](/LICENSE) License &copy; 2025
+[MIT](/LICENSE) License &copy; 2026

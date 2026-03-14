@@ -47,7 +47,7 @@ Before continuing you'll need some environment variables: `JWT_SECRET` and `DATA
   NODE_ENV=production
   ```
 
-- `DATABASE_URL`, you can use:
+- `DATABASE_URL`: you can use:
 
   ```bash
   DATABASE_URL="postgresql://postgres:postgres@localhost:5432/mooncode"
@@ -64,10 +64,31 @@ Before continuing you'll need some environment variables: `JWT_SECRET` and `DATA
   ```
 
 - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`: you get them when you create credentials in the Google Cloud Console
+
 - `GOOGLE_REDIRECT_URI`:
 
   ```bash
   GOOGLE_REDIRECT_URI=http://localhost:3000/auth/google/callback
+  ```
+
+- `GOOGLE_LINKING_REDIRECT_URI`:
+
+  ```bash
+  GOOGLE_LINKING_REDIRECT_URI=http://localhost:3000/auth/google/linking/callback
+  ```
+
+- `ONBOARDING_EMAIL`, `RESET_PASSWORD_EMAIL` and `UPDATE_EMAIL_EMAIL`: those three can be obtained by creating an account on Resend and registering an email domain. For example:
+
+  ```bash
+  ONBOARDING_EMAIL=onboarding@<email_domain>
+  RESET_PASSWORD_EMAIL=noreply@<email_domain>
+  UPDATE_EMAIL_EMAIL=noreply@<email_domain>
+  ```
+
+- `RESEND_API_KEY`: Resend API key
+
+  ```bash
+  RESEND_API_KEY=re_...
   ```
 
 ## Compile and run the project
@@ -104,4 +125,4 @@ docker run -p 3000:3000 --name mooncode-api-container --env-file apps/api/.env m
 
 ## License
 
-[MIT](/LICENSE) License &copy; 2025
+[MIT](/LICENSE) License &copy; 2026
