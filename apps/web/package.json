@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack -p 3001",
     "build": "next build",
-    "start": "next start -p 3002",
+    "start": "serve out -p 3002",
     "lint": "eslint . --fix"
   },
   "dependencies": {
@@ -31,6 +31,7 @@
     "postcss": "^8.5.6",
     "prettier": "^3.8.1",
     "prettier-plugin-tailwindcss": "^0.6.14",
+    "serve": "^14.2.6",
     "tailwindcss": "^4.1.17",
     "turbopack-inline-svg-loader": "^1.0.3",
     "typescript": "^5.9.3"

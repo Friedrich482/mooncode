@@ -9,3 +9,4 @@ tsconfig.tsbuildinfo
 **/node_modules
 packages/eslint-config
 **/eslint.config.ts
+**/.next
