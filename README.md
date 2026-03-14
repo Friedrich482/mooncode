@@ -24,14 +24,14 @@ This project is the monorepo for MoonCode. This is an application to track and g
 - Breakdown of coding activity per project
 - Local dashboard to visualize your data, with extensive filters for a more detailed summary
 - All parts (vscode-extension, api, dashboard) of the project can be self-hosted
-- Extension Works offline
+- Extension works offline
 
 ### Apps and Packages
 
 - [`api`](./apps/api): a [Nestjs](https://nestjs.com/) application that powers the `extension` and the `dashboard`
 - [`dashboard`](./apps/dashboard): a [Vite](https://vite.dev/) application served locally by the extension to visualize the data
 - [`vscode extension`](./apps/vscode-extension): the VSCode extension that collects your statistics
-- [`web`](./apps/web): a [Nextjs](https://nextjs.org/) application that is the web site of the project
+- [`web`](./apps/web): a [Nextjs](https://nextjs.org/) application that is the website of the project
 - [`@repo/common`](./packages/common): all functions, constants and utils shared by the three parts of the project
 - [`@repo/trpc`](./packages/trpc): the package that shares trpc types across the project
 - [`@repo/ui`](./packages/ui): ui components shared between `dashboard` and `web`

@@ -12,7 +12,8 @@ export const HeroSection = () => (
   <section className="relative flex flex-col items-center justify-center gap-12 pt-20 pb-60">
     <Image
       src={animatedNight as unknown as string}
-      alt="Animated night background image"
+      alt=""
+      aria-hidden="true"
       loading="eager"
       className="-z-30 object-cover object-top-right opacity-80"
       fill

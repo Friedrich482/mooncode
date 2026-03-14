@@ -10,3 +10,4 @@ tsconfig.tsbuildinfo
 packages/eslint-config
 **/eslint.config.ts
 **/.next
+**/out
