@@ -15,8 +15,11 @@ export const getCurrentFileProperties = (
 
   const fileUri = document.uri;
 
-  const projectName = vscode.workspace.getWorkspaceFolder(fileUri)?.name;
-  const projectPath = vscode.workspace.getWorkspaceFolder(fileUri)?.uri.fsPath;
+  const workspaceFolder = vscode.workspace.getWorkspaceFolder(
+    fileUri.with({ scheme: "file" }),
+  );
+  const projectName = workspaceFolder?.name;
+  const projectPath = workspaceFolder?.uri.fsPath;
 
   if (!projectName || !projectPath) {
     return {
