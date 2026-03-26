@@ -20,6 +20,11 @@ export const SUBSET_LANGUAGES: Record<string, string> = {
   "csv (pipe)": "csv",
   "csv (whitespace)": "csv",
   "dynamic csv": "csv",
+  "go.mod": "go",
+  "go.sum": "go",
+  "go.asm": "go",
+  "go.work": "go",
+  gotmpl: "go",
 };
 
 export let filesData: FileMap = {};
