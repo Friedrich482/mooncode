@@ -3,7 +3,11 @@ import vscode from "vscode";
 import { KNOWN_LANGUAGES, SUBSET_LANGUAGES } from "@/constants";
 
 export const getLanguageSlug = (document: vscode.TextDocument | undefined) => {
-  if (!document || document.uri.scheme !== "file") {
+  if (
+    !document ||
+    (document.uri.scheme !== "file" &&
+      document.uri.scheme !== "vscode-notebook-cell")
+  ) {
     return;
   }
 
@@ -25,6 +29,12 @@ export const getLanguageSlug = (document: vscode.TextDocument | undefined) => {
   // just assign it to the language itself instead of using that subset
   if (SUBSET_LANGUAGES[languageSlug]) {
     languageSlug = SUBSET_LANGUAGES[languageSlug];
+  }
+
+  // if the file is a jupyter notebook (specific kind of file that can have many cells
+  // with different languages), we have a dedicated slug for it
+  if (document.uri.scheme === "vscode-notebook-cell") {
+    languageSlug = "jupyternotebook";
   }
 
   return languageSlug;
