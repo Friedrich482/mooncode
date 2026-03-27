@@ -127,13 +127,13 @@ export class TrpcService {
       );
 
       this.logger.log(
-        `${ctx.req.method} ${ctx.req.originalUrl} - userId: ${payload.sub}`,
+        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}`,
       );
 
       return payload;
     } catch (error) {
       this.logger.error(
-        `${ctx.req.method} ${ctx.req.originalUrl} - JWT verification failed`,
+        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - JWT verification failed`,
         error instanceof Error ? error.stack : error,
       );
 
