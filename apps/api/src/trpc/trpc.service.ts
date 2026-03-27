@@ -34,6 +34,7 @@ export const createContext = async (
 export class TrpcService {
   trpc;
   private limiters;
+  private readonly logger = new Logger("TrpcService", { timestamp: true });
   constructor(
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
@@ -48,8 +49,6 @@ export class TrpcService {
       ReturnType<typeof createTRPCStoreLimiter<typeof this.trpc>>
     >();
   }
-
-  private readonly logger = new Logger("TrpcService", { timestamp: true });
 
   rateLimiter(rateLimiterParams: RateLimiterParams) {
     const { key, windowMs = 15 * 60 * 1000, max = 600 } = rateLimiterParams;
