@@ -2,7 +2,7 @@ import superjson from "superjson";
 import { EnvService } from "src/env/env.service";
 import { errorFormatter } from "src/trpc/filters/error-formatter";
 
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { JwtPayload as JwtPayloadDtoType } from "@repo/common/types-schemas";
@@ -48,6 +48,8 @@ export class TrpcService {
       ReturnType<typeof createTRPCStoreLimiter<typeof this.trpc>>
     >();
   }
+
+  private readonly logger = new Logger("TrpcService", { timestamp: true });
 
   rateLimiter(rateLimiterParams: RateLimiterParams) {
     const { key, windowMs = 15 * 60 * 1000, max = 600 } = rateLimiterParams;
@@ -123,11 +125,17 @@ export class TrpcService {
           secret: this.envService.get("JWT_SECRET"),
         },
       );
+
+      this.logger.log(
+        `${ctx.req.method} ${ctx.req.originalUrl} - userId: ${payload.sub}`,
+      );
+
       return payload;
     } catch (error) {
-      if (error instanceof Error && error.name !== "JsonWebTokenError") {
-        console.error("Unexpected Error:", error);
-      }
+      this.logger.error(
+        `${ctx.req.method} ${ctx.req.originalUrl} - JWT verification failed`,
+        error instanceof Error ? error.stack : error,
+      );
 
       throw new TRPCError({
         code: "UNAUTHORIZED",
