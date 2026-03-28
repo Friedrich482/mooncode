@@ -1,27 +1,36 @@
-import { ZodSafeParseResult } from "zod";
+import z from "zod";
 
+import { formatZodError } from "@repo/common/format-zod-error";
 import { JwtPayload, JwtPayloadSchema } from "@repo/common/types-schemas";
 
 export const parseJwtPayload = (
-  token: string | undefined,
+  token: string,
 ):
-  | ZodSafeParseResult<JwtPayload>
+  | { success: true; data: JwtPayload }
   | {
       success: false;
       error: unknown;
     } => {
   try {
-    if (!token || typeof token !== "string" || !token.includes(".")) {
-      return { success: false, error: new Error("Invalid token format") };
+    const parsedJwtToken = z.jwt().safeParse(token);
+
+    if (!parsedJwtToken.success) {
+      return { success: false, error: formatZodError(parsedJwtToken.error) };
     }
 
-    const base64Payload = token.split(".")[1];
-    const decodedPayload = Buffer.from(base64Payload, "base64").toString(
-      "utf8",
-    );
-    const jsonPayload = JSON.parse(decodedPayload);
+    const validatedJwt = parsedJwtToken.data;
 
-    return JwtPayloadSchema.safeParse(jsonPayload);
+    const decodedPayload = JSON.parse(
+      Buffer.from(validatedJwt.split(".")[1], "base64").toString("utf8"),
+    );
+
+    const parsedPayload = JwtPayloadSchema.safeParse(decodedPayload);
+
+    if (!parsedPayload.success) {
+      return { success: false, error: formatZodError(parsedPayload.error) };
+    }
+
+    return { success: true, data: parsedPayload.data };
   } catch (error) {
     return { success: false, error };
   }
