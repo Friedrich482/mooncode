@@ -5,6 +5,11 @@ import { setLogoutContextAndStatusBar } from "../status-bar/set-logout-context-a
 import { deleteToken } from "./delete-token";
 import { parseJwtPayload } from "./parse-jwt-payload";
 
+/**
+ * Validates and retrieves the stored auth token.
+ * Side effects: Deletes malformed/expired tokens and updates status bar state.
+ * `@returns` The valid token string, or undefined if no valid token exists.
+ */
 export const validateAndRetrieveToken = async () => {
   const context = getExtensionContext();
 
