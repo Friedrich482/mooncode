@@ -1,6 +1,5 @@
 import vscode from "vscode";
 
-import { getExtensionContext } from "@/extension";
 import { updateGlobalStateData } from "@/utils/global-state/update-global-state-data";
 import { getLocaleDate } from "@repo/common/get-locale-date";
 
@@ -11,9 +10,7 @@ import { login } from "./login";
 
 export const logout = async () => {
   try {
-    const context = getExtensionContext();
-
-    await deleteToken(context);
+    await deleteToken();
 
     await setLogoutContextAndStatusBar();
 

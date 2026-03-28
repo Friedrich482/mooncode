@@ -108,8 +108,7 @@ export class TrpcService {
     // get jwt token from cookies (browser) or the headers (extension)
     const accessToken =
       ctx.req.cookies?.auth_token ??
-      ctx.req.headers.authorization?.replace("Bearer ", "") ??
-      "";
+      ctx.req.headers.authorization?.replace("Bearer ", "");
 
     if (!accessToken) {
       throw new TRPCError({

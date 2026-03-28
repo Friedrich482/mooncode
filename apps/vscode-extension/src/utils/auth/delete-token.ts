@@ -1,5 +1,6 @@
-import vscode from "vscode";
+import { getExtensionContext } from "@/extension";
 
-export const deleteToken = async (context: vscode.ExtensionContext) => {
+export const deleteToken = async () => {
+  const context = getExtensionContext();
   await context.secrets.delete("authToken");
 };
