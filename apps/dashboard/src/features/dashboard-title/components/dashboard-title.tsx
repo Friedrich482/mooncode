@@ -27,12 +27,12 @@ export const DashboardTitle = () => (
             error={error}
             resetErrorBoundary={resetErrorBoundary}
             hasCustomChildren={true}
-            customChildren={
+            customChildren={(errorMessage) => (
               <h3 className="text-destructive inline-block space-x-1">
                 <TriangleAlert className="inline size-8 shrink-0 -translate-y-1 max-xl:size-6" />
-                <span className="text-2xl">Error</span>
+                <span className="text-2xl">Error: {errorMessage}</span>
               </h3>
-            }
+            )}
           />
         )}
       >

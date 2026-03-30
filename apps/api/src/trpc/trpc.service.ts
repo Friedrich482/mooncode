@@ -117,6 +117,15 @@ export class TrpcService {
       });
     }
 
+    const clientIpAddress =
+      this.envService.get("NODE_ENV") === "development"
+        ? ctx.req.ip
+        : // the api may be behind proxies in production
+          (ctx.req.headers["x-forwarded-for"]
+            ?.toString()
+            .split(",")[0]
+            .trim() ?? ctx.req.socket.remoteAddress);
+
     try {
       const payload: JwtPayloadDtoType = await this.jwtService.verifyAsync(
         accessToken,
@@ -126,19 +135,19 @@ export class TrpcService {
       );
 
       this.logger.log(
-        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}`,
+        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}, ${clientIpAddress}`,
       );
 
       return payload;
     } catch (error) {
       this.logger.error(
-        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - JWT verification failed`,
+        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - JWT verification failed on jwt: "${accessToken}", ${clientIpAddress}`,
         error instanceof Error ? error.stack : error,
       );
 
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "An error occurred",
+        message: "Invalid or expired token",
       });
     }
   }
