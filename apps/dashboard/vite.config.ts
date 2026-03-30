@@ -39,6 +39,7 @@ export default defineConfig({
     dedupe: ["react", "react-dom"],
   },
   build: {
+    chunkSizeWarningLimit: 600,
     rollupOptions: {
       onLog(level, log, handler) {
         // Ignore warnings mentioning "date-fns" (ESM-only library).
