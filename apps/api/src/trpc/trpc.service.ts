@@ -126,19 +126,19 @@ export class TrpcService {
       );
 
       this.logger.log(
-        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}`,
+        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}, ${ctx.req.ip}`,
       );
 
       return payload;
     } catch (error) {
       this.logger.error(
-        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - JWT verification failed`,
+        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - JWT verification failed on jwt: "${accessToken}", ${ctx.req.ip}`,
         error instanceof Error ? error.stack : error,
       );
 
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: "An error occurred",
+        message: error instanceof Error ? error.message : "An error occurred",
       });
     }
   }
