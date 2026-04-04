@@ -67,3 +67,5 @@ export type FindByEmailDtoType = z.infer<typeof FindByEmailDto>;
 export type FindByUsernameDtoType = z.infer<typeof FindByUsernameDto>;
 
 export type FindByGoogleEmailDtoType = z.infer<typeof FindByGoogleEmailDto>;
+
+export type DeleteUserDtoType = z.infer<typeof DeleteUserDto>;

@@ -14,7 +14,7 @@ import { ExtensionService } from "./extension.service";
 export class ExtensionRouter {
   constructor(
     private readonly extensionService: ExtensionService,
-    private readonly trpcService: TrpcService
+    private readonly trpcService: TrpcService,
   ) {}
 
   procedures = {
@@ -26,7 +26,7 @@ export class ExtensionRouter {
           this.extensionService.getLanguagesTimeForDay({
             ...input,
             userId: ctx.user.sub,
-          })
+          }),
         ),
 
       getFilesForDay: this.trpcService
@@ -36,7 +36,7 @@ export class ExtensionRouter {
           this.extensionService.getFilesForDay({
             ...input,
             userId: ctx.user.sub,
-          })
+          }),
         ),
 
       upsertLanguages: this.trpcService
@@ -46,14 +46,14 @@ export class ExtensionRouter {
           this.extensionService.upsertLanguages({
             ...input,
             userId: ctx.user.sub,
-          })
+          }),
         ),
 
       upsertFiles: this.trpcService
         .protectedProcedure()
         .input(UpsertFilesDto)
         .mutation(async ({ ctx, input }) =>
-          this.extensionService.upsertFiles({ ...input, userId: ctx.user.sub })
+          this.extensionService.upsertFiles({ ...input, userId: ctx.user.sub }),
         ),
     }),
   };

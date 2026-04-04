@@ -3,6 +3,7 @@ import vscode from "vscode";
 import { getExtensionContext } from "@/extension";
 
 import { setLoginContextAndStatusBar } from "../status-bar/set-login-context-and-status-bar";
+import { logout } from "./logout";
 import { storeJWTToken } from "./store-jwt-token";
 
 export const registerAuthUriHandler = () => {
@@ -10,6 +11,7 @@ export const registerAuthUriHandler = () => {
 
   vscode.window.registerUriHandler({
     async handleUri(uri: vscode.Uri) {
+      // logic to log the user in when the dashboard redirects back to the extension
       if (uri.path === "/auth-callback") {
         const params = new URLSearchParams(uri.query);
         const token = params.get("token");
@@ -42,6 +44,9 @@ export const registerAuthUriHandler = () => {
         } else {
           vscode.window.showErrorMessage("Login failed: No token received.");
         }
+      } else if (uri.path === "/logout") {
+        // logic to log the user out when he deletes his account from the dashboard
+        await logout();
       }
     },
   });

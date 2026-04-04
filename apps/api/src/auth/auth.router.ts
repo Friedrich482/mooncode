@@ -196,6 +196,25 @@ export class AuthRouter {
           sameSite: "none",
         });
       }),
+
+      deleteAccount: this.trpcService
+        .protectedProcedure({
+          key: "auth.deleteAccount",
+          windowMs: 5 * 60 * 1000,
+          max: 5,
+        })
+        .mutation(async ({ ctx }) => {
+          await this.authService.deleteAccount({
+            userId: ctx.user.sub,
+          });
+
+          // Remove the cookie to log the user out
+          ctx.res.clearCookie(this.AUTH_COOKIE_NAME, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none",
+          });
+        }),
     }),
   };
 }
