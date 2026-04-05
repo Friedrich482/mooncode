@@ -22,7 +22,7 @@ export async function activate(context: vscode.ExtensionContext) {
   extensionContext = context;
 
   setEnvironmentContext();
-  dashboardServer = await serveDashboard(context);
+  dashboardServer = await serveDashboard();
   registerAuthUriHandler();
 
   statusBarItem = addStatusBarItem();

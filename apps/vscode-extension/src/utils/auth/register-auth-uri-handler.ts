@@ -4,7 +4,7 @@ import { getExtensionContext } from "@/extension";
 
 import { setLoginContextAndStatusBar } from "../status-bar/set-login-context-and-status-bar";
 import { logout } from "./logout";
-import { storeJWTToken } from "./store-jwt-token";
+import { storeJwtToken } from "./store-jwt-token";
 
 export const registerAuthUriHandler = () => {
   const context = getExtensionContext();
@@ -33,7 +33,7 @@ export const registerAuthUriHandler = () => {
         }
 
         if (token) {
-          await storeJWTToken(context, token);
+          await storeJwtToken(token);
           await context.secrets.delete("authState");
 
           await setLoginContextAndStatusBar();
