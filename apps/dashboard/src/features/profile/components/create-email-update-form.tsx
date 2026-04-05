@@ -93,8 +93,9 @@ export const CreateEmailUpdateForm = () => {
                 <FormControl>
                   <Input
                     placeholder="example@email.com"
-                    {...field}
                     className="border-border h-10 w-1/2 max-sm:w-full"
+                    type="email"
+                    {...field}
                   />
                 </FormControl>
                 <FormMessage />

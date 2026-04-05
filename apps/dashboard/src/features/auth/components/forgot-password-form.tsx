@@ -94,8 +94,9 @@ export const ForgotPasswordForm = () => {
                 <FormControl>
                   <Input
                     placeholder="example@email.com"
-                    {...field}
+                    type="email"
                     className="border-border h-10 w-full"
+                    {...field}
                   />
                 </FormControl>
                 <FormDescription>

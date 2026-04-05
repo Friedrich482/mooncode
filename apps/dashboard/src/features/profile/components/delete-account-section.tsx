@@ -148,10 +148,10 @@ export const DeleteAccountSection = () => {
                         <FormControl>
                           <Input
                             placeholder="example@email.com"
-                            {...field}
                             type="email"
                             className="border-border h-10"
                             autoComplete="off"
+                            {...field}
                           />
                         </FormControl>
                         <FormMessage />

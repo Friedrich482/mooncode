@@ -95,8 +95,9 @@ export const RegisterForm = () => {
               <FormControl>
                 <Input
                   placeholder="example@email.com"
-                  {...field}
+                  type="email"
                   className="border-border h-10"
+                  {...field}
                 />
               </FormControl>
               <FormDescription>
