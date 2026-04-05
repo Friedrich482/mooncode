@@ -102,10 +102,12 @@ export default [
               from: "./src/features",
               except: ["./profile"],
             },
+            // app can import from features but not the other way around
             {
               target: "./src/features",
               from: "./src/app",
             },
+            // features and app can import from all the directories below, but not the other way around
             {
               target: [
                 "./src/components",
