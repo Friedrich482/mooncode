@@ -50,7 +50,6 @@ export const DeleteAccountSection = () => {
   const deleteAccountMutation = useMutation(
     trpc.auth.deleteAccount.mutationOptions(),
   );
-  const logoutMutation = useMutation(trpc.auth.logOut.mutationOptions());
 
   const onSubmit = () => {
     deleteAccountMutation.mutate(undefined, {
@@ -59,24 +58,15 @@ export const DeleteAccountSection = () => {
         form.setError("root", { message: errorMessage });
       },
 
-      onSuccess: () => {
-        logoutMutation.mutate(undefined, {
-          onError: (error) => {
-            const errorMessage = error.message;
-            form.setError("root", { message: errorMessage });
-          },
-
-          onSuccess: async (_, __, ___, { client }) => {
-            await client.invalidateQueries({
-              queryKey: trpc.auth.getUser.queryKey(),
-              exact: true,
-            });
-            navigate("/login");
-
-            // we need to send a request to the vscode extension to force it to log the deleted user out
-            window.location.href = `vscode://${PUBLISHER}.${EXTENSION_ID}/logout`;
-          },
+      onSuccess: async (_, __, ___, { client }) => {
+        await client.invalidateQueries({
+          queryKey: trpc.auth.getUser.queryKey(),
+          exact: true,
         });
+        navigate("/login");
+
+        // we need to send a request to the vscode extension to force it to log the deleted user out
+        window.location.href = `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/logout`;
       },
     });
   };
