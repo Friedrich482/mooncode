@@ -11,6 +11,7 @@ import { TRPCError } from "@trpc/server";
 import {
   CreateGoogleUserDtoType,
   CreateUserDtoType,
+  DeleteUserDtoType,
   FindByEmailDtoType,
   FindByGoogleEmailDtoType,
   FindByIdDtoType,
@@ -307,5 +308,27 @@ export class UsersService {
       });
 
     return returningUser;
+  }
+
+  async delete(deleteUserDto: DeleteUserDtoType) {
+    const { id } = deleteUserDto;
+
+    const [deletedUser] = await this.db
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning({
+        id: users.id,
+        username: users.username,
+        email: users.email,
+      });
+
+    if (!deletedUser) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "User not found",
+      });
+    }
+
+    return deletedUser;
   }
 }

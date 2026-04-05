@@ -1,7 +1,11 @@
 import { useLayoutEffect } from "react";
 import { useLocation } from "react-router";
 
-export const Wrapper = ({ children }: { children: React.ReactNode }) => {
+export const NavigationResetWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const location = useLocation();
 
   useLayoutEffect(() => {

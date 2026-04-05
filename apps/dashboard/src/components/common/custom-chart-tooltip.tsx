@@ -31,7 +31,7 @@ export const CustomChartToolTip = (
       {languageSlug && <span>{getLanguageName(languageSlug)}</span>}
       <span className="text-muted-foreground flex-1">
         {!Number.isNaN(value) ? formatDuration(value) : "######"}{" "}
-        {percentage && `(${percentage}%)`}
+        {percentage !== undefined && `(${percentage}%)`}
       </span>
     </div>
   );

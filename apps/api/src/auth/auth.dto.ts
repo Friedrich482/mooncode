@@ -57,6 +57,8 @@ export type RedirectToGoogleDtoType = z.infer<typeof RedirectToGoogleDto>;
 
 export type GoogleUser = z.infer<typeof GoogleUserSchema>;
 
+export type DeleteAccountDtoType = UserId;
+
 export type RedirectToGoogleForLinkingDtoType = z.infer<
   typeof RedirectToGoogleForLinkingDto
 >;

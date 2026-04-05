@@ -12,6 +12,7 @@ import { Dashboard } from "@/app/pages/dashboard";
 import { NotFound } from "@/app/pages/not-found";
 import { Project } from "@/app/pages/project/project";
 import { UpdateEmail } from "@/app/pages/update-email/update-email";
+import { Layout } from "@/components/layout/layout";
 import { Layout as AuthLayout } from "@/features/auth/components/layout";
 import {
   authRouteLoader,
@@ -27,10 +28,9 @@ import { projectLoader } from "@/loaders/project-loader";
 import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader";
 import { rootLoader } from "@/loaders/root-loader";
 
-import { App } from "./App";
-import { RegisterFinish } from "./app/pages/auth/register-finish";
-import { Profile } from "./app/pages/profile/profile";
-import { Layout } from "./components/layout/layout";
+import { App } from "./app";
+import { RegisterFinish } from "./pages/auth/register-finish";
+import { Profile } from "./pages/profile/profile";
 
 const router = createBrowserRouter([
   {

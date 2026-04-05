@@ -5,12 +5,15 @@ import * as path from "path";
 import * as vscode from "vscode";
 import { WebSocket, WebSocketServer } from "ws";
 
+import { getExtensionContext } from "@/extension";
 import { DashboardServer } from "@/types-schemas";
 import { logDir, logError, logInfo } from "@/utils/logger/logger";
 import { DASHBOARD_PRODUCTION_PORT } from "@repo/common/constants";
 import { WsData, WsDataSchema } from "@repo/common/types-schemas";
 
-export const serveDashboardProd = async (context: vscode.ExtensionContext) => {
+export const serveDashboardProd = async () => {
+  const context = getExtensionContext();
+
   const app = express();
   const pathToFrontendDist = path.join(context.extensionPath, "_dashboard");
 

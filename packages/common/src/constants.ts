@@ -17,5 +17,5 @@ export const DASHBOARD_DEVELOPMENT_WS_PORT = 4318;
 export const EMAIL_VERIFICATION_CODE_LENGTH = 8;
 export const PASSWORD_RESET_CODE_LENGTH = 8;
 
-export const PUBLISHER = "friedrich482";
+export const PUBLISHER = "Friedrich482";
 export const EXTENSION_ID = "mooncode";

@@ -28,7 +28,8 @@ export const VSCodeCallbackUrlSchema = z
     (urlStr) => {
       const url = new URL(urlStr);
       const [publisher] = url.hostname.split(".");
-      return publisher === PUBLISHER;
+      // lowercase for variants extracted from urls/uris
+      return publisher === PUBLISHER || publisher === PUBLISHER.toLowerCase();
     },
     { error: "Invalid publisher", abort: true },
   )

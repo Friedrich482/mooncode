@@ -56,8 +56,8 @@ export default [
       "check-file/filename-naming-convention": [
         "error",
         {
-          // all files except the root App.tsx of vite
-          "**/*/!(App).{ts,tsx}": "KEBAB_CASE",
+          "**/*.{ts,tsx}": "KEBAB_CASE",
+          "*.{ts,tsx}": "KEBAB_CASE",
         },
         {
           // ignore the middle extensions of the filename to support filename like auth.controller.ts

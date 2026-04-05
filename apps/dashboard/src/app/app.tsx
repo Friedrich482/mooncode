@@ -3,6 +3,11 @@ import { ErrorBoundary } from "react-error-boundary";
 import { Outlet } from "react-router";
 import superjson from "superjson";
 
+import { FallBackRender } from "@/components/errors/error-boundary";
+import { NavigationResetWrapper } from "@/components/layout/navigation-reset-wrapper";
+import { useExtensionWebsocket } from "@/hooks/use-extension-websocket";
+import { ThemeProvider } from "@/providers/theme-provider";
+import { TRPCProvider } from "@/utils/trpc";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import type { AppRouter } from "@repo/trpc/router";
@@ -13,12 +18,6 @@ import { TooltipProvider } from "@repo/ui/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-
-import { FallBackRender } from "./components/errors/error-boundary";
-import { Wrapper } from "./components/layout/navigation-reset-wrapper";
-import { useExtensionWebsocket } from "./hooks/use-extension-websocket";
-import { ThemeProvider } from "./providers/theme-provider";
-import { TRPCProvider } from "./utils/trpc";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -110,10 +109,10 @@ export const App = () => {
                   />
                 )}
               >
-                <Wrapper>
+                <NavigationResetWrapper>
                   <Outlet />
                   <ScrollToTopButton />
-                </Wrapper>
+                </NavigationResetWrapper>
               </ErrorBoundary>
             </TooltipProvider>
           </SidebarProvider>

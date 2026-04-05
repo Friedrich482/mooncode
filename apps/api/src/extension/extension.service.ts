@@ -18,11 +18,11 @@ export class ExtensionService {
     private readonly dailyDataService: DailyDataService,
     private readonly languagesService: LanguagesService,
     private readonly projectsService: ProjectsService,
-    private readonly filesService: FilesService
+    private readonly filesService: FilesService,
   ) {}
 
   async getLanguagesTimeForDay(
-    getLanguagesTimeForDayDto: GetLanguagesTimeForDayDtoType
+    getLanguagesTimeForDayDto: GetLanguagesTimeForDayDtoType,
   ) {
     const { userId, dateString } = getLanguagesTimeForDayDto;
 
@@ -110,7 +110,7 @@ export class ExtensionService {
     }
 
     for (const [languageSlug, timeSpentOnLanguage] of Object.entries(
-      timeSpentPerLanguage
+      timeSpentPerLanguage,
     )) {
       const existingLanguageData = await this.languagesService.findOne({
         dailyDataId: returningData.dailyDataId,
@@ -165,7 +165,7 @@ export class ExtensionService {
     });
 
     if (!dailyDataForDay) {
-      // early exit – nothing to upsert
+      // early exit - nothing to upsert
       return {};
     }
 

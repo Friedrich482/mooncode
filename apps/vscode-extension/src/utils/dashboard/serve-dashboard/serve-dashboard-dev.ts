@@ -2,6 +2,7 @@ import getPort from "get-port";
 import * as vscode from "vscode";
 import { WebSocket, WebSocketServer } from "ws";
 
+import { getExtensionContext } from "@/extension";
 import { DashboardServer } from "@/types-schemas";
 import { logDir, logError, logInfo } from "@/utils/logger/logger";
 import {
@@ -11,7 +12,9 @@ import {
 } from "@repo/common/constants";
 import { WsData, WsDataSchema } from "@repo/common/types-schemas";
 
-export const serveDashboardDev = async (context: vscode.ExtensionContext) => {
+export const serveDashboardDev = async () => {
+  const context = getExtensionContext();
+
   const wsPort = await getPort({ port: DASHBOARD_DEVELOPMENT_WS_PORT });
 
   const wss = new WebSocketServer({ port: wsPort });

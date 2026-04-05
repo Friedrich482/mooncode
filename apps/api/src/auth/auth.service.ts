@@ -33,6 +33,7 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import {
+  DeleteAccountDtoType,
   GoogleUserSchema,
   HandleGoogleCallBacKDtoType,
   HandleGoogleLinkingCallBackDtoType,
@@ -360,6 +361,14 @@ export class AuthService {
     return {
       message: `${message}. Your email has been updated to ${updatedUser.email}`,
     };
+  }
+
+  async deleteAccount(deleteAccountDto: DeleteAccountDtoType) {
+    const { userId } = deleteAccountDto;
+
+    const deletedUser = await this.usersService.delete({ id: userId });
+
+    return deletedUser;
   }
 
   async redirectToGoogle(redirectToGoogleDto: RedirectToGoogleDtoType) {
