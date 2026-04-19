@@ -1,7 +1,6 @@
-import { AnalyticsRouter } from "src/analytics/routers/analytics.router";
-import { AuthRouter } from "src/auth/auth.router";
-import { ExtensionRouter } from "src/extension/extension.router";
-
+import { AnalyticsRouter } from "@/analytics/routers/analytics.router";
+import { AuthRouter } from "@/auth/auth.router";
+import { ExtensionRouter } from "@/extension/extension.router";
 import { INestApplication, Injectable } from "@nestjs/common";
 import * as trpcExpress from "@trpc/server/adapters/express";
 
@@ -13,7 +12,7 @@ export class TrpcRouter {
     private readonly trpcService: TrpcService,
     private readonly authRouter: AuthRouter,
     private readonly analyticsRouter: AnalyticsRouter,
-    private readonly extensionRouter: ExtensionRouter
+    private readonly extensionRouter: ExtensionRouter,
   ) {}
 
   appRouter = this.trpcService.trpc.router({
@@ -28,7 +27,7 @@ export class TrpcRouter {
       trpcExpress.createExpressMiddleware({
         router: this.appRouter,
         createContext,
-      })
+      }),
     );
   }
 }

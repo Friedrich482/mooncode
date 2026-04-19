@@ -1,6 +1,5 @@
-import { DrizzleModule } from "src/drizzle/drizzle.module";
-import { EmailModule } from "src/email/email.module";
-
+import { DrizzleModule } from "@/drizzle/drizzle.module";
+import { EmailModule } from "@/email/email.module";
 import { Module } from "@nestjs/common";
 
 import { PasswordResetsService } from "./password-resets.service";

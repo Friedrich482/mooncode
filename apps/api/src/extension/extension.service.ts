@@ -1,8 +1,7 @@
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { FilesService } from "src/files/files.service";
-import { LanguagesService } from "src/languages/languages.service";
-import { ProjectsService } from "src/projects/projects.service";
-
+import { DailyDataService } from "@/daily-data/daily-data.service";
+import { FilesService } from "@/files/files.service";
+import { LanguagesService } from "@/languages/languages.service";
+import { ProjectsService } from "@/projects/projects.service";
 import { Injectable } from "@nestjs/common";
 
 import {

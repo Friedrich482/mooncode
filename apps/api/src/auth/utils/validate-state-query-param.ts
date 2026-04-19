@@ -1,7 +1,7 @@
 import { Request } from "express";
 import z from "zod";
-import { ALLOWED_CLIENTS } from "src/common/constants";
 
+import { ALLOWED_CLIENTS } from "@/common/constants";
 import {
   DASHBOARD_DEVELOPMENT_URL,
   DASHBOARD_PRODUCTION_URL,

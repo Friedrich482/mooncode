@@ -1,7 +1,8 @@
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
-import { EnvService } from "src/env/env.service";
+
+import { EnvService } from "@/env/env.service";
 
 import * as schema from "./schema";
 

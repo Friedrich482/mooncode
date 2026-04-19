@@ -1,6 +1,6 @@
 import { differenceInMonths, endOfMonth, startOfMonth } from "date-fns";
-import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
 
+import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 

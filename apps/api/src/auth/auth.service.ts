@@ -1,11 +1,11 @@
 import * as bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
-import { EmailVerificationsService } from "src/email-verifications/email-verifications.service";
-import { EnvService } from "src/env/env.service";
-import { PasswordResetsService } from "src/password-resets/password-resets.service";
-import { TrpcContext } from "src/trpc/trpc.service";
-import { UsersService } from "src/users/users.service";
 
+import { EmailVerificationsService } from "@/email-verifications/email-verifications.service";
+import { EnvService } from "@/env/env.service";
+import { PasswordResetsService } from "@/password-resets/password-resets.service";
+import { TrpcContext } from "@/trpc/trpc.service";
+import { UsersService } from "@/users/users.service";
 import {
   Injectable,
   InternalServerErrorException,

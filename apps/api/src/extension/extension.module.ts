@@ -1,8 +1,7 @@
-import { DailyDataModule } from "src/daily-data/daily-data.module";
-import { FilesModule } from "src/files/files.module";
-import { LanguagesModule } from "src/languages/languages.module";
-import { ProjectsModule } from "src/projects/projects.module";
-
+import { DailyDataModule } from "@/daily-data/daily-data.module";
+import { FilesModule } from "@/files/files.module";
+import { LanguagesModule } from "@/languages/languages.module";
+import { ProjectsModule } from "@/projects/projects.module";
 import { Module } from "@nestjs/common";
 
 import { ExtensionRouter } from "./extension.router";

@@ -8,10 +8,9 @@ import {
   GetProjectLanguagesTimeOnPeriodDto,
   GetProjectOnPeriodDto,
   GetProjectPerDayOfPeriodDto,
-} from "src/analytics/dto/projects-analytics.dto";
-import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
-import { TrpcService } from "src/trpc/trpc.service";
-
+} from "@/analytics/dto/projects-analytics.dto";
+import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
+import { TrpcService } from "@/trpc/trpc.service";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()

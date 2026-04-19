@@ -2,9 +2,9 @@ import * as bcrypt from "bcrypt";
 import { randomBytes } from "crypto";
 import { and, eq, or } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { users } from "src/drizzle/schema/users";
 
+import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { users } from "@/drizzle/schema/users";
 import { Inject, Injectable } from "@nestjs/common";
 import { TRPCError } from "@trpc/server";
 

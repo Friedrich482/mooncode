@@ -1,7 +1,7 @@
 import superjson from "superjson";
-import { EnvService } from "src/env/env.service";
-import { errorFormatter } from "src/trpc/filters/error-formatter";
 
+import { EnvService } from "@/env/env.service";
+import { errorFormatter } from "@/trpc/filters/error-formatter";
 import { Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";

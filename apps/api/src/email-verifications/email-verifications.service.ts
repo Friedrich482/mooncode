@@ -1,10 +1,10 @@
 import { and, eq, gt, lt } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { generateVerificationCode } from "src/common/utils/generate-verification-code";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { emailVerifications, users } from "src/drizzle/schema";
-import { EmailService } from "src/email/email.service";
 
+import { generateVerificationCode } from "@/common/utils/generate-verification-code";
+import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { emailVerifications, users } from "@/drizzle/schema";
+import { EmailService } from "@/email/email.service";
 import { Inject, Injectable } from "@nestjs/common";
 import { CreateEmailVerification as CreateEmailVerificationDtoType } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";

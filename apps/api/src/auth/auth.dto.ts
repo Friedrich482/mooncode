@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { environmentEnum } from "src/common/dto";
 
+import { environmentEnum } from "@/common/dto";
 import { EmailSchema, UserId } from "@repo/common/types-schemas";
 
 export const HandleGoogleQueryDto = z.union([

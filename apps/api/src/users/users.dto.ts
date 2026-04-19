@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { authMethodEnum } from "src/drizzle/schema/users";
 
+import { authMethodEnum } from "@/drizzle/schema/users";
 import {
   EmailSchema as EmailDto,
   PasswordSchema as PasswordDto,

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { DateStringDto } from "src/common/dto";
+
+import { DateStringDto } from "@/common/dto";
 
 export const CreateDailyDataDto = z.object({
   targetedDate: DateStringDto,

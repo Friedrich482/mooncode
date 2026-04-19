@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { ZodPipe } from "src/common/pipes/zod.pipe";
-import { EnvService } from "src/env/env.service";
 
+import { ZodPipe } from "@/common/pipes/zod.pipe";
+import { EnvService } from "@/env/env.service";
 import { Controller, Get, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { Throttle } from "@nestjs/throttler";
 
