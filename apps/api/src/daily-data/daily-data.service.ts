@@ -1,9 +1,9 @@
 import { eachDayOfInterval } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { dailyData } from "src/drizzle/schema/daily-data";
 
+import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { dailyData } from "@/drizzle/schema/daily-data";
 import { Inject, Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 

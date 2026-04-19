@@ -1,9 +1,8 @@
-import { EmailVerificationModule } from "src/email-verifications/email-verifications.module";
-import { EnvModule } from "src/env/env.module";
-import { EnvService } from "src/env/env.service";
-import { PasswordResetsModule } from "src/password-resets/password-resets.module";
-import { UsersModule } from "src/users/users.module";
-
+import { EmailVerificationModule } from "@/email-verifications/email-verifications.module";
+import { EnvModule } from "@/env/env.module";
+import { EnvService } from "@/env/env.service";
+import { PasswordResetsModule } from "@/password-resets/password-resets.module";
+import { UsersModule } from "@/users/users.module";
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";

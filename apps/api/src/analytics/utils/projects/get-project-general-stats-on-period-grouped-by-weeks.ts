@@ -1,7 +1,7 @@
 import { endOfWeek, startOfWeek } from "date-fns";
-import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
-import { countStrictWeeks } from "src/common/utils/count-strict-weeks";
 
+import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
+import { countStrictWeeks } from "@/common/utils/count-strict-weeks";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";

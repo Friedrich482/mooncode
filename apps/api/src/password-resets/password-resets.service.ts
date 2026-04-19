@@ -1,11 +1,11 @@
 import { and, eq, gt, lt } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { generateVerificationCode } from "src/common/utils/generate-verification-code";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { users } from "src/drizzle/schema";
-import { passwordResets } from "src/drizzle/schema/password-resets";
-import { EmailService } from "src/email/email.service";
 
+import { generateVerificationCode } from "@/common/utils/generate-verification-code";
+import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { users } from "@/drizzle/schema";
+import { passwordResets } from "@/drizzle/schema/password-resets";
+import { EmailService } from "@/email/email.service";
 import { Inject, Injectable } from "@nestjs/common";
 import {
   CreatePasswordReset as CreatePasswordResetDtoType,

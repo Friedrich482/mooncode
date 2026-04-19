@@ -1,6 +1,6 @@
 import { Resend } from "resend";
-import { EnvService } from "src/env/env.service";
 
+import { EnvService } from "@/env/env.service";
 import { Injectable } from "@nestjs/common";
 
 import { SendEmailDtoType } from "./email.dto";

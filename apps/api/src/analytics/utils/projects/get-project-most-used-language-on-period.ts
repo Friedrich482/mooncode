@@ -1,5 +1,5 @@
-import { NAString } from "src/analytics/dto/common";
-import { ProjectsAnalyticsService } from "src/analytics/services/projects-analytics.service";
+import { NAString } from "@/analytics/dto/common";
+import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
 
 export const getProjectMostUsedLanguageOnPeriod = async (
   projectsAnalyticsService: ProjectsAnalyticsService,

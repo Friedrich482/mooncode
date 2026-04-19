@@ -1,8 +1,8 @@
 import { endOfWeek, startOfWeek } from "date-fns";
-import { GeneralAnalyticsService } from "src/analytics/services/general-analytics.service";
-import { countStrictWeeks } from "src/common/utils/count-strict-weeks";
-import { DailyDataService } from "src/daily-data/daily-data.service";
 
+import { GeneralAnalyticsService } from "@/analytics/services/general-analytics.service";
+import { countStrictWeeks } from "@/common/utils/count-strict-weeks";
+import { DailyDataService } from "@/daily-data/daily-data.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";

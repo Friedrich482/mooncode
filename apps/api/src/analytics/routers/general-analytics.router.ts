@@ -5,17 +5,16 @@ import {
   GetPeriodLanguagesPerDayDto,
   GetPeriodLanguagesTimeDto,
   GetTimeSpentOnPeriodDto,
-} from "src/analytics/dto/general-analytics.dto";
-import { GeneralAnalyticsService } from "src/analytics/services/general-analytics.service";
-import { TrpcService } from "src/trpc/trpc.service";
-
+} from "@/analytics/dto/general-analytics.dto";
+import { GeneralAnalyticsService } from "@/analytics/services/general-analytics.service";
+import { TrpcService } from "@/trpc/trpc.service";
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
 export class GeneralAnalyticsRouter {
   constructor(
     private readonly trpcService: TrpcService,
-    private readonly generalAnalyticsService: GeneralAnalyticsService
+    private readonly generalAnalyticsService: GeneralAnalyticsService,
   ) {}
   procedures = {
     general: this.trpcService.trpc.router({
@@ -26,7 +25,7 @@ export class GeneralAnalyticsRouter {
           this.generalAnalyticsService.getTimeSpentOnPeriod({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getDaysOfPeriodStats: this.trpcService
@@ -36,7 +35,7 @@ export class GeneralAnalyticsRouter {
           this.generalAnalyticsService.getDaysOfPeriodStats({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getPeriodLanguagesTime: this.trpcService
@@ -46,7 +45,7 @@ export class GeneralAnalyticsRouter {
           this.generalAnalyticsService.getPeriodLanguagesTime({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getPeriodLanguagesPerDay: this.trpcService
@@ -56,7 +55,7 @@ export class GeneralAnalyticsRouter {
           this.generalAnalyticsService.getPeriodLanguagesPerDay({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
 
       getDailyStats: this.trpcService
@@ -66,7 +65,7 @@ export class GeneralAnalyticsRouter {
           this.generalAnalyticsService.getDailyStats({
             userId: ctx.user.sub,
             dateString: input.dateString,
-          })
+          }),
         ),
 
       getPeriodGeneralStats: this.trpcService
@@ -76,7 +75,7 @@ export class GeneralAnalyticsRouter {
           this.generalAnalyticsService.getPeriodGeneralStats({
             userId: ctx.user.sub,
             ...input,
-          })
+          }),
         ),
     }),
   };

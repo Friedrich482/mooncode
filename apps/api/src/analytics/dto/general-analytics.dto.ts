@@ -1,6 +1,6 @@
 import z from "zod";
-import { DateStringDto } from "src/common/dto";
 
+import { DateStringDto } from "@/common/dto";
 import { UserId } from "@repo/common/types-schemas";
 
 import {

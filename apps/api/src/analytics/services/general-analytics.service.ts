@@ -1,5 +1,6 @@
 import { differenceInDays } from "date-fns";
-import { NAString } from "src/analytics/dto/common";
+
+import { NAString } from "@/analytics/dto/common";
 import {
   GetDailyStatsDtoType,
   GetDaysOfPeriodStatsDtoType,
@@ -7,18 +8,17 @@ import {
   GetPeriodLanguagesPerDayDtoType,
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
-} from "src/analytics/dto/general-analytics.dto";
-import { getDaysOfPeriodStatsGroupedByMonths } from "src/analytics/utils/general/get-days-of-period-stats-grouped-by-months";
-import { getDaysOfPeriodStatsGroupedByWeeks } from "src/analytics/utils/general/get-days-of-period-stats-grouped-by-weeks";
-import { getGeneralStatsOnPeriodGroupedByMonths } from "src/analytics/utils/general/get-general-stats-on-period-grouped-by-months";
-import { getGeneralStatsOnPeriodGroupedByWeeks } from "src/analytics/utils/general/get-general-stats-on-period-grouped-by-weeks";
-import { getMostUsedLanguageOnPeriod } from "src/analytics/utils/general/get-most-used-language-on-period";
-import { getPeriodLanguagesGroupedByMonths } from "src/analytics/utils/general/get-period-languages-grouped-by-months";
-import { getPeriodLanguagesGroupedByWeeks } from "src/analytics/utils/general/get-period-languages-grouped-by-weeks";
-import { getWeekDayName } from "src/common/utils/get-weekday-name";
-import { DailyDataService } from "src/daily-data/daily-data.service";
-import { LanguagesService } from "src/languages/languages.service";
-
+} from "@/analytics/dto/general-analytics.dto";
+import { getDaysOfPeriodStatsGroupedByMonths } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-months";
+import { getDaysOfPeriodStatsGroupedByWeeks } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-weeks";
+import { getGeneralStatsOnPeriodGroupedByMonths } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-months";
+import { getGeneralStatsOnPeriodGroupedByWeeks } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-weeks";
+import { getMostUsedLanguageOnPeriod } from "@/analytics/utils/general/get-most-used-language-on-period";
+import { getPeriodLanguagesGroupedByMonths } from "@/analytics/utils/general/get-period-languages-grouped-by-months";
+import { getPeriodLanguagesGroupedByWeeks } from "@/analytics/utils/general/get-period-languages-grouped-by-weeks";
+import { getWeekDayName } from "@/common/utils/get-weekday-name";
+import { DailyDataService } from "@/daily-data/daily-data.service";
+import { LanguagesService } from "@/languages/languages.service";
 import { Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";

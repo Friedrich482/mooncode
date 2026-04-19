@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
-import { EnvService } from "src/env/env.service";
 
+import { EnvService } from "@/env/env.service";
 import { formatZodError } from "@repo/common/format-zod-error";
 import { TRPCError } from "@trpc/server";
 

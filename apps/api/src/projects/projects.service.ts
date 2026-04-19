@@ -1,9 +1,9 @@
 import { and, between, count, desc, eq, sum } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
-import { DrizzleAsyncProvider } from "src/drizzle/drizzle.provider";
-import { dailyData } from "src/drizzle/schema/daily-data";
-import { projects } from "src/drizzle/schema/projects";
 
+import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { dailyData } from "@/drizzle/schema/daily-data";
+import { projects } from "@/drizzle/schema/projects";
 import { Inject, Injectable } from "@nestjs/common";
 
 import { NUMBER_OF_PROJECTS_PER_PAGE } from "./constants";
