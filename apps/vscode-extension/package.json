@@ -112,20 +112,20 @@
   "scripts": {
     "vscode:prepublish": "npm run package",
     "publish:patch": "vsce publish patch",
-    "compile": "node build.js",
+    "compile": "npx tsx build.ts",
     "build": "tsc --build",
-    "watch": "node build.js --watch",
-    "package": "node build.js --production",
+    "watch": "npx tsx build.ts --watch",
+    "package": "npx tsx build.ts --production",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src --ext ts --fix",
+    "lint": "eslint src build.ts --fix",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
     "@types/mocha": "^10.0.10",
-    "@types/node": "^20.19.32",
+    "@types/node": "^20.19.39",
     "@types/vscode": "^1.109.0",
     "@types/ws": "^8.18.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
@@ -135,6 +135,7 @@
     "@vscode/vsce": "^3.7.1",
     "esbuild": "^0.25.8",
     "eslint": "^9.39.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {

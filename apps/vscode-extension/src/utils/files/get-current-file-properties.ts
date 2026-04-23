@@ -1,5 +1,5 @@
 import * as path from "path";
-import * as vscode from "vscode";
+import vscode from "vscode";
 
 export const getCurrentFileProperties = (
   document: vscode.TextDocument | undefined,

@@ -1,9 +1,8 @@
-//@ts-check
-"use strict";
+/* eslint-disable no-console */
 
-const esbuild = require("esbuild");
-const path = require("path");
-const fs = require("fs");
+import esbuild, { Plugin } from "esbuild";
+import fs from "fs";
+import path from "path";
 
 const production = process.argv.includes("--production");
 const watch = process.argv.includes("--watch");
@@ -41,10 +40,7 @@ async function copyDashboard() {
     });
 
     // Get folder size for logging
-    /**
-     * @type {(dir: string) => number}
-     */
-    const getDirSize = (dir) => {
+    const getDirSize = (dir: string) => {
       let size = 0;
       const files = fs.readdirSync(dir);
       for (const file of files) {
@@ -66,21 +62,18 @@ async function copyDashboard() {
       `[dashboard] Dashboard files copied successfully ✓ (${dashboardSizeKB} KB)`,
     );
   } catch (error) {
-    console.error(`✘ [ERROR] Failed to copy dashboard files:`, error.message);
+    console.error(
+      `✘ [ERROR] Failed to copy dashboard files:`,
+      error instanceof Error ? error.message : error,
+    );
     process.exit(1);
   }
 }
 
-/**
- * @type {import('esbuild').Plugin}
- */
-const esbuildProblemMatcherPlugin = {
+const esbuildProblemMatcherPlugin: Plugin = {
   name: "esbuild-problem-matcher",
   setup(build) {
-    /**
-     * @type {number}
-     */
-    let startTime;
+    let startTime: number;
 
     build.onStart(() => {
       startTime = Date.now();
@@ -93,7 +86,7 @@ const esbuildProblemMatcherPlugin = {
         console.error(`✘ [ERROR] ${text}`);
         if (location) {
           console.error(
-            `    ${location.file}:${location.line}:${location.column}:`,
+            `${location.file}:${location.line}:${location.column}:`,
           );
         }
       });
@@ -117,10 +110,7 @@ const esbuildProblemMatcherPlugin = {
   },
 };
 
-/**
- * @type {import('esbuild').Plugin}
- */
-const aliasPlugin = {
+const aliasPlugin: Plugin = {
   name: "alias",
   setup(build) {
     build.onResolve({ filter: /^@repo\/utils$/ }, () => ({
@@ -148,7 +138,7 @@ async function main() {
     outfile: "dist/extension.js",
 
     minify: production,
-    sourcemap: production ? false : true,
+    sourcemap: !production,
     sourcesContent: false,
 
     external: ["vscode"],
@@ -161,7 +151,7 @@ async function main() {
 
     logLevel: "info",
 
-    target: "node16",
+    target: "esnext",
   });
 
   if (watch) {
