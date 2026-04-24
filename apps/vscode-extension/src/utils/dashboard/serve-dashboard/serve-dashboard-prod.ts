@@ -2,7 +2,7 @@ import express from "express";
 import getPort from "get-port";
 import * as http from "http";
 import * as path from "path";
-import * as vscode from "vscode";
+import vscode from "vscode";
 import { WebSocket, WebSocketServer } from "ws";
 
 import { getExtensionContext } from "@/extension";

@@ -1,5 +1,5 @@
 import { isEqual } from "date-fns";
-import * as vscode from "vscode";
+import vscode from "vscode";
 
 import { getLocaleDate } from "@repo/common/get-locale-date";
 import { TRPCClientError } from "@trpc/client";

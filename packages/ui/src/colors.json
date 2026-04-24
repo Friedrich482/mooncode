@@ -293,6 +293,7 @@
   "ini": { "name": "INI", "color": "#d1dbe0" },
   "ink": { "name": "Ink", "color": "#755B91" },
   "inno Setup": { "name": "Inno Setup", "color": "#264b99" },
+  "instructions": { "name": "Instructions", "color": "#083fa1" },
   "io": { "name": "Io", "color": "#a9188d" },
   "ioke": { "name": "Ioke", "color": "#078193" },
   "isabelle": { "name": "Isabelle", "color": "#FEFE00" },

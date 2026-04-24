@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import vscode from "vscode";
 import { ZodError } from "zod";
 
 import { SYNC_DATA_KEY } from "@/constants";

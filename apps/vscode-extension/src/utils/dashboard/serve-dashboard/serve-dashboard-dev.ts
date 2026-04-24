@@ -1,5 +1,5 @@
 import getPort from "get-port";
-import * as vscode from "vscode";
+import vscode from "vscode";
 import { WebSocket, WebSocketServer } from "ws";
 
 import { getExtensionContext } from "@/extension";

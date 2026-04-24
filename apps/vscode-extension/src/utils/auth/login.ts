@@ -1,5 +1,5 @@
 import { randomBytes } from "crypto";
-import * as vscode from "vscode";
+import vscode from "vscode";
 
 import { getDashboardServer, getExtensionContext } from "@/extension";
 

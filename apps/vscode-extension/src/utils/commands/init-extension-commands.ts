@@ -1,4 +1,4 @@
-import * as vscode from "vscode";
+import vscode from "vscode";
 
 import { getExtensionContext, getStatusBarItem } from "@/extension";
 import { FileDataSync } from "@/types-schemas";
