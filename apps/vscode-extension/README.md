@@ -8,8 +8,10 @@ MoonCode is an extension that tracks your coding time (like WakaTime) and gives 
 <a href="https://marketplace.visualstudio.com/items?itemName=Friedrich482.mooncode">https://marketplace.visualstudio.com/items?itemName=Friedrich482.mooncode</a>  
 </p>
 <p align="center">
-  <img src="https://img.shields.io/visual-studio-marketplace/v/Friedrich482.mooncode?color=yellow&label=version" alt="VSCode Marketplace version">  
-  <img src="https://img.shields.io/badge/LICENSE-MIT-yellow" alt="MIT License">
+
+![VSCode Marketplace version](https://vsmarketplacebadges.dev/version/Friedrich482.mooncode.svg?label=version&color=yellow)
+![MIT License](https://img.shields.io/badge/LICENSE-MIT-yellow)
+
 </p>
 
 **⚠️ MoonCode is still in development so breaking changes may happen. But any feedback is welcomed !**
@@ -70,4 +72,4 @@ Chore:
 
 ## License
 
-[MIT](/LICENSE) License &copy; 2025
+[MIT](/LICENSE) License &copy; 2026
