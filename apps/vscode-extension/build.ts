@@ -151,7 +151,7 @@ async function main() {
 
     logLevel: "info",
 
-    target: "esnext",
+    target: "node22",
   });
 
   if (watch) {
