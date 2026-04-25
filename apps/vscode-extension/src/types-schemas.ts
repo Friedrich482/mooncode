@@ -5,10 +5,10 @@ import { IsoDateStringSchema } from "@repo/common/types-schemas";
 /**
  * A file is marked as frozen when it is no longer the active file or if it is the active file but the user is inactive in the file for more than `MAX_IDLE_TIME` seconds
  * - `frozenTime` is an accumulator of time to track the elapsedTime on a file when the language is frozen
- * - `freezeStartTime` is the time when the file is marked as frozen
+ * - `freezeStartTime` is the moment when the file is marked as frozen
  * - `startTime` is the moment we start counting the time for that file
  * - `lastActivityTime` is the moment when the file is no longer focused, i.e no longer the active file
- * - `elapsedTime` is the time elapsed in total and what we send to the server/ save in the global state
+ * - `elapsedTime` is the time elapsed in total and what we send to the server/save in the global state
  * - `isFrozen` is a boolean to freeze/unfreeze the file
  */
 export type FileData = {

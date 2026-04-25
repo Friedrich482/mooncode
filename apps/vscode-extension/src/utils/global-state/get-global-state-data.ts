@@ -1,5 +1,4 @@
 import vscode from "vscode";
-import { ZodError } from "zod";
 
 import { SYNC_DATA_KEY } from "@/constants";
 import { getExtensionContext } from "@/extension";
@@ -17,15 +16,15 @@ export const getGlobalStateData: () => Promise<GlobalStateData> = async () => {
   const context = getExtensionContext();
   const todaysDateString = getLocaleDate(new Date());
 
-  try {
-    const globalStateData = globalStateInitialDataSchema.parse(
-      await context.globalState.get(SYNC_DATA_KEY),
-    );
+  const parsedGlobalStateData = globalStateInitialDataSchema.safeParse(
+    await context.globalState.get(SYNC_DATA_KEY),
+  );
 
-    return globalStateData;
-  } catch (error) {
+  if (!parsedGlobalStateData.success) {
+    const error = formatZodError(parsedGlobalStateData.error);
+
     vscode.window.showErrorMessage(
-      `Invalid data shape: ${error instanceof ZodError ? formatZodError(error) : error}. Defaulting to default data`,
+      `Invalid data shape: ${error}. Defaulting to default data`,
     );
 
     return {
@@ -40,4 +39,8 @@ export const getGlobalStateData: () => Promise<GlobalStateData> = async () => {
       },
     };
   }
+
+  const { data: globalStateData } = parsedGlobalStateData;
+
+  return globalStateData;
 };

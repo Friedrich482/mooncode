@@ -7,7 +7,7 @@ import { login } from "../auth/login";
 import { logout } from "../auth/logout";
 import { openDashboard } from "../dashboard/open-dashboard";
 import { getGlobalStateData } from "../global-state/get-global-state-data";
-import { logDir, logInfo } from "../logger/logger";
+import { logInfo } from "../logger/logger";
 import { calculateTime } from "../time/calculate-time";
 
 export const initExtensionCommands = (
@@ -69,10 +69,9 @@ export const initExtensionCommands = (
     "MoonCode.showRawFilesDataCommand",
     () => {
       const filesData = getTime();
-      const formattedData = Object.entries(filesData)
-        .map(([key, fileData]) => `${key}:${JSON.stringify(fileData, null, 2)}`)
-        .join("\n");
-      logInfo(`Raw files Data computed:\n${formattedData}`);
+      logInfo(
+        `Raw files Data computed:\n${JSON.stringify(filesData, null, 2)}`,
+      );
     },
   );
 
@@ -93,7 +92,7 @@ export const initExtensionCommands = (
     "MoonCode.showGlobalStateData",
     async () => {
       const data = await getGlobalStateData();
-      logDir(data);
+      logInfo(`Global State data: ${JSON.stringify(data, null, 2)}`);
     },
   );
 

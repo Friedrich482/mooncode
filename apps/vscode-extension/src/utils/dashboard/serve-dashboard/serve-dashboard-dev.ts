@@ -35,7 +35,7 @@ export const serveDashboardDev = async () => {
         const data = JSON.parse(message.toString());
         const validated = WsDataSchema.safeParse(data);
         if (!validated.success) {
-          console.error("Invalid message shape");
+          logError("Invalid message shape");
           return;
         }
 
