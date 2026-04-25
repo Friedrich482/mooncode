@@ -58,11 +58,17 @@ export const periodicSyncData = async (
 
   const todayFilesData = Object.fromEntries(
     Object.entries(filesDataToUpsert).map(
-      ([filePath, { elapsedTime, ...rest }]) => [
+      ([
+        filePath,
+        { elapsedTime, languageSlug, projectName, projectPath, fileName },
+      ]) => [
         filePath,
         {
           timeSpent: elapsedTime,
-          ...rest,
+          languageSlug,
+          projectName,
+          projectPath,
+          fileName,
         },
       ],
     ),
