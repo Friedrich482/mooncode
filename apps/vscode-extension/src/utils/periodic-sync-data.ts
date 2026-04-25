@@ -43,18 +43,13 @@ export const periodicSyncData = async (
 
   timeSpentPerLanguage = timeSpentPerLanguageToday;
 
-  const timeSpentPerProjectToday = Object.entries(filesDataToUpsert)
-    .map(([, fileData]) => ({
-      project: fileData.projectPath,
-      timeSpent: fileData.elapsedTime,
-    }))
-    .reduce(
-      (acc, curr) => {
-        acc[curr.project] = (acc[curr.project] || 0) + curr.timeSpent;
-        return acc;
-      },
-      {} as Record<string, number>,
-    );
+  const timeSpentPerProjectToday = Object.values(filesDataToUpsert).reduce(
+    (acc, { projectPath, elapsedTime }) => {
+      acc[projectPath] = (acc[projectPath] || 0) + elapsedTime;
+      return acc;
+    },
+    {} as Record<string, number>,
+  );
 
   const todayFilesData = Object.fromEntries(
     Object.entries(filesDataToUpsert).map(

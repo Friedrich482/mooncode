@@ -59,7 +59,7 @@ export const serveDashboardProd = async () => {
         }
 
         logInfo("Received from dashboard:");
-        logDir(data);
+        logDir(validated.data);
 
         const { type } = validated.data;
 
