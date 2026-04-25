@@ -50,11 +50,7 @@ export const periodicSyncData = async (
     }))
     .reduce(
       (acc, curr) => {
-        if (acc[curr.project]) {
-          acc[curr.project] += curr.timeSpent;
-        } else {
-          acc[curr.project] = curr.timeSpent;
-        }
+        acc[curr.project] = (acc[curr.project] || 0) + curr.timeSpent;
         return acc;
       },
       {} as Record<string, number>,

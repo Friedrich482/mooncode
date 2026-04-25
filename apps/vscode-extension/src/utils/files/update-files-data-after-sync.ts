@@ -12,6 +12,13 @@ export const updateFilesDataAfterSync = (
 
     if (filesData[filePath]) {
       filesData[filePath].elapsedTime = file.timeSpent;
+
+      if (!filesData[filePath].isFrozen) {
+        filesData[filePath].startTime = now - file.timeSpent * 1000;
+        return;
+      }
+
+      filesData[filePath].frozenTime = file.timeSpent;
       return;
     }
 
