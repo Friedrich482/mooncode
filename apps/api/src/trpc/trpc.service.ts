@@ -121,7 +121,8 @@ export class TrpcService {
       this.envService.get("NODE_ENV") === "development"
         ? ctx.req.ip
         : // the api may be behind proxies in production
-          (ctx.req.headers["x-forwarded-for"]
+          // it is actually proxied by cloudflare
+          (ctx.req.headers["cf-connecting-ip"]
             ?.toString()
             .split(",")[0]
             .trim() ?? ctx.req.socket.remoteAddress);
