@@ -1,3 +1,4 @@
+import { EmailModule } from "@/email/email.module";
 import { EmailVerificationModule } from "@/email-verifications/email-verifications.module";
 import { EnvModule } from "@/env/env.module";
 import { EnvService } from "@/env/env.service";
@@ -17,6 +18,7 @@ import { AuthService } from "./auth.service";
     UsersModule,
     EmailVerificationModule,
     PasswordResetsModule,
+    EmailModule,
     JwtModule.registerAsync({
       imports: [ConfigModule, EnvModule],
       useFactory: async (envService: EnvService) => ({

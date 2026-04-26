@@ -1,6 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
 
+import { EmailService } from "@/email/email.service";
 import { EmailVerificationsService } from "@/email-verifications/email-verifications.service";
 import { EnvService } from "@/env/env.service";
 import { PasswordResetsService } from "@/password-resets/password-resets.service";
@@ -47,6 +48,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
+    private readonly emailService: EmailService,
     private readonly emailVerificationService: EmailVerificationsService,
     private readonly passwordResetsService: PasswordResetsService,
   ) {}
@@ -312,7 +314,7 @@ export class AuthService {
     });
 
     // send a notification email to the old email address
-    await this.emailVerificationService.sendEmail({
+    await this.emailService.sendEmail({
       type: "notice email update",
       email: existingUser.email,
     });
