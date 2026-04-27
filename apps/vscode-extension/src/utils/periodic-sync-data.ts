@@ -2,16 +2,16 @@ import { isEqual } from "date-fns";
 import vscode from "vscode";
 
 import { getLocaleDate } from "@repo/common/get-locale-date";
-import { TRPCClientError } from "@trpc/client";
 
 import { getLoginContext } from "./auth/login-context";
+import { handleInvalidTokenError } from "./errors/handle-invalid-token-error";
 import { updateFilesDataAfterSync } from "./files/update-files-data-after-sync";
 import { getGlobalStateData } from "./global-state/get-global-state-data";
 import { updateGlobalStateData } from "./global-state/update-global-state-data";
 import { logError } from "./logger/logger";
 import { setStatusBarItem } from "./status-bar/set-status-bar-item";
 import { calculateTime } from "./time/calculate-time";
-import { trpc } from "./trpc/client";
+import { isTRPCClientError, trpc } from "./trpc/client";
 
 export const periodicSyncData = async (
   getTime: Awaited<ReturnType<typeof calculateTime>>,
@@ -131,10 +131,11 @@ export const periodicSyncData = async (
       },
     });
   } catch (error) {
-    if (error instanceof TRPCClientError) {
+    if (isTRPCClientError(error)) {
       logError(
-        `tRPC Error during sync: ${error.message}, Cause: ${error.cause}.`,
+        `tRPC Error during sync: ${error.message}, Cause: ${error.cause}, Code: ${error.data?.code}.`,
       );
+      handleInvalidTokenError(error);
     } else {
       vscode.window.showWarningMessage(
         `Unknown error during server sync: ${error}.`,

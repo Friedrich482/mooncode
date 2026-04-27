@@ -4,7 +4,7 @@ import superjson from "superjson";
 
 import { PROD_API_URL } from "@/constants";
 import type { AppRouter } from "@repo/trpc/router";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { createTRPCClient, httpBatchLink, TRPCClientError } from "@trpc/client";
 import type { inferRouterOutputs } from "@trpc/server";
 
 import { validateAndRetrieveToken } from "../auth/validate-and-retrieve-token";
@@ -35,3 +35,9 @@ export const trpc = createTRPCClient<AppRouter>({
 });
 
 export type RouterOutput = inferRouterOutputs<AppRouter>;
+
+export const isTRPCClientError = (
+  error: unknown,
+): error is TRPCClientError<AppRouter> => {
+  return error instanceof TRPCClientError;
+};
