@@ -6,7 +6,7 @@ import {
 
 export const ALLOWED_CLIENTS = Array.from(
   { length: 6 },
-  (_, i) => DASHBOARD_PRODUCTION_PORT + i
+  (_, i) => DASHBOARD_PRODUCTION_PORT + i,
 )
   .flatMap((port) => [`http://localhost:${port}`, `http://127.0.0.1:${port}`])
   .concat([
@@ -15,3 +15,5 @@ export const ALLOWED_CLIENTS = Array.from(
     `http://localhost:${DASHBOARD_DEVELOPMENT_PORT}`,
     `http://127.0.0.1:${DASHBOARD_DEVELOPMENT_PORT}`,
   ]);
+
+export const COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE = "Auth cookie/token missing";

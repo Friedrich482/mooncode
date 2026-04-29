@@ -15,10 +15,6 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import {
-  INCORRECT_PASSWORD_MESSAGE,
-  USER_NOT_FOUND_MESSAGE,
-} from "@repo/common/constants";
-import {
   CreateEmailUpdate as CreateEmailUpdateDtoType,
   CreateEmailVerification as CreateEmailVerificationDtoType,
   CreatePasswordReset as CreatePasswordResetDtoType,
@@ -61,7 +57,7 @@ export class AuthService {
     if (!user) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: USER_NOT_FOUND_MESSAGE,
+        message: "User not found",
       });
     }
 
@@ -69,7 +65,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: INCORRECT_PASSWORD_MESSAGE,
+        message: "Incorrect password",
       });
     }
 
@@ -222,7 +218,7 @@ export class AuthService {
     if (!user) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: USER_NOT_FOUND_MESSAGE,
+        message: "User not found",
       });
     }
 
