@@ -34,5 +34,5 @@ export const passwordResets = pgTable(
   (table) => [
     index("password_resets_user_id_index").on(table.userId),
     index("password_resets_email_index").on(table.email),
-  ]
+  ],
 );
