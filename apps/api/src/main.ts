@@ -3,13 +3,15 @@ import cookieParser from "cookie-parser";
 import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
-import { ALLOWED_CLIENTS } from "./common/constants";
+import { getAllowedClients } from "./common/utils/get-allowed-clients";
 import { TrpcRouter } from "./trpc/trpc.router";
 
 async function bootstrap() {
+  const allowedClients = getAllowedClients();
+
   const app = await NestFactory.create(AppModule);
   app.enableCors({
-    origin: ALLOWED_CLIENTS,
+    origin: allowedClients,
     credentials: true,
   });
   app.use(cookieParser());

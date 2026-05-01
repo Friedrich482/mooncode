@@ -1,10 +1,10 @@
 import { FileDataSync } from "@/types-schemas";
 import { getLocaleDate } from "@repo/common/get-locale-date";
-import { TRPCClientError } from "@trpc/client";
 
+import { handleInvalidTokenError } from "./errors/handle-invalid-token-error";
 import { getGlobalStateData } from "./global-state/get-global-state-data";
 import { logError, logInfo } from "./logger/logger";
-import { trpc } from "./trpc/client";
+import { isTRPCClientError, trpc } from "./trpc/client";
 
 export const fetchInitialData = async () => {
   const dateString = getLocaleDate(new Date());
@@ -31,8 +31,11 @@ export const fetchInitialData = async () => {
 
     serverDataFetchedSuccessfully = true;
   } catch (error) {
-    if (error instanceof TRPCClientError) {
-      logError(`tRPC Error: ${error.message}, Cause: ${error.cause}`);
+    if (isTRPCClientError(error)) {
+      logError(
+        `tRPC Error: ${error.message}, Cause: ${error.cause}, Code: ${error.data?.code}.`,
+      );
+      await handleInvalidTokenError(error);
     } else {
       logError(`Unknown error during server fetch: ${error}`);
     }

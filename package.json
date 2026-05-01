@@ -6,14 +6,14 @@
     "dev": "turbo run dev",
     "dev:vscode": "code --verbose --extensionDevelopmentPath=$(pwd)/apps/vscode-extension",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "turbo run format",
     "check-types": "turbo run check-types",
     "lint-staged": "lint-staged",
     "prepare": "husky || true"
   },
   "devDependencies": {
     "husky": "^9.1.7",
-    "prettier": "^3.5.0",
+    "prettier": "^3.8.3",
     "turbo": "^2.9.3",
     "wait-on": "^8.0.4"
   },

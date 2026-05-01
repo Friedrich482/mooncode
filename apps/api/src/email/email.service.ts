@@ -1,8 +1,10 @@
-import { Resend } from "resend";
+import { CreateEmailResponseSuccess, Resend, Response } from "resend";
 
 import { EnvService } from "@/env/env.service";
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
+import { TRPCError } from "@trpc/server";
 
+import { SUPPORT_EMAIL } from "./constants";
 import { SendEmailDtoType } from "./email.dto";
 import { getEmailUpdateEmailBody } from "./utils/get-email-update-email-body";
 import { getEmailUpdateNoticeEmailBody } from "./utils/get-email-update-notice-email-body";
@@ -11,15 +13,24 @@ import { getPasswordResetEmailBody } from "./utils/get-password-reset-email-body
 
 @Injectable()
 export class EmailService {
+  private readonly logger = new Logger("EmailService", { timestamp: true });
   constructor(private readonly envService: EnvService) {}
 
   async sendEmail(sendEmailDto: SendEmailDtoType) {
     const { type, email } = sendEmailDto;
     const resend = new Resend(this.envService.get("RESEND_API_KEY"));
 
+    let result: Response<CreateEmailResponseSuccess> = {
+      data: {
+        id: "",
+      },
+      error: null,
+      headers: {},
+    };
+
     switch (type) {
       case "onboarding":
-        resend.emails.send({
+        result = await resend.emails.send({
           from: this.envService.get("ONBOARDING_EMAIL"),
           to: email,
           subject: "Email verification",
@@ -29,7 +40,7 @@ export class EmailService {
         break;
 
       case "password reset":
-        resend.emails.send({
+        result = await resend.emails.send({
           from: this.envService.get("RESET_PASSWORD_EMAIL"),
           to: email,
           subject: "Reset Password",
@@ -39,7 +50,7 @@ export class EmailService {
         break;
 
       case "email update":
-        resend.emails.send({
+        result = await resend.emails.send({
           from: this.envService.get("UPDATE_EMAIL_EMAIL"),
           to: email,
           subject: "Email Update",
@@ -49,7 +60,7 @@ export class EmailService {
         break;
 
       case "notice email update":
-        resend.emails.send({
+        result = await resend.emails.send({
           from: this.envService.get("UPDATE_EMAIL_EMAIL"),
           to: email,
           subject: "Notice Email Update",
@@ -61,5 +72,20 @@ export class EmailService {
       default:
         throw type satisfies never;
     }
+
+    const { data, error } = result;
+
+    if (error) {
+      this.logger.error(
+        `Error while sending a ${type} email. Error Message: ${error.message}, name: ${error.name}, code: ${error.statusCode}`,
+      );
+
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: `An error occurred while sending your ${type} email. Please contact ${SUPPORT_EMAIL}`,
+      });
+    }
+
+    return data;
   }
 }

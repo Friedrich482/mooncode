@@ -22,5 +22,5 @@ export const dailyData = pgTable(
   (table) => [
     index("daily_data_user_id_index").on(table.userId),
     index("daily_data_date_index").on(table.date),
-  ]
+  ],
 );

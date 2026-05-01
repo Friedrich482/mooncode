@@ -13,7 +13,6 @@ import { MAX_ATTEMPTS_EMAIL_VERIFICATION_VALID_CODE } from "./constants";
 import {
   DeleteEmailVerificationDtoType,
   FindByIdDtoType,
-  SendEmailDtoType,
   VerifyEmailCodeVerificationDtoType,
 } from "./email-verifications.dto";
 
@@ -24,10 +23,6 @@ export class EmailVerificationsService {
     private readonly db: NodePgDatabase,
     private readonly emailService: EmailService,
   ) {}
-
-  async sendEmail(sendEmailDto: SendEmailDtoType) {
-    await this.emailService.sendEmail(sendEmailDto);
-  }
 
   async create(createEmailVerificationDto: CreateEmailVerificationDtoType) {
     const { email, type } = createEmailVerificationDto;
@@ -73,7 +68,7 @@ export class EmailVerificationsService {
       .limit(1);
 
     if (existingValidEmailVerification) {
-      await this.sendEmail({
+      await this.emailService.sendEmail({
         type,
         email: existingValidEmailVerification.email,
         code: existingValidEmailVerification.code,
@@ -97,7 +92,7 @@ export class EmailVerificationsService {
         id: emailVerifications.id,
       });
 
-    await this.sendEmail({
+    await this.emailService.sendEmail({
       type,
       email,
       code: generatedCode,

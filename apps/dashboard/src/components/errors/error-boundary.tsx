@@ -1,13 +1,13 @@
 import { useEffect } from "react";
-import { Navigate } from "react-router";
 import { isAfter } from "date-fns";
 import { TriangleAlert } from "lucide-react";
 
 import { usePeriodStore } from "@/stores/period/period-store";
+import { AppRouter } from "@repo/trpc/router";
 import { TRPCClientError } from "@trpc/client";
 
 type BaseErrorProps = {
-  error: Error;
+  error: TRPCClientError<AppRouter>;
   resetErrorBoundary: () => void;
 };
 
@@ -29,16 +29,14 @@ const BaseErrorComponent = ({
 }: {
   errorMessage: string;
   className?: string;
-}) => {
-  return (
-    <div className={className}>
-      <p className="flex gap-2">
-        <TriangleAlert className="size-8 shrink-0 self-start max-xl:size-6" />
-        <span>{errorMessage}</span>
-      </p>
-    </div>
-  );
-};
+}) => (
+  <div className={className}>
+    <p className="flex gap-2">
+      <TriangleAlert className="size-8 shrink-0 self-start max-xl:size-6" />
+      <span>{errorMessage}</span>
+    </p>
+  </div>
+);
 
 export const FallBackRender = ({
   error,
@@ -46,48 +44,30 @@ export const FallBackRender = ({
   ...rest
 }: FallBackRenderProps) => {
   const customRange = usePeriodStore((state) => state.customRange);
+  const period = usePeriodStore((state) => state.period);
 
-  // reset the error boundary only if the range is reset properly (start date before end date)
   useEffect(() => {
-    if (!isAfter(customRange.start, customRange.end)) resetErrorBoundary();
-  }, [customRange.start, customRange.end]);
-
-  // navigate to not-found, useful for projects not found
-  if (error instanceof TRPCClientError && error.data?.code === "NOT_FOUND") {
-    return <Navigate to="/not-found" />;
-  }
-
-  try {
-    const parsedErrors = JSON.parse(error.message);
-
-    if (Array.isArray(parsedErrors)) {
-      const errorMessages = parsedErrors.map((err) => err.message);
-      return rest.hasCustomChildren ? (
-        rest.customChildren(error.message)
-      ) : (
-        <BaseErrorComponent
-          className={rest.className}
-          errorMessage={errorMessages[0]}
-        />
-      );
+    if (error.data?.code === "UNAUTHORIZED") {
+      window.location.replace("/login");
     }
+  }, [error.data?.code]);
 
-    return rest.hasCustomChildren ? (
-      rest.customChildren(error.message)
-    ) : (
-      <BaseErrorComponent
-        className={rest.className}
-        errorMessage={error.message}
-      />
-    );
-  } catch {
-    return rest.hasCustomChildren ? (
-      rest.customChildren(error.message)
-    ) : (
-      <BaseErrorComponent
-        className={rest.className}
-        errorMessage={error.message}
-      />
-    );
-  }
+  // reset the error boundary only if the range is reset properly (start date before end date or period changes)
+  useEffect(() => {
+    if (
+      !isAfter(customRange.start, customRange.end) ||
+      period !== "Custom Range"
+    ) {
+      resetErrorBoundary();
+    }
+  }, [customRange.start, customRange.end, period]);
+
+  return rest.hasCustomChildren ? (
+    rest.customChildren(error.message)
+  ) : (
+    <BaseErrorComponent
+      className={rest.className}
+      errorMessage={error.message}
+    />
+  );
 };

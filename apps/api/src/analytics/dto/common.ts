@@ -2,7 +2,6 @@ import { isAfter } from "date-fns";
 import z from "zod";
 
 import { DateStringDto } from "@/common/dto";
-import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
 import { getPeriodResolution } from "@repo/common/get-period-resolution";
 import { GroupByEnum } from "@repo/common/types-schemas";
 
@@ -20,7 +19,7 @@ export const refineDto = <T extends z.ZodType<z.infer<typeof BaseDto>>>(
   dto: T,
 ) => {
   return dto.refine((input) => !isAfter(input.start, input.end), {
-    error: INCOHERENT_DATE_RANGE_ERROR_MESSAGE,
+    error: "Start date must be before end date",
   });
 };
 

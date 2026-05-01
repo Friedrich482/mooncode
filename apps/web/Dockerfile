@@ -13,7 +13,7 @@ COPY packages/ui/package*.json ./packages/ui/
 
 # Install project dependencies with frozen lockfile for reproducible builds
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --no-audit --no-fund
+  npm ci --no-audit --no-fund
 
 FROM node:${NODE_VERSION} AS builder
 
@@ -26,8 +26,8 @@ COPY . .
 ENV NODE_ENV=production
 
 RUN --mount=type=cache,target=/app/apps/web/.next/cache \
-    npm run build --workspace=web
-  
+  npm run build --workspace=web
+
 FROM nginxinc/nginx-unprivileged:${NGINXINC_IMAGE_TAG} AS runner
 
 WORKDIR /app

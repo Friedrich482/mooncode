@@ -16,8 +16,9 @@
   },
   "scripts": {
     "dev": "tsc --watch",
+    "build": "tsc",
     "lint": "eslint . --fix",
-    "build": "tsc"
+    "format": "prettier --write \"**/*.ts\""
   },
   "files": [
     "./dist/**"
@@ -34,6 +35,7 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "*",
+    "prettier": "^3.8.3",
     "typescript": "^5.9.3"
   },
   "dependencies": {

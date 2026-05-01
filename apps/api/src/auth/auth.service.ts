@@ -1,6 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { OAuth2Client } from "google-auth-library";
 
+import { EmailService } from "@/email/email.service";
 import { EmailVerificationsService } from "@/email-verifications/email-verifications.service";
 import { EnvService } from "@/env/env.service";
 import { PasswordResetsService } from "@/password-resets/password-resets.service";
@@ -13,10 +14,6 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import {
-  INCORRECT_PASSWORD_MESSAGE,
-  USER_NOT_FOUND_MESSAGE,
-} from "@repo/common/constants";
 import {
   CreateEmailUpdate as CreateEmailUpdateDtoType,
   CreateEmailVerification as CreateEmailVerificationDtoType,
@@ -47,6 +44,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
+    private readonly emailService: EmailService,
     private readonly emailVerificationService: EmailVerificationsService,
     private readonly passwordResetsService: PasswordResetsService,
   ) {}
@@ -59,7 +57,7 @@ export class AuthService {
     if (!user) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: USER_NOT_FOUND_MESSAGE,
+        message: "User not found",
       });
     }
 
@@ -67,7 +65,7 @@ export class AuthService {
     if (!isPasswordCorrect) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: INCORRECT_PASSWORD_MESSAGE,
+        message: "Incorrect password",
       });
     }
 
@@ -220,7 +218,7 @@ export class AuthService {
     if (!user) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: USER_NOT_FOUND_MESSAGE,
+        message: "User not found",
       });
     }
 
@@ -312,7 +310,7 @@ export class AuthService {
     });
 
     // send a notification email to the old email address
-    await this.emailVerificationService.sendEmail({
+    await this.emailService.sendEmail({
       type: "notice email update",
       email: existingUser.email,
     });

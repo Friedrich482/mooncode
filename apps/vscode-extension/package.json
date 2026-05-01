@@ -2,7 +2,7 @@
   "name": "mooncode",
   "displayName": "MoonCode",
   "description": "MoonCode is an extension that tracks your coding time (like WakaTime) and gives you a detailed summary about all your coding statistics. With MoonCode, developers get the full history of their coding activity.",
-  "version": "0.0.63",
+  "version": "0.0.64",
   "icon": "./public/moon.png",
   "publisher": "Friedrich482",
   "author": {
@@ -119,7 +119,8 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
-    "lint": "eslint src build.ts --fix",
+    "lint": "eslint \"**/*.ts\" --fix",
+    "format": "prettier --write \"**/*.ts\"",
     "test": "node ./out/test/runTest.js"
   },
   "devDependencies": {
@@ -135,6 +136,7 @@
     "@vscode/vsce": "^3.7.1",
     "esbuild": "^0.25.8",
     "eslint": "^9.39.2",
+    "prettier": "^3.8.3",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },

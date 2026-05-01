@@ -7,7 +7,7 @@ import { ProjectsAnalyticsRouter } from "./projects-analytics.router";
 export class AnalyticsRouter {
   constructor(
     private readonly generalAnalyticsRouter: GeneralAnalyticsRouter,
-    private readonly projectsAnalyticsRouter: ProjectsAnalyticsRouter
+    private readonly projectsAnalyticsRouter: ProjectsAnalyticsRouter,
   ) {}
 
   procedures = {

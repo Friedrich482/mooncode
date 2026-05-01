@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "preview": "vite preview",
     "lint": "eslint . --fix",
-    "preview": "vite preview"
+    "format": "prettier --write \"**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.2.8",
@@ -50,7 +51,7 @@
     "eslint-plugin-react-refresh": "^0.4.26",
     "globals": "^15.15.0",
     "postcss": "^8.5.6",
-    "prettier": "^3.8.1",
+    "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.6.14",
     "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^4.1.17",

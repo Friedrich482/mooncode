@@ -7,9 +7,7 @@ import { FallBackRender } from "@/components/errors/error-boundary";
 import { NavigationResetWrapper } from "@/components/layout/navigation-reset-wrapper";
 import { useExtensionWebsocket } from "@/hooks/use-extension-websocket";
 import { ThemeProvider } from "@/providers/theme-provider";
-import { TRPCProvider } from "@/utils/trpc";
-import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
-import { INCOHERENT_DATE_RANGE_ERROR_MESSAGE } from "@repo/common/constants";
+import { isTRPCClientError, TRPCProvider } from "@/utils/trpc";
 import type { AppRouter } from "@repo/trpc/router";
 import { ScrollToTopButton } from "@repo/ui/components/scroll-to-top-button";
 import { SidebarProvider } from "@repo/ui/components/ui/sidebar";
@@ -27,33 +25,11 @@ function makeQueryClient() {
         refetchOnWindowFocus: true,
         refetchInterval: 60 * 1000,
         retry: (failureCount, error) => {
-          try {
-            if (
-              error.message === COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE ||
-              error.message !== INCOHERENT_DATE_RANGE_ERROR_MESSAGE
-            ) {
-              return failureCount < 1;
-            }
-
-            const parsedErrors =
-              typeof error.message === "string"
-                ? JSON.parse(error.message)
-                : error.message;
-
-            if (Array.isArray(parsedErrors)) {
-              const errorMessage: string = parsedErrors.map(
-                (err) => err.message,
-              )[0];
-              if (errorMessage === INCOHERENT_DATE_RANGE_ERROR_MESSAGE) {
-                return failureCount < 1;
-              }
-            }
-
-            return failureCount < 0;
-          } catch (error) {
-            console.error(error);
-            return failureCount < 3;
+          if (isTRPCClientError(error)) {
+            return failureCount < 1;
           }
+
+          return failureCount < 3;
         },
       },
     },

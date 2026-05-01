@@ -14,8 +14,8 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build --workspace=@repo/common 
-RUN npm run build --workspace=api          
+RUN npm run build --workspace=@repo/common
+RUN npm run build --workspace=api
 
 FROM node:${NODE_VERSION} AS dependencies
 
@@ -28,7 +28,7 @@ COPY apps/api/package*.json ./apps/api/
 COPY packages/common/package*.json ./packages/common/
 
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --no-audit --no-fund --omit=dev
+  npm ci --no-audit --no-fund --omit=dev
 
 FROM node:${NODE_VERSION} AS runner
 
@@ -52,5 +52,5 @@ USER node
 
 EXPOSE 3000
 
-ENTRYPOINT [ "./docker-entrypoint.sh" ]
+ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "dist/src/main.js"]

@@ -29,5 +29,5 @@ export const files = pgTable(
     index("language_id_index").on(table.languageId),
     index("file_name_index").on(table.name),
     index("file_path_index").on(table.path),
-  ]
+  ],
 );

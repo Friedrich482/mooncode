@@ -1,7 +1,7 @@
 import { Request } from "express";
 import z from "zod";
 
-import { ALLOWED_CLIENTS } from "@/common/constants";
+import { getAllowedClients } from "@/common/utils/get-allowed-clients";
 import {
   DASHBOARD_DEVELOPMENT_URL,
   DASHBOARD_PRODUCTION_URL,
@@ -38,7 +38,9 @@ export const validateStateQueryParam = <
 
     const parsedUrl = new URL(stateParam, request.headers.origin);
 
-    const allowedOrigins = ALLOWED_CLIENTS.map(
+    const allowedClients = getAllowedClients();
+
+    const allowedOrigins = allowedClients.map(
       (client) => new URL(client).origin,
     );
 

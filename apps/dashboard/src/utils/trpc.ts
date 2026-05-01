@@ -1,7 +1,7 @@
 import superjson from "superjson";
 
 import type { AppRouter } from "@repo/trpc/router";
-import { createTRPCClient, httpBatchLink } from "@trpc/client";
+import { createTRPCClient, httpBatchLink, TRPCClientError } from "@trpc/client";
 import type { inferRouterOutputs } from "@trpc/server";
 import { createTRPCContext } from "@trpc/tanstack-react-query";
 
@@ -27,3 +27,9 @@ export const trpcLoaderClient = createTRPCClient<AppRouter>({
     }),
   ],
 });
+
+export const isTRPCClientError = (
+  error: unknown,
+): error is TRPCClientError<AppRouter> => {
+  return error instanceof TRPCClientError;
+};

@@ -1,3 +1,4 @@
+import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@/common/constants";
 import { EnvService } from "@/env/env.service";
 import {
   CanActivate,
@@ -6,7 +7,6 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@repo/common/constants";
 import { JwtPayload as JwtPayloadDtoType } from "@repo/common/types-schemas";
 
 @Injectable()

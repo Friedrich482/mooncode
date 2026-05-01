@@ -1,3 +1,5 @@
+import { LOGO_URL } from "../constants";
+
 export const getPasswordResetEmailBody = (code: string) => {
   const currentYear = new Date().getFullYear();
 
@@ -7,7 +9,7 @@ export const getPasswordResetEmailBody = (code: string) => {
   <link
       rel="preload"
       as="image"
-      href="https://pub-ed7ddcd6ee5d46ef8244de5ac2e76ee5.r2.dev/moon-email.png" />
+      href="${LOGO_URL}" />
     <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
     <meta name="x-apple-disable-message-reformatting" />
   </head>
@@ -33,7 +35,7 @@ export const getPasswordResetEmailBody = (code: string) => {
               <td align="center" style="padding-top: 40px; padding-bottom: 0">
                 <img
                   alt="MoonCode Logo"
-                  src="https://pub-ed7ddcd6ee5d46ef8244de5ac2e76ee5.r2.dev/moon-email.png"
+                  src="${LOGO_URL}"
                   width="100"
                   height="100"
                   style="display: block; border: 0"

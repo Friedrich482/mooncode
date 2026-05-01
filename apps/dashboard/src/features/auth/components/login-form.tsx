@@ -5,10 +5,6 @@ import { Logo } from "@/components/layout/header/logo";
 import { getCallbackUrl } from "@/utils/get-callback-url";
 import { useTRPC } from "@/utils/trpc";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  INCORRECT_PASSWORD_MESSAGE,
-  USER_NOT_FOUND_MESSAGE,
-} from "@repo/common/constants";
 import { SignInUser, SignInUserSchema } from "@repo/common/types-schemas";
 import { Button } from "@repo/ui/components/ui/button";
 import {
@@ -55,9 +51,9 @@ export const LoginForm = () => {
         onError: (error) => {
           const errorMessage = error.message;
 
-          if (errorMessage === INCORRECT_PASSWORD_MESSAGE) {
+          if (errorMessage.toLowerCase().includes("password")) {
             form.setError("password", { message: errorMessage });
-          } else if (errorMessage === USER_NOT_FOUND_MESSAGE) {
+          } else if (errorMessage.toLowerCase().includes("email")) {
             form.setError("email", { message: errorMessage });
           } else {
             form.setError("root", { message: errorMessage });
