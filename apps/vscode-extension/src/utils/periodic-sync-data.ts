@@ -135,7 +135,7 @@ export const periodicSyncData = async (
       logError(
         `tRPC Error during sync: ${error.message}, Cause: ${error.cause}, Code: ${error.data?.code}.`,
       );
-      handleInvalidTokenError(error);
+      await handleInvalidTokenError(error);
     } else {
       vscode.window.showWarningMessage(
         `Unknown error during server sync: ${error}.`,

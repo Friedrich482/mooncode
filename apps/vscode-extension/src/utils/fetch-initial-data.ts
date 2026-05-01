@@ -35,7 +35,7 @@ export const fetchInitialData = async () => {
       logError(
         `tRPC Error: ${error.message}, Cause: ${error.cause}, Code: ${error.data?.code}.`,
       );
-      handleInvalidTokenError(error);
+      await handleInvalidTokenError(error);
     } else {
       logError(`Unknown error during server fetch: ${error}`);
     }
