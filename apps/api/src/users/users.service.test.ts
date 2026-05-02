@@ -103,4 +103,84 @@ describe("UsersService", () => {
         .match(/username/);
     });
   });
+
+  describe("createGoogleUser", () => {
+    const email = "test@gmail.com";
+    const username = "test";
+
+    const mockedUserData = {
+      email,
+      googleEmail: email,
+      username,
+      googleId: "id",
+      profilePicture: "picture",
+    };
+
+    const mockedCreatedUser = {
+      id: "1",
+      email,
+      username,
+    };
+
+    it("should return the new google user", async () => {
+      mockedDrizzle.limit.mockResolvedValue([]);
+      mockedDrizzle.returning.mockResolvedValue([mockedCreatedUser]);
+
+      const createdUser = await usersService.createGoogleUser(mockedUserData);
+
+      expect(createdUser).toBeDefined();
+      expect(createdUser).toEqual(mockedCreatedUser);
+    });
+
+    it("should use 'google' as authMethod", async () => {
+      mockedDrizzle.limit.mockResolvedValue([]);
+      mockedDrizzle.returning.mockResolvedValue([mockedCreatedUser]);
+
+      await usersService.createGoogleUser(mockedUserData);
+
+      expect(mockedDrizzle.values).toHaveBeenCalled();
+      expect(mockedDrizzle.values).toHaveBeenCalledOnce();
+      expect(mockedDrizzle.values).toHaveBeenCalledWith({
+        ...mockedDrizzle.values.mock.calls[0][0],
+        authMethod: "google",
+      });
+    });
+
+    it("should throw an error when the google email is already used", async () => {
+      mockedDrizzle.limit.mockResolvedValue([{ googleEmail: email }]);
+      const error = await usersService
+        .createGoogleUser(mockedUserData)
+        .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("CONFLICT");
+      expect(error)
+        .property("message")
+        .match(/google email/);
+    });
+
+    it("should throw an error when the email is already used", async () => {
+      mockedDrizzle.limit.mockResolvedValue([{ email }]);
+      const error = await usersService
+        .createGoogleUser(mockedUserData)
+        .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("CONFLICT");
+      expect(error).property("message").match(/email/);
+    });
+
+    it("should throw an error when the username is already used", async () => {
+      mockedDrizzle.limit.mockResolvedValue([{ username }]);
+      const error = await usersService
+        .createGoogleUser(mockedUserData)
+        .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("CONFLICT");
+      expect(error)
+        .property("message")
+        .match(/username/);
+    });
+  });
 });

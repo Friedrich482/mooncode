@@ -76,35 +76,45 @@ export class UsersService {
       createGoogleUser;
 
     // check if a user with the email already exists
-    const [existingUserWithSameGoogleEmail] = await this.db
-      .select()
+    const [existingUserWithSameGoogleEmailOrUsername] = await this.db
+      .select({
+        googleEmail: users.googleEmail,
+        email: users.email,
+        username: users.username,
+      })
       .from(users)
       .where(
-        and(
-          or(eq(users.googleEmail, googleEmail), eq(users.email, email)),
-          eq(users.googleId, googleId),
+        or(
+          and(eq(users.googleEmail, googleEmail), eq(users.googleId, googleId)),
+          and(eq(users.email, email), eq(users.googleId, googleId)),
+          eq(users.username, username),
         ),
       )
       .limit(1);
 
-    if (existingUserWithSameGoogleEmail) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This google email is already used",
-      });
-    }
+    if (existingUserWithSameGoogleEmailOrUsername) {
+      if (
+        existingUserWithSameGoogleEmailOrUsername.googleEmail === googleEmail
+      ) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This google email is already used",
+        });
+      }
 
-    const [existingUserWithSameUsername] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
+      if (existingUserWithSameGoogleEmailOrUsername.email === email) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This email is already used",
+        });
+      }
 
-    if (existingUserWithSameUsername) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This google username already exists",
-      });
+      if (existingUserWithSameGoogleEmailOrUsername.username === username) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This username is already used",
+        });
+      }
     }
 
     const randomPassword = randomBytes(32).toString("hex");
@@ -117,7 +127,7 @@ export class UsersService {
         email: googleEmail,
         hashedPassword,
         profilePicture,
-        googleId: googleId,
+        googleId,
         googleEmail,
         authMethod: "google",
         emailVerifiedAt: new Date(),

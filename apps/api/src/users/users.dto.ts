@@ -20,7 +20,6 @@ export const CreateGoogleUserDto = z.object({
   googleEmail: EmailDto,
   googleId: z.string().min(1),
   profilePicture: z.url(),
-  authMethod: z.enum(authMethodEnum),
 });
 
 export const FindByIdDto = z.object({

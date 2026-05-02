@@ -460,7 +460,6 @@ export class AuthService {
           profilePicture: googleUser.picture,
           googleEmail: googleUser.email,
           username: googleUser.name,
-          authMethod: "google",
         });
 
         user.userId = newUser.id;
