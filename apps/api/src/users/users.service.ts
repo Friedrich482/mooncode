@@ -30,32 +30,25 @@ export class UsersService {
   async create(createUserDto: CreateUserDtoType) {
     const { email, password, username, emailVerifiedAt } = createUserDto;
 
-    // check if a user with the email already exists
-    const [existingUserWithSameEmail] = await this.db
-      .select()
+    // check if a user with the same email or username already exists
+    const [existingUserWithSameEmailOrUsername] = await this.db
+      .select({ email: users.email, username: users.username })
       .from(users)
-      .where(eq(users.email, email))
+      .where(or(eq(users.email, email), eq(users.username, username)))
       .limit(1);
 
-    if (existingUserWithSameEmail) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This email is already used",
-      });
-    }
-
-    // check if a user with the username already exists
-    const [existingUserWithSameUsername] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
-
-    if (existingUserWithSameUsername) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This username already exists",
-      });
+    if (existingUserWithSameEmailOrUsername) {
+      if (existingUserWithSameEmailOrUsername.email === email) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This email is already used",
+        });
+      } else {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This username already exists",
+        });
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
