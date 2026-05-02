@@ -20,6 +20,7 @@ describe("UsersService", () => {
     returning: vi.fn(),
     update: vi.fn().mockReturnThis(),
     set: vi.fn().mockReturnThis(),
+    delete: vi.fn().mockReturnThis(),
   };
 
   beforeEach(async () => {
@@ -434,6 +435,36 @@ describe("UsersService", () => {
       const error = await usersService
         .update({ id: userId, ...mockedUserFields })
         .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("NOT_FOUND");
+      expect(error).property("message").match(/user/i);
+    });
+  });
+
+  describe("delete", () => {
+    const userId = "1";
+    const mockedUserData = { id: userId };
+
+    it("should return the deleted user", async () => {
+      const mockedDeletedUser = {
+        id: userId,
+        username: "test",
+        email: "test@email.test",
+      };
+
+      mockedDrizzle.returning.mockResolvedValue([mockedDeletedUser]);
+
+      const deletedUser = await usersService.delete(mockedUserData);
+
+      expect(deletedUser).toBeDefined();
+      expect(deletedUser).toEqual(mockedDeletedUser);
+    });
+
+    it("should throw an error if the user is not defined", async () => {
+      mockedDrizzle.returning.mockResolvedValue([]);
+
+      const error = await usersService.delete(mockedUserData).catch((e) => e);
 
       expect(error).toBeInstanceOf(TRPCError);
       expect(error).property("code").eql("NOT_FOUND");
