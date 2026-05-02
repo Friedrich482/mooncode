@@ -183,4 +183,68 @@ describe("UsersService", () => {
         .match(/username/);
     });
   });
+
+  describe("findById", () => {
+    const userId = "1";
+
+    it("should return the user found", async () => {
+      const mockedFoundUser = {
+        email: "test@email.test",
+        username: "test",
+        id: userId,
+        profilePicture: "profile",
+        registrationDate: new Date(),
+        authMethod: "email",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+
+      const userFound = await usersService.findById({ id: userId });
+
+      expect(userFound).toBeDefined();
+      expect(userFound).toEqual(mockedFoundUser);
+    });
+
+    it("should return the user found with google auth method", async () => {
+      const mockedFoundUser = {
+        email: "test@email.test",
+        username: "test",
+        id: userId,
+        profilePicture: "profile",
+        registrationDate: new Date(),
+        authMethod: "google",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+
+      const userFound = await usersService.findById({ id: userId });
+
+      expect(userFound).toBeDefined();
+      expect(userFound).toEqual(mockedFoundUser);
+    });
+
+    it("should return the user found with both auth method", async () => {
+      const mockedFoundUser = {
+        email: "test@email.test",
+        username: "test",
+        id: userId,
+        profilePicture: "profile",
+        registrationDate: new Date(),
+        authMethod: "both",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+
+      const userFound = await usersService.findById({ id: userId });
+
+      expect(userFound).toBeDefined();
+      expect(userFound).toEqual(mockedFoundUser);
+    });
+
+    it("should return null when the user is not found", async () => {
+      mockedDrizzle.limit.mockResolvedValue([]);
+
+      expect(await usersService.findById({ id: userId })).toBeNull();
+    });
+  });
 });
