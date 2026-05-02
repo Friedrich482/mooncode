@@ -244,7 +244,92 @@ describe("UsersService", () => {
     it("should return null when the user is not found", async () => {
       mockedDrizzle.limit.mockResolvedValue([]);
 
-      expect(await usersService.findById({ id: userId })).toBeNull();
+      const userFound = await usersService.findById({ id: userId });
+
+      expect(userFound).toBeNull();
+    });
+  });
+
+  describe("findByEmail", () => {
+    const email = "test@email.test";
+
+    it("should return the user found", async () => {
+      const mockedFoundUser = {
+        email,
+        username: "test",
+        id: "1",
+        profilePicture: "picture",
+        hashedPassword: "hashed",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+
+      const userFound = await usersService.findByEmail({ email });
+
+      expect(userFound).toBeDefined();
+      expect(userFound).toEqual(mockedFoundUser);
+    });
+
+    it("should return null when the user is not found", async () => {
+      mockedDrizzle.limit.mockResolvedValue([]);
+
+      const userFound = await usersService.findByEmail({ email });
+
+      expect(userFound).toBeNull();
+    });
+  });
+
+  describe("findByUsername", () => {
+    const username = "test";
+
+    it("should return the user found", async () => {
+      const mockedFoundUser = {
+        email: "test@email.test",
+        username,
+        id: "1",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+
+      const userFound = await usersService.findByUsername({ username });
+
+      expect(userFound).toBeDefined();
+      expect(userFound).toEqual(mockedFoundUser);
+    });
+
+    it("should return null when the user is not found", async () => {
+      mockedDrizzle.limit.mockResolvedValue([]);
+
+      const userFound = await usersService.findByUsername({ username });
+
+      expect(userFound).toBeNull();
+    });
+  });
+
+  describe("findByGoogleEmail", () => {
+    const googleEmail = "test@gmail.com";
+
+    it("should return the user found", async () => {
+      const mockedFoundUser = {
+        googleEmail,
+        username: "test",
+        id: "1",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+
+      const userFound = await usersService.findByGoogleEmail({ googleEmail });
+
+      expect(userFound).toBeDefined();
+      expect(userFound).toEqual(mockedFoundUser);
+    });
+
+    it("should return null when the user is not found", async () => {
+      mockedDrizzle.limit.mockResolvedValue([]);
+
+      const userFound = await usersService.findByGoogleEmail({ googleEmail });
+
+      expect(userFound).toBeNull();
     });
   });
 });
