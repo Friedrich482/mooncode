@@ -18,6 +18,8 @@ describe("UsersService", () => {
     insert: vi.fn().mockReturnThis(),
     values: vi.fn().mockReturnThis(),
     returning: vi.fn(),
+    update: vi.fn().mockReturnThis(),
+    set: vi.fn().mockReturnThis(),
   };
 
   beforeEach(async () => {
@@ -330,6 +332,112 @@ describe("UsersService", () => {
       const userFound = await usersService.findByGoogleEmail({ googleEmail });
 
       expect(userFound).toBeNull();
+    });
+  });
+
+  describe("update", () => {
+    const userId = "1";
+    const email = "test@email.test";
+    const username = "test";
+    const profilePicture = "picture";
+
+    it("should return the updated user", async () => {
+      const mockedUserFields = {
+        email,
+        username,
+        profilePicture,
+      };
+
+      const mockedFoundUser = {
+        email,
+        hashedPassword: "hash",
+      };
+
+      const mockedUpdatedUser = {
+        email,
+        username,
+        profilePicture,
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+      mockedDrizzle.returning.mockResolvedValue([mockedUpdatedUser]);
+
+      const updatedUser = await usersService.update({
+        id: userId,
+        ...mockedUserFields,
+      });
+
+      expect(updatedUser).toBeDefined();
+      expect(updatedUser).toEqual(mockedUpdatedUser);
+    });
+
+    it("should update the user password if provided", async () => {
+      const mockedUserFields = {
+        email,
+        username,
+        password: "password",
+      };
+
+      const mockedFoundUser = {
+        email,
+        hashedPassword: "hash",
+      };
+
+      const mockedUpdatedUser = {
+        email,
+        username,
+        profilePicture,
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([mockedFoundUser]);
+      mockedDrizzle.returning.mockResolvedValue([mockedUpdatedUser]);
+      const spyHash = vi.spyOn(bcrypt, "hash");
+
+      await usersService.update({
+        id: userId,
+        ...mockedUserFields,
+      });
+
+      expect(spyHash).toHaveBeenCalled();
+      expect(spyHash).toHaveBeenCalledWith(
+        mockedUserFields.password,
+        expect.anything(),
+      );
+      expect(mockedDrizzle.set).toHaveBeenCalled();
+      expect(mockedDrizzle.set).toHaveBeenCalledWith({
+        ...mockedDrizzle.set.mock.calls[0][0],
+        hashedPassword: spyHash.mock.settledResults[0].value,
+      });
+    });
+
+    it("should throw an error if there is no update fields provided", async () => {
+      const mockedUserFields = {};
+
+      const error = await usersService
+        .update({ id: userId, ...mockedUserFields })
+        .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("BAD_REQUEST");
+      expect(error).property("message").match(/field/);
+    });
+
+    it("should throw an error if the user is not found", async () => {
+      const mockedUserFields = {
+        email,
+        username,
+        profilePicture,
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([]);
+
+      const error = await usersService
+        .update({ id: userId, ...mockedUserFields })
+        .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("NOT_FOUND");
+      expect(error).property("message").match(/user/i);
     });
   });
 });

@@ -285,9 +285,12 @@ export class UsersService {
     const [user] = await this.db
       .select({ email: users.email, hashedPassword: users.hashedPassword })
       .from(users)
-      .where(eq(users.id, id));
-    if (!user)
+      .where(eq(users.id, id))
+      .limit(1);
+
+    if (!user) {
       throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+    }
 
     let hashedPassword = "";
 
