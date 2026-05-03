@@ -1,6 +1,7 @@
 import * as bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+import { MockedDrizzle } from "@/common/tests/types";
 import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
 import { Test } from "@nestjs/testing";
 import { TRPCError } from "@trpc/server";
@@ -10,20 +11,22 @@ import { UsersService } from "./users.service";
 describe("UsersService", () => {
   let usersService: UsersService;
 
-  const mockedDrizzle = {
-    select: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    limit: vi.fn(),
-    insert: vi.fn().mockReturnThis(),
-    values: vi.fn().mockReturnThis(),
-    returning: vi.fn(),
-    update: vi.fn().mockReturnThis(),
-    set: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-  };
+  let mockedDrizzle: MockedDrizzle;
 
   beforeEach(async () => {
+    mockedDrizzle = {
+      select: vi.fn().mockReturnThis(),
+      from: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      limit: vi.fn(),
+      insert: vi.fn().mockReturnThis(),
+      values: vi.fn().mockReturnThis(),
+      returning: vi.fn(),
+      update: vi.fn().mockReturnThis(),
+      set: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+    };
+
     vi.clearAllMocks();
 
     const moduleRef = await Test.createTestingModule({

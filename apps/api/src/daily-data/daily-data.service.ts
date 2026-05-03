@@ -45,9 +45,12 @@ export class DailyDataService {
     const [oneDailyData] = await this.db
       .select({ id: dailyData.id, timeSpent: dailyData.timeSpent })
       .from(dailyData)
-      .where(and(eq(dailyData.userId, userId), eq(dailyData.date, date)));
+      .where(and(eq(dailyData.userId, userId), eq(dailyData.date, date)))
+      .limit(1);
 
-    if (!oneDailyData) return null;
+    if (!oneDailyData) {
+      return null;
+    }
 
     return oneDailyData;
   }
