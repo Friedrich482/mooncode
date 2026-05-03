@@ -13,4 +13,5 @@ export type MockedDrizzle = {
   update: Mock<Procedure>;
   set: Mock<Procedure>;
   delete: Mock<Procedure>;
+  orderBy: Mock<Procedure>;
 };
