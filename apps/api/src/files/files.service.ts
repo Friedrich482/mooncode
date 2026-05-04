@@ -59,7 +59,8 @@ export class FilesService {
           eq(files.name, name),
           eq(files.path, path),
         ),
-      );
+      )
+      .limit(1);
 
     if (!fileData) {
       return null;
