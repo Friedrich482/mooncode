@@ -14,4 +14,8 @@ export type MockedDrizzle = {
   set: Mock<Procedure>;
   delete: Mock<Procedure>;
   orderBy: Mock<Procedure>;
+  innerJoin: Mock<Procedure>;
+  groupBy: Mock<Procedure>;
+  offset: Mock<Procedure>;
+  as: Mock<Procedure>;
 };

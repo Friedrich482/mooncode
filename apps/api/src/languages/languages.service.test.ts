@@ -24,6 +24,10 @@ describe("languagesService", () => {
       set: vi.fn().mockReturnThis(),
       delete: vi.fn().mockReturnThis(),
       orderBy: vi.fn(),
+      innerJoin: vi.fn().mockReturnThis(),
+      groupBy: vi.fn().mockReturnThis(),
+      offset: vi.fn().mockReturnThis(),
+      as: vi.fn(),
     };
 
     vi.clearAllMocks();

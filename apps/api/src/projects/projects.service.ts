@@ -59,7 +59,8 @@ export class ProjectsService {
           eq(projects.name, name),
           eq(projects.path, path),
         ),
-      );
+      )
+      .limit(1);
 
     if (!project) {
       return null;
@@ -142,6 +143,8 @@ export class ProjectsService {
       .returning({
         name: projects.name,
         path: projects.path,
+        timeSpent: projects.timeSpent,
+        dailyDataId: projects.dailyDataId,
       });
 
     return updatedProject;

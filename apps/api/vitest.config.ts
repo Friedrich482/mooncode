@@ -7,6 +7,7 @@ export default defineConfig({
     server: {
       deps: { inline: ["bcrypt"] },
     },
+    mockReset: true,
   },
   resolve: {
     alias: {

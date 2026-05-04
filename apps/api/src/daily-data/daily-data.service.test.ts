@@ -23,6 +23,10 @@ describe("DailyDataService", () => {
       set: vi.fn().mockReturnThis(),
       delete: vi.fn().mockReturnThis(),
       orderBy: vi.fn(),
+      innerJoin: vi.fn().mockReturnThis(),
+      offset: vi.fn().mockReturnThis(),
+      groupBy: vi.fn(),
+      as: vi.fn(),
     };
 
     vi.clearAllMocks();
