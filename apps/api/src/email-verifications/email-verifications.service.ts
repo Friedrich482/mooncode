@@ -141,7 +141,6 @@ export class EmailVerificationsService {
     const [existingValidEmailVerification] = await this.db
       .select({
         id: emailVerifications.id,
-        email: emailVerifications.email,
         code: emailVerifications.code,
         attempts: emailVerifications.attempts,
       })
@@ -199,8 +198,20 @@ export class EmailVerificationsService {
   async delete(deleteEmailVerificationDto: DeleteEmailVerificationDtoType) {
     const { id } = deleteEmailVerificationDto;
 
-    await this.db
+    const [deletedEmailVerification] = await this.db
       .delete(emailVerifications)
-      .where(eq(emailVerifications.id, id));
+      .where(eq(emailVerifications.id, id))
+      .returning({
+        id: emailVerifications.id,
+      });
+
+    if (!deletedEmailVerification) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Email verification not found",
+      });
+    }
+
+    return deletedEmailVerification;
   }
 }

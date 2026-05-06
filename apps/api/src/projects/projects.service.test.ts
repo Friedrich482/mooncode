@@ -7,8 +7,6 @@ import { Test } from "@nestjs/testing";
 import * as constants from "./constants";
 import { ProjectsService } from "./projects.service";
 
-vi.mock("./constants.ts");
-
 describe("projectsService", () => {
   let projectsService: ProjectsService;
 
@@ -177,8 +175,10 @@ describe("projectsService", () => {
     });
 
     it("should return true as hasNext when there are more pages remaining", async () => {
-      // @ts-ignore
-      vi.mocked(constants).NUMBER_OF_PROJECTS_PER_PAGE = 2;
+      vi.spyOn(constants, "NUMBER_OF_PROJECTS_PER_PAGE", "get").mockReturnValue(
+        // @ts-ignore
+        2,
+      );
 
       mockedDrizzle.from
         .mockReturnValueOnce(mockedDrizzle)
@@ -194,8 +194,6 @@ describe("projectsService", () => {
     });
 
     it("should return false as hasNext when there are no more pages remaining", async () => {
-      vi.mocked(constants).NUMBER_OF_PROJECTS_PER_PAGE = 10;
-
       mockedDrizzle.from
         .mockReturnValueOnce(mockedDrizzle)
         .mockReturnValueOnce(mockedDrizzle)
