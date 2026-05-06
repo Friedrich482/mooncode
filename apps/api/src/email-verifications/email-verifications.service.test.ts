@@ -355,7 +355,7 @@ describe("emailVerificationsService", () => {
       const mockedExistingEmailVerification = {
         id: "1",
         code: "NNNUI78M",
-        attempts: 4,
+        attempts: 0,
       };
 
       mockedDrizzle.limit.mockResolvedValue([mockedExistingEmailVerification]);
@@ -373,11 +373,12 @@ describe("emailVerificationsService", () => {
   });
 
   describe("delete", () => {
+    const id = "1";
+    const mockedEntry = {
+      id,
+    };
+
     it("should return the deleted email verification", async () => {
-      const id = "1";
-      const mockedEntry = {
-        id,
-      };
       const mockedDeletedEmailVerification = {
         id,
       };
@@ -392,11 +393,6 @@ describe("emailVerificationsService", () => {
     });
 
     it("should throw an error if there is no email verification found", async () => {
-      const id = "1";
-      const mockedEntry = {
-        id,
-      };
-
       mockedDrizzle.returning.mockResolvedValue([]);
 
       const error = await emailVerificationsService

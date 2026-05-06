@@ -33,7 +33,6 @@ export class PasswordResetsService {
     const [user] = await this.db
       .select({
         id: users.id,
-        email: users.email,
       })
       .from(users)
       .where(eq(users.email, email))
@@ -118,7 +117,8 @@ export class PasswordResetsService {
         code: passwordResets.code,
       })
       .from(passwordResets)
-      .where(eq(passwordResets.id, id));
+      .where(eq(passwordResets.id, id))
+      .limit(1);
 
     if (!existingPasswordReset) {
       return null;
@@ -143,7 +143,6 @@ export class PasswordResetsService {
     const [existingValidPasswordReset] = await this.db
       .select({
         id: passwordResets.id,
-        email: passwordResets.email,
         code: passwordResets.code,
         attempts: passwordResets.attempts,
       })
@@ -196,6 +195,20 @@ export class PasswordResetsService {
   async delete(deletePasswordResetDto: DeletePasswordResetDtoType) {
     const { id } = deletePasswordResetDto;
 
-    await this.db.delete(passwordResets).where(eq(passwordResets.id, id));
+    const [deletedPasswordReset] = await this.db
+      .delete(passwordResets)
+      .where(eq(passwordResets.id, id))
+      .returning({
+        id: passwordResets.id,
+      });
+
+    if (!deletedPasswordReset) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Password reset not found",
+      });
+    }
+
+    return deletedPasswordReset;
   }
 }
