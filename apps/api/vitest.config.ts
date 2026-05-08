@@ -9,6 +9,7 @@ export default defineConfig({
       deps: { inline: ["bcrypt", "resend"] },
     },
     mockReset: true,
+    unstubEnvs: true,
   },
   resolve: {
     alias: {
