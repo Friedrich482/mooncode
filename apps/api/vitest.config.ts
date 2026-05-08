@@ -6,7 +6,7 @@ export default defineConfig({
     globals: true,
     exclude: ["dist/**"],
     server: {
-      deps: { inline: ["bcrypt"] },
+      deps: { inline: ["bcrypt", "resend"] },
     },
     mockReset: true,
   },

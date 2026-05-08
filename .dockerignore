@@ -9,5 +9,7 @@ tsconfig.tsbuildinfo
 **/node_modules
 packages/eslint-config
 **/eslint.config.ts
+**/vitest.config.ts
 **/.next
 **/out
+**/*.test.ts
