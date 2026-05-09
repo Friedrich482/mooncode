@@ -14,9 +14,7 @@ describe("envService", () => {
     vi.unstubAllEnvs();
 
     configService = {
-      get: vi
-        .fn()
-        .mockImplementation((key: string) => process.env[key] ?? undefined),
+      get: vi.fn().mockImplementation((key: string) => process.env[key]),
     };
 
     const moduleRef = await Test.createTestingModule({

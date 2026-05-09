@@ -1,20 +1,46 @@
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
 
+import { playwright } from "@vitest/browser-playwright";
+
 export default defineConfig({
   test: {
-    globals: true,
-    exclude: ["dist/**"],
-    server: {
-      deps: { inline: ["bcrypt", "resend"] },
-    },
-    mockReset: true,
-    unstubEnvs: true,
+    projects: [
+      {
+        test: {
+          globals: true,
+          exclude: ["dist/**", "./src/email/utils/**"],
+          server: {
+            deps: { inline: ["bcrypt", "resend"] },
+          },
+          mockReset: true,
+          unstubEnvs: true,
+        },
+        resolve: {
+          alias: {
+            "@": "./src",
+          },
+        },
+        plugins: [swc.vite()],
+      },
+      {
+        test: {
+          globals: true,
+          exclude: ["dist/**"],
+          include: ["./src/email/utils/*.test.tsx"],
+          browser: {
+            enabled: true,
+            provider: playwright(),
+            instances: [{ browser: "chromium" }],
+          },
+          setupFiles: ["./vitest-setup.ts"],
+        },
+        resolve: {
+          alias: {
+            "@": "./src",
+          },
+        },
+      },
+    ],
   },
-  resolve: {
-    alias: {
-      "@": "./src",
-    },
-  },
-  plugins: [swc.vite()],
 });
