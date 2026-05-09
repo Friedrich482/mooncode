@@ -1,20 +1,18 @@
 import React from "react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
 import { cleanup, render } from "vitest-browser-react";
 
-import { LOGO_URL } from "../constants";
-import { getOnboardingEmailBody } from "./get-onboarding-email-body";
+import { LOGO_URL, SUPPORT_EMAIL } from "../constants";
+import { getEmailUpdateNoticeEmailBody } from "./get-email-update-notice-email-body";
 
-describe("getOnboardingEmailBody", () => {
-  const mockedCode = "2F5TKHBM";
-
+describe("getEmailUpdateNoticeEmailBody", () => {
   let htmlBody: string;
   let TestComponent: () => React.JSX.Element;
 
   beforeEach(() => {
     cleanup();
 
-    htmlBody = getOnboardingEmailBody(mockedCode);
+    htmlBody = getEmailUpdateNoticeEmailBody();
     TestComponent = () => {
       return (
         <div
@@ -26,29 +24,17 @@ describe("getOnboardingEmailBody", () => {
     };
   });
 
-  it("should include the code in the body of the email", async () => {
+  it("should include an element containing the text 'Email Update Notice'", async () => {
     const { getByText } = await render(<TestComponent />);
 
-    await expect.element(getByText(mockedCode)).toBeInTheDocument();
+    await expect.element(getByText(/Email Update Notice/)).toBeInTheDocument();
   });
 
-  it("should include an element containing the text 'identity' since it is about identity verification", async () => {
-    const { getByText } = await render(<TestComponent />);
-
-    await expect.element(getByText("identity")).toBeInTheDocument();
-  });
-
-  it("should include the duration of validity of the code sent", async () => {
-    const { getByText } = await render(<TestComponent />);
-
-    await expect.element(getByText("valid for 30 minutes")).toBeInTheDocument();
-  });
-
-  it("should include an indication about what to do if the user wasn't the source of the registration process", async () => {
+  it("should include an indication about what to do if the user wasn't the source of the email update process", async () => {
     const { getByText } = await render(<TestComponent />);
 
     await expect
-      .element(getByText("you can safely ignore and delete this email"))
+      .element(getByText(`please contact ${SUPPORT_EMAIL}`))
       .toBeInTheDocument();
   });
 

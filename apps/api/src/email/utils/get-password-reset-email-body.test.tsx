@@ -3,10 +3,10 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { cleanup, render } from "vitest-browser-react";
 
 import { LOGO_URL } from "../constants";
-import { getOnboardingEmailBody } from "./get-onboarding-email-body";
+import { getPasswordResetEmailBody } from "./get-password-reset-email-body";
 
-describe("getOnboardingEmailBody", () => {
-  const mockedCode = "2F5TKHBM";
+describe("getPasswordResetEmailBody", () => {
+  const mockedCode = "GF3TKHBM";
 
   let htmlBody: string;
   let TestComponent: () => React.JSX.Element;
@@ -14,7 +14,7 @@ describe("getOnboardingEmailBody", () => {
   beforeEach(() => {
     cleanup();
 
-    htmlBody = getOnboardingEmailBody(mockedCode);
+    htmlBody = getPasswordResetEmailBody(mockedCode);
     TestComponent = () => {
       return (
         <div
@@ -32,19 +32,19 @@ describe("getOnboardingEmailBody", () => {
     await expect.element(getByText(mockedCode)).toBeInTheDocument();
   });
 
-  it("should include an element containing the text 'identity' since it is about identity verification", async () => {
+  it("should include an element containing the text 'Password Reset' since it is about password reset", async () => {
     const { getByText } = await render(<TestComponent />);
 
-    await expect.element(getByText("identity")).toBeInTheDocument();
+    await expect.element(getByText(/Password Reset/i)).toBeInTheDocument();
   });
 
   it("should include the duration of validity of the code sent", async () => {
     const { getByText } = await render(<TestComponent />);
 
-    await expect.element(getByText("valid for 30 minutes")).toBeInTheDocument();
+    await expect.element(getByText("valid for 15 minutes")).toBeInTheDocument();
   });
 
-  it("should include an indication about what to do if the user wasn't the source of the registration process", async () => {
+  it("should include an indication about what to do if the user wasn't the source of the password reset process", async () => {
     const { getByText } = await render(<TestComponent />);
 
     await expect

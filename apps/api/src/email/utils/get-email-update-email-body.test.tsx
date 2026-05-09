@@ -1,12 +1,12 @@
 import React from "react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect } from "vitest";
 import { cleanup, render } from "vitest-browser-react";
 
 import { LOGO_URL } from "../constants";
-import { getOnboardingEmailBody } from "./get-onboarding-email-body";
+import { getEmailUpdateEmailBody } from "./get-email-update-email-body";
 
-describe("getOnboardingEmailBody", () => {
-  const mockedCode = "2F5TKHBM";
+describe("getEmailUpdateEmailBody", () => {
+  const mockedCode = "K23TKHBM";
 
   let htmlBody: string;
   let TestComponent: () => React.JSX.Element;
@@ -14,7 +14,7 @@ describe("getOnboardingEmailBody", () => {
   beforeEach(() => {
     cleanup();
 
-    htmlBody = getOnboardingEmailBody(mockedCode);
+    htmlBody = getEmailUpdateEmailBody(mockedCode);
     TestComponent = () => {
       return (
         <div
@@ -32,19 +32,19 @@ describe("getOnboardingEmailBody", () => {
     await expect.element(getByText(mockedCode)).toBeInTheDocument();
   });
 
-  it("should include an element containing the text 'identity' since it is about identity verification", async () => {
+  it("should include an element containing the text 'Email Update'", async () => {
     const { getByText } = await render(<TestComponent />);
 
-    await expect.element(getByText("identity")).toBeInTheDocument();
+    await expect.element(getByText(/Email update/)).toBeInTheDocument();
   });
 
   it("should include the duration of validity of the code sent", async () => {
     const { getByText } = await render(<TestComponent />);
 
-    await expect.element(getByText("valid for 30 minutes")).toBeInTheDocument();
+    await expect.element(getByText("valid for 15 minutes")).toBeInTheDocument();
   });
 
-  it("should include an indication about what to do if the user wasn't the source of the registration process", async () => {
+  it("should include an indication about what to do if the user wasn't the source of the email update process", async () => {
     const { getByText } = await render(<TestComponent />);
 
     await expect
