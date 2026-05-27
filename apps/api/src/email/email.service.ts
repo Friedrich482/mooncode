@@ -1,7 +1,7 @@
 import { CreateEmailResponseSuccess, Resend, Response } from "resend";
 
 import { EnvService } from "@/env/env.service";
-import { Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { TRPCError } from "@trpc/server";
 
 import { SUPPORT_EMAIL } from "./constants";
@@ -14,11 +14,15 @@ import { getPasswordResetEmailBody } from "./utils/get-password-reset-email-body
 @Injectable()
 export class EmailService {
   private readonly logger = new Logger("EmailService", { timestamp: true });
-  constructor(private readonly envService: EnvService) {}
+  constructor(
+    private readonly envService: EnvService,
+
+    @Inject("resend")
+    private readonly resend: Resend,
+  ) {}
 
   async sendEmail(sendEmailDto: SendEmailDtoType) {
     const { type, email } = sendEmailDto;
-    const resend = new Resend(this.envService.get("RESEND_API_KEY"));
 
     let result: Response<CreateEmailResponseSuccess> = {
       data: {
@@ -30,7 +34,7 @@ export class EmailService {
 
     switch (type) {
       case "onboarding":
-        result = await resend.emails.send({
+        result = await this.resend.emails.send({
           from: this.envService.get("ONBOARDING_EMAIL"),
           to: email,
           subject: "Email verification",
@@ -40,7 +44,7 @@ export class EmailService {
         break;
 
       case "password reset":
-        result = await resend.emails.send({
+        result = await this.resend.emails.send({
           from: this.envService.get("RESET_PASSWORD_EMAIL"),
           to: email,
           subject: "Reset Password",
@@ -50,7 +54,7 @@ export class EmailService {
         break;
 
       case "email update":
-        result = await resend.emails.send({
+        result = await this.resend.emails.send({
           from: this.envService.get("UPDATE_EMAIL_EMAIL"),
           to: email,
           subject: "Email Update",
@@ -60,7 +64,7 @@ export class EmailService {
         break;
 
       case "notice email update":
-        result = await resend.emails.send({
+        result = await this.resend.emails.send({
           from: this.envService.get("UPDATE_EMAIL_EMAIL"),
           to: email,
           subject: "Notice Email Update",

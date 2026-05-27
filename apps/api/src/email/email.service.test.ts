@@ -1,4 +1,3 @@
-import * as ResendModule from "resend";
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { EnvService } from "@/env/env.service";
@@ -15,18 +14,23 @@ import * as getPasswordResetEmailBody from "./utils/get-password-reset-email-bod
 describe("emailService", () => {
   let emailService: EmailService;
   let envService: Partial<EnvService>;
-
-  let resendSpy: Mock<typeof ResendModule.Resend>;
-  let sendSpy: Mock<Procedure>;
+  let resend: {
+    emails: {
+      send: Mock<Procedure>;
+    };
+  };
 
   beforeEach(async () => {
     vi.clearAllMocks();
 
-    resendSpy = vi.spyOn(ResendModule, "Resend");
-    sendSpy = vi.fn();
-
     envService = {
       get: vi.fn().mockReturnValue("re_key"),
+    };
+
+    resend = {
+      emails: {
+        send: vi.fn(),
+      },
     };
 
     const moduleRef = await Test.createTestingModule({
@@ -35,6 +39,10 @@ describe("emailService", () => {
         {
           provide: EnvService,
           useValue: envService,
+        },
+        {
+          provide: "resend",
+          useValue: resend,
         },
       ],
     }).compile();
@@ -58,18 +66,12 @@ describe("emailService", () => {
 
       const mockedEmailSentId = "1";
 
-      resendSpy.mockImplementation(
-        class Resend {
-          emails = {
-            send: sendSpy.mockResolvedValue({
-              data: {
-                id: mockedEmailSentId,
-              },
-              error: null,
-            }),
-          };
-        } as unknown as typeof ResendModule.Resend,
-      );
+      resend.emails.send.mockResolvedValue({
+        data: {
+          id: mockedEmailSentId,
+        },
+        error: null,
+      });
 
       const data = await emailService.sendEmail(mockedEntry);
 
@@ -84,20 +86,14 @@ describe("emailService", () => {
         code,
       };
 
-      resendSpy.mockImplementation(
-        class Resend {
-          emails = {
-            send: sendSpy.mockResolvedValue({
-              data: null,
-              error: {
-                message: "Missing API key in the authorization header",
-                name: "missing_api_key",
-                statusCode: 401,
-              },
-            }),
-          };
-        } as unknown as typeof ResendModule.Resend,
-      );
+      resend.emails.send.mockResolvedValue({
+        data: null,
+        error: {
+          message: "Missing API key in the authorization header",
+          name: "missing_api_key",
+          statusCode: 401,
+        },
+      });
 
       const error = await emailService.sendEmail(mockedEntry).catch((e) => e);
 
@@ -120,28 +116,20 @@ describe("emailService", () => {
         "getOnboardingEmailBody",
       );
 
-      resendSpy.mockImplementation(
-        class Resend {
-          emails = {
-            send: sendSpy.mockResolvedValue({
-              data: {
-                id: "1",
-              },
-              error: null,
-            }),
-          };
-        } as unknown as typeof ResendModule.Resend,
-      );
+      resend.emails.send.mockResolvedValue({
+        data: {
+          id: "1",
+        },
+        error: null,
+      });
 
       await emailService.sendEmail(mockedEntry);
-
-      expect(resendSpy).toHaveBeenCalled();
 
       expect(spyGetOnboardingEmailBody).toHaveBeenCalled();
       expect(spyGetOnboardingEmailBody).toHaveBeenCalledWith(code);
 
-      expect(sendSpy).toHaveBeenCalled();
-      expect(sendSpy).toHaveBeenCalledWith({
+      expect(resend.emails.send).toHaveBeenCalled();
+      expect(resend.emails.send).toHaveBeenCalledWith({
         from: expect.anything(),
         to: email,
         subject: expect.stringMatching(/verification/),
@@ -161,28 +149,20 @@ describe("emailService", () => {
         "getPasswordResetEmailBody",
       );
 
-      resendSpy.mockImplementation(
-        class Resend {
-          emails = {
-            send: sendSpy.mockResolvedValue({
-              data: {
-                id: "1",
-              },
-              error: null,
-            }),
-          };
-        } as unknown as typeof ResendModule.Resend,
-      );
+      resend.emails.send.mockResolvedValue({
+        data: {
+          id: "1",
+        },
+        error: null,
+      });
 
       await emailService.sendEmail(mockedEntry);
-
-      expect(resendSpy).toHaveBeenCalled();
 
       expect(spyGetPasswordResetEmailBody).toHaveBeenCalled();
       expect(spyGetPasswordResetEmailBody).toHaveBeenCalledWith(code);
 
-      expect(sendSpy).toHaveBeenCalled();
-      expect(sendSpy).toHaveBeenCalledWith({
+      expect(resend.emails.send).toHaveBeenCalled();
+      expect(resend.emails.send).toHaveBeenCalledWith({
         from: expect.anything(),
         to: email,
         subject: expect.stringMatching(/reset password/i),
@@ -202,28 +182,20 @@ describe("emailService", () => {
         "getEmailUpdateEmailBody",
       );
 
-      resendSpy.mockImplementation(
-        class Resend {
-          emails = {
-            send: sendSpy.mockResolvedValue({
-              data: {
-                id: "1",
-              },
-              error: null,
-            }),
-          };
-        } as unknown as typeof ResendModule.Resend,
-      );
+      resend.emails.send.mockResolvedValue({
+        data: {
+          id: "1",
+        },
+        error: null,
+      });
 
       await emailService.sendEmail(mockedEntry);
-
-      expect(resendSpy).toHaveBeenCalled();
 
       expect(spyGetEmailUpdateEmailBody).toHaveBeenCalled();
       expect(spyGetEmailUpdateEmailBody).toHaveBeenCalledWith(code);
 
-      expect(sendSpy).toHaveBeenCalled();
-      expect(sendSpy).toHaveBeenCalledWith({
+      expect(resend.emails.send).toHaveBeenCalled();
+      expect(resend.emails.send).toHaveBeenCalledWith({
         from: expect.anything(),
         to: email,
         subject: expect.stringMatching(/update/i),
@@ -243,28 +215,20 @@ describe("emailService", () => {
         "getEmailUpdateNoticeEmailBody",
       );
 
-      resendSpy.mockImplementation(
-        class Resend {
-          emails = {
-            send: sendSpy.mockResolvedValue({
-              data: {
-                id: "1",
-              },
-              error: null,
-            }),
-          };
-        } as unknown as typeof ResendModule.Resend,
-      );
+      resend.emails.send.mockResolvedValue({
+        data: {
+          id: "1",
+        },
+        error: null,
+      });
 
       await emailService.sendEmail(mockedEntry);
-
-      expect(resendSpy).toHaveBeenCalled();
 
       expect(spyGetEmailUpdateNoticeEmailBody).toHaveBeenCalled();
       expect(spyGetEmailUpdateNoticeEmailBody).toHaveBeenCalledWith();
 
-      expect(sendSpy).toHaveBeenCalled();
-      expect(sendSpy).toHaveBeenCalledWith({
+      expect(resend.emails.send).toHaveBeenCalled();
+      expect(resend.emails.send).toHaveBeenCalledWith({
         from: expect.anything(),
         to: email,
         subject: expect.stringMatching(/update/i),
