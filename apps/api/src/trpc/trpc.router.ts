@@ -4,7 +4,8 @@ import { ExtensionRouter } from "@/extension/extension.router";
 import { INestApplication, Injectable } from "@nestjs/common";
 import * as trpcExpress from "@trpc/server/adapters/express";
 
-import { createContext, TrpcService } from "./trpc.service";
+import { TrpcService } from "./trpc.service";
+import { createContext } from "./utils/create-context";
 
 @Injectable()
 export class TrpcRouter {

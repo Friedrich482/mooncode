@@ -1,54 +1,34 @@
-import superjson from "superjson";
-
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@/common/constants";
 import { EnvService } from "@/env/env.service";
-import { errorFormatter } from "@/trpc/filters/error-formatter";
-import { Injectable, Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { JwtPayload as JwtPayloadDtoType } from "@repo/common/types-schemas";
-import { initTRPC, TRPCError } from "@trpc/server";
-import * as trpcExpress from "@trpc/server/adapters/express";
+import { JwtPayloadSchema as JwtPayloadDto } from "@repo/common/types-schemas";
+import { TRPCError } from "@trpc/server";
 import {
   createTRPCStoreLimiter,
   defaultFingerPrint,
 } from "@trpc-limiter/memory";
 
-import { RateLimiterParams } from "./trpc.dto";
-
-export type TrpcContext = {
-  req: trpcExpress.CreateExpressContextOptions["req"];
-  res: trpcExpress.CreateExpressContextOptions["res"];
-  user?: Pick<JwtPayloadDtoType, "sub">;
-};
-
-export const createContext = async (
-  opts: trpcExpress.CreateExpressContextOptions,
-): Promise<TrpcContext> => {
-  return {
-    req: opts.req,
-    res: opts.res,
-  };
-};
+import { TrpcInstance } from "./providers/providers";
+import { RateLimiterParams, TrpcContext } from "./trpc.dto";
 
 @Injectable()
 export class TrpcService {
-  trpc;
-  private limiters;
   private readonly logger = new Logger("TrpcService", { timestamp: true });
+
   constructor(
     private readonly jwtService: JwtService,
     private readonly envService: EnvService,
-  ) {
-    this.trpc = initTRPC.context<TrpcContext>().create({
-      transformer: superjson,
-      errorFormatter: ({ error, shape }) =>
-        errorFormatter(this.envService, { error, shape }),
-    });
-    this.limiters = new Map<
+
+    @Inject("trpc")
+    readonly trpc: TrpcInstance,
+
+    @Inject("limiters")
+    private readonly limiters: Map<
       string,
-      ReturnType<typeof createTRPCStoreLimiter<typeof this.trpc>>
-    >();
-  }
+      ReturnType<typeof createTRPCStoreLimiter<typeof trpc>>
+    >,
+  ) {}
 
   rateLimiter(rateLimiterParams: RateLimiterParams) {
     const { key, windowMs = 15 * 60 * 1000, max = 600 } = rateLimiterParams;
@@ -89,10 +69,6 @@ export class TrpcService {
       .use(async (opts) => {
         const payload = await this.getPayload(opts.ctx);
 
-        if (!payload) {
-          throw new TRPCError({ code: "UNAUTHORIZED" });
-        }
-        // user is authorized
         return opts.next({
           ctx: {
             ...opts.ctx,
@@ -128,12 +104,20 @@ export class TrpcService {
             .trim() ?? ctx.req.socket.remoteAddress);
 
     try {
-      const payload: JwtPayloadDtoType = await this.jwtService.verifyAsync(
-        accessToken,
-        {
-          secret: this.envService.get("JWT_SECRET"),
-        },
-      );
+      const rawPayload = await this.jwtService.verifyAsync(accessToken, {
+        secret: this.envService.get("JWT_SECRET"),
+      });
+
+      const parsedPayload = JwtPayloadDto.safeParse(rawPayload);
+
+      if (!parsedPayload.success) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Payload malformed",
+        });
+      }
+
+      const payload = parsedPayload.data;
 
       this.logger.log(
         `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}, ${clientIpAddress}`,

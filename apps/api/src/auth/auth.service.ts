@@ -5,7 +5,7 @@ import { EmailService } from "@/email/email.service";
 import { EmailVerificationsService } from "@/email-verifications/email-verifications.service";
 import { EnvService } from "@/env/env.service";
 import { PasswordResetsService } from "@/password-resets/password-resets.service";
-import { TrpcContext } from "@/trpc/trpc.service";
+import { TrpcContext } from "@/trpc/trpc.dto";
 import { UsersService } from "@/users/users.service";
 import {
   Injectable,

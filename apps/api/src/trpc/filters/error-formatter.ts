@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { EnvService } from "@/env/env.service";
+import { environmentEnum } from "@/common/dto";
 import { formatZodError } from "@repo/common/format-zod-error";
 import { TRPCError } from "@trpc/server";
 
@@ -15,17 +15,16 @@ type ErrorShape = {
   message: string;
 };
 
-export const errorFormatter = (
-  envService: EnvService,
-  {
-    shape,
-    error,
-  }: {
-    shape: ErrorShape;
-    error: unknown;
-  },
-) => {
-  const isDev = envService.get("NODE_ENV") === "development";
+export const errorFormatter = ({
+  environment,
+  shape,
+  error,
+}: {
+  environment: (typeof environmentEnum)[number];
+  shape: ErrorShape;
+  error: unknown;
+}) => {
+  const isDev = environment === "development";
 
   if (error instanceof TRPCError && error.code === "BAD_REQUEST") {
     if (error.cause && isZodError(error.cause)) {
