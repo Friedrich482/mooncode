@@ -11,7 +11,9 @@ export default defineConfig({
           globals: true,
           exclude: ["dist/**", "./src/email/utils/**"],
           server: {
-            deps: { inline: ["bcrypt", "resend"] },
+            deps: {
+              inline: ["bcrypt", "resend", "@trpc/server"],
+            },
           },
           mockReset: true,
           unstubEnvs: true,

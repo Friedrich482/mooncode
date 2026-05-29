@@ -4,9 +4,7 @@ import { TrpcContext } from "../trpc.dto";
 
 export const createContext = async (
   opts: trpcExpress.CreateExpressContextOptions,
-): Promise<TrpcContext> => {
-  return {
-    req: opts.req,
-    res: opts.res,
-  };
-};
+): Promise<TrpcContext> => ({
+  req: opts.req,
+  res: opts.res,
+});
