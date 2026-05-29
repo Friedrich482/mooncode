@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { MockedDrizzle } from "@/common/tests/types";
 import * as utils from "@/common/utils/generate-verification-code";
@@ -6,13 +6,14 @@ import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
 import { EmailService } from "@/email/email.service";
 import { Test } from "@nestjs/testing";
 import { TRPCError } from "@trpc/server";
+import { Procedure } from "@vitest/spy";
 
 import * as constants from "./constants";
 import { EmailVerificationsService } from "./email-verifications.service";
 
 describe("emailVerificationsService", () => {
   let emailVerificationsService: EmailVerificationsService;
-  let emailService: Partial<EmailService>;
+  let emailService: { sendEmail: Mock<Procedure> };
 
   let mockedDrizzle: MockedDrizzle;
 

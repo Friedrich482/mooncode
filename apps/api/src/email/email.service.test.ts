@@ -13,7 +13,7 @@ import * as getPasswordResetEmailBody from "./utils/get-password-reset-email-bod
 
 describe("emailService", () => {
   let emailService: EmailService;
-  let envService: Partial<EnvService>;
+  let envService: { get: Mock<Procedure> };
   let resend: {
     emails: {
       send: Mock<Procedure>;

@@ -1,13 +1,14 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { ConfigService } from "@nestjs/config";
 import { Test } from "@nestjs/testing";
+import { Procedure } from "@vitest/spy";
 
 import { EnvService } from "./env.service";
 
 describe("envService", () => {
   let envService: EnvService;
-  let configService: Partial<ConfigService>;
+  let configService: { get: Mock<Procedure> };
 
   beforeEach(async () => {
     vi.clearAllMocks();

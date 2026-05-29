@@ -4,6 +4,8 @@ import { Inject, Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { JwtPayloadSchema as JwtPayloadDto } from "@repo/common/types-schemas";
 import { TRPCError } from "@trpc/server";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { MiddlewareResult } from "@trpc/server/unstable-core-do-not-import";
 import {
   createTRPCStoreLimiter,
   defaultFingerPrint,
@@ -26,7 +28,7 @@ export class TrpcService {
     @Inject("limiters")
     private readonly limiters: Map<
       string,
-      ReturnType<typeof createTRPCStoreLimiter<typeof trpc>>
+      ReturnType<typeof createTRPCStoreLimiter<TrpcInstance>>
     >,
   ) {}
 
@@ -65,26 +67,29 @@ export class TrpcService {
 
   // these routes requires authentication
   protectedProcedure(rateLimiterParams?: RateLimiterParams) {
-    const procedure = this.trpc.procedure
-      .use(async (opts) => {
-        const payload = await this.getPayload(opts.ctx);
+    return this.trpc.procedure
+      .use(this.rateLimiter(rateLimiterParams ?? { key: "global" }))
+      .use((opts) => this.authMiddleware(opts));
+  }
 
-        return opts.next({
-          ctx: {
-            ...opts.ctx,
-            user: { sub: payload.sub },
-          },
-        });
-      })
-      .use(this.rateLimiter(rateLimiterParams ?? { key: "global" }));
-    return procedure;
+  async authMiddleware(
+    opts: Parameters<Parameters<TrpcInstance["middleware"]>[number]>[number],
+  ) {
+    const payload = await this.getPayload(opts.ctx);
+
+    return opts.next({
+      ctx: {
+        ...opts.ctx,
+        user: { sub: payload.sub },
+      },
+    });
   }
 
   async getPayload(ctx: TrpcContext) {
     // get jwt token from cookies (browser) or the headers (extension)
     const accessToken =
       ctx.req.cookies?.auth_token ??
-      ctx.req.headers.authorization?.replace("Bearer ", "");
+      ctx.req.headers?.authorization?.replace("Bearer ", "");
 
     if (!accessToken) {
       throw new TRPCError({
@@ -103,27 +108,11 @@ export class TrpcService {
             .split(",")[0]
             .trim() ?? ctx.req.socket.remoteAddress);
 
+    let rawPayload: unknown;
     try {
-      const rawPayload = await this.jwtService.verifyAsync(accessToken, {
+      rawPayload = await this.jwtService.verifyAsync(accessToken, {
         secret: this.envService.get("JWT_SECRET"),
       });
-
-      const parsedPayload = JwtPayloadDto.safeParse(rawPayload);
-
-      if (!parsedPayload.success) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Payload malformed",
-        });
-      }
-
-      const payload = parsedPayload.data;
-
-      this.logger.log(
-        `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}, ${clientIpAddress}`,
-      );
-
-      return payload;
     } catch (error) {
       this.logger.error(
         `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - JWT verification failed on jwt: "${accessToken}", ${clientIpAddress}`,
@@ -135,5 +124,22 @@ export class TrpcService {
         message: "Invalid or expired token",
       });
     }
+
+    const parsedPayload = JwtPayloadDto.safeParse(rawPayload);
+
+    if (!parsedPayload.success) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Payload malformed",
+      });
+    }
+
+    const payload = parsedPayload.data;
+
+    this.logger.log(
+      `${ctx.req.method} ${decodeURIComponent(ctx.req.originalUrl)} - userId: ${payload.sub}, ${clientIpAddress}`,
+    );
+
+    return payload;
   }
 }
