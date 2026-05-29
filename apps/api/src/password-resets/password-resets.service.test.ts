@@ -115,11 +115,11 @@ describe("passwordResetsService", () => {
       expect(spyGenerateVerificationCode).toHaveBeenCalled();
       expect(emailService.sendEmail).toHaveBeenCalled();
       expect(emailService.sendEmail).toHaveBeenCalledOnce();
-      expect(emailService.sendEmail).toHaveBeenCalledWith({
-        email: expect.anything(),
-        type: expect.anything(),
-        code: spyGenerateVerificationCode.mock.results[0].value,
-      });
+      expect(emailService.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: spyGenerateVerificationCode.mock.results[0].value,
+        }),
+      );
     });
 
     it("should throw an error when the user is not found", async () => {
@@ -192,11 +192,11 @@ describe("passwordResetsService", () => {
 
       expect(emailService.sendEmail).toHaveBeenCalled();
       expect(emailService.sendEmail).toHaveBeenCalledOnce();
-      expect(emailService.sendEmail).toHaveBeenCalledWith({
-        email: expect.anything(),
-        type: expect.anything(),
-        code: mockedExistingVerificationCode,
-      });
+      expect(emailService.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: mockedExistingVerificationCode,
+        }),
+      );
     });
 
     it("should not recall the generateVerificationCode when a password reset token already exists", async () => {

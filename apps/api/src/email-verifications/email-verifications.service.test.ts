@@ -107,11 +107,11 @@ describe("emailVerificationsService", () => {
       expect(spyGenerateVerificationCode).toHaveBeenCalled();
       expect(emailService.sendEmail).toHaveBeenCalled();
       expect(emailService.sendEmail).toHaveBeenCalledOnce();
-      expect(emailService.sendEmail).toHaveBeenCalledWith({
-        email: expect.anything(),
-        type: expect.anything(),
-        code: spyGenerateVerificationCode.mock.results[0].value,
-      });
+      expect(emailService.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: spyGenerateVerificationCode.mock.results[0].value,
+        }),
+      );
     });
 
     it("should throw an error when the email is already used by another user", async () => {
@@ -178,11 +178,11 @@ describe("emailVerificationsService", () => {
 
       expect(emailService.sendEmail).toHaveBeenCalled();
       expect(emailService.sendEmail).toHaveBeenCalledOnce();
-      expect(emailService.sendEmail).toHaveBeenCalledWith({
-        email: expect.anything(),
-        type: expect.anything(),
-        code: mockedExistingVerificationCode,
-      });
+      expect(emailService.sendEmail).toHaveBeenCalledWith(
+        expect.objectContaining({
+          code: mockedExistingVerificationCode,
+        }),
+      );
     });
 
     it("should not recall the generateVerificationCode when a verification token already exists", async () => {

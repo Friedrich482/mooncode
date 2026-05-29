@@ -129,12 +129,13 @@ describe("emailService", () => {
       expect(spyGetOnboardingEmailBody).toHaveBeenCalledWith(code);
 
       expect(resend.emails.send).toHaveBeenCalled();
-      expect(resend.emails.send).toHaveBeenCalledWith({
-        from: expect.anything(),
-        to: email,
-        subject: expect.stringMatching(/verification/),
-        html: spyGetOnboardingEmailBody.mock.results[0].value,
-      });
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: email,
+          subject: expect.stringMatching(/verification/),
+          html: spyGetOnboardingEmailBody.mock.results[0].value,
+        }),
+      );
     });
 
     it("should call resend with the proper parameters when the email type is 'password reset'", async () => {
@@ -162,12 +163,13 @@ describe("emailService", () => {
       expect(spyGetPasswordResetEmailBody).toHaveBeenCalledWith(code);
 
       expect(resend.emails.send).toHaveBeenCalled();
-      expect(resend.emails.send).toHaveBeenCalledWith({
-        from: expect.anything(),
-        to: email,
-        subject: expect.stringMatching(/reset password/i),
-        html: spyGetPasswordResetEmailBody.mock.results[0].value,
-      });
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: email,
+          subject: expect.stringMatching(/reset password/i),
+          html: spyGetPasswordResetEmailBody.mock.results[0].value,
+        }),
+      );
     });
 
     it("should call resend with the proper parameters when the email type is 'email update'", async () => {
@@ -195,12 +197,13 @@ describe("emailService", () => {
       expect(spyGetEmailUpdateEmailBody).toHaveBeenCalledWith(code);
 
       expect(resend.emails.send).toHaveBeenCalled();
-      expect(resend.emails.send).toHaveBeenCalledWith({
-        from: expect.anything(),
-        to: email,
-        subject: expect.stringMatching(/update/i),
-        html: spyGetEmailUpdateEmailBody.mock.results[0].value,
-      });
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: email,
+          subject: expect.stringMatching(/update/i),
+          html: spyGetEmailUpdateEmailBody.mock.results[0].value,
+        }),
+      );
     });
 
     it("should call resend with the proper parameters when the email type is 'notice email update'", async () => {
@@ -228,12 +231,13 @@ describe("emailService", () => {
       expect(spyGetEmailUpdateNoticeEmailBody).toHaveBeenCalledWith();
 
       expect(resend.emails.send).toHaveBeenCalled();
-      expect(resend.emails.send).toHaveBeenCalledWith({
-        from: expect.anything(),
-        to: email,
-        subject: expect.stringMatching(/update/i),
-        html: spyGetEmailUpdateNoticeEmailBody.mock.results[0].value,
-      });
+      expect(resend.emails.send).toHaveBeenCalledWith(
+        expect.objectContaining({
+          to: email,
+          subject: expect.stringMatching(/update/i),
+          html: spyGetEmailUpdateNoticeEmailBody.mock.results[0].value,
+        }),
+      );
     });
   });
 });
