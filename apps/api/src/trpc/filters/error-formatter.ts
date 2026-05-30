@@ -3,97 +3,31 @@ import { ZodError } from "zod";
 import { environmentEnum } from "@/common/dto";
 import { formatZodError } from "@repo/common/format-zod-error";
 import { TRPCError } from "@trpc/server";
-
-type ErrorShape = {
-  data: {
-    stack?: string | undefined;
-    path?: string | undefined;
-    zodIssues?: ZodError[] | undefined;
-    code: string;
-    httpStatus: number;
-  };
-  message: string;
-};
+import { DefaultErrorShape } from "@trpc/server/unstable-core-do-not-import";
 
 export const errorFormatter = ({
   environment,
-  shape,
   error,
+  shape,
 }: {
   environment: (typeof environmentEnum)[number];
-  shape: ErrorShape;
-  error: unknown;
+  error: TRPCError;
+  shape: DefaultErrorShape;
 }) => {
   const isDev = environment === "development";
 
-  if (error instanceof TRPCError && error.code === "BAD_REQUEST") {
-    if (error.cause && isZodError(error.cause)) {
-      return {
-        ...shape,
-        message: formatZodError(error.cause),
-        data: {
-          code: shape.data.code,
-          httpStatus: shape.data.httpStatus,
-          ...(isDev && {
-            stack: shape.data.stack,
-            path: shape.data.path,
-            zodIssues: error.cause.issues,
-          }),
-        },
-      };
-    }
-  }
-
-  // Handle direct Zod errors
-  if (isZodError(error)) {
-    return {
-      ...shape,
-      message: formatZodError(error),
-      data: {
-        code: shape.data.code,
-        httpStatus: shape.data.httpStatus,
-        ...(isDev && {
-          stack: shape.data.stack,
-          path: shape.data.path,
-          zodIssues: error.issues,
-        }),
-      },
-    };
-  }
-
-  // Other errors
-  let cleanMessage = "An error occurred";
-
-  if (error instanceof Error) {
-    cleanMessage = error.message;
-    try {
-      if (error.message.startsWith("[") && error.message.endsWith("]")) {
-        const parsedErrors = JSON.parse(error.message);
-        if (Array.isArray(parsedErrors)) {
-          cleanMessage = parsedErrors
-            .map((err) => `${err.path?.join(".") || "field"}: ${err.message}`)
-            .join("; ");
-        }
-      }
-    } catch {
-      // Keep original message if parsing fails
-    }
-  }
-
   return {
     ...shape,
-    message: cleanMessage,
+    message:
+      error.cause instanceof ZodError
+        ? formatZodError(error.cause)
+        : error.message,
+
     data: {
       code: shape.data.code,
       httpStatus: shape.data.httpStatus,
-      ...(isDev && {
-        stack: shape.data.stack,
-        path: shape.data.path,
-      }),
+      path: shape.data.path,
+      ...(isDev && { stack: shape.data.stack }),
     },
   };
-};
-
-const isZodError = (error: unknown) => {
-  return error instanceof ZodError;
 };
