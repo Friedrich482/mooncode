@@ -60,7 +60,6 @@ export const JwtPayloadSchema = z.object({
 export const SignInUserSchema = z.object({
   email: EmailSchema,
   password: z.string().min(1, "Password is required"),
-  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
 export const CreateEmailVerificationSchema = z.object({

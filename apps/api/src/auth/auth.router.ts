@@ -149,11 +149,13 @@ export class AuthRouter {
 
       checkAuthStatus: this.trpcService
         .protectedProcedure()
-        .query(async ({ ctx }) => this.authService.checkAuthStatus(ctx)),
+        .query(async ({ ctx }) =>
+          this.authService.checkAuthStatus({ user: ctx.user }),
+        ),
 
       getUser: this.trpcService
         .protectedProcedure()
-        .query(async ({ ctx }) => this.authService.getUser(ctx)),
+        .query(async ({ ctx }) => this.authService.getUser({ user: ctx.user })),
 
       updateUsername: this.trpcService
         .protectedProcedure()

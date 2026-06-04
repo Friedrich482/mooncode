@@ -5,7 +5,6 @@ import { EmailService } from "@/email/email.service";
 import { EmailVerificationsService } from "@/email-verifications/email-verifications.service";
 import { EnvService } from "@/env/env.service";
 import { PasswordResetsService } from "@/password-resets/password-resets.service";
-import { TrpcContext } from "@/trpc/trpc.dto";
 import { UsersService } from "@/users/users.service";
 import {
   Injectable,
@@ -30,7 +29,9 @@ import {
 import { TRPCError } from "@trpc/server";
 
 import {
+  CheckAuthStatusDtoType,
   DeleteAccountDtoType,
+  GetUserDtoType,
   GoogleUserSchema,
   HandleGoogleCallBacKDtoType,
   HandleGoogleLinkingCallBackDtoType,
@@ -197,20 +198,18 @@ export class AuthService {
     };
   }
 
-  async checkAuthStatus(ctx: TrpcContext) {
+  async checkAuthStatus(checkAuthStatusDto: CheckAuthStatusDtoType) {
+    const { user } = checkAuthStatusDto;
+
     // the protectedProcedure check has been passed so the user is authenticated
-    return { isAuthenticated: true, user: ctx.user };
+    return { isAuthenticated: true, user };
   }
 
-  async getUser(ctx: TrpcContext) {
-    if (!ctx.user) {
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "User not found",
-      });
-    }
+  async getUser(getUserDto: GetUserDtoType) {
+    const {
+      user: { sub },
+    } = getUserDto;
 
-    const { sub } = ctx.user;
     const user = await this.usersService.findById({
       id: sub,
     });
@@ -261,7 +260,9 @@ export class AuthService {
       username,
     });
 
-    return user;
+    const { profilePicture, ...rest } = user;
+
+    return rest;
   }
 
   async createEmailUpdate(createEmailUpdateDto: CreateEmailUpdateDtoType) {

@@ -219,7 +219,7 @@ describe("emailVerificationsService", () => {
     });
   });
 
-  describe("findOne", () => {
+  describe("findById", () => {
     const id = "1";
     const mockedEntry = {
       id,

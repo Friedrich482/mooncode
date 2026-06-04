@@ -1,7 +1,14 @@
 import { z } from "zod";
 
-import { environmentEnum } from "@/common/dto";
 import { EmailSchema, UserId } from "@repo/common/types-schemas";
+
+export const CheckAuthStatusDto = z.object({
+  user: z.object({ sub: z.ulid() }),
+});
+
+export const GetUserDto = z.object({
+  user: z.object({ sub: z.ulid() }),
+});
 
 export const HandleGoogleQueryDto = z.union([
   z.object({ code: z.string().min(1) }),
@@ -41,7 +48,10 @@ export const GoogleUserSchema = z.object({
   picture: z.string().min(1),
 });
 
-export type Environment = (typeof environmentEnum)[number];
+export type CheckAuthStatusDtoType = z.infer<typeof CheckAuthStatusDto>;
+
+export type GetUserDtoType = z.infer<typeof GetUserDto>;
+
 export type HandleGoogleQueryDtoType = z.infer<typeof HandleGoogleQueryDto>;
 
 export type HandleGoogleCallBacKDtoType = z.infer<

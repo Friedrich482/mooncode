@@ -1,13 +1,14 @@
 import { Request } from "express";
 import z from "zod";
 
+import { Environment } from "@/common/dto";
 import { getAllowedClients } from "@/common/utils/get-allowed-clients";
 import {
   DASHBOARD_DEVELOPMENT_URL,
   DASHBOARD_PRODUCTION_URL,
 } from "@repo/common/constants";
 
-import { type Environment, StateQueryParamSchema } from "../auth.dto";
+import { StateQueryParamSchema } from "../auth.dto";
 
 export const validateStateQueryParam = <
   T extends z.ZodType<z.infer<typeof StateQueryParamSchema>>,

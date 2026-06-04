@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { environmentEnum } from "@/common/dto";
+import { Environment } from "@/common/dto";
 import { formatZodError } from "@repo/common/format-zod-error";
 import { TRPCError } from "@trpc/server";
 import { DefaultErrorShape } from "@trpc/server/unstable-core-do-not-import";
@@ -10,7 +10,7 @@ export const errorFormatter = ({
   error,
   shape,
 }: {
-  environment: (typeof environmentEnum)[number];
+  environment: Environment;
   error: TRPCError;
   shape: DefaultErrorShape;
 }) => {
