@@ -107,7 +107,7 @@ export class AuthController {
     @Query()
     queryParams: RedirectToGoogleForLinkingDtoType,
   ) {
-    const { googleUrl } = await this.authService.redirectToGoogleForLinking({
+    const { googleUrl } = this.authService.redirectToGoogleForLinking({
       ...queryParams,
     });
 

@@ -1800,4 +1800,39 @@ describe("AuthService", () => {
       }
     });
   });
+
+  describe("redirectToGoogleForLinking", () => {
+    it("should return a url containing expected parameters", () => {
+      const mockedEntry = {
+        state: "http://localhost:4308",
+      };
+
+      envService.get.mockImplementation((key: string) => {
+        switch (key) {
+          case "GOOGLE_CLIENT_ID":
+            return "google-client-id";
+
+          case "GOOGLE_LINKING_REDIRECT_URI":
+            return "google-linking-redirect-uri";
+          default:
+            break;
+        }
+      });
+
+      const { googleUrl } = authService.redirectToGoogleForLinking(mockedEntry);
+
+      expect(googleUrl).toBeDefined();
+      expect(googleUrl).toContain(
+        `client_id=${envService.get("GOOGLE_CLIENT_ID")}`,
+      );
+      expect(googleUrl).toContain(
+        `redirect_uri=${encodeURIComponent(envService.get("GOOGLE_LINKING_REDIRECT_URI"))}`,
+      );
+      expect(googleUrl).toContain("response_type=code");
+      expect(googleUrl).toContain("scope=openid email profile");
+      expect(googleUrl).toContain(
+        `state=${encodeURIComponent(mockedEntry.state)}`,
+      );
+    });
+  });
 });

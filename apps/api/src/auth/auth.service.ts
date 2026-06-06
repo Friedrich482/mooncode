@@ -539,7 +539,7 @@ export class AuthService {
     return { accessToken: token, email: user.email };
   }
 
-  async redirectToGoogleForLinking(
+  redirectToGoogleForLinking(
     redirectToGoogleForLinkingDto: RedirectToGoogleForLinkingDtoType,
   ) {
     const { state } = redirectToGoogleForLinkingDto;
