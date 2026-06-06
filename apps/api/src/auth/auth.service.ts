@@ -7,12 +7,14 @@ import { EnvService } from "@/env/env.service";
 import { PasswordResetsService } from "@/password-resets/password-resets.service";
 import { UsersService } from "@/users/users.service";
 import {
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
+import { formatZodError } from "@repo/common/format-zod-error";
 import {
   CreateEmailUpdate as CreateEmailUpdateDtoType,
   CreateEmailVerification as CreateEmailVerificationDtoType,
@@ -38,6 +40,10 @@ import {
   RedirectToGoogleDtoType,
   RedirectToGoogleForLinkingDtoType,
 } from "./auth.dto";
+import {
+  LINKING_GOOGLE_ACCOUNT_OAUTH_CLIENT_PROVIDER,
+  LOGIN_GOOGLE_OAUTH_CLIENT_PROVIDER,
+} from "./constants";
 
 @Injectable()
 export class AuthService {
@@ -48,6 +54,12 @@ export class AuthService {
     private readonly emailService: EmailService,
     private readonly emailVerificationService: EmailVerificationsService,
     private readonly passwordResetsService: PasswordResetsService,
+
+    @Inject(LOGIN_GOOGLE_OAUTH_CLIENT_PROVIDER)
+    private readonly loginGoogleOauthClient: OAuth2Client,
+
+    @Inject(LINKING_GOOGLE_ACCOUNT_OAUTH_CLIENT_PROVIDER)
+    private readonly linkingGoogleAccountOauthClient: OAuth2Client,
   ) {}
 
   async signIn(signInDto: SignInUserDtoType) {
@@ -370,7 +382,7 @@ export class AuthService {
     return deletedUser;
   }
 
-  async redirectToGoogle(redirectToGoogleDto: RedirectToGoogleDtoType) {
+  redirectToGoogle(redirectToGoogleDto: RedirectToGoogleDtoType) {
     const { state, callback } = redirectToGoogleDto;
 
     const googleAuthUrl =
@@ -405,46 +417,83 @@ export class AuthService {
 
     const code = handleGoogleCallBackDto.code;
 
-    const client = new OAuth2Client({
-      clientId: this.envService.get("GOOGLE_CLIENT_ID"),
-      clientSecret: this.envService.get("GOOGLE_CLIENT_SECRET"),
-      redirectUri: this.envService.get("GOOGLE_REDIRECT_URI"),
-    });
+    const {
+      tokens: { access_token: accessToken },
+    } = await this.loginGoogleOauthClient.getToken(code);
 
+    if (!accessToken) {
+      return {
+        error: "No access token received from Google",
+        errorDescription:
+          "Something went wrong during the authentication process. Please try again",
+      };
+    }
+
+    let googleRes: Response;
     try {
-      const {
-        tokens: { access_token: accessToken },
-      } = await client.getToken(code);
-
-      if (!accessToken) {
+      googleRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
         return {
-          error: "No access token received from Google",
-          errorDescription:
-            "Something went wrong during the authentication process. Please try again",
+          error: error.name,
+          errorDescription: error.message,
         };
       }
 
-      const googleRes = await fetch(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
-      if (!googleRes.ok) {
-        throw new InternalServerErrorException(
-          "Failed to fetch Google user info",
-        );
+      return {
+        error: "Unknown",
+        errorDescription: "An unknown error occurred",
+      };
+    }
+
+    if (!googleRes.ok) {
+      return {
+        error: "Failed to fetch Google user info",
+        errorDescription:
+          "Something went wrong while fetching your Google information. Please try again",
+      };
+    }
+
+    let body: unknown;
+    try {
+      body = await googleRes.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          error: error.name,
+          errorDescription: error.message,
+        };
       }
 
-      const body = await googleRes.json();
+      return {
+        error: "Unknown",
+        errorDescription: "An unknown error occurred",
+      };
+    }
 
-      const googleUser = GoogleUserSchema.parse(body);
-      const existingUser = await this.usersService.findByGoogleEmail({
-        googleEmail: googleUser.email,
-      });
+    const parsedGoogleUser = GoogleUserSchema.safeParse(body);
 
-      const user: { userId: string; email: string } = { userId: "", email: "" };
+    if (!parsedGoogleUser.success) {
+      return {
+        error: formatZodError(parsedGoogleUser.error),
+        errorDescription: formatZodError(parsedGoogleUser.error),
+      };
+    }
 
+    const googleUser = parsedGoogleUser.data;
+
+    const existingUser = await this.usersService.findByGoogleEmail({
+      googleEmail: googleUser.email,
+    });
+
+    const user: { userId: string; email: string } = { userId: "", email: "" };
+
+    // we wrap this section in try/catch block because some of the userService methods can throw TRPCErrors
+    // we have to handle them here because since the `handleGoogleCallBack` method is used in the auth.controller
+    // and not the auth.router, there is no trpc error handler (errorFormatter) in the auth.controller to catch any trpc error that could be thrown here
+    try {
       if (existingUser) {
         const { email } = await this.usersService.update({
           id: existingUser.id,
@@ -466,17 +515,11 @@ export class AuthService {
         user.userId = newUser.id;
         user.email = newUser.email;
       }
-
-      const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.userId };
-      const token = await this.jwtService.signAsync(payload);
-
-      return { accessToken: token, email: user.email };
     } catch (error) {
-      console.error("Google OAuth error:", error);
       if (error instanceof TRPCError) {
         return {
-          error: error.message,
-          errorDescription: error.cause?.message || "An error occurred",
+          error: error.code,
+          errorDescription: error.message,
         };
       } else if (error instanceof Error) {
         return {
@@ -489,6 +532,11 @@ export class AuthService {
         errorDescription: "An unknown error occurred",
       };
     }
+
+    const payload: Pick<JwtPayloadDtoType, "sub"> = { sub: user.userId };
+    const token = await this.jwtService.signAsync(payload);
+
+    return { accessToken: token, email: user.email };
   }
 
   async redirectToGoogleForLinking(
@@ -524,16 +572,10 @@ export class AuthService {
 
     const code = handleGoogleLinkingCallBackDto.code;
 
-    const client = new OAuth2Client({
-      clientId: this.envService.get("GOOGLE_CLIENT_ID"),
-      clientSecret: this.envService.get("GOOGLE_CLIENT_SECRET"),
-      redirectUri: this.envService.get("GOOGLE_LINKING_REDIRECT_URI"),
-    });
-
     try {
       const {
         tokens: { access_token: accessToken },
-      } = await client.getToken(code);
+      } = await this.linkingGoogleAccountOauthClient.getToken(code);
 
       if (!accessToken) {
         return {

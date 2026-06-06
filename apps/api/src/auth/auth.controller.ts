@@ -35,7 +35,7 @@ export class AuthController {
     @Res() response: Response,
     @Query() queryParams: RedirectToGoogleDtoType,
   ) {
-    const { googleAuthUrl } = await this.authService.redirectToGoogle({
+    const { googleAuthUrl } = this.authService.redirectToGoogle({
       ...queryParams,
     });
 
