@@ -1247,7 +1247,7 @@ describe("AuthService", () => {
     });
   });
 
-  describe("handleGoogleCallBack", () => {
+  describe("handleGoogleCallback", () => {
     it("should return an access token", async () => {
       const mockedEntry = {
         type: "success" as const,
@@ -1285,7 +1285,7 @@ describe("AuthService", () => {
 
       jwtService.signAsync.mockResolvedValue(mockedToken);
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("accessToken" in returnValue).toBe(true);
@@ -1332,7 +1332,7 @@ describe("AuthService", () => {
 
       jwtService.signAsync.mockResolvedValue(mockedToken);
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("email" in returnValue).toBe(true);
@@ -1381,7 +1381,7 @@ describe("AuthService", () => {
 
       jwtService.signAsync.mockResolvedValue(mockedToken);
 
-      await authService.handleGoogleCallBack(mockedEntry);
+      await authService.handleGoogleCallback(mockedEntry);
 
       expect(usersService.update).toHaveBeenCalled();
       expect(usersService.update).toHaveBeenCalledWith(
@@ -1429,7 +1429,7 @@ describe("AuthService", () => {
 
       jwtService.signAsync.mockResolvedValue(mockedToken);
 
-      await authService.handleGoogleCallBack(mockedEntry);
+      await authService.handleGoogleCallback(mockedEntry);
 
       expect(usersService.createGoogleUser).toHaveBeenCalled();
       expect(usersService.createGoogleUser).toHaveBeenCalledWith({
@@ -1447,7 +1447,7 @@ describe("AuthService", () => {
         error: "Error",
       };
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1472,7 +1472,7 @@ describe("AuthService", () => {
         },
       });
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1502,7 +1502,7 @@ describe("AuthService", () => {
 
       global.fetch = vi.fn().mockThrow(networkError);
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1527,7 +1527,7 @@ describe("AuthService", () => {
 
       global.fetch = vi.fn().mockThrow("An unknown error occurred");
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1554,7 +1554,7 @@ describe("AuthService", () => {
 
       global.fetch = vi.fn().mockResolvedValue({ ok: false });
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1589,7 +1589,7 @@ describe("AuthService", () => {
         json: vi.fn().mockThrow(syntaxError),
       });
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1617,7 +1617,7 @@ describe("AuthService", () => {
         json: vi.fn().mockThrow("Unknown Error"),
       });
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1655,7 +1655,7 @@ describe("AuthService", () => {
         json: () => mockedInvalidGoogleUser,
       });
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1701,7 +1701,7 @@ describe("AuthService", () => {
       usersService.findByGoogleEmail.mockResolvedValue(null);
       usersService.createGoogleUser.mockThrow(trpcError);
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1746,7 +1746,7 @@ describe("AuthService", () => {
       usersService.findByGoogleEmail.mockResolvedValue(null);
       usersService.createGoogleUser.mockThrow(standardError);
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);
@@ -1787,7 +1787,7 @@ describe("AuthService", () => {
       usersService.findByGoogleEmail.mockResolvedValue(null);
       usersService.createGoogleUser.mockThrow("Unknown error");
 
-      const returnValue = await authService.handleGoogleCallBack(mockedEntry);
+      const returnValue = await authService.handleGoogleCallback(mockedEntry);
 
       expect(returnValue).toBeDefined();
       expect("error" in returnValue).toBe(true);

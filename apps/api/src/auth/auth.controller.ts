@@ -44,7 +44,7 @@ export class AuthController {
 
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @Get("/google/callback")
-  async handleGoogleCallBack(
+  async handleGoogleCallback(
     @Query(new ZodPipe(HandleGoogleQueryDto))
     queryParams: HandleGoogleQueryDtoType,
     @Res() response: Response,
@@ -60,7 +60,7 @@ export class AuthController {
     const url = new URL(returnUrl);
     const errorUrl = new URL(`${returnUrl}/login`);
 
-    const result = await this.authService.handleGoogleCallBack(
+    const result = await this.authService.handleGoogleCallback(
       "code" in queryParams
         ? {
             ...queryParams,
@@ -117,7 +117,7 @@ export class AuthController {
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @UseGuards(AuthGuard)
   @Get("/google/linking/callback")
-  async handleGoogleLinkingCallBack(
+  async handleGoogleLinkingCallback(
     @Query(new ZodPipe(HandleGoogleQueryDto))
     queryParams: HandleGoogleQueryDtoType,
     @Res() response: Response,
@@ -132,7 +132,7 @@ export class AuthController {
     const url = new URL(returnUrl);
     const errorUrl = new URL(`${returnUrl}/profile`);
 
-    const result = await this.authService.handleGoogleLinkingCallBack(
+    const result = await this.authService.handleGoogleLinkingCallback(
       "code" in queryParams
         ? {
             ...queryParams,

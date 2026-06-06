@@ -15,7 +15,7 @@ export const HandleGoogleQueryDto = z.union([
   z.object({ error: z.string().min(1) }),
 ]);
 
-export const HandleGoogleCallBackDto = z.discriminatedUnion("type", [
+export const handleGoogleCallbackDto = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("success"),
     code: z.string().min(1),
@@ -26,7 +26,7 @@ export const HandleGoogleCallBackDto = z.discriminatedUnion("type", [
   }),
 ]);
 
-export const HandleGoogleLinkingCallBackDto = HandleGoogleCallBackDto;
+export const handleGoogleLinkingCallbackDto = handleGoogleCallbackDto;
 
 export const StateQueryParamSchema = z.object({
   state: z.url(),
@@ -54,12 +54,12 @@ export type GetUserDtoType = z.infer<typeof GetUserDto>;
 
 export type HandleGoogleQueryDtoType = z.infer<typeof HandleGoogleQueryDto>;
 
-export type HandleGoogleCallBacKDtoType = z.infer<
-  typeof HandleGoogleCallBackDto
+export type handleGoogleCallbackDtoType = z.infer<
+  typeof handleGoogleCallbackDto
 >;
 
-export type HandleGoogleLinkingCallBackDtoType = z.infer<
-  typeof HandleGoogleLinkingCallBackDto
+export type handleGoogleLinkingCallbackDtoType = z.infer<
+  typeof handleGoogleLinkingCallbackDto
 > &
   UserId;
 

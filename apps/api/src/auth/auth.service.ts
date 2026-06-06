@@ -35,8 +35,8 @@ import {
   DeleteAccountDtoType,
   GetUserDtoType,
   GoogleUserSchema,
-  HandleGoogleCallBacKDtoType,
-  HandleGoogleLinkingCallBackDtoType,
+  handleGoogleCallbackDtoType,
+  handleGoogleLinkingCallbackDtoType,
   RedirectToGoogleDtoType,
   RedirectToGoogleForLinkingDtoType,
 } from "./auth.dto";
@@ -396,8 +396,8 @@ export class AuthService {
     return { googleAuthUrl };
   }
 
-  async handleGoogleCallBack(
-    handleGoogleCallBackDto: HandleGoogleCallBacKDtoType,
+  async handleGoogleCallback(
+    handleGoogleCallbackDto: handleGoogleCallbackDtoType,
   ): Promise<
     | { error: string; errorDescription: string }
     | {
@@ -405,17 +405,17 @@ export class AuthService {
         email: string;
       }
   > {
-    const { type } = handleGoogleCallBackDto;
+    const { type } = handleGoogleCallbackDto;
 
     if (type === "error") {
       return {
-        error: handleGoogleCallBackDto.error,
+        error: handleGoogleCallbackDto.error,
         errorDescription:
           "Something went wrong during the authentication process. Please try again",
       };
     }
 
-    const code = handleGoogleCallBackDto.code;
+    const code = handleGoogleCallbackDto.code;
 
     const {
       tokens: { access_token: accessToken },
@@ -491,7 +491,7 @@ export class AuthService {
     const user: { userId: string; email: string } = { userId: "", email: "" };
 
     // we wrap this section in try/catch block because some of the userService methods can throw TRPCErrors
-    // we have to handle them here because since the `handleGoogleCallBack` method is used in the auth.controller
+    // we have to handle them here because since the `handleGoogleCallback` method is used in the auth.controller
     // and not the auth.router, there is no trpc error handler (errorFormatter) in the auth.controller to catch any trpc error that could be thrown here
     try {
       if (existingUser) {
@@ -555,22 +555,22 @@ export class AuthService {
     return { googleUrl };
   }
 
-  async handleGoogleLinkingCallBack(
-    handleGoogleLinkingCallBackDto: HandleGoogleLinkingCallBackDtoType,
+  async handleGoogleLinkingCallback(
+    handleGoogleLinkingCallbackDto: handleGoogleLinkingCallbackDtoType,
   ): Promise<
     { error: string; errorDescription: string } | { accessToken: string }
   > {
-    const { type, userId } = handleGoogleLinkingCallBackDto;
+    const { type, userId } = handleGoogleLinkingCallbackDto;
 
     if (type === "error") {
       return {
-        error: handleGoogleLinkingCallBackDto.error,
+        error: handleGoogleLinkingCallbackDto.error,
         errorDescription:
           "Something went wrong during the authentication process. Please try again",
       };
     }
 
-    const code = handleGoogleLinkingCallBackDto.code;
+    const code = handleGoogleLinkingCallbackDto.code;
 
     try {
       const {
