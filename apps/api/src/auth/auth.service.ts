@@ -6,13 +6,7 @@ import { EmailVerificationsService } from "@/email-verifications/email-verificat
 import { EnvService } from "@/env/env.service";
 import { PasswordResetsService } from "@/password-resets/password-resets.service";
 import { UsersService } from "@/users/users.service";
-import {
-  Inject,
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { formatZodError } from "@repo/common/format-zod-error";
 import {
@@ -572,61 +566,109 @@ export class AuthService {
 
     const code = handleGoogleLinkingCallbackDto.code;
 
-    try {
-      const {
-        tokens: { access_token: accessToken },
-      } = await this.linkingGoogleAccountOauthClient.getToken(code);
+    const {
+      tokens: { access_token: accessToken },
+    } = await this.linkingGoogleAccountOauthClient.getToken(code);
 
-      if (!accessToken) {
+    if (!accessToken) {
+      return {
+        error: "No access token received from Google",
+        errorDescription:
+          "Something went wrong during the authentication process. Please try again",
+      };
+    }
+
+    let googleRes: Response;
+    try {
+      googleRes = await fetch("https://www.googleapis.com/oauth2/v2/userinfo", {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+    } catch (error) {
+      if (error instanceof Error) {
         return {
-          error: "No access token received from Google",
-          errorDescription:
-            "Something went wrong during the authentication process. Please try again",
+          error: error.name,
+          errorDescription: error.message,
         };
       }
 
-      const googleRes = await fetch(
-        "https://www.googleapis.com/oauth2/v2/userinfo",
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        },
-      );
-      if (!googleRes.ok) {
-        throw new InternalServerErrorException(
-          "Failed to fetch Google user info",
-        );
+      return {
+        error: "Unknown",
+        errorDescription: "An unknown error occurred",
+      };
+    }
+
+    if (!googleRes.ok) {
+      return {
+        error: "Failed to fetch Google user info",
+        errorDescription:
+          "Something went wrong while fetching your Google information. Please try again",
+      };
+    }
+
+    let body: unknown;
+    try {
+      body = await googleRes.json();
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          error: error.name,
+          errorDescription: error.message,
+        };
       }
 
-      const body = await googleRes.json();
+      return {
+        error: "Unknown",
+        errorDescription: "An unknown error occurred",
+      };
+    }
 
-      const googleUser = GoogleUserSchema.parse(body);
-      const existingGoogleUser = await this.usersService.findByGoogleEmail({
-        googleEmail: googleUser.email,
-      });
+    const parsedGoogleUser = GoogleUserSchema.safeParse(body);
 
-      if (existingGoogleUser) {
-        throw new UnauthorizedException(
-          "You have already linked this Google account",
-        );
-      }
+    if (!parsedGoogleUser.success) {
+      return {
+        error: formatZodError(parsedGoogleUser.error),
+        errorDescription: formatZodError(parsedGoogleUser.error),
+      };
+    }
 
-      const existingEmailPlusPasswordUser = await this.usersService.findById({
-        id: userId,
-      });
+    const googleUser = parsedGoogleUser.data;
 
-      if (!existingEmailPlusPasswordUser) {
-        throw new NotFoundException("User not found");
-      }
+    const existingGoogleUser = await this.usersService.findByGoogleEmail({
+      googleEmail: googleUser.email,
+    });
 
-      if (
-        existingEmailPlusPasswordUser.authMethod === "both" ||
-        existingEmailPlusPasswordUser.authMethod === "google"
-      ) {
-        throw new UnauthorizedException(
-          "You have already linked a Google account",
-        );
-      }
+    if (existingGoogleUser) {
+      return {
+        error: "Forbidden",
+        errorDescription: "You have already linked this Google account",
+      };
+    }
 
+    const existingEmailPlusPasswordUser = await this.usersService.findById({
+      id: userId,
+    });
+
+    if (!existingEmailPlusPasswordUser) {
+      return {
+        error: "Not Found",
+        errorDescription: "User not found",
+      };
+    }
+
+    if (
+      existingEmailPlusPasswordUser.authMethod === "both" ||
+      existingEmailPlusPasswordUser.authMethod === "google"
+    ) {
+      return {
+        error: "Forbidden",
+        errorDescription: "You have already linked a Google account",
+      };
+    }
+
+    // we wrap this section in try/catch block because the update method of the usersService can throw TRPCErrors
+    // we have to handle them here because since the `handleGoogleLinkingCallback` method is used in the auth.controller
+    // and not the auth.router, there is no trpc error handler (errorFormatter) in the auth.controller to catch any trpc error that could be thrown here
+    try {
       await this.usersService.update({
         id: existingEmailPlusPasswordUser.id,
         profilePicture: googleUser.picture,
@@ -634,19 +676,11 @@ export class AuthService {
         googleEmail: googleUser.email,
         authMethod: "both",
       });
-
-      const payload: Pick<JwtPayloadDtoType, "sub"> = {
-        sub: existingEmailPlusPasswordUser.id,
-      };
-      const token = await this.jwtService.signAsync(payload);
-
-      return { accessToken: token };
     } catch (error) {
-      console.error("Google OAuth error:", error);
       if (error instanceof TRPCError) {
         return {
-          error: error.message,
-          errorDescription: error.cause?.message || "An error occurred",
+          error: error.code,
+          errorDescription: error.message,
         };
       } else if (error instanceof Error) {
         return {
@@ -659,5 +693,12 @@ export class AuthService {
         errorDescription: "An unknown error occurred",
       };
     }
+
+    const payload: Pick<JwtPayloadDtoType, "sub"> = {
+      sub: existingEmailPlusPasswordUser.id,
+    };
+    const token = await this.jwtService.signAsync(payload);
+
+    return { accessToken: token };
   }
 }
