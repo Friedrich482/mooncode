@@ -1835,4 +1835,714 @@ describe("AuthService", () => {
       );
     });
   });
+
+  describe("handleGoogleLinkingCallback", () => {
+    it("should return an access token", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      const mockedToken = "token";
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "email",
+        googleEmail: "existing@gmail.com",
+        registrationDate: new Date(),
+      });
+
+      jwtService.signAsync.mockResolvedValue(mockedToken);
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("accessToken" in returnValue).toBe(true);
+
+      if ("accessToken" in returnValue) {
+        expect(returnValue.accessToken).toEqual(mockedToken);
+      }
+    });
+
+    it("should update the user authentication method to 'both'", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      const mockedToken = "token";
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "email",
+        googleEmail: null,
+        registrationDate: new Date(),
+      });
+
+      jwtService.signAsync.mockResolvedValue(mockedToken);
+
+      await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(usersService.update).toHaveBeenCalled();
+      expect(usersService.update).toHaveBeenCalledWith(
+        expect.objectContaining({
+          authMethod: "both",
+          profilePicture: mockedGoogleUser.picture,
+          googleId: mockedGoogleUser.id,
+          googleEmail: mockedGoogleUser.email,
+        }),
+      );
+    });
+
+    it("should return an error object if the type passed in argument is 'error'", async () => {
+      const mockedEntry = {
+        type: "error" as const,
+        error: "Error",
+        userId: "1",
+      };
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toEqual(mockedEntry.error);
+
+        expect(returnValue.errorDescription).toMatch(/wrong/i);
+        expect(returnValue.errorDescription).toMatch(/try again/i);
+      }
+    });
+
+    it("should return an error object if there is no bearer token obtained from the oauth client", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: null,
+        },
+      });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/access token/i);
+
+        expect(returnValue.errorDescription).toMatch(/wrong/i);
+        expect(returnValue.errorDescription).toMatch(/authentication/i);
+        expect(returnValue.errorDescription).toMatch(/try again/i);
+      }
+    });
+
+    it("should return an error object if the fetch request to retrieve user credentials has thrown a standard error", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      const networkError = new TypeError("Network error");
+
+      global.fetch = vi.fn().mockThrow(networkError);
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toEqual(networkError.name);
+        expect(returnValue.errorDescription).toEqual(networkError.message);
+      }
+    });
+
+    it("should return an error object if the fetch request to retrieve user credentials has thrown an unknown error", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi.fn().mockThrow("Unknown error");
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/unknown/i);
+
+        expect(returnValue.errorDescription).toMatch(/unknown/i);
+        expect(returnValue.errorDescription).toMatch(/error/i);
+      }
+    });
+
+    it("should return an error object if the fetch request to retrieve user credentials has failed", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi.fn().mockResolvedValue({ ok: false });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/failed/i);
+        expect(returnValue.error).toMatch(/user info/i);
+
+        expect(returnValue.errorDescription).toMatch(/wrong/i);
+        expect(returnValue.errorDescription).toMatch(/try again/i);
+      }
+    });
+
+    it("should return an error object if the parsing of the fetch request body to get the user credentials fails because of a standard error", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      const syntaxError = new SyntaxError(
+        "Impossible to parse the response body as JSON",
+      );
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: vi.fn().mockThrow(syntaxError) });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toEqual(syntaxError.name);
+        expect(returnValue.errorDescription).toEqual(syntaxError.message);
+      }
+    });
+
+    it("should return an error object if the parsing of the fetch request body to get the user credentials fails because of an unknown error", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockThrow("Unknown Error"),
+      });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/unknown/i);
+
+        expect(returnValue.errorDescription).toMatch(/unknown/i);
+        expect(returnValue.errorDescription).toMatch(/error/i);
+      }
+    });
+
+    it("should return an error object if the user credentials object doesn't have the expected shape", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedInvalidGoogleUser = {
+        id: "145678",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: vi.fn().mockResolvedValue(mockedInvalidGoogleUser),
+      });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/invalid input/i);
+        expect(returnValue.errorDescription).toMatch(/invalid input/i);
+      }
+    });
+
+    it("should return an error object if the Google email has already been linked", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue({
+        googleEmail: mockedGoogleUser.email,
+        username: mockedGoogleUser.given_name,
+        id: "2",
+      });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/forbidden/i);
+
+        expect(returnValue.errorDescription).toMatch(/linked/i);
+        expect(returnValue.errorDescription).toMatch(/account/i);
+      }
+    });
+
+    it("should return an error object if the user doesn't exist", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue(null);
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/not found/i);
+        expect(returnValue.errorDescription).toMatch(/user not found/i);
+      }
+    });
+
+    it("should return an error object if the user has already linked a Google email to his account (authMethod = 'both)'", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "both",
+        googleEmail: "existing@gmail.com",
+        registrationDate: new Date(),
+      });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/forbidden/i);
+
+        expect(returnValue.errorDescription).toMatch(/linked/i);
+        expect(returnValue.errorDescription).toMatch(/account/i);
+      }
+    });
+
+    it("should return an error object if the user authMethod is 'google'", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "google",
+        googleEmail: "existing@gmail.com",
+        registrationDate: new Date(),
+      });
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/forbidden/i);
+
+        expect(returnValue.errorDescription).toMatch(/linked/i);
+        expect(returnValue.errorDescription).toMatch(/account/i);
+      }
+    });
+
+    it("should return an error object if a trpc error is thrown while updating the user", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "email",
+        googleEmail: null,
+        registrationDate: new Date(),
+      });
+
+      const trpcError = new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Something wrong happened. Please try again",
+      });
+
+      usersService.update.mockThrow(trpcError);
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toEqual(trpcError.code);
+        expect(returnValue.errorDescription).toEqual(trpcError.message);
+      }
+    });
+
+    it("should return an error object if a standard error is thrown while updating the user", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "email",
+        googleEmail: null,
+        registrationDate: new Date(),
+      });
+
+      const standardError = new Error(
+        "Something wrong happened. Please try again",
+      );
+
+      usersService.update.mockThrow(standardError);
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toEqual(standardError.name);
+        expect(returnValue.errorDescription).toEqual(standardError.message);
+      }
+    });
+
+    it("should return an error object if an unknown error is thrown while updating the user", async () => {
+      const mockedEntry = {
+        type: "success" as const,
+        code: "some_code_sent_by_google",
+        userId: "1",
+      };
+
+      const mockedGoogleUser = {
+        id: "145678",
+        email: "testemail@gmail.com",
+        verified_email: true,
+        name: "Test Email",
+        given_name: "Test",
+        family_name: "Email",
+        picture: "picture",
+      };
+
+      linkingGoogleAccountOauthClient.getToken.mockResolvedValue({
+        tokens: {
+          access_token: "access_token",
+        },
+      });
+
+      global.fetch = vi
+        .fn()
+        .mockResolvedValue({ ok: true, json: () => mockedGoogleUser });
+
+      usersService.findByGoogleEmail.mockResolvedValue(null);
+      usersService.findById.mockResolvedValue({
+        id: "1",
+        email: "test@email.com",
+        username: "Test",
+        profilePicture: "profile",
+        authMethod: "email",
+        googleEmail: null,
+        registrationDate: new Date(),
+      });
+
+      usersService.update.mockThrow("Unknown error");
+
+      const returnValue =
+        await authService.handleGoogleLinkingCallback(mockedEntry);
+
+      expect(returnValue).toBeDefined();
+      expect("error" in returnValue).toBe(true);
+
+      if ("error" in returnValue) {
+        expect(returnValue.error).toMatch(/unknown/i);
+
+        expect(returnValue.errorDescription).toMatch(/unknown/i);
+        expect(returnValue.errorDescription).toMatch(/error/i);
+      }
+    });
+  });
 });
