@@ -2,7 +2,7 @@ import { eachDayOfInterval } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { dailyData } from "@/drizzle/schema/daily-data";
 import { Inject, Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
@@ -17,7 +17,7 @@ import {
 @Injectable()
 export class DailyDataService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
   ) {}
   async create(createDailyDataDto: CreateDailyDataDtoType) {

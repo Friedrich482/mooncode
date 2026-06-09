@@ -31,7 +31,7 @@ import { getProjectPerDayOfPeriodGroupedByMonths } from "@/analytics/utils/proje
 import { getProjectPerDayOfPeriodGroupedByWeeks } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
 import { getWeekDayName } from "@/common/utils/get-weekday-name";
 import { DailyDataService } from "@/daily-data/daily-data.service";
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { dailyData, files, languages, projects } from "@/drizzle/schema";
 import { ProjectsService } from "@/projects/projects.service";
 import { Inject, Injectable } from "@nestjs/common";
@@ -48,7 +48,7 @@ import { getProjectMostUsedLanguageOnPeriod } from "../utils/projects/get-projec
 @Injectable()
 export class ProjectsAnalyticsService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
     private readonly projectsService: ProjectsService,
     private readonly dailyDataService: DailyDataService,

@@ -8,6 +8,7 @@ import { Test } from "@nestjs/testing";
 import { TRPCError } from "@trpc/server";
 import { Procedure } from "@vitest/spy";
 
+import { LIMITERS_PROVIDER, TRPC_PROVIDER } from "./constants";
 import { TrpcService } from "./trpc.service";
 
 describe("TrpcService", () => {
@@ -49,11 +50,11 @@ describe("TrpcService", () => {
           useValue: jwtService,
         },
         {
-          provide: "trpc",
+          provide: TRPC_PROVIDER,
           useValue: trpc,
         },
         {
-          provide: "limiters",
+          provide: LIMITERS_PROVIDER,
           useValue: limiters,
         },
       ],

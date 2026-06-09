@@ -1,6 +1,5 @@
+import { TrpcContext } from "@/common/dto";
 import * as trpcExpress from "@trpc/server/adapters/express";
-
-import { TrpcContext } from "../trpc.dto";
 
 export const createContext = async (
   opts: trpcExpress.CreateExpressContextOptions,

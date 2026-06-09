@@ -2,7 +2,7 @@ import { and, eq, gt, lt } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 import { generateVerificationCode } from "@/common/utils/generate-verification-code";
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { emailVerifications, users } from "@/drizzle/schema";
 import { EmailService } from "@/email/email.service";
 import { Inject, Injectable } from "@nestjs/common";
@@ -19,7 +19,7 @@ import {
 @Injectable()
 export class EmailVerificationsService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
     private readonly emailService: EmailService,
   ) {}

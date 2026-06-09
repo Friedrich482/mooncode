@@ -5,10 +5,10 @@ import { Test } from "@nestjs/testing";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { Procedure } from "@vitest/spy";
 
-import { TrpcRouter } from "./trpc.router";
+import { AppRouterRouter } from "./app-router.router";
 
 describe("trpcRouter", () => {
-  let trpcRouter: TrpcRouter;
+  let trpcRouter: AppRouterRouter;
 
   let appRouter: Mock<Procedure>;
   let mockedApp: INestApplication;
@@ -20,7 +20,7 @@ describe("trpcRouter", () => {
 
     const moduleRef = await Test.createTestingModule({
       providers: [
-        TrpcRouter,
+        AppRouterRouter,
         {
           provide: "appRouter",
           useValue: appRouter,
@@ -28,7 +28,7 @@ describe("trpcRouter", () => {
       ],
     }).compile();
 
-    trpcRouter = moduleRef.get(TrpcRouter);
+    trpcRouter = moduleRef.get(AppRouterRouter);
 
     mockedApp = moduleRef.createNestApplication();
   });

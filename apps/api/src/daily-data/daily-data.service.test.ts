@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { MockedDrizzle } from "@/common/tests/types";
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { Test } from "@nestjs/testing";
 
 import { DailyDataService } from "./daily-data.service";
@@ -35,7 +35,7 @@ describe("DailyDataService", () => {
       providers: [
         DailyDataService,
         {
-          provide: DrizzleAsyncProvider,
+          provide: DRIZZLE_ASYNC_PROVIDER,
           useValue: mockedDrizzle,
         },
       ],

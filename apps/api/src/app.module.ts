@@ -7,13 +7,13 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { AnalyticsModule } from "./analytics/analytics.module";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { AppRouterModule } from "./app-router/app-router.module";
 import { AuthModule } from "./auth/auth.module";
 import { DailyDataModule } from "./daily-data/daily-data.module";
 import { DrizzleModule } from "./drizzle/drizzle.module";
 import { EmailModule } from "./email/email.module";
 import { EmailVerificationModule } from "./email-verifications/email-verifications.module";
 import { EnvModule } from "./env/env.module";
-import { EnvService } from "./env/env.service";
 import { ExtensionModule } from "./extension/extension.module";
 import { FilesModule } from "./files/files.module";
 import { LanguagesModule } from "./languages/languages.module";
@@ -43,6 +43,7 @@ import { UsersModule } from "./users/users.module";
     DailyDataModule,
     LanguagesModule,
     TrpcModule,
+    AppRouterModule,
     EnvModule,
     FilesModule,
     ProjectsModule,
@@ -55,7 +56,6 @@ import { UsersModule } from "./users/users.module";
   controllers: [AppController],
   providers: [
     AppService,
-    EnvService,
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

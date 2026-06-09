@@ -1,7 +1,7 @@
 import { and, between, count, desc, eq, sum } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { dailyData } from "@/drizzle/schema/daily-data";
 import { projects } from "@/drizzle/schema/projects";
 import { Inject, Injectable } from "@nestjs/common";
@@ -18,7 +18,7 @@ import {
 @Injectable()
 export class ProjectsService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
   ) {}
 

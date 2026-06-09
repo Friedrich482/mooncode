@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
 import { MockedDrizzle } from "@/common/tests/types";
 import * as utils from "@/common/utils/generate-verification-code";
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { EmailService } from "@/email/email.service";
 import { Test } from "@nestjs/testing";
 import { TRPCError } from "@trpc/server";
@@ -46,7 +46,7 @@ describe("passwordResetsService", () => {
       providers: [
         PasswordResetsService,
         {
-          provide: DrizzleAsyncProvider,
+          provide: DRIZZLE_ASYNC_PROVIDER,
           useValue: mockedDrizzle,
         },
         {

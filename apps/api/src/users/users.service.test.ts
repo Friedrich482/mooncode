@@ -2,7 +2,7 @@ import * as bcrypt from "bcrypt";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { MockedDrizzle } from "@/common/tests/types";
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { Test } from "@nestjs/testing";
 import { TRPCError } from "@trpc/server";
 
@@ -38,7 +38,7 @@ describe("UsersService", () => {
       providers: [
         UsersService,
         {
-          provide: DrizzleAsyncProvider,
+          provide: DRIZZLE_ASYNC_PROVIDER,
           useValue: mockedDrizzle,
         },
       ],

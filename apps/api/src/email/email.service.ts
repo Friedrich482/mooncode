@@ -4,7 +4,7 @@ import { EnvService } from "@/env/env.service";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { TRPCError } from "@trpc/server";
 
-import { SUPPORT_EMAIL } from "./constants";
+import { RESEND_PROVIDER, SUPPORT_EMAIL } from "./constants";
 import { SendEmailDtoType } from "./email.dto";
 import { getEmailUpdateEmailBody } from "./utils/get-email-update-email-body";
 import { getEmailUpdateNoticeEmailBody } from "./utils/get-email-update-notice-email-body";
@@ -17,7 +17,7 @@ export class EmailService {
   constructor(
     private readonly envService: EnvService,
 
-    @Inject("resend")
+    @Inject(RESEND_PROVIDER)
     private readonly resend: Resend,
   ) {}
 

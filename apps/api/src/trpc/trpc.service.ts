@@ -1,4 +1,5 @@
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@/common/constants";
+import { TrpcContext } from "@/common/dto";
 import { EnvService } from "@/env/env.service";
 import { Inject, Injectable, Logger } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
@@ -11,8 +12,8 @@ import {
   defaultFingerPrint,
 } from "@trpc-limiter/memory";
 
-import { TrpcInstance } from "./providers/providers";
-import { RateLimiterParams, TrpcContext } from "./trpc.dto";
+import { TrpcInstance } from "./providers/trpc.provider";
+import { RateLimiterParams } from "./trpc.dto";
 
 @Injectable()
 export class TrpcService {

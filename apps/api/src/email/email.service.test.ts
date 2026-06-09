@@ -5,6 +5,7 @@ import { Test } from "@nestjs/testing";
 import { TRPCError } from "@trpc/server";
 import { Procedure } from "@vitest/spy";
 
+import { RESEND_PROVIDER } from "./constants";
 import { EmailService } from "./email.service";
 import * as getEmailUpdateEmailBody from "./utils/get-email-update-email-body";
 import * as getEmailUpdateNoticeEmailBody from "./utils/get-email-update-notice-email-body";
@@ -41,7 +42,7 @@ describe("emailService", () => {
           useValue: envService,
         },
         {
-          provide: "resend",
+          provide: RESEND_PROVIDER,
           useValue: resend,
         },
       ],

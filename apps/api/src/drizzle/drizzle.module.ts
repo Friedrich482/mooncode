@@ -1,10 +1,12 @@
-import { EnvService } from "@/env/env.service";
+import { EnvModule } from "@/env/env.module";
 import { Module } from "@nestjs/common";
 
-import { DrizzleAsyncProvider, drizzleProvider } from "./drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "./constants";
+import { drizzleProvider } from "./providers/drizzle.provider";
 
 @Module({
-  providers: [...drizzleProvider, EnvService],
-  exports: [DrizzleAsyncProvider],
+  imports: [EnvModule],
+  providers: [drizzleProvider],
+  exports: [DRIZZLE_ASYNC_PROVIDER],
 })
 export class DrizzleModule {}
