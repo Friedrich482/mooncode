@@ -1,13 +1,14 @@
 import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@/common/constants";
 import { EnvService } from "@/env/env.service";
 import {
+  BadRequestException,
   CanActivate,
   ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { JwtPayload as JwtPayloadDtoType } from "@repo/common/types-schemas";
+import { JwtPayloadSchema as JwtPayloadDto } from "@repo/common/types-schemas";
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -18,23 +19,31 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
-    const token = request.cookies?.auth_token ?? "";
+    const token = request.cookies?.auth_token;
 
     if (!token) {
       throw new UnauthorizedException(COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE);
     }
 
+    let rawPayload: unknown;
     try {
-      const payload: JwtPayloadDtoType = await this.jwtService.verifyAsync(
-        token,
-        {
-          secret: this.envService.get("JWT_SECRET"),
-        },
-      );
-      request["user"] = { sub: payload.sub };
+      rawPayload = await this.jwtService.verifyAsync(token, {
+        secret: this.envService.get("JWT_SECRET"),
+      });
     } catch {
-      throw new UnauthorizedException("An error occurred");
+      throw new UnauthorizedException("Invalid or expired token");
     }
+
+    const parsedPayload = JwtPayloadDto.safeParse(rawPayload);
+
+    if (!parsedPayload.success) {
+      throw new BadRequestException("Payload malformed");
+    }
+
+    const payload = parsedPayload.data;
+
+    request["user"] = { sub: payload.sub };
+
     return true;
   }
 }
