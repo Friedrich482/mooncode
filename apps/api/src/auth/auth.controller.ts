@@ -31,7 +31,7 @@ export class AuthController {
 
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @Get("/google")
-  async redirectToGoogle(
+  redirectToGoogle(
     @Res() response: Response,
     @Query() queryParams: RedirectToGoogleDtoType,
   ) {
@@ -102,7 +102,7 @@ export class AuthController {
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @UseGuards(AuthGuard)
   @Get("/google/linking")
-  async redirectToGoogleForLinking(
+  redirectToGoogleForLinking(
     @Res() response: Response,
     @Query()
     queryParams: RedirectToGoogleForLinkingDtoType,
