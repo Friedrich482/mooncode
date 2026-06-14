@@ -95,7 +95,9 @@ describe("AuthController", () => {
   });
 
   describe("handleGoogleCallback", () => {
-    const request = {} as Request;
+    const request = {
+      query: {},
+    } as Request;
     const response = {
       redirect: vi.fn() as Function,
       cookie: vi.fn() as Function,
@@ -328,6 +330,7 @@ describe("AuthController", () => {
       user: {
         sub: "1",
       },
+      query: {},
     } as Request & { user: { sub: string } };
     const response = {
       redirect: vi.fn() as Function,

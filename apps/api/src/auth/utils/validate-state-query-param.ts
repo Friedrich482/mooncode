@@ -13,44 +13,42 @@ import { StateQueryParamSchema } from "../auth.dto";
 export const validateStateQueryParam = <
   T extends z.ZodType<z.infer<typeof StateQueryParamSchema>>,
 >(
-  request: Request,
+  rawState: Request["query"]["state"],
   environment: Environment,
   schema: T,
 ) => {
-  let returnUrl =
+  const defaultReturnUrl =
     environment === "development"
       ? DASHBOARD_DEVELOPMENT_URL
       : DASHBOARD_PRODUCTION_URL;
 
-  try {
-    const rawState = request.query["state"];
-
-    if (typeof rawState !== "string") {
-      return returnUrl;
-    }
-
-    const parsed = schema.safeParse(JSON.parse(decodeURIComponent(rawState)));
-
-    if (!parsed.success) {
-      return returnUrl;
-    }
-
-    const stateParam = parsed.data.state;
-
-    const parsedUrl = new URL(stateParam, request.headers.origin);
-
-    const allowedClients = getAllowedClients();
-
-    const allowedOrigins = allowedClients.map(
-      (client) => new URL(client).origin,
-    );
-
-    if (allowedOrigins.includes(parsedUrl.origin)) {
-      returnUrl = stateParam;
-    }
-  } catch {
-    // Invalid URL, use default
+  if (typeof rawState !== "string") {
+    return defaultReturnUrl;
   }
 
-  return returnUrl;
+  let decodedRawState: unknown;
+
+  try {
+    decodedRawState = JSON.parse(decodeURIComponent(rawState));
+  } catch {
+    return defaultReturnUrl;
+  }
+
+  const parsed = schema.safeParse(decodedRawState);
+
+  if (!parsed.success) {
+    return defaultReturnUrl;
+  }
+
+  const stateParam = parsed.data.state;
+  const parsedUrl = new URL(stateParam);
+
+  const allowedClients = getAllowedClients();
+  const allowedOrigins = allowedClients.map((client) => new URL(client).origin);
+
+  if (allowedOrigins.includes(parsedUrl.origin)) {
+    return stateParam;
+  }
+
+  return defaultReturnUrl;
 };

@@ -51,7 +51,7 @@ export class AuthController {
     @Req() request: Request,
   ) {
     const returnUrl = validateStateQueryParam(
-      request,
+      request.query["state"],
       this.envService.get("NODE_ENV"),
       RedirectToGoogleDto,
     );
@@ -124,7 +124,7 @@ export class AuthController {
     @Req() request: Request & { user: { sub: string } },
   ) {
     const returnUrl = validateStateQueryParam(
-      request,
+      request.query["state"],
       this.envService.get("NODE_ENV"),
       RedirectToGoogleForLinkingDto,
     );
