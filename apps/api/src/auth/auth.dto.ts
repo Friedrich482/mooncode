@@ -1,6 +1,10 @@
 import { z } from "zod";
 
-import { EmailSchema, UserId } from "@repo/common/types-schemas";
+import {
+  EmailSchema,
+  UserId,
+  VSCodeCallbackUrlSchema,
+} from "@repo/common/types-schemas";
 
 export const CheckAuthStatusDto = z.object({
   user: z.object({ sub: z.ulid() }),
@@ -33,7 +37,7 @@ export const StateQueryParamSchema = z.object({
 });
 
 export const RedirectToGoogleDto = StateQueryParamSchema.extend({
-  callback: z.url().optional(),
+  callback: VSCodeCallbackUrlSchema.optional(),
 });
 
 export const RedirectToGoogleForLinkingDto = StateQueryParamSchema;

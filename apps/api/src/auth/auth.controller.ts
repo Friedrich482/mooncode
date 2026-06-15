@@ -55,7 +55,7 @@ export class AuthController {
       this.envService.get("NODE_ENV"),
       RedirectToGoogleDto,
     );
-    const callbackUrl = validateExtensionCallbackUrl(request);
+    const callbackUrl = validateExtensionCallbackUrl(request.query["state"]);
 
     const url = new URL(returnUrl);
     const errorUrl = new URL(`${returnUrl}/login`);

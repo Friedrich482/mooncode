@@ -8,7 +8,11 @@ import { PasswordResetsService } from "@/password-resets/password-resets.service
 import { UsersService } from "@/users/users.service";
 import { JwtService } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
-import { EXTENSION_ID, PUBLISHER } from "@repo/common/constants";
+import {
+  EXTENSION_ID,
+  EXTENSION_LOGIN_PATH,
+  PUBLISHER,
+} from "@repo/common/constants";
 import { TRPCError } from "@trpc/server";
 import { Procedure } from "@vitest/spy";
 
@@ -1182,7 +1186,7 @@ describe("AuthService", () => {
     it("should return a url containing expected parameters", () => {
       const mockedEntry = {
         state: "http://localhost:4308",
-        callback: `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/auth-callback?state=randombytes`,
+        callback: `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/${EXTENSION_LOGIN_PATH}?state=randombytes`,
       };
 
       envService.get.mockImplementation((key: string) => {

@@ -3,6 +3,7 @@ import z from "zod";
 import {
   EMAIL_VERIFICATION_CODE_LENGTH,
   EXTENSION_ID,
+  EXTENSION_LOGIN_PATH,
   PASSWORD_RESET_CODE_LENGTH,
   PUBLISHER,
 } from "./constants";
@@ -40,6 +41,14 @@ export const VSCodeCallbackUrlSchema = z
       return extensionId === EXTENSION_ID;
     },
     { error: "Invalid extension id", abort: true },
+  )
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
+      const [, pathname] = url.pathname.split("/");
+      return pathname === EXTENSION_LOGIN_PATH;
+    },
+    { error: "Invalid login path", abort: true },
   )
   .refine(
     (urlStr) => {

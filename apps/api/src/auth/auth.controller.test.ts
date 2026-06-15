@@ -4,7 +4,11 @@ import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 import { EnvService } from "@/env/env.service";
 import { JwtModule } from "@nestjs/jwt";
 import { Test } from "@nestjs/testing";
-import { EXTENSION_ID, PUBLISHER } from "@repo/common/constants";
+import {
+  EXTENSION_ID,
+  EXTENSION_LOGIN_PATH,
+  PUBLISHER,
+} from "@repo/common/constants";
 import { Procedure } from "@vitest/spy";
 
 import { AuthController } from "./auth.controller";
@@ -62,7 +66,7 @@ describe("AuthController", () => {
   describe("redirectToGoogle", () => {
     const mockedEntry = {
       state: "http://localhost:4308",
-      callback: `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/auth-callback?state=randombytes`,
+      callback: `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/${EXTENSION_LOGIN_PATH}?state=randombytes`,
     };
 
     const response = {
@@ -103,7 +107,7 @@ describe("AuthController", () => {
       cookie: vi.fn() as Function,
     } as Response;
     const returnUrl = "http://localhost:4308";
-    const callbackUrl = `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/auth-callback?state=randombytes`;
+    const callbackUrl = `vscode://${PUBLISHER.toLowerCase()}.${EXTENSION_ID}/${EXTENSION_LOGIN_PATH}?state=randombytes`;
 
     it("should call the handleGoogleCallback method of the authService", () => {
       const mockedEntry = {
