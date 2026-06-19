@@ -23,8 +23,8 @@ export const EmailSchema = z
   .max(320, "Email must be at most 320 characters");
 
 export const VSCodeCallbackUrlSchema = z
-  .url()
-  .startsWith("vscode://")
+  .url({ abort: true })
+  .startsWith("vscode://", { abort: true })
   .refine(
     (urlStr) => {
       const url = new URL(urlStr);
