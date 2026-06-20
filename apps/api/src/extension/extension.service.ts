@@ -73,6 +73,7 @@ export class ExtensionService {
       date: targetedDate,
       languages: {} as { [languageSlug: string]: number },
     };
+
     const existingTimeSpentOnDay = await this.dailyDataService.findOne({
       userId,
       date: targetedDate,
@@ -90,12 +91,12 @@ export class ExtensionService {
       returningData.timeSpentOnDay = createdTimeSpentOnDay.timeSpent;
       returningData.date = createdTimeSpentOnDay.date;
     } else {
-      // else update it but only if the new timeSpent is greater than the existing one
+      // update it but only if the new timeSpent is greater than the existing one
       if (existingTimeSpentOnDay.timeSpent < timeSpentOnDay) {
         const updatedTimeSpentOnDay = await this.dailyDataService.update({
+          targetedDate,
           timeSpent: timeSpentOnDay,
           userId,
-          targetedDate,
         });
 
         returningData.dailyDataId = updatedTimeSpentOnDay.id;
@@ -119,9 +120,9 @@ export class ExtensionService {
       if (!existingLanguageData) {
         // if it doesn't exists, create it for each language
         const createdLanguageData = await this.languagesService.create({
-          dailyDataId: returningData.dailyDataId,
-          timeSpent: timeSpentOnLanguage,
           languageSlug,
+          timeSpent: timeSpentOnLanguage,
+          dailyDataId: returningData.dailyDataId,
         });
 
         returningData.languages[createdLanguageData.languageSlug] =
@@ -130,9 +131,9 @@ export class ExtensionService {
         // else update it but only if the new timeSpent is greater than the existing one
         if (existingLanguageData.timeSpent < timeSpentOnLanguage) {
           const updatedLanguageData = await this.languagesService.update({
+            languageSlug,
             timeSpent: timeSpentOnLanguage,
             dailyDataId: returningData.dailyDataId,
-            languageSlug,
           });
           returningData.languages[updatedLanguageData.languageSlug] =
             updatedLanguageData.timeSpent;
@@ -142,6 +143,7 @@ export class ExtensionService {
         }
       }
     }
+
     return returningData;
   }
 
