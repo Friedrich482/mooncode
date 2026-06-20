@@ -148,17 +148,7 @@ export class ExtensionService {
   }
 
   async upsertFiles(upsertFilesDto: UpsertFilesDtoType) {
-    const { userId, filesData, timeSpentPerProject, targetedDate } =
-      upsertFilesDto;
-
-    // This projectData object is reused for each file's project,
-    // which means its values will be overwritten in each iteration.
-    // It primarily serves to pass the projectId to the file creation/update.
-    const projectData = {
-      projectId: "",
-      projectName: "",
-      timeSpent: 0,
-    };
+    const { userId, filesData, targetedDate } = upsertFilesDto;
 
     const dailyDataForDay = await this.dailyDataService.findOne({
       userId,
@@ -166,53 +156,89 @@ export class ExtensionService {
     });
 
     if (!dailyDataForDay) {
-      // early exit - nothing to upsert
+      // this is unreachable in practice because the upsertLanguages method must always be called before the upsertFiles method
+      // so the dailyData already exists at this point
       return {};
     }
 
-    const returningData = await this.filesService.findAllOnDay({
+    const projectsData = Object.entries(filesData)
+      .map((entry) => ({
+        filePath: entry[0],
+        ...entry[1],
+      }))
+      .reduce(
+        (acc, curr) => {
+          acc[curr.projectPath] = {
+            name: acc[curr.projectPath]?.name ?? curr.projectName,
+            dailyDataId:
+              acc[curr.projectPath]?.dailyDataId ?? dailyDataForDay.id,
+            timeSpent: (acc[curr.projectPath]?.timeSpent ?? 0) + curr.timeSpent,
+          };
+
+          return acc;
+        },
+        {} as {
+          [path: string]: {
+            name: string;
+            timeSpent: number;
+            dailyDataId: string;
+          };
+        },
+      );
+
+    const updatedProjects: {
+      [projectPath: string]: {
+        projectId: string;
+        projectName: string;
+        timeSpent: number;
+      };
+    } = {};
+
+    for (const [path, project] of Object.entries(projectsData)) {
+      const existingProject = await this.projectsService.findOne({
+        dailyDataId: dailyDataForDay.id,
+        name: project.name,
+        path,
+      });
+
+      updatedProjects[path] = { projectId: "", projectName: "", timeSpent: 0 };
+
+      if (!existingProject) {
+        // if the project doesn't exist, create it
+        const createdProject = await this.projectsService.create({
+          dailyDataId: dailyDataForDay.id,
+          name: project.name,
+          path,
+          timeSpent: project.timeSpent,
+        });
+
+        updatedProjects[path].projectId = createdProject.id;
+        updatedProjects[path].projectName = createdProject.name;
+        updatedProjects[path].timeSpent = createdProject.timeSpent;
+      } else {
+        // else update it but only if the new time spent is greater than the existing one
+        if (existingProject.timeSpent < project.timeSpent) {
+          const updatedProject = await this.projectsService.update({
+            dailyDataId: dailyDataForDay.id,
+            name: project.name,
+            path,
+            timeSpent: project.timeSpent,
+          });
+          updatedProjects[path].timeSpent = updatedProject.timeSpent;
+        } else {
+          updatedProjects[path].timeSpent = existingProject.timeSpent;
+        }
+
+        updatedProjects[path].projectId = existingProject.id;
+        updatedProjects[path].projectName = existingProject.name;
+      }
+    }
+
+    const returningFilesData = await this.filesService.findAllOnDay({
       dailyDataId: dailyDataForDay.id,
     });
 
     for (const [path, file] of Object.entries(filesData)) {
-      const existingProject = await this.projectsService.findOne({
-        dailyDataId: dailyDataForDay.id,
-        name: file.projectName,
-        path: file.projectPath,
-      });
-
-      if (!existingProject) {
-        // if the project doesn't exist, let's create it
-        const createdProject = await this.projectsService.create({
-          dailyDataId: dailyDataForDay.id,
-          name: file.projectName,
-          path: file.projectPath,
-          timeSpent: timeSpentPerProject[file.projectPath],
-        });
-
-        projectData.projectId = createdProject.id;
-        projectData.projectName = createdProject.name;
-        projectData.timeSpent = createdProject.timeSpent;
-      } else {
-        // else update it but only if the new time spent is greater than the existing one
-        if (
-          existingProject.timeSpent <= timeSpentPerProject[file.projectPath]
-        ) {
-          await this.projectsService.update({
-            dailyDataId: dailyDataForDay.id,
-            name: file.projectName,
-            path: file.projectPath,
-            timeSpent: timeSpentPerProject[file.projectPath],
-          });
-          projectData.timeSpent = timeSpentPerProject[file.projectPath];
-        } else {
-          projectData.timeSpent = existingProject.timeSpent;
-        }
-
-        projectData.projectId = existingProject.id;
-        projectData.projectName = existingProject.name;
-      }
-
       const fileLanguage = await this.languagesService.findOne({
         dailyDataId: dailyDataForDay.id,
         languageSlug: file.languageSlug,
@@ -224,49 +250,49 @@ export class ExtensionService {
       }
 
       const existingFileData = await this.filesService.findOne({
-        projectId: projectData.projectId,
+        projectId: updatedProjects[file.projectPath].projectId,
         name: file.fileName,
         path,
         languageId: fileLanguage.languageId,
       });
 
       if (!existingFileData) {
-        // if the data for this file doesn't exist, create one
-        await this.filesService.create({
-          projectId: projectData.projectId,
+        // if the data for this file doesn't exist, create it
+        const createdFile = await this.filesService.create({
+          projectId: updatedProjects[file.projectPath].projectId,
           languageId: fileLanguage.languageId,
           name: file.fileName,
           path,
           timeSpent: file.timeSpent,
         });
 
-        returningData[path] = {
+        returningFilesData[createdFile.path] = {
           languageSlug: file.languageSlug,
           projectName: file.projectName,
           projectPath: file.projectPath,
-          timeSpent: file.timeSpent,
-          fileName: file.fileName,
+          timeSpent: createdFile.timeSpent,
+          fileName: createdFile.name,
         };
       } else {
         // else just update the file data but only if the new timeSpent is greater than the existing one
-        if (existingFileData.timeSpent <= file.timeSpent) {
-          await this.filesService.update({
-            projectId: projectData.projectId,
+        if (existingFileData.timeSpent < file.timeSpent) {
+          const updatedFile = await this.filesService.update({
+            projectId: updatedProjects[file.projectPath].projectId,
             languageId: fileLanguage.languageId,
             path,
             timeSpent: file.timeSpent,
             name: file.fileName,
           });
 
-          returningData[path] = {
+          returningFilesData[updatedFile.path] = {
             languageSlug: file.languageSlug,
             projectName: file.projectName,
             projectPath: file.projectPath,
-            timeSpent: file.timeSpent,
-            fileName: file.fileName,
+            timeSpent: updatedFile.timeSpent,
+            fileName: updatedFile.name,
           };
         } else {
-          returningData[path] = {
+          returningFilesData[path] = {
             languageSlug: file.languageSlug,
             projectName: file.projectName,
             projectPath: file.projectPath,
@@ -276,6 +302,7 @@ export class ExtensionService {
         }
       }
     }
-    return returningData;
+
+    return returningFilesData;
   }
 }

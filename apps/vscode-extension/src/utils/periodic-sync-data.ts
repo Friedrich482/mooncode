@@ -43,14 +43,6 @@ export const periodicSyncData = async (
 
   timeSpentPerLanguage = timeSpentPerLanguageToday;
 
-  const timeSpentPerProjectToday = Object.values(filesDataToUpsert).reduce(
-    (acc, { projectPath, elapsedTime }) => {
-      acc[projectPath] = (acc[projectPath] || 0) + elapsedTime;
-      return acc;
-    },
-    {} as Record<string, number>,
-  );
-
   const todayFilesData = Object.fromEntries(
     Object.entries(filesDataToUpsert).map(
       ([
@@ -84,17 +76,9 @@ export const periodicSyncData = async (
           timeSpentPerLanguage: data.timeSpentPerLanguage,
         });
 
-        const perProject = Object.values(data.dayFilesData).reduce(
-          (acc, { projectPath, timeSpent }) => {
-            acc[projectPath] = (acc[projectPath] || 0) + timeSpent;
-            return acc;
-          },
-          {} as Record<string, number>,
-        );
         await trpc.extension.upsertFiles.mutate({
           filesData: data.dayFilesData,
           targetedDate: dateString,
-          timeSpentPerProject: perProject,
         });
       }
     }
@@ -111,7 +95,6 @@ export const periodicSyncData = async (
     const files = await trpc.extension.upsertFiles.mutate({
       filesData: todayFilesData,
       targetedDate: todaysDateString,
-      timeSpentPerProject: timeSpentPerProjectToday,
     });
     updateFilesDataAfterSync(files);
 
