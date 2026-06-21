@@ -149,7 +149,7 @@ describe("ExtensionService", () => {
     };
 
     it("should return data about each file on the provided day", async () => {
-      const mockedTimeSpent = 10000;
+      const mockedTimeSpent = 3800;
       const mockedFilesData = {
         "/home/user/projects/mooncode/apps/api/package.json": {
           languageSlug: "json",
