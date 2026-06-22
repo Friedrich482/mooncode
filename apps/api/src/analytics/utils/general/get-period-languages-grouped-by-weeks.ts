@@ -11,7 +11,9 @@ export const getPeriodLanguagesGroupedByWeeks = async (
   periodResolution: PeriodResolution,
   languagesService: LanguagesService,
 ) => {
-  if (data.length === 0) return [];
+  if (data.length === 0) {
+    return [];
+  }
 
   const weeklyMap = new Map<
     string,

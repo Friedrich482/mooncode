@@ -9,7 +9,9 @@ export const getPeriodLanguagesGroupedByMonths = async (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>,
   languagesService: LanguagesService,
 ) => {
-  if (data.length === 0) return [];
+  if (data.length === 0) {
+    return [];
+  }
 
   const monthlyMap = new Map<
     string,

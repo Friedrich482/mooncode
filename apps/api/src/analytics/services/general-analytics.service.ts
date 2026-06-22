@@ -98,7 +98,9 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0) return [];
+    if (dailyDataForPeriod.length === 0) {
+      return [];
+    }
 
     const totalTimeSpentOnPeriod = (
       await this.getTimeSpentOnPeriod({ userId, start, end })
@@ -143,7 +145,9 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0) return [];
+    if (dailyDataForPeriod.length === 0) {
+      return [];
+    }
 
     switch (groupBy) {
       case "weeks":
