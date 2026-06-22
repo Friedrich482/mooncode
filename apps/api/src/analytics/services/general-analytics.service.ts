@@ -23,6 +23,8 @@ import { Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 
+import { getDaysOfPeriodStatsGroupedByDays } from "../utils/general/get-days-of-period-stats-grouped-by-days";
+
 @Injectable()
 export class GeneralAnalyticsService {
   constructor(
@@ -60,9 +62,14 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0) return [];
+    if (dailyDataForPeriod.length === 0) {
+      return [];
+    }
 
     switch (groupBy) {
+      case "days":
+        return getDaysOfPeriodStatsGroupedByDays(dailyDataForPeriod);
+
       case "weeks":
         return getDaysOfPeriodStatsGroupedByWeeks(
           dailyDataForPeriod,
@@ -72,20 +79,12 @@ export class GeneralAnalyticsService {
       case "months":
         return getDaysOfPeriodStatsGroupedByMonths(dailyDataForPeriod);
 
+      case undefined:
+        return getDaysOfPeriodStatsGroupedByDays(dailyDataForPeriod);
+
       default:
-        break;
+        throw groupBy satisfies never;
     }
-
-    const daysOfPeriodStats = dailyDataForPeriod.map(({ timeSpent, date }) => ({
-      timeSpentLine: timeSpent,
-      originalDate: new Date(date).toDateString(),
-      date: getWeekDayName(date),
-      timeSpentBar: timeSpent,
-      timeSpentArea: timeSpent,
-      value: formatDuration(timeSpent),
-    }));
-
-    return daysOfPeriodStats;
   }
 
   async getPeriodLanguagesTime(
