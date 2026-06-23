@@ -1,30 +1,27 @@
-import { differenceInMonths, endOfMonth, startOfMonth } from "date-fns";
+import { differenceInMonths } from "date-fns";
 
 import { NAString } from "@/analytics/dto/common";
-import { GeneralAnalyticsService } from "@/analytics/services/general-analytics.service";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 
 import { getDaysOfPeriodStatsGroupedByMonths } from "./get-days-of-period-stats-grouped-by-months";
-import { getMostUsedLanguageOnPeriod } from "./get-most-used-language-on-period";
 
-export const getGeneralStatsOnPeriodGroupedByMonths = async (
-  userId: string,
-  start: string,
-  end: string,
-  todaysDateString: string,
-  generalAnalyticsService: GeneralAnalyticsService,
-  dailyDataForPeriod: Awaited<ReturnType<DailyDataService["findRange"]>>,
-) => {
+export const getGeneralStatsOnPeriodGroupedByMonths = ({
+  start,
+  end,
+  timeSpentOnPeriod,
+  timeSpentOnTodaySMonth,
+  dailyDataForPeriod,
+}: {
+  start: string;
+  end: string;
+  timeSpentOnPeriod: number;
+  timeSpentOnTodaySMonth: number;
+  dailyDataForPeriod: Awaited<ReturnType<DailyDataService["findRange"]>>;
+}) => {
   const numberOfMonths = differenceInMonths(end, start) + 1;
-  const timeSpentOnPeriod = (
-    await generalAnalyticsService.getTimeSpentOnPeriod({
-      userId,
-      start,
-      end,
-    })
-  ).rawTime;
+
   const mean = timeSpentOnPeriod / numberOfMonths;
 
   const monthlyDataForPeriod = getDaysOfPeriodStatsGroupedByMonths(
@@ -33,14 +30,6 @@ export const getGeneralStatsOnPeriodGroupedByMonths = async (
     timeSpent: entry.timeSpentBar,
     originalDate: entry.originalDate,
   }));
-
-  const timeSpentOnTodaySMonth = (
-    await generalAnalyticsService.getTimeSpentOnPeriod({
-      userId,
-      start: convertToISODate(startOfMonth(new Date(todaysDateString))),
-      end: convertToISODate(endOfMonth(new Date(todaysDateString))),
-    })
-  ).rawTime;
 
   const percentageToAvg =
     mean === 0
@@ -59,17 +48,9 @@ export const getGeneralStatsOnPeriodGroupedByMonths = async (
           (month) => month.timeSpent === maxTimeSpentPerMonth,
         )?.originalDate || convertToISODate(new Date(start));
 
-  const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
-    generalAnalyticsService,
-    userId,
-    start,
-    end,
-  );
-
   return {
     avgTime: formatDuration(mean),
     percentageToAvg,
     mostActiveDate: mostActiveMonth,
-    mostUsedLanguageSlug,
   };
 };
