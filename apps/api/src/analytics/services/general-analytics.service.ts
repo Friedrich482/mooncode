@@ -16,7 +16,6 @@ import { getGeneralStatsOnPeriodGroupedByWeeks } from "@/analytics/utils/general
 import { getMostUsedLanguageOnPeriod } from "@/analytics/utils/general/get-most-used-language-on-period";
 import { getPeriodLanguagesGroupedByMonths } from "@/analytics/utils/general/get-period-languages-grouped-by-months";
 import { getPeriodLanguagesGroupedByWeeks } from "@/analytics/utils/general/get-period-languages-grouped-by-weeks";
-import { getWeekDayName } from "@/common/utils/get-weekday-name";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { Injectable } from "@nestjs/common";
@@ -24,6 +23,7 @@ import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 
 import { getDaysOfPeriodStatsGroupedByDays } from "../utils/general/get-days-of-period-stats-grouped-by-days";
+import { getPeriodLanguagesGroupedByDays } from "../utils/general/get-period-languages-grouped-by-days";
 
 @Injectable()
 export class GeneralAnalyticsService {
@@ -149,40 +149,34 @@ export class GeneralAnalyticsService {
       return [];
     }
 
+    const entriesWithLanguages = await Promise.all(
+      dailyDataForPeriod.map(async (entry) => ({
+        ...entry,
+        languages: await this.languagesService.findAll({
+          dailyDataId: entry.id,
+        }),
+      })),
+    );
+
     switch (groupBy) {
+      case "days":
+        return getPeriodLanguagesGroupedByDays(entriesWithLanguages);
+
       case "weeks":
         return getPeriodLanguagesGroupedByWeeks(
-          dailyDataForPeriod,
+          entriesWithLanguages,
           periodResolution,
-          this.languagesService,
         );
 
       case "months":
-        return getPeriodLanguagesGroupedByMonths(
-          dailyDataForPeriod,
-          this.languagesService,
-        );
+        return getPeriodLanguagesGroupedByMonths(entriesWithLanguages);
+
+      case undefined:
+        return getPeriodLanguagesGroupedByDays(entriesWithLanguages);
 
       default:
-        break;
+        throw groupBy satisfies never;
     }
-
-    const allLanguages = await Promise.all(
-      dailyDataForPeriod.map(({ id }) =>
-        this.languagesService.findAll({ dailyDataId: id }),
-      ),
-    );
-
-    const periodLanguagesPerDay = dailyDataForPeriod.map(
-      ({ date, timeSpent }, index) => ({
-        originalDate: new Date(date).toDateString(),
-        date: getWeekDayName(date),
-        timeSpent,
-        ...allLanguages[index],
-      }),
-    );
-
-    return periodLanguagesPerDay;
   }
 
   async getDailyStats(getDailyStatsDto: GetDailyStatsDtoType) {
