@@ -47,9 +47,9 @@ export const DayLanguagesChart = () => {
         ? "Yesterday"
         : new Date(dateString).toDateString();
 
-  const { finalData, formattedTotalTimeSpent } = data;
+  const { languagesStatsOnDay, formattedTotalTimeSpent } = data;
 
-  const chartData = finalData.map((entry) => ({
+  const chartData = languagesStatsOnDay.map((entry) => ({
     ...entry,
     color: getLanguageColor(entry.languageSlug),
     languageName: getLanguageName(entry.languageSlug),

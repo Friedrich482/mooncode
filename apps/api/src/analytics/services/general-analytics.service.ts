@@ -190,7 +190,7 @@ export class GeneralAnalyticsService {
     if (!dayData || dayData.timeSpent === 0)
       return {
         formattedTotalTimeSpent: formatDuration(0),
-        finalData: [],
+        languagesStatsOnDay: [],
       };
 
     const dayLanguagesTime = await this.languagesService.findAll({
@@ -199,7 +199,7 @@ export class GeneralAnalyticsService {
 
     const totalTimeSpent = dayData.timeSpent;
 
-    const finalData = Object.entries(dayLanguagesTime)
+    const languagesStatsOnDay = Object.entries(dayLanguagesTime)
       .map(([languageSlug, timeSpent]) => ({
         languageSlug,
         timeSpent,
@@ -211,7 +211,7 @@ export class GeneralAnalyticsService {
     const formattedTotalTimeSpent = formatDuration(totalTimeSpent);
 
     return {
-      finalData,
+      languagesStatsOnDay,
       formattedTotalTimeSpent,
     };
   }
