@@ -8,6 +8,9 @@ import { Procedure } from "@vitest/spy";
 import * as getDaysOfPeriodStatsGroupedByDaysUtils from "../utils/general/get-days-of-period-stats-grouped-by-days";
 import * as getDaysOfPeriodStatsGroupedByMonthsUtils from "../utils/general/get-days-of-period-stats-grouped-by-months";
 import * as getDaysOfPeriodStatsGroupedByWeeksUtils from "../utils/general/get-days-of-period-stats-grouped-by-weeks";
+import * as getGeneralStatsOnPeriodGroupedByDaysUtils from "../utils/general/get-general-stats-on-period-grouped-by-days";
+import * as getGeneralStatsOnPeriodGroupedByMonthsUtils from "../utils/general/get-general-stats-on-period-grouped-by-months";
+import * as getGeneralStatsOnPeriodGroupedByWeeksUtils from "../utils/general/get-general-stats-on-period-grouped-by-weeks";
 import * as getPeriodLanguagesGroupedByDaysUtils from "../utils/general/get-period-languages-grouped-by-days";
 import * as getPeriodLanguagesGroupedByMonthsUtils from "../utils/general/get-period-languages-grouped-by-months";
 import * as getPeriodLanguagesGroupedByWeeksUtils from "../utils/general/get-period-languages-grouped-by-weeks";
@@ -890,6 +893,598 @@ describe("GeneralAnalyticsService", () => {
 
       expect(languagesStatsOnDay).toBeDefined();
       expect(languagesStatsOnDay).toEqual([]);
+    });
+  });
+
+  describe("getPeriodGeneralStats", () => {
+    it("should return an empty state if there is no data on the selected period", async () => {
+      const mockedEntry = {
+        start: "2026-06-17",
+        end: "2026-06-21",
+        groupBy: "days" as const,
+        todaysDateString: "2026-06-23",
+        periodResolution: "day" as const,
+        userId: "1",
+      };
+
+      dailyDataService.findRange.mockResolvedValue([]);
+
+      const { avgTime, mostActiveDate, mostUsedLanguageSlug, percentageToAvg } =
+        await generalAnalyticsService.getPeriodGeneralStats(mockedEntry);
+
+      expect(avgTime).toBeDefined();
+      expect(avgTime).toEqual("0 secs");
+
+      expect(percentageToAvg).toBeDefined();
+      expect(percentageToAvg).toEqual(0);
+
+      expect(mostActiveDate).toBeDefined();
+      expect(mostActiveDate).toEqual("N/A");
+
+      expect(mostUsedLanguageSlug).toBeDefined();
+      expect(mostUsedLanguageSlug).toEqual("N/A");
+    });
+
+    it("should call the getGeneralStatsOnPeriodGroupedByDays function if the groupBy is 'days'", async () => {
+      const mockedEntry = {
+        start: "2026-06-17",
+        end: "2026-06-21",
+        todaysDateString: "2026-06-23",
+        groupBy: "days" as const,
+        periodResolution: "day" as const,
+        userId: "1",
+      };
+
+      const mockedPeriodData = [
+        {
+          id: "2",
+          timeSpent: 4500,
+          date: "2026-06-17",
+        },
+        {
+          id: "3",
+          timeSpent: 2500,
+          date: "2026-06-18",
+        },
+        {
+          id: "4",
+          timeSpent: 12900,
+          date: "2026-06-19",
+        },
+        {
+          id: "5",
+          timeSpent: 8200,
+          date: "2026-06-20",
+        },
+        {
+          id: "6",
+          timeSpent: 6700,
+          date: "2026-06-21",
+        },
+      ];
+
+      dailyDataService.findRange.mockResolvedValue(mockedPeriodData);
+
+      vi.spyOn(
+        generalAnalyticsService,
+        "getPeriodLanguagesTime",
+      ).mockResolvedValue([
+        {
+          languageSlug: "javascript",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "html",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "css",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "python",
+          time: 1500,
+          value: "25 mins",
+          percentage: 4.31,
+        },
+        {
+          languageSlug: "json",
+          time: 2000,
+          value: "33 mins",
+          percentage: 5.75,
+        },
+        {
+          languageSlug: "go",
+          time: 2000,
+          value: "33 mins",
+          percentage: 5.75,
+        },
+        {
+          languageSlug: "rust",
+          percentage: 7.18,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "docker",
+          time: 5000,
+          value: "1 hr 23 mins",
+          percentage: 14.37,
+        },
+        {
+          languageSlug: "yaml",
+          time: 5900,
+          value: "1 hr 38 mins",
+          percentage: 16.95,
+        },
+        {
+          languageSlug: "typescript",
+          time: 12900,
+          value: "3 hrs 35 mins",
+          percentage: 37.07,
+        },
+      ]);
+
+      dailyDataService.findOne.mockResolvedValue({
+        id: "7",
+        timeSpent: 8000,
+      });
+
+      const getGeneralStatsOnPeriodGroupedByDaysSpy = vi.spyOn(
+        getGeneralStatsOnPeriodGroupedByDaysUtils,
+        "getGeneralStatsOnPeriodGroupedByDays",
+      );
+
+      await generalAnalyticsService.getPeriodGeneralStats(mockedEntry);
+
+      expect(getGeneralStatsOnPeriodGroupedByDaysSpy).toHaveBeenCalled();
+    });
+
+    it("should call the getGeneralStatsOnPeriodGroupedByDays function if the groupBy is undefined", async () => {
+      const mockedEntry = {
+        start: "2026-06-17",
+        end: "2026-06-21",
+        todaysDateString: "2026-06-23",
+        periodResolution: "day" as const,
+        userId: "1",
+      };
+
+      const mockedPeriodData = [
+        {
+          id: "2",
+          timeSpent: 4500,
+          date: "2026-06-17",
+        },
+        {
+          id: "3",
+          timeSpent: 2500,
+          date: "2026-06-18",
+        },
+        {
+          id: "4",
+          timeSpent: 12900,
+          date: "2026-06-19",
+        },
+        {
+          id: "5",
+          timeSpent: 8200,
+          date: "2026-06-20",
+        },
+        {
+          id: "6",
+          timeSpent: 6700,
+          date: "2026-06-21",
+        },
+      ];
+
+      dailyDataService.findRange.mockResolvedValue(mockedPeriodData);
+
+      vi.spyOn(
+        generalAnalyticsService,
+        "getPeriodLanguagesTime",
+      ).mockResolvedValue([
+        {
+          languageSlug: "javascript",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "html",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "css",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "python",
+          time: 1500,
+          value: "25 mins",
+          percentage: 4.31,
+        },
+        {
+          languageSlug: "json",
+          time: 2000,
+          value: "33 mins",
+          percentage: 5.75,
+        },
+        {
+          languageSlug: "go",
+          time: 2000,
+          value: "33 mins",
+          percentage: 5.75,
+        },
+        {
+          languageSlug: "rust",
+          percentage: 7.18,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "docker",
+          time: 5000,
+          value: "1 hr 23 mins",
+          percentage: 14.37,
+        },
+        {
+          languageSlug: "yaml",
+          time: 5900,
+          value: "1 hr 38 mins",
+          percentage: 16.95,
+        },
+        {
+          languageSlug: "typescript",
+          time: 12900,
+          value: "3 hrs 35 mins",
+          percentage: 37.07,
+        },
+      ]);
+
+      dailyDataService.findOne.mockResolvedValue({
+        id: "7",
+        timeSpent: 8000,
+      });
+
+      const getGeneralStatsOnPeriodGroupedByDaysSpy = vi.spyOn(
+        getGeneralStatsOnPeriodGroupedByDaysUtils,
+        "getGeneralStatsOnPeriodGroupedByDays",
+      );
+
+      await generalAnalyticsService.getPeriodGeneralStats(mockedEntry);
+
+      expect(getGeneralStatsOnPeriodGroupedByDaysSpy).toHaveBeenCalled();
+    });
+
+    it("should call the getGeneralStatsOnPeriodGroupedByWeeks function if the groupBy is 'weeks'", async () => {
+      const mockedEntry = {
+        start: "2026-06-12",
+        end: "2026-06-21",
+        todaysDateString: "2026-06-23",
+        groupBy: "weeks" as const,
+        periodResolution: "week" as const,
+        userId: "1",
+      };
+
+      const mockedPeriodData = [
+        {
+          id: "2",
+          timeSpent: 4500,
+          date: "2026-06-12",
+        },
+        {
+          id: "3",
+          timeSpent: 1500,
+          date: "2026-06-13",
+        },
+        {
+          id: "4",
+          timeSpent: 3800,
+          date: "2026-06-14",
+        },
+        {
+          id: "5",
+          timeSpent: 14500,
+          date: "2026-06-15",
+        },
+        {
+          id: "6",
+          timeSpent: 5900,
+          date: "2026-06-16",
+        },
+        {
+          id: "7",
+          timeSpent: 4500,
+          date: "2026-06-17",
+        },
+        {
+          id: "8",
+          timeSpent: 2500,
+          date: "2026-06-18",
+        },
+        {
+          id: "9",
+          timeSpent: 12900,
+          date: "2026-06-19",
+        },
+        {
+          id: "10",
+          timeSpent: 8200,
+          date: "2026-06-20",
+        },
+        {
+          id: "11",
+          timeSpent: 6700,
+          date: "2026-06-21",
+        },
+      ];
+
+      dailyDataService.findRange.mockResolvedValue(mockedPeriodData);
+
+      vi.spyOn(
+        generalAnalyticsService,
+        "getPeriodLanguagesTime",
+      ).mockResolvedValue([
+        {
+          languageSlug: "javascript",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "html",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "css",
+          time: 1000,
+          value: "16 mins",
+          percentage: 2.87,
+        },
+        {
+          languageSlug: "python",
+          time: 1500,
+          value: "25 mins",
+          percentage: 4.31,
+        },
+        {
+          languageSlug: "json",
+          time: 2000,
+          value: "33 mins",
+          percentage: 5.75,
+        },
+        {
+          languageSlug: "go",
+          time: 2000,
+          value: "33 mins",
+          percentage: 5.75,
+        },
+        {
+          languageSlug: "rust",
+          percentage: 7.18,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "docker",
+          time: 5000,
+          value: "1 hr 23 mins",
+          percentage: 14.37,
+        },
+        {
+          languageSlug: "yaml",
+          time: 5900,
+          value: "1 hr 38 mins",
+          percentage: 16.95,
+        },
+        {
+          languageSlug: "typescript",
+          time: 12900,
+          value: "3 hrs 35 mins",
+          percentage: 37.07,
+        },
+      ]);
+
+      dailyDataService.findOne.mockResolvedValue({
+        id: "7",
+        timeSpent: 8000,
+      });
+
+      const getGeneralStatsOnPeriodGroupedByWeeksSpy = vi.spyOn(
+        getGeneralStatsOnPeriodGroupedByWeeksUtils,
+        "getGeneralStatsOnPeriodGroupedByWeeks",
+      );
+
+      await generalAnalyticsService.getPeriodGeneralStats(mockedEntry);
+
+      expect(getGeneralStatsOnPeriodGroupedByWeeksSpy).toHaveBeenCalled();
+    });
+
+    it("should call the getGeneralStatsOnPeriodGroupedByMonths function if the groupBy is 'months'", async () => {
+      const mockedEntry = {
+        start: "2026-05-12",
+        end: "2026-06-21",
+        todaysDateString: "2026-06-23",
+        groupBy: "months" as const,
+        periodResolution: "month" as const,
+        userId: "1",
+      };
+
+      const mockedPeriodData = [
+        {
+          id: "2",
+          timeSpent: 4500,
+          date: "2026-05-12",
+        },
+        {
+          id: "3",
+          timeSpent: 4500,
+          date: "2026-06-12",
+        },
+        {
+          id: "4",
+          timeSpent: 1500,
+          date: "2026-06-13",
+        },
+        {
+          id: "5",
+          timeSpent: 3800,
+          date: "2026-06-14",
+        },
+        {
+          id: "6",
+          timeSpent: 14500,
+          date: "2026-06-15",
+        },
+        {
+          id: "7",
+          timeSpent: 5900,
+          date: "2026-06-16",
+        },
+        {
+          id: "8",
+          timeSpent: 4500,
+          date: "2026-06-17",
+        },
+        {
+          id: "9",
+          timeSpent: 2500,
+          date: "2026-06-18",
+        },
+        {
+          id: "10",
+          timeSpent: 12900,
+          date: "2026-06-19",
+        },
+        {
+          id: "11",
+          timeSpent: 8200,
+          date: "2026-06-20",
+        },
+        {
+          id: "12",
+          timeSpent: 6700,
+          date: "2026-06-21",
+        },
+      ];
+
+      dailyDataService.findRange.mockResolvedValue(mockedPeriodData);
+
+      vi.spyOn(
+        generalAnalyticsService,
+        "getPeriodLanguagesTime",
+      ).mockResolvedValue([
+        {
+          languageSlug: "html",
+          time: 1000,
+          value: "16 mins",
+          percentage: 1.44,
+        },
+        {
+          languageSlug: "css",
+          time: 1000,
+          value: "16 mins",
+          percentage: 1.44,
+        },
+        {
+          languageSlug: "python",
+          time: 2000,
+          value: "33 mins",
+          percentage: 2.88,
+        },
+        {
+          languageSlug: "java",
+          time: 2000,
+          value: "33 mins",
+          percentage: 2.88,
+        },
+        {
+          languageSlug: "go",
+          time: 2000,
+          value: "33 mins",
+          percentage: 2.88,
+        },
+        {
+          languageSlug: "rust",
+          percentage: 3.6,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "zig",
+          percentage: 3.6,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "c",
+          percentage: 3.6,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "sql",
+          percentage: 3.6,
+          time: 2500,
+          value: "41 mins",
+        },
+        {
+          languageSlug: "javascript",
+          time: 3300,
+          value: "55 mins",
+          percentage: 4.75,
+        },
+        {
+          languageSlug: "json",
+          time: 8000,
+          value: "2 hrs 13 mins",
+          percentage: 11.51,
+        },
+        {
+          languageSlug: "docker",
+          time: 10000,
+          value: "2 hrs 46 mins",
+          percentage: 14.39,
+        },
+        {
+          languageSlug: "typescript",
+          time: 14900,
+          value: "4 hrs 8 mins",
+          percentage: 21.44,
+        },
+        {
+          languageSlug: "yaml",
+          time: 15300,
+          value: "4 hrs 15 mins",
+          percentage: 22.01,
+        },
+      ]);
+
+      dailyDataService.findOne.mockResolvedValue({
+        id: "7",
+        timeSpent: 8000,
+      });
+
+      const getGeneralStatsOnPeriodGroupedByMonthsSpy = vi.spyOn(
+        getGeneralStatsOnPeriodGroupedByMonthsUtils,
+        "getGeneralStatsOnPeriodGroupedByMonths",
+      );
+
+      await generalAnalyticsService.getPeriodGeneralStats(mockedEntry);
+
+      expect(getGeneralStatsOnPeriodGroupedByMonthsSpy).toHaveBeenCalled();
     });
   });
 });
