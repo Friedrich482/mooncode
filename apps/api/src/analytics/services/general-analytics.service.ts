@@ -8,11 +8,14 @@ import {
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
 } from "@/analytics/dto/general-analytics.dto";
+import { getDaysOfPeriodStatsGroupedByDays } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-days";
 import { getDaysOfPeriodStatsGroupedByMonths } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-months";
 import { getDaysOfPeriodStatsGroupedByWeeks } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-weeks";
+import { getGeneralStatsOnPeriodGroupedByDays } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-days";
 import { getGeneralStatsOnPeriodGroupedByMonths } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-months";
 import { getGeneralStatsOnPeriodGroupedByWeeks } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-weeks";
 import { getMostUsedLanguageOnPeriod } from "@/analytics/utils/general/get-most-used-language-on-period";
+import { getPeriodLanguagesGroupedByDays } from "@/analytics/utils/general/get-period-languages-grouped-by-days";
 import { getPeriodLanguagesGroupedByMonths } from "@/analytics/utils/general/get-period-languages-grouped-by-months";
 import { getPeriodLanguagesGroupedByWeeks } from "@/analytics/utils/general/get-period-languages-grouped-by-weeks";
 import { DailyDataService } from "@/daily-data/daily-data.service";
@@ -22,9 +25,6 @@ import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 
 import { NAString } from "../dto/common";
-import { getDaysOfPeriodStatsGroupedByDays } from "../utils/general/get-days-of-period-stats-grouped-by-days";
-import { getGeneralStatsOnPeriodGroupedByDays } from "../utils/general/get-general-stats-on-period-grouped-by-days";
-import { getPeriodLanguagesGroupedByDays } from "../utils/general/get-period-languages-grouped-by-days";
 
 @Injectable()
 export class GeneralAnalyticsService {

@@ -1,19 +1,19 @@
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
+import * as getDaysOfPeriodStatsGroupedByDaysUtils from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-days";
+import * as getDaysOfPeriodStatsGroupedByMonthsUtils from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-months";
+import * as getDaysOfPeriodStatsGroupedByWeeksUtils from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-weeks";
+import * as getGeneralStatsOnPeriodGroupedByDaysUtils from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-days";
+import * as getGeneralStatsOnPeriodGroupedByMonthsUtils from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-months";
+import * as getGeneralStatsOnPeriodGroupedByWeeksUtils from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-weeks";
+import * as getPeriodLanguagesGroupedByDaysUtils from "@/analytics/utils/general/get-period-languages-grouped-by-days";
+import * as getPeriodLanguagesGroupedByMonthsUtils from "@/analytics/utils/general/get-period-languages-grouped-by-months";
+import * as getPeriodLanguagesGroupedByWeeksUtils from "@/analytics/utils/general/get-period-languages-grouped-by-weeks";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { Test } from "@nestjs/testing";
 import { Procedure } from "@vitest/spy";
 
-import * as getDaysOfPeriodStatsGroupedByDaysUtils from "../utils/general/get-days-of-period-stats-grouped-by-days";
-import * as getDaysOfPeriodStatsGroupedByMonthsUtils from "../utils/general/get-days-of-period-stats-grouped-by-months";
-import * as getDaysOfPeriodStatsGroupedByWeeksUtils from "../utils/general/get-days-of-period-stats-grouped-by-weeks";
-import * as getGeneralStatsOnPeriodGroupedByDaysUtils from "../utils/general/get-general-stats-on-period-grouped-by-days";
-import * as getGeneralStatsOnPeriodGroupedByMonthsUtils from "../utils/general/get-general-stats-on-period-grouped-by-months";
-import * as getGeneralStatsOnPeriodGroupedByWeeksUtils from "../utils/general/get-general-stats-on-period-grouped-by-weeks";
-import * as getPeriodLanguagesGroupedByDaysUtils from "../utils/general/get-period-languages-grouped-by-days";
-import * as getPeriodLanguagesGroupedByMonthsUtils from "../utils/general/get-period-languages-grouped-by-months";
-import * as getPeriodLanguagesGroupedByWeeksUtils from "../utils/general/get-period-languages-grouped-by-weeks";
 import { GeneralAnalyticsService } from "./general-analytics.service";
 
 describe("GeneralAnalyticsService", () => {
