@@ -5,15 +5,11 @@ import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 
-export const getPeriodLanguagesGroupedByMonths = async (
+export const getPeriodLanguagesGroupedByMonths = (
   data: (Awaited<ReturnType<DailyDataService["findRange"]>>[number] & {
     languages: Awaited<ReturnType<LanguagesService["findAll"]>>;
   })[],
 ) => {
-  if (data.length === 0) {
-    return [];
-  }
-
   const monthlyMap = new Map<
     string,
     {
