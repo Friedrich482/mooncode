@@ -27,10 +27,9 @@ export const getGeneralStatsOnPeriodGroupedByDays = ({
       ? 0
       : parseFloat((((timeSpentToday - mean) / mean) * 100).toFixed(2));
 
-  const maxTimeSpentPerDay =
-    dailyDataForPeriod.length > 0
-      ? Math.max(...dailyDataForPeriod.map((day) => day.timeSpent))
-      : 0;
+  const maxTimeSpentPerDay = Math.max(
+    ...dailyDataForPeriod.map((day) => day.timeSpent),
+  );
 
   const mostActiveDate: NAString =
     maxTimeSpentPerDay === 0
