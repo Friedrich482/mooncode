@@ -258,7 +258,7 @@ export class GeneralAnalyticsService {
     });
 
     const mostUsedLanguageSlug =
-      await getMostUsedLanguageOnPeriod(periodLanguagesTime);
+      getMostUsedLanguageOnPeriod(periodLanguagesTime);
 
     const timeSpentToday =
       (

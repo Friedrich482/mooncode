@@ -1,7 +1,7 @@
 import { NAString } from "@/analytics/dto/common";
 import { GeneralAnalyticsService } from "@/analytics/services/general-analytics.service";
 
-export const getMostUsedLanguageOnPeriod = async (
+export const getMostUsedLanguageOnPeriod = (
   periodLanguagesTime: Awaited<
     ReturnType<GeneralAnalyticsService["getPeriodLanguagesTime"]>
   >,
