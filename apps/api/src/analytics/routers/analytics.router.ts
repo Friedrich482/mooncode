@@ -12,7 +12,7 @@ export class AnalyticsRouter {
 
   procedures = {
     analytics: {
-      general: this.generalAnalyticsRouter.procedures.general,
+      general: this.generalAnalyticsRouter.procedures().general,
       projects: this.projectsAnalyticsRouter.procedures.projects,
     },
   };
