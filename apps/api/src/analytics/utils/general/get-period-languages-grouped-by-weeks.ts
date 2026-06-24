@@ -6,16 +6,12 @@ import { LanguagesService } from "@/languages/languages.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-export const getPeriodLanguagesGroupedByWeeks = async (
+export const getPeriodLanguagesGroupedByWeeks = (
   data: (Awaited<ReturnType<DailyDataService["findRange"]>>[number] & {
     languages: Awaited<ReturnType<LanguagesService["findAll"]>>;
   })[],
   periodResolution: PeriodResolution,
 ) => {
-  if (data.length === 0) {
-    return [];
-  }
-
   const weeklyMap = new Map<
     string,
     {
@@ -28,7 +24,13 @@ export const getPeriodLanguagesGroupedByWeeks = async (
   >();
 
   const startDate = new Date(data[0].date);
-  const endDate = new Date(data[data.length - 1].date);
+  const lastEntry = data.at(-1);
+
+  if (!lastEntry) {
+    return [];
+  }
+
+  const endDate = new Date(lastEntry.date);
 
   for (const [, entry] of data.entries()) {
     const date = new Date(entry.date);
