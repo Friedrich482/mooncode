@@ -87,7 +87,7 @@ export class ProjectsAnalyticsService {
     const projectOnDaysOnPeriod = dateRange.map((date) => {
       const formattedDate = convertToISODate(date);
       return (
-        dataByDate[formattedDate] || {
+        dataByDate[formattedDate] ?? {
           timeSpent: 0,
           date: formattedDate,
         }
@@ -109,8 +109,8 @@ export class ProjectsAnalyticsService {
       })
       .from(files)
       .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
       .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
       .where(
         and(
           eq(dailyData.userId, userId),
@@ -146,8 +146,8 @@ export class ProjectsAnalyticsService {
       })
       .from(files)
       .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
       .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
       .where(
         and(
           eq(dailyData.userId, userId),
@@ -161,7 +161,7 @@ export class ProjectsAnalyticsService {
         if (!acc[date]) {
           acc[date] = {};
         }
-        acc[date][languageSlug] = (acc[date][languageSlug] || 0) + timeSpent;
+        acc[date][languageSlug] = (acc[date][languageSlug] ?? 0) + timeSpent;
         return acc;
       },
       {} as { [date: string]: { [languageSlug: string]: number } },
@@ -440,7 +440,7 @@ export class ProjectsAnalyticsService {
     const projectLanguagesOnDay = rawProjectFilesOnDay.reduce(
       (acc, current) => {
         acc[current.languageSlug] =
-          (acc[current.languageSlug] || 0) + current.timeSpent;
+          (acc[current.languageSlug] ?? 0) + current.timeSpent;
         return acc;
       },
       {} as { [languageSlug: string]: number },
@@ -546,11 +546,11 @@ export class ProjectsAnalyticsService {
       timeSpentOnProjectToday =
         (
           await this.projectsService.findOne({
-            dailyDataId: todaysDailyDataId || "",
+            dailyDataId: todaysDailyDataId,
             name,
             path,
           })
-        )?.timeSpent || 0;
+        )?.timeSpent ?? 0;
     }
 
     const percentageToAvg =
@@ -571,7 +571,7 @@ export class ProjectsAnalyticsService {
         : new Date(
             projectPerDayOfPeriod.find(
               (day) => day.timeSpent === maxTimeSpentPerDay,
-            )?.date || convertToISODate(new Date(start)),
+            )?.date ?? convertToISODate(new Date(start)),
           ).toDateString();
 
     const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
