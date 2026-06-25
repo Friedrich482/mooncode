@@ -5,6 +5,7 @@ import { DailyDataService } from "@/daily-data/daily-data.service";
 import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { ProjectsService } from "@/projects/projects.service";
 import { Test } from "@nestjs/testing";
+import { TRPCError } from "@trpc/server";
 import { Procedure } from "@vitest/spy";
 
 import { ProjectsAnalyticsService } from "./projects-analytics.service";
@@ -19,6 +20,7 @@ describe("ProjectsAnalyticsService", () => {
   let projectsService: {
     create: Mock<Procedure>;
     checkExists: Mock<Procedure>;
+    findRange: Mock<Procedure>;
   };
 
   let mockedDrizzle: MockedDrizzle;
@@ -34,6 +36,7 @@ describe("ProjectsAnalyticsService", () => {
     projectsService = {
       create: vi.fn(),
       checkExists: vi.fn(),
+      findRange: vi.fn(),
     };
 
     mockedDrizzle = {
@@ -310,6 +313,214 @@ describe("ProjectsAnalyticsService", () => {
 
       expect(projectsService.checkExists).toHaveBeenCalled();
       expect(projectsService.checkExists).toHaveBeenCalledWith(mockedEntry);
+    });
+  });
+
+  describe("getPeriodProjects", () => {
+    const mockedEntry = {
+      userId: "1",
+      start: "2026-06-17",
+      end: "2026-06-21",
+      page: 1,
+    };
+
+    it("should return an object containing the expected fields: periodProjects and hasNext", async () => {
+      projectsService.findRange.mockResolvedValue({
+        timeSpentPerProject: [
+          {
+            name: "mooncode",
+            path: "/home/user/projects/mooncode",
+            totalTimeSpent: 24000,
+          },
+          {
+            name: "testing",
+            path: "/home/user/projects/testing",
+            totalTimeSpent: 5000,
+          },
+          {
+            name: "api",
+            path: "/home/user/projects/api",
+            totalTimeSpent: 10000,
+          },
+        ],
+        hasNext: false,
+      });
+
+      const mockedOutput = {
+        periodProjects: [
+          {
+            percentage: 61.54,
+            name: "mooncode",
+            path: "/home/user/projects/mooncode",
+            totalTimeSpent: 24000,
+          },
+          {
+            name: "testing",
+            path: "/home/user/projects/testing",
+            totalTimeSpent: 5000,
+            percentage: 12.82,
+          },
+          {
+            name: "api",
+            path: "/home/user/projects/api",
+            totalTimeSpent: 10000,
+            percentage: 25.64,
+          },
+        ],
+        hasNext: false,
+      };
+
+      const { hasNext, periodProjects } =
+        await projectsAnalyticsService.getPeriodProjects(mockedEntry);
+
+      expect(periodProjects).toBeDefined();
+      expect(periodProjects).toEqual(mockedOutput.periodProjects);
+
+      expect(hasNext).toBeDefined();
+      expect(hasNext).toEqual(mockedOutput.hasNext);
+    });
+
+    it("should set all percentages to zero if the total time spent on the period is zero", async () => {
+      projectsService.findRange.mockResolvedValue({
+        timeSpentPerProject: [
+          {
+            name: "mooncode",
+            path: "/home/user/projects/mooncode",
+            totalTimeSpent: 0,
+          },
+          {
+            name: "testing",
+            path: "/home/user/projects/testing",
+            totalTimeSpent: 0,
+          },
+          {
+            name: "api",
+            path: "/home/user/projects/api",
+            totalTimeSpent: 0,
+          },
+        ],
+        hasNext: false,
+      });
+
+      const mockedOutput = {
+        periodProjects: [
+          {
+            percentage: 0,
+            name: "mooncode",
+            path: "/home/user/projects/mooncode",
+            totalTimeSpent: 0,
+          },
+          {
+            name: "testing",
+            path: "/home/user/projects/testing",
+            totalTimeSpent: 0,
+            percentage: 0,
+          },
+          {
+            name: "api",
+            path: "/home/user/projects/api",
+            totalTimeSpent: 0,
+            percentage: 0,
+          },
+        ],
+        hasNext: false,
+      };
+
+      const { hasNext, periodProjects } =
+        await projectsAnalyticsService.getPeriodProjects(mockedEntry);
+
+      expect(periodProjects).toBeDefined();
+      expect(periodProjects).toEqual(mockedOutput.periodProjects);
+
+      expect(hasNext).toBeDefined();
+      expect(hasNext).toEqual(mockedOutput.hasNext);
+    });
+  });
+
+  describe("getProjectOnPeriod", () => {
+    it("should return an object containing the expected fields: name, path and totalTimeSpent for the project", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([
+        {
+          name: "mooncode",
+          path: "/home/user/projects/mooncode",
+        },
+      ]);
+
+      const mockedProjectAggregatedOnPeriod = {
+        name: "mooncode",
+        path: "/home/user/projects/mooncode",
+        totalTimeSpent: 24000,
+      };
+
+      mockedDrizzle.orderBy.mockResolvedValue([
+        mockedProjectAggregatedOnPeriod,
+      ]);
+
+      const mockedOutput = mockedProjectAggregatedOnPeriod;
+
+      const projectAggregatedOnPeriod =
+        await projectsAnalyticsService.getProjectOnPeriod(mockedEntry);
+
+      expect(projectAggregatedOnPeriod).toBeDefined();
+      expect(projectAggregatedOnPeriod).toEqual(mockedOutput);
+    });
+
+    it("should return an empty state if the time spent on the project on that period is zero", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([
+        {
+          name: "mooncode",
+          path: "/home/user/projects/mooncode",
+        },
+      ]);
+
+      mockedDrizzle.orderBy.mockResolvedValue([]);
+
+      const mockedOutput = {
+        name: "mooncode",
+        path: "/home/user/projects/mooncode",
+        totalTimeSpent: 0,
+      };
+
+      const projectAggregatedOnPeriod =
+        await projectsAnalyticsService.getProjectOnPeriod(mockedEntry);
+
+      expect(projectAggregatedOnPeriod).toBeDefined();
+      expect(projectAggregatedOnPeriod).toEqual(mockedOutput);
+    });
+
+    it("should throw an error if the user doesn't have any project ", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+      };
+
+      mockedDrizzle.limit.mockResolvedValue([]);
+
+      const error = await projectsAnalyticsService
+        .getProjectOnPeriod(mockedEntry)
+        .catch((e) => e);
+
+      expect(error).toBeInstanceOf(TRPCError);
+      expect(error).property("code").eql("NOT_FOUND");
+      expect(error)
+        .property("message")
+        .match(/project/i);
     });
   });
 });
