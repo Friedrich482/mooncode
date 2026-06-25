@@ -1,5 +1,11 @@
 import { beforeEach, describe, expect, it, Mock, vi } from "vitest";
 
+import * as getProjectLanguagesGroupedByDaysUtils from "@/analytics/utils/projects/get-project-languages-grouped-by-days";
+import * as getProjectLanguagesGroupedByMonthsUtils from "@/analytics/utils/projects/get-project-languages-grouped-by-months";
+import * as getProjectLanguagesGroupedByWeeksUtils from "@/analytics/utils/projects/get-project-languages-grouped-by-weeks";
+import * as getProjectPerDayOfPeriodGroupedByDaysUtils from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-days";
+import * as getProjectPerDayOfPeriodGroupedByMonthsUtils from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-months";
+import * as getProjectPerDayOfPeriodGroupedByWeeksUtils from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
 import { MockedDrizzle } from "@/common/tests/types";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
@@ -521,6 +527,856 @@ describe("ProjectsAnalyticsService", () => {
       expect(error)
         .property("message")
         .match(/project/i);
+    });
+  });
+
+  describe("getProjectPerDayOfPeriod", () => {
+    const mockedTimeSpentPerDayOnProject = [
+      {
+        date: "2026-06-17",
+        timeSpent: 4500,
+      },
+      {
+        date: "2026-06-18",
+        timeSpent: 7500,
+      },
+      {
+        date: "2026-06-19",
+        timeSpent: 12000,
+      },
+      {
+        date: "2026-06-20",
+        timeSpent: 9800,
+      },
+      {
+        date: "2026-06-21",
+        timeSpent: 15000,
+      },
+    ];
+
+    it("should return an empty array if there is no data for the project of the period selected", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        groupBy: "days" as const,
+        periodResolution: "day" as const,
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue([]);
+
+      const data =
+        await projectsAnalyticsService.getProjectPerDayOfPeriod(mockedEntry);
+
+      expect(data).toBeDefined();
+      expect(data).toEqual([]);
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByDays utility function if the groupBy is 'days'", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        groupBy: "days" as const,
+        periodResolution: "day" as const,
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      const getProjectPerDayOfPeriodGroupedByDaysSpy = vi.spyOn(
+        getProjectPerDayOfPeriodGroupedByDaysUtils,
+        "getProjectPerDayOfPeriodGroupedByDays",
+      );
+
+      await projectsAnalyticsService.getProjectPerDayOfPeriod(mockedEntry);
+
+      expect(getProjectPerDayOfPeriodGroupedByDaysSpy).toHaveBeenCalled();
+      expect(getProjectPerDayOfPeriodGroupedByDaysSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+      );
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByDays utility function if the groupBy is undefined", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        periodResolution: "day" as const,
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      const getProjectPerDayOfPeriodGroupedByDaysSpy = vi.spyOn(
+        getProjectPerDayOfPeriodGroupedByDaysUtils,
+        "getProjectPerDayOfPeriodGroupedByDays",
+      );
+
+      await projectsAnalyticsService.getProjectPerDayOfPeriod(mockedEntry);
+
+      expect(getProjectPerDayOfPeriodGroupedByDaysSpy).toHaveBeenCalled();
+      expect(getProjectPerDayOfPeriodGroupedByDaysSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+      );
+    });
+
+    it("should call the getDaysOfPeriodStatsGroupedByWeeks utility function if the groupBy is 'weeks'", async () => {
+      const mockedEntry = {
+        start: "2026-06-12",
+        end: "2026-06-21",
+        groupBy: "weeks" as const,
+        periodResolution: "week" as const,
+        userId: "1",
+        name: "mooncode",
+      };
+
+      const mockedTimeSpentPerDayOnProject = [
+        {
+          id: "2",
+          timeSpent: 4500,
+          date: "2026-06-12",
+        },
+        {
+          id: "3",
+          timeSpent: 1500,
+          date: "2026-06-13",
+        },
+        {
+          id: "4",
+          timeSpent: 3800,
+          date: "2026-06-14",
+        },
+        {
+          id: "5",
+          timeSpent: 14500,
+          date: "2026-06-15",
+        },
+        {
+          id: "6",
+          timeSpent: 5900,
+          date: "2026-06-16",
+        },
+        {
+          id: "7",
+          timeSpent: 4500,
+          date: "2026-06-17",
+        },
+        {
+          id: "8",
+          timeSpent: 2500,
+          date: "2026-06-18",
+        },
+        {
+          id: "9",
+          timeSpent: 12900,
+          date: "2026-06-19",
+        },
+        {
+          id: "10",
+          timeSpent: 8200,
+          date: "2026-06-20",
+        },
+        {
+          id: "11",
+          timeSpent: 6700,
+          date: "2026-06-21",
+        },
+      ];
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      const getDaysOfPeriodStatsGroupedByWeeksSpy = vi.spyOn(
+        getProjectPerDayOfPeriodGroupedByWeeksUtils,
+        "getProjectPerDayOfPeriodGroupedByWeeks",
+      );
+
+      await projectsAnalyticsService.getProjectPerDayOfPeriod(mockedEntry);
+
+      expect(getDaysOfPeriodStatsGroupedByWeeksSpy).toHaveBeenCalled();
+      expect(getDaysOfPeriodStatsGroupedByWeeksSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+        mockedEntry.periodResolution,
+      );
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByMonths utility function if the groupBy is 'months'", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-05-12",
+        end: "2026-06-21",
+        groupBy: "months" as const,
+        periodResolution: "month" as const,
+      };
+
+      const mockedTimeSpentPerDayOnProject = [
+        {
+          id: "2",
+          timeSpent: 4500,
+          date: "2026-05-12",
+        },
+        {
+          id: "3",
+          timeSpent: 1500,
+          date: "2026-06-13",
+        },
+        {
+          id: "4",
+          timeSpent: 3800,
+          date: "2026-06-14",
+        },
+        {
+          id: "5",
+          timeSpent: 14500,
+          date: "2026-06-15",
+        },
+        {
+          id: "6",
+          timeSpent: 5900,
+          date: "2026-06-16",
+        },
+        {
+          id: "7",
+          timeSpent: 4500,
+          date: "2026-06-17",
+        },
+        {
+          id: "8",
+          timeSpent: 2500,
+          date: "2026-06-18",
+        },
+        {
+          id: "9",
+          timeSpent: 12900,
+          date: "2026-06-19",
+        },
+        {
+          id: "10",
+          timeSpent: 8200,
+          date: "2026-06-20",
+        },
+        {
+          id: "11",
+          timeSpent: 6700,
+          date: "2026-06-21",
+        },
+      ];
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      const getProjectPerDayOfPeriodGroupedByMonthsSpy = vi.spyOn(
+        getProjectPerDayOfPeriodGroupedByMonthsUtils,
+        "getProjectPerDayOfPeriodGroupedByMonths",
+      );
+
+      await projectsAnalyticsService.getProjectPerDayOfPeriod(mockedEntry);
+
+      expect(getProjectPerDayOfPeriodGroupedByMonthsSpy).toHaveBeenCalled();
+      expect(getProjectPerDayOfPeriodGroupedByMonthsSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+      );
+    });
+  });
+
+  describe("getProjectLanguagesTimeOnPeriod", () => {
+    const mockedEntry = {
+      userId: "1",
+      name: "mooncode",
+      start: "2026-06-17",
+      end: "2026-06-21",
+    };
+
+    const mockedTimeSpentPerDayOnProject = [
+      {
+        date: "2026-06-17",
+        timeSpent: 4500,
+      },
+      {
+        date: "2026-06-18",
+        timeSpent: 7500,
+      },
+      {
+        date: "2026-06-19",
+        timeSpent: 12000,
+      },
+      {
+        date: "2026-06-20",
+        timeSpent: 9800,
+      },
+      {
+        date: "2026-06-21",
+        timeSpent: 15000,
+      },
+    ];
+
+    it("should an array containing the stats for each language on the period", async () => {
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getProjectOnPeriod",
+      ).mockResolvedValue({
+        name: "mooncode",
+        path: "/home/user/projects/mooncode",
+        totalTimeSpent: 48800,
+      });
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getLanguagesTimeOnPeriod",
+      ).mockResolvedValue({
+        typescript: 12000,
+        rust: 14000,
+        python: 3000,
+        go: 13000,
+        yaml: 6800,
+      });
+
+      const mockedOutput = [
+        {
+          languageSlug: "python",
+          percentage: 6.15,
+          time: 3000,
+          value: "50 mins",
+        },
+        {
+          languageSlug: "yaml",
+          percentage: 13.93,
+          time: 6800,
+          value: "1 hr 53 mins",
+        },
+        {
+          languageSlug: "typescript",
+          percentage: 24.59,
+          time: 12000,
+          value: "3 hrs 20 mins",
+        },
+        {
+          languageSlug: "go",
+          percentage: 26.64,
+          time: 13000,
+          value: "3 hrs 36 mins",
+        },
+        {
+          languageSlug: "rust",
+          percentage: 28.69,
+          time: 14000,
+          value: "3 hrs 53 mins",
+        },
+      ];
+
+      const projectLanguagesTimeOnPeriod =
+        await projectsAnalyticsService.getProjectLanguagesTimeOnPeriod(
+          mockedEntry,
+        );
+
+      expect(projectLanguagesTimeOnPeriod).toBeDefined();
+      expect(projectLanguagesTimeOnPeriod).toEqual(mockedOutput);
+    });
+
+    it("should return an empty array if there is no data for the project on the selected period", async () => {
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue([]);
+
+      const projectLanguagesTimeOnPeriod =
+        await projectsAnalyticsService.getProjectLanguagesTimeOnPeriod(
+          mockedEntry,
+        );
+
+      expect(projectLanguagesTimeOnPeriod).toBeDefined();
+      expect(projectLanguagesTimeOnPeriod).toEqual([]);
+    });
+
+    it("should return an array of stats with all percentages at zero if the total time spent on the project on the period is zero", async () => {
+      const mockedTimeSpentPerDayOnProject = [
+        {
+          date: "2026-06-17",
+          timeSpent: 0,
+        },
+        {
+          date: "2026-06-18",
+          timeSpent: 0,
+        },
+        {
+          date: "2026-06-19",
+          timeSpent: 0,
+        },
+        {
+          date: "2026-06-20",
+          timeSpent: 0,
+        },
+        {
+          date: "2026-06-21",
+          timeSpent: 0,
+        },
+      ];
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getProjectOnPeriod",
+      ).mockResolvedValue({
+        name: "mooncode",
+        path: "/home/user/projects/mooncode",
+        totalTimeSpent: 0,
+      });
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getLanguagesTimeOnPeriod",
+      ).mockResolvedValue({
+        typescript: 0,
+        rust: 0,
+        python: 0,
+        go: 0,
+        yaml: 0,
+      });
+
+      const mockedOutput = [
+        {
+          languageSlug: "typescript",
+
+          percentage: 0,
+          time: 0,
+          value: "0 secs",
+        },
+        {
+          languageSlug: "rust",
+          percentage: 0,
+          time: 0,
+          value: "0 secs",
+        },
+        {
+          languageSlug: "python",
+          percentage: 0,
+          time: 0,
+          value: "0 secs",
+        },
+        {
+          languageSlug: "go",
+          percentage: 0,
+          time: 0,
+          value: "0 secs",
+        },
+        {
+          languageSlug: "yaml",
+          percentage: 0,
+          time: 0,
+          value: "0 secs",
+        },
+      ];
+
+      const projectLanguagesTimeOnPeriod =
+        await projectsAnalyticsService.getProjectLanguagesTimeOnPeriod(
+          mockedEntry,
+        );
+
+      expect(projectLanguagesTimeOnPeriod).toBeDefined();
+      expect(projectLanguagesTimeOnPeriod).toEqual(mockedOutput);
+    });
+  });
+
+  describe("getProjectLanguagesPerDayOfPeriod", () => {
+    it("should return an empty array if there is no data for the project of the period selected", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        groupBy: "days" as const,
+        periodResolution: "day" as const,
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue([]);
+
+      const data =
+        await projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod(
+          mockedEntry,
+        );
+
+      expect(data).toBeDefined();
+      expect(data).toEqual([]);
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByDays utility function if the groupBy is 'days'", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        groupBy: "days" as const,
+        periodResolution: "day" as const,
+      };
+
+      const mockedTimeSpentPerDayOnProject = [
+        {
+          date: "2026-06-17",
+          timeSpent: 4500,
+        },
+        {
+          date: "2026-06-18",
+          timeSpent: 7500,
+        },
+        {
+          date: "2026-06-19",
+          timeSpent: 12000,
+        },
+        {
+          date: "2026-06-20",
+          timeSpent: 9800,
+        },
+        {
+          date: "2026-06-21",
+          timeSpent: 15000,
+        },
+      ];
+
+      const mockedLanguagesTimesPerDayOfPeriod = {
+        "2026-06-17": {
+          typescript: 2500,
+          rust: 2000,
+        },
+        "2026-06-18": {
+          javascript: 4000,
+          typescript: 3500,
+        },
+        "2026-06-19": {
+          javascript: 4000,
+          python: 5000,
+          html: 3000,
+        },
+        "2026-06-20": {
+          go: 6000,
+          yaml: 3800,
+        },
+        "2026-06-21": {
+          go: 6000,
+          docker: 9000,
+        },
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getLanguagesTimePerDayOfPeriod",
+      ).mockResolvedValue(mockedLanguagesTimesPerDayOfPeriod);
+
+      const getProjectLanguagesGroupedByDaysSpy = vi.spyOn(
+        getProjectLanguagesGroupedByDaysUtils,
+        "getProjectLanguagesGroupedByDays",
+      );
+
+      await projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod(
+        mockedEntry,
+      );
+
+      expect(getProjectLanguagesGroupedByDaysSpy).toHaveBeenCalled();
+      expect(getProjectLanguagesGroupedByDaysSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+        mockedLanguagesTimesPerDayOfPeriod,
+      );
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByDays utility function if the groupBy is undefined", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        periodResolution: "day" as const,
+      };
+
+      const mockedTimeSpentPerDayOnProject = [
+        {
+          date: "2026-06-17",
+          timeSpent: 4500,
+        },
+        {
+          date: "2026-06-18",
+          timeSpent: 7500,
+        },
+        {
+          date: "2026-06-19",
+          timeSpent: 12000,
+        },
+        {
+          date: "2026-06-20",
+          timeSpent: 9800,
+        },
+        {
+          date: "2026-06-21",
+          timeSpent: 15000,
+        },
+      ];
+
+      const mockedLanguagesTimesPerDayOfPeriod = {
+        "2026-06-17": {
+          typescript: 2500,
+          rust: 2000,
+        },
+        "2026-06-18": {
+          javascript: 4000,
+          typescript: 3500,
+        },
+        "2026-06-19": {
+          javascript: 4000,
+          python: 5000,
+          html: 3000,
+        },
+        "2026-06-20": {
+          go: 6000,
+          yaml: 3800,
+        },
+        "2026-06-21": {
+          go: 6000,
+          docker: 9000,
+        },
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getLanguagesTimePerDayOfPeriod",
+      ).mockResolvedValue(mockedLanguagesTimesPerDayOfPeriod);
+
+      const getProjectLanguagesGroupedByDaysSpy = vi.spyOn(
+        getProjectLanguagesGroupedByDaysUtils,
+        "getProjectLanguagesGroupedByDays",
+      );
+
+      await projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod(
+        mockedEntry,
+      );
+
+      expect(getProjectLanguagesGroupedByDaysSpy).toHaveBeenCalled();
+      expect(getProjectLanguagesGroupedByDaysSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+        mockedLanguagesTimesPerDayOfPeriod,
+      );
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByWeeks utility function if the groupBy is 'weeks'", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-12",
+        end: "2026-06-21",
+        groupBy: "weeks" as const,
+        periodResolution: "week" as const,
+      };
+
+      const mockedTimeSpentPerDayOnProject = [
+        { date: "2026-06-12", timeSpent: 4500 },
+        { date: "2026-06-13", timeSpent: 1500 },
+        { date: "2026-06-14", timeSpent: 3800 },
+        { date: "2026-06-15", timeSpent: 14500 },
+        { date: "2026-06-16", timeSpent: 5900 },
+        { date: "2026-06-17", timeSpent: 4500 },
+        { date: "2026-06-18", timeSpent: 7500 },
+        { date: "2026-06-19", timeSpent: 12000 },
+        { date: "2026-06-20", timeSpent: 9800 },
+        { date: "2026-06-21", timeSpent: 15000 },
+      ];
+
+      const mockedLanguagesTimesPerDayOfPeriod = {
+        "2026-06-12": { rust: 2500, typescript: 2000 },
+        "2026-06-13": { javascript: 1500 },
+        "2026-06-14": { javascript: 1800, python: 2000 },
+        "2026-06-15": { json: 4000, docker: 5000, yaml: 5500 },
+        "2026-06-16": { yaml: 5900 },
+        "2026-06-17": { typescript: 2500, rust: 2000 },
+        "2026-06-18": { javascript: 4000, typescript: 3500 },
+        "2026-06-19": { javascript: 4000, python: 5000, html: 3000 },
+        "2026-06-20": { go: 6000, yaml: 3800 },
+        "2026-06-21": { go: 6000, docker: 9000 },
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getLanguagesTimePerDayOfPeriod",
+      ).mockResolvedValue(mockedLanguagesTimesPerDayOfPeriod);
+
+      const getProjectLanguagesGroupedByWeeksSpy = vi.spyOn(
+        getProjectLanguagesGroupedByWeeksUtils,
+        "getProjectLanguagesGroupedByWeeks",
+      );
+
+      await projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod(
+        mockedEntry,
+      );
+
+      expect(getProjectLanguagesGroupedByWeeksSpy).toHaveBeenCalled();
+      expect(getProjectLanguagesGroupedByWeeksSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+        mockedEntry.periodResolution,
+        mockedLanguagesTimesPerDayOfPeriod,
+      );
+    });
+
+    it("should call the getProjectPerDayOfPeriodGroupedByMonths utility function if the groupBy is 'months'", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-05-12",
+        end: "2026-06-21",
+        groupBy: "months" as const,
+        periodResolution: "month" as const,
+      };
+
+      const mockedTimeSpentPerDayOnProject = [
+        { date: "2026-05-12", timeSpent: 4500 },
+        { date: "2026-05-13", timeSpent: 3200 },
+        { date: "2026-05-14", timeSpent: 7800 },
+        { date: "2026-05-15", timeSpent: 5100 },
+        { date: "2026-05-16", timeSpent: 9300 },
+        { date: "2026-05-17", timeSpent: 2700 },
+        { date: "2026-05-18", timeSpent: 6400 },
+        { date: "2026-05-19", timeSpent: 11200 },
+        { date: "2026-05-20", timeSpent: 4800 },
+        { date: "2026-05-21", timeSpent: 7600 },
+        { date: "2026-05-22", timeSpent: 3300 },
+        { date: "2026-05-23", timeSpent: 8900 },
+        { date: "2026-05-24", timeSpent: 5500 },
+        { date: "2026-05-25", timeSpent: 12100 },
+        { date: "2026-05-26", timeSpent: 4200 },
+        { date: "2026-05-27", timeSpent: 6800 },
+        { date: "2026-05-28", timeSpent: 9700 },
+        { date: "2026-05-29", timeSpent: 3600 },
+        { date: "2026-05-30", timeSpent: 7100 },
+        { date: "2026-05-31", timeSpent: 5400 },
+        { date: "2026-06-01", timeSpent: 8300 },
+        { date: "2026-06-02", timeSpent: 2900 },
+        { date: "2026-06-03", timeSpent: 10500 },
+        { date: "2026-06-04", timeSpent: 4600 },
+        { date: "2026-06-05", timeSpent: 7300 },
+        { date: "2026-06-06", timeSpent: 6100 },
+        { date: "2026-06-07", timeSpent: 3800 },
+        { date: "2026-06-08", timeSpent: 9200 },
+        { date: "2026-06-09", timeSpent: 5700 },
+        { date: "2026-06-10", timeSpent: 11800 },
+        { date: "2026-06-11", timeSpent: 4100 },
+        { date: "2026-06-12", timeSpent: 4500 },
+        { date: "2026-06-13", timeSpent: 1500 },
+        { date: "2026-06-14", timeSpent: 3800 },
+        { date: "2026-06-15", timeSpent: 14500 },
+        { date: "2026-06-16", timeSpent: 5900 },
+        { date: "2026-06-17", timeSpent: 4500 },
+        { date: "2026-06-18", timeSpent: 7500 },
+        { date: "2026-06-19", timeSpent: 12000 },
+        { date: "2026-06-20", timeSpent: 9800 },
+        { date: "2026-06-21", timeSpent: 15000 },
+      ];
+
+      const mockedLanguagesTimesPerDayOfPeriod = {
+        "2026-05-12": { rust: 2500, typescript: 2000 },
+        "2026-05-13": { python: 3200 },
+        "2026-05-14": { typescript: 4000, javascript: 3800 },
+        "2026-05-15": { go: 2600, yaml: 2500 },
+        "2026-05-16": { rust: 5000, typescript: 4300 },
+        "2026-05-17": { sql: 2700 },
+        "2026-05-18": { python: 3200, json: 3200 },
+        "2026-05-19": { typescript: 6000, html: 2600, css: 2600 },
+        "2026-05-20": { go: 4800 },
+        "2026-05-21": { javascript: 4000, python: 3600 },
+        "2026-05-22": { yaml: 3300 },
+        "2026-05-23": { rust: 4500, c: 4400 },
+        "2026-05-24": { typescript: 3000, sql: 2500 },
+        "2026-05-25": { json: 4000, docker: 4100, yaml: 4000 },
+        "2026-05-26": { python: 4200 },
+        "2026-05-27": { typescript: 3500, html: 1700, css: 1600 },
+        "2026-05-28": { go: 5000, rust: 4700 },
+        "2026-05-29": { sql: 3600 },
+        "2026-05-30": { javascript: 3600, python: 3500 },
+        "2026-05-31": { typescript: 5400 },
+        "2026-06-01": { rust: 4200, c: 4100 },
+        "2026-06-02": { yaml: 2900 },
+        "2026-06-03": { typescript: 5500, javascript: 5000 },
+        "2026-06-04": { docker: 4600 },
+        "2026-06-05": { go: 3700, sql: 3600 },
+        "2026-06-06": { python: 3100, json: 3000 },
+        "2026-06-07": { typescript: 3800 },
+        "2026-06-08": { rust: 4700, c: 4500 },
+        "2026-06-09": { typescript: 3000, html: 1400, css: 1300 },
+        "2026-06-10": { json: 4000, docker: 4000, yaml: 3800 },
+        "2026-06-11": { go: 4100 },
+        "2026-06-12": { rust: 2500, typescript: 2000 },
+        "2026-06-13": { javascript: 1500 },
+        "2026-06-14": { javascript: 1800, python: 2000 },
+        "2026-06-15": { json: 4000, docker: 5000, yaml: 5500 },
+        "2026-06-16": { yaml: 5900 },
+        "2026-06-17": { typescript: 2500, rust: 2000 },
+        "2026-06-18": { javascript: 4000, typescript: 3500 },
+        "2026-06-19": { javascript: 4000, python: 5000, html: 3000 },
+        "2026-06-20": { go: 6000, yaml: 3800 },
+        "2026-06-21": { go: 6000, docker: 9000 },
+      };
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "findProjectByNameOnRange",
+      ).mockResolvedValue(mockedTimeSpentPerDayOnProject);
+
+      vi.spyOn(
+        projectsAnalyticsService,
+        "getLanguagesTimePerDayOfPeriod",
+      ).mockResolvedValue(mockedLanguagesTimesPerDayOfPeriod);
+
+      const getProjectLanguagesGroupedByMonthsSpy = vi.spyOn(
+        getProjectLanguagesGroupedByMonthsUtils,
+        "getProjectLanguagesGroupedByMonths",
+      );
+
+      await projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod(
+        mockedEntry,
+      );
+
+      expect(getProjectLanguagesGroupedByMonthsSpy).toHaveBeenCalled();
+      expect(getProjectLanguagesGroupedByMonthsSpy).toHaveBeenCalledWith(
+        mockedTimeSpentPerDayOnProject,
+        mockedLanguagesTimesPerDayOfPeriod,
+      );
     });
   });
 });

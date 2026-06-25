@@ -25,11 +25,15 @@ import {
   GetProjectOnPeriodDtoType,
   GetProjectPerDayOfPeriodDtoType,
 } from "@/analytics/dto/projects-analytics.dto";
+import { getProjectGeneralStatsOnPeriodGroupedByMonths } from "@/analytics/utils/projects/get-project-general-stats-on-period-grouped-by-months";
+import { getProjectGeneralStatsOnPeriodGroupedByWeeks } from "@/analytics/utils/projects/get-project-general-stats-on-period-grouped-by-weeks";
+import { getProjectLanguagesGroupedByDays } from "@/analytics/utils/projects/get-project-languages-grouped-by-days";
 import { getProjectLanguagesGroupedByMonths } from "@/analytics/utils/projects/get-project-languages-grouped-by-months";
 import { getProjectLanguagesGroupedByWeeks } from "@/analytics/utils/projects/get-project-languages-grouped-by-weeks";
+import { getProjectMostUsedLanguageOnPeriod } from "@/analytics/utils/projects/get-project-most-used-language-on-period";
+import { getProjectPerDayOfPeriodGroupedByDays } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-days";
 import { getProjectPerDayOfPeriodGroupedByMonths } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-months";
 import { getProjectPerDayOfPeriodGroupedByWeeks } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
-import { getWeekDayName } from "@/common/utils/get-weekday-name";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { dailyData, files, languages, projects } from "@/drizzle/schema";
@@ -41,9 +45,6 @@ import { TRPCError } from "@trpc/server";
 
 import { NUMBER_OF_FILES_PER_PAGE } from "../constants";
 import { NAString } from "../dto/common";
-import { getProjectGeneralStatsOnPeriodGroupedByMonths } from "../utils/projects/get-project-general-stats-on-period-grouped-by-months";
-import { getProjectGeneralStatsOnPeriodGroupedByWeeks } from "../utils/projects/get-project-general-stats-on-period-grouped-by-weeks";
-import { getProjectMostUsedLanguageOnPeriod } from "../utils/projects/get-project-most-used-language-on-period";
 
 @Injectable()
 export class ProjectsAnalyticsService {
@@ -267,6 +268,9 @@ export class ProjectsAnalyticsService {
     }
 
     switch (groupBy) {
+      case "days":
+        return getProjectPerDayOfPeriodGroupedByDays(projectOnDaysOnPeriod);
+
       case "weeks":
         return getProjectPerDayOfPeriodGroupedByWeeks(
           projectOnDaysOnPeriod,
@@ -276,22 +280,12 @@ export class ProjectsAnalyticsService {
       case "months":
         return getProjectPerDayOfPeriodGroupedByMonths(projectOnDaysOnPeriod);
 
+      case undefined:
+        return getProjectPerDayOfPeriodGroupedByDays(projectOnDaysOnPeriod);
+
       default:
-        break;
+        throw groupBy satisfies never;
     }
-
-    const projectsPerDayOfPeriod = projectOnDaysOnPeriod.map(
-      ({ timeSpent, date }) => ({
-        timeSpentLine: timeSpent,
-        timeSpentBar: timeSpent,
-        timeSpentArea: timeSpent,
-        value: formatDuration(timeSpent),
-        originalDate: new Date(date).toDateString(),
-        date: getWeekDayName(date),
-      }),
-    );
-
-    return projectsPerDayOfPeriod;
   }
 
   async getProjectLanguagesTimeOnPeriod(
@@ -371,6 +365,12 @@ export class ProjectsAnalyticsService {
       });
 
     switch (groupBy) {
+      case "days":
+        return getProjectLanguagesGroupedByDays(
+          projectOnDaysOnPeriod,
+          languagesTimesPerDayOfPeriod,
+        );
+
       case "weeks":
         return getProjectLanguagesGroupedByWeeks(
           projectOnDaysOnPeriod,
@@ -384,20 +384,15 @@ export class ProjectsAnalyticsService {
           languagesTimesPerDayOfPeriod,
         );
 
+      case undefined:
+        return getProjectLanguagesGroupedByDays(
+          projectOnDaysOnPeriod,
+          languagesTimesPerDayOfPeriod,
+        );
+
       default:
-        break;
+        throw groupBy satisfies never;
     }
-
-    const periodLanguagesPerDayOfPeriod = projectOnDaysOnPeriod.map(
-      ({ timeSpent, date }) => ({
-        timeSpent,
-        originalDate: new Date(date).toDateString(),
-        date: getWeekDayName(date),
-        ...(languagesTimesPerDayOfPeriod[date] ?? {}),
-      }),
-    );
-
-    return periodLanguagesPerDayOfPeriod;
   }
 
   async getProjectDailyStats(
