@@ -27,6 +27,7 @@ describe("ProjectsAnalyticsService", () => {
     create: Mock<Procedure>;
     checkExists: Mock<Procedure>;
     findRange: Mock<Procedure>;
+    findOne: Mock<Procedure>;
   };
 
   let mockedDrizzle: MockedDrizzle;
@@ -43,6 +44,7 @@ describe("ProjectsAnalyticsService", () => {
       create: vi.fn(),
       checkExists: vi.fn(),
       findRange: vi.fn(),
+      findOne: vi.fn(),
     };
 
     mockedDrizzle = {
@@ -1377,6 +1379,265 @@ describe("ProjectsAnalyticsService", () => {
         mockedTimeSpentPerDayOnProject,
         mockedLanguagesTimesPerDayOfPeriod,
       );
+    });
+  });
+
+  describe("getProjectDailyStats", () => {
+    const mockedEntry = {
+      dateString: "2026-06-26",
+      name: "mooncode",
+      userId: "1",
+    };
+
+    it("should return an object containing the expected fields: formattedTotalTimeSpent and finalData", async () => {
+      dailyDataService.findOne.mockResolvedValue({
+        id: "2",
+        timeSpent: 8500,
+      });
+
+      mockedDrizzle.where.mockResolvedValue([
+        {
+          timeSpent: 1200,
+          languageSlug: "docker",
+          projectPath: "/home/user/projects/mooncode/api/Dockerfile",
+        },
+        {
+          timeSpent: 900,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/auth/auth.service.ts",
+        },
+        {
+          timeSpent: 800,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/auth/auth.service.test.ts",
+        },
+        {
+          timeSpent: 750,
+          languageSlug: "css",
+          projectPath: "/home/user/projects/mooncode/dashboard/src/index.css",
+        },
+        {
+          timeSpent: 700,
+          languageSlug: "typescript",
+          projectPath: "/home/user/mooncode/api/src/app.module.ts",
+        },
+        {
+          timeSpent: 650,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/files/files.module.ts",
+        },
+        {
+          timeSpent: 600,
+          languageSlug: "json",
+          projectPath: "/home/user/mooncode/vscode-extension/package.json",
+        },
+        {
+          timeSpent: 550,
+          languageSlug: "yaml",
+          projectPath:
+            "/home/user/mooncode/.github/workflows/build-and-deploy.yaml",
+        },
+        {
+          timeSpent: 500,
+          languageSlug: "typescript",
+          projectPath: "/home/user/mooncode/api/src/main.ts",
+        },
+        {
+          timeSpent: 450,
+          languageSlug: "sql",
+          projectPath: "/home/user/mooncode/api/drizzle/0000_whole_glorian.sql",
+        },
+        {
+          timeSpent: 400,
+          languageSlug: "json",
+          projectPath: "/home/user/mooncode/dashboard/package.json",
+        },
+      ]);
+
+      projectsService.findOne.mockResolvedValue({
+        id: "3",
+        name: "mooncode",
+        path: "/home/user/mooncode",
+        timeSpent: 8500,
+      });
+
+      const mockedLanguagesStats = [
+        {
+          formattedValue: "59 mins",
+          languageSlug: "typescript",
+          percentage: 41.76,
+          timeSpent: 3550,
+        },
+        {
+          formattedValue: "20 mins",
+          languageSlug: "docker",
+          percentage: 14.12,
+          timeSpent: 1200,
+        },
+        {
+          formattedValue: "16 mins",
+          languageSlug: "json",
+          percentage: 11.76,
+          timeSpent: 1000,
+        },
+        {
+          formattedValue: "12 mins",
+          languageSlug: "css",
+          percentage: 8.82,
+          timeSpent: 750,
+        },
+        {
+          formattedValue: "9 mins",
+          languageSlug: "yaml",
+          percentage: 6.47,
+          timeSpent: 550,
+        },
+        {
+          formattedValue: "7 mins",
+          languageSlug: "sql",
+          percentage: 5.29,
+          timeSpent: 450,
+        },
+      ];
+
+      const { finalData, formattedTotalTimeSpent } =
+        await projectsAnalyticsService.getProjectDailyStats(mockedEntry);
+
+      expect(formattedTotalTimeSpent).toBeDefined();
+      expect(formattedTotalTimeSpent).toEqual("2 hrs 21 mins");
+
+      expect(finalData).toBeDefined();
+      expect(finalData).toEqual(mockedLanguagesStats);
+    });
+
+    it("should return an empty state if there is no coding data on the day", async () => {
+      dailyDataService.findOne.mockResolvedValue(null);
+
+      const { finalData, formattedTotalTimeSpent } =
+        await projectsAnalyticsService.getProjectDailyStats(mockedEntry);
+
+      expect(formattedTotalTimeSpent).toBeDefined();
+      expect(formattedTotalTimeSpent).toEqual("0 secs");
+
+      expect(finalData).toBeDefined();
+      expect(finalData).toEqual([]);
+    });
+
+    it("should return an empty state if the time spent coding that day is zero", async () => {
+      dailyDataService.findOne.mockResolvedValue({
+        id: "2",
+        timeSpent: 0,
+      });
+
+      const { finalData, formattedTotalTimeSpent } =
+        await projectsAnalyticsService.getProjectDailyStats(mockedEntry);
+
+      expect(formattedTotalTimeSpent).toBeDefined();
+      expect(formattedTotalTimeSpent).toEqual("0 secs");
+
+      expect(finalData).toBeDefined();
+      expect(finalData).toEqual([]);
+    });
+
+    it("should return an empty state if there is no files for that project on the day", async () => {
+      dailyDataService.findOne.mockResolvedValue({
+        id: "2",
+        timeSpent: 8500,
+      });
+
+      mockedDrizzle.where.mockResolvedValue([]);
+
+      const { finalData, formattedTotalTimeSpent } =
+        await projectsAnalyticsService.getProjectDailyStats(mockedEntry);
+
+      expect(formattedTotalTimeSpent).toBeDefined();
+      expect(formattedTotalTimeSpent).toEqual("0 secs");
+
+      expect(finalData).toBeDefined();
+      expect(finalData).toEqual([]);
+    });
+
+    it("should return an empty state if we can't get the time spent on the project that day (which is technically impossible because we already have some files for the project)", async () => {
+      dailyDataService.findOne.mockResolvedValue({
+        id: "2",
+        timeSpent: 8500,
+      });
+
+      mockedDrizzle.where.mockResolvedValue([
+        {
+          timeSpent: 1200,
+          languageSlug: "docker",
+          projectPath: "/home/user/projects/mooncode/api/Dockerfile",
+        },
+        {
+          timeSpent: 900,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/auth/auth.service.ts",
+        },
+        {
+          timeSpent: 800,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/auth/auth.service.test.ts",
+        },
+        {
+          timeSpent: 750,
+          languageSlug: "css",
+          projectPath: "/home/user/projects/mooncode/dashboard/src/index.css",
+        },
+        {
+          timeSpent: 700,
+          languageSlug: "typescript",
+          projectPath: "/home/user/mooncode/api/src/app.module.ts",
+        },
+        {
+          timeSpent: 650,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/files/files.module.ts",
+        },
+        {
+          timeSpent: 600,
+          languageSlug: "json",
+          projectPath: "/home/user/mooncode/vscode-extension/package.json",
+        },
+        {
+          timeSpent: 550,
+          languageSlug: "yaml",
+          projectPath:
+            "/home/user/mooncode/.github/workflows/build-and-deploy.yaml",
+        },
+        {
+          timeSpent: 500,
+          languageSlug: "typescript",
+          projectPath: "/home/user/mooncode/api/src/main.ts",
+        },
+        {
+          timeSpent: 450,
+          languageSlug: "sql",
+          projectPath: "/home/user/mooncode/api/drizzle/0000_whole_glorian.sql",
+        },
+        {
+          timeSpent: 400,
+          languageSlug: "json",
+          projectPath: "/home/user/mooncode/dashboard/package.json",
+        },
+      ]);
+
+      projectsService.findOne.mockResolvedValue(null);
+
+      const { finalData, formattedTotalTimeSpent } =
+        await projectsAnalyticsService.getProjectDailyStats(mockedEntry);
+
+      expect(formattedTotalTimeSpent).toBeDefined();
+      expect(formattedTotalTimeSpent).toEqual("0 secs");
+
+      expect(finalData).toBeDefined();
+      expect(finalData).toEqual([]);
     });
   });
 });

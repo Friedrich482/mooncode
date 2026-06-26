@@ -444,7 +444,7 @@ export class ProjectsAnalyticsService {
     const totalTimeSpent = (
       await this.projectsService.findOne({
         dailyDataId: dayData.id,
-        name: name,
+        name,
         path: rawProjectFilesOnDay[0].projectPath,
       })
     )?.timeSpent;
