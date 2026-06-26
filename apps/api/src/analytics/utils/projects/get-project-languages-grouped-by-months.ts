@@ -10,8 +10,6 @@ export const getProjectLanguagesGroupedByMonths = (
   >,
   languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>,
 ) => {
-  if (data.length === 0) return [];
-
   const monthlyMap = new Map<
     string,
     {

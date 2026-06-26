@@ -6,9 +6,9 @@ export const getMostUsedLanguageOnPeriod = (
     ReturnType<GeneralAnalyticsService["getPeriodLanguagesTime"]>
   >,
 ) => {
-  const mostUsedLanguageTime = periodLanguagesTime
-    .map((language) => language.time)
-    .reduce((max, curr) => (curr > max ? curr : max), 0);
+  const mostUsedLanguageTime = Math.max(
+    ...periodLanguagesTime.map((language) => language.time),
+  );
 
   const mostUsedLanguageSlug: NAString =
     periodLanguagesTime.find(

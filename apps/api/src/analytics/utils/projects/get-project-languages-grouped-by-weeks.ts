@@ -5,14 +5,13 @@ import { formatShortDate } from "@/common/utils/format-short-date";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-export const getProjectLanguagesGroupedByWeeks = async (
+export const getProjectLanguagesGroupedByWeeks = (
   data: Awaited<
     ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
   >,
   periodResolution: PeriodResolution,
   languagesTimesPerDayOfPeriod: Record<string, Record<string, number>>,
 ) => {
-  if (data.length === 0) return [];
   const weeklyMap = new Map<
     string,
     {
@@ -25,11 +24,17 @@ export const getProjectLanguagesGroupedByWeeks = async (
   >();
 
   const startDate = new Date(data[0].date);
-  const endDate = new Date(data[data.length - 1].date);
+  const lastEntry = data.at(-1);
+
+  if (!lastEntry) {
+    return [];
+  }
+
+  const endDate = new Date(lastEntry.date);
 
   const entriesWithLanguages = data.map((entry) => ({
     ...entry,
-    languages: languagesTimesPerDayOfPeriod[entry.date] || {},
+    languages: languagesTimesPerDayOfPeriod[entry.date] ?? {},
   }));
 
   for (const [, entry] of entriesWithLanguages.entries()) {
@@ -68,17 +73,12 @@ export const getProjectLanguagesGroupedByWeeks = async (
       });
     }
 
-    const weekEntry = weeklyMap.get(weekKey) as {
-      weekRange: string;
-      timeSpent: number;
-      startDate: Date;
-      endDate: Date;
-      languages: Record<string, number>;
-    };
+    const weekEntry = weeklyMap.get(weekKey)!;
+
     weekEntry.timeSpent += entry.timeSpent;
 
     for (const [lang, time] of Object.entries(entry.languages)) {
-      weekEntry.languages[lang] = (weekEntry.languages[lang] || 0) + time;
+      weekEntry.languages[lang] = (weekEntry.languages[lang] ?? 0) + time;
     }
   }
 
