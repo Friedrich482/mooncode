@@ -1,35 +1,29 @@
-import { endOfWeek, startOfWeek } from "date-fns";
-
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
 import { countStrictWeeks } from "@/common/utils/count-strict-weeks";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-import { getProjectMostUsedLanguageOnPeriod } from "./get-project-most-used-language-on-period";
 import { getProjectPerDayOfPeriodGroupedByWeeks } from "./get-project-per-day-of-period-grouped-by-weeks";
 
-export const getProjectGeneralStatsOnPeriodGroupedByWeeks = async (
-  userId: string,
-  start: string,
-  end: string,
-  todaysDateString: string,
-  name: string,
-  projectsAnalyticsService: ProjectsAnalyticsService,
+export const getProjectGeneralStatsOnPeriodGroupedByWeeks = ({
+  start,
+  end,
+  totalTimeSpentOnPeriod,
+  timeSpentOnProjectTodaysWeek,
+  projectPerDayOfPeriod,
+  periodResolution,
+}: {
+  start: string;
+  end: string;
+  totalTimeSpentOnPeriod: number;
+  timeSpentOnProjectTodaysWeek: number;
   projectPerDayOfPeriod: Awaited<
     ReturnType<ProjectsAnalyticsService["findProjectByNameOnRange"]>
-  >,
-  periodResolution: PeriodResolution,
-) => {
+  >;
+  periodResolution: PeriodResolution;
+}) => {
   const numberOfWeeks = countStrictWeeks(new Date(start), new Date(end));
-
-  const { totalTimeSpent: totalTimeSpentOnPeriod } =
-    await projectsAnalyticsService.getProjectOnPeriod({
-      userId,
-      start,
-      end,
-      name,
-    });
 
   const mean = totalTimeSpentOnPeriod / numberOfWeeks;
 
@@ -40,15 +34,6 @@ export const getProjectGeneralStatsOnPeriodGroupedByWeeks = async (
     timeSpent: entry.timeSpentBar,
     originalDate: entry.originalDate,
   }));
-
-  const timeSpentOnProjectTodaysWeek = (
-    await projectsAnalyticsService.getProjectOnPeriod({
-      userId,
-      name,
-      start: convertToISODate(startOfWeek(new Date(todaysDateString))),
-      end: convertToISODate(endOfWeek(new Date(todaysDateString))),
-    })
-  ).totalTimeSpent;
 
   const percentageToAvg =
     mean === 0
@@ -68,18 +53,9 @@ export const getProjectGeneralStatsOnPeriodGroupedByWeeks = async (
           (week) => week.timeSpent === maxTimeSpentPerWeek,
         )?.originalDate || convertToISODate(new Date(start));
 
-  const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
-    projectsAnalyticsService,
-    name,
-    userId,
-    start,
-    end,
-  );
-
   return {
     avgTime: formatDuration(mean),
     percentageToAvg,
     mostActiveDate: mostActiveWeek,
-    mostUsedLanguageSlug,
   };
 };

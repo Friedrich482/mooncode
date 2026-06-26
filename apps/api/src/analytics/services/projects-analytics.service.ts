@@ -1,4 +1,10 @@
-import { differenceInDays, eachDayOfInterval } from "date-fns";
+import {
+  eachDayOfInterval,
+  endOfMonth,
+  endOfWeek,
+  startOfMonth,
+  startOfWeek,
+} from "date-fns";
 import {
   and,
   between,
@@ -25,6 +31,7 @@ import {
   GetProjectOnPeriodDtoType,
   GetProjectPerDayOfPeriodDtoType,
 } from "@/analytics/dto/projects-analytics.dto";
+import { getProjectGeneralStatsOnPeriodGroupedByDays } from "@/analytics/utils/projects/get-project-general-stats-on-period-grouped-by-days";
 import { getProjectGeneralStatsOnPeriodGroupedByMonths } from "@/analytics/utils/projects/get-project-general-stats-on-period-grouped-by-months";
 import { getProjectGeneralStatsOnPeriodGroupedByWeeks } from "@/analytics/utils/projects/get-project-general-stats-on-period-grouped-by-weeks";
 import { getProjectLanguagesGroupedByDays } from "@/analytics/utils/projects/get-project-languages-grouped-by-days";
@@ -44,7 +51,6 @@ import { formatDuration } from "@repo/common/format-duration";
 import { TRPCError } from "@trpc/server";
 
 import { NUMBER_OF_FILES_PER_PAGE } from "../constants";
-import { NAString } from "../dto/common";
 
 @Injectable()
 export class ProjectsAnalyticsService {
@@ -498,39 +504,24 @@ export class ProjectsAnalyticsService {
         mostUsedLanguageSlug: "N/A",
       };
 
-    switch (groupBy) {
-      case "weeks":
-        return getProjectGeneralStatsOnPeriodGroupedByWeeks(
-          userId,
-          start,
-          end,
-          todaysDateString,
-          name,
-          this,
-          projectPerDayOfPeriod,
-          periodResolution,
-        );
-
-      case "months":
-        return getProjectGeneralStatsOnPeriodGroupedByMonths(
-          userId,
-          start,
-          end,
-          todaysDateString,
-          name,
-          this,
-          projectPerDayOfPeriod,
-        );
-
-      default:
-        break;
-    }
-
-    const numberOfDays = differenceInDays(end, start) + 1;
     const { totalTimeSpent: totalTimeSpentOnPeriod, path } =
-      await this.getProjectOnPeriod({ userId, start, end, name });
+      await this.getProjectOnPeriod({
+        userId,
+        start,
+        end,
+        name,
+      });
 
-    const mean = Math.floor(totalTimeSpentOnPeriod / numberOfDays);
+    const projectLanguagesTimeOnPeriod = await this.getLanguagesTimeOnPeriod({
+      name,
+      start,
+      end,
+      userId,
+    });
+
+    const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
+      projectLanguagesTimeOnPeriod,
+    );
 
     const todaysDailyDataId = (
       await this.dailyDataService.findOne({ date: todaysDateString, userId })
@@ -548,41 +539,77 @@ export class ProjectsAnalyticsService {
         )?.timeSpent ?? 0;
     }
 
-    const percentageToAvg =
-      mean === 0
-        ? 0
-        : parseFloat(
-            (((timeSpentOnProjectToday - mean) / mean) * 100).toFixed(2),
-          );
+    switch (groupBy) {
+      case "days":
+        return {
+          ...getProjectGeneralStatsOnPeriodGroupedByDays({
+            start,
+            end,
+            totalTimeSpentOnPeriod,
+            timeSpentOnProjectToday,
+            projectPerDayOfPeriod,
+          }),
+          mostUsedLanguageSlug,
+        };
 
-    const maxTimeSpentPerDay =
-      projectPerDayOfPeriod.length > 0
-        ? Math.max(...projectPerDayOfPeriod.map((day) => day.timeSpent))
-        : 0;
+      case "weeks":
+        const timeSpentOnProjectTodaysWeek = (
+          await this.getProjectOnPeriod({
+            userId,
+            name,
+            start: convertToISODate(startOfWeek(new Date(todaysDateString))),
+            end: convertToISODate(endOfWeek(new Date(todaysDateString))),
+          })
+        ).totalTimeSpent;
 
-    const mostActiveDate: NAString =
-      maxTimeSpentPerDay === 0
-        ? "N/A"
-        : new Date(
-            projectPerDayOfPeriod.find(
-              (day) => day.timeSpent === maxTimeSpentPerDay,
-            )?.date ?? convertToISODate(new Date(start)),
-          ).toDateString();
+        return {
+          ...getProjectGeneralStatsOnPeriodGroupedByWeeks({
+            start,
+            end,
+            totalTimeSpentOnPeriod,
+            timeSpentOnProjectTodaysWeek,
+            projectPerDayOfPeriod,
+            periodResolution,
+          }),
+          mostUsedLanguageSlug,
+        };
 
-    const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
-      this,
-      name,
-      userId,
-      start,
-      end,
-    );
+      case "months":
+        const timeSpentOnProjectTodaysMonth = (
+          await this.getProjectOnPeriod({
+            userId,
+            name,
+            start: convertToISODate(startOfMonth(new Date(todaysDateString))),
+            end: convertToISODate(endOfMonth(new Date(todaysDateString))),
+          })
+        ).totalTimeSpent;
 
-    return {
-      avgTime: formatDuration(mean),
-      percentageToAvg,
-      mostActiveDate,
-      mostUsedLanguageSlug,
-    };
+        return {
+          ...getProjectGeneralStatsOnPeriodGroupedByMonths({
+            start,
+            end,
+            totalTimeSpentOnPeriod,
+            timeSpentOnProjectTodaysMonth,
+            projectPerDayOfPeriod,
+          }),
+          mostUsedLanguageSlug,
+        };
+
+      case undefined:
+        return {
+          ...getProjectGeneralStatsOnPeriodGroupedByDays({
+            start,
+            end,
+            totalTimeSpentOnPeriod,
+            timeSpentOnProjectToday,
+            projectPerDayOfPeriod,
+          }),
+          mostUsedLanguageSlug,
+        };
+
+      default:
+        throw groupBy satisfies never;
+    }
   }
 
   async getFilesOnPeriod<T extends GetProjectFilesOnPeriodDtoType>(
