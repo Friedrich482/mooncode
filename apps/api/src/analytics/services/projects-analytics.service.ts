@@ -650,8 +650,8 @@ export class ProjectsAnalyticsService {
       })
       .from(files)
       .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
-      .innerJoin(languages, eq(languages.id, files.languageId));
+      .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId));
 
     // normal case
     if (type === "normal") {

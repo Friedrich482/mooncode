@@ -30,6 +30,7 @@ describe("UsersService", () => {
       groupBy: vi.fn().mockReturnThis(),
       offset: vi.fn().mockReturnThis(),
       as: vi.fn(),
+      execute: vi.fn(),
     };
 
     vi.clearAllMocks();

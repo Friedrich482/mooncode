@@ -18,4 +18,5 @@ export type MockedDrizzle = {
   groupBy: Mock<Procedure>;
   offset: Mock<Procedure>;
   as: Mock<Procedure>;
+  execute: Mock<Procedure>;
 };

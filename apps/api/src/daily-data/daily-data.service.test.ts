@@ -27,6 +27,7 @@ describe("DailyDataService", () => {
       offset: vi.fn().mockReturnThis(),
       groupBy: vi.fn(),
       as: vi.fn(),
+      execute: vi.fn(),
     };
 
     vi.clearAllMocks();

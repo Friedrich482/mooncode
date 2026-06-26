@@ -54,18 +54,19 @@ describe("ProjectsAnalyticsService", () => {
       select: vi.fn().mockReturnThis(),
       from: vi.fn().mockReturnThis(),
       where: vi.fn().mockReturnThis(),
-      limit: vi.fn(),
+      limit: vi.fn().mockReturnThis(),
       insert: vi.fn().mockReturnThis(),
       values: vi.fn().mockReturnThis(),
       returning: vi.fn(),
       update: vi.fn().mockReturnThis(),
       set: vi.fn().mockReturnThis(),
       delete: vi.fn().mockReturnThis(),
-      orderBy: vi.fn(),
+      orderBy: vi.fn().mockReturnThis(),
       innerJoin: vi.fn().mockReturnThis(),
       groupBy: vi.fn().mockReturnThis(),
       offset: vi.fn().mockReturnThis(),
       as: vi.fn(),
+      execute: vi.fn(),
     };
 
     const moduleRef = await Test.createTestingModule({
@@ -2026,6 +2027,1055 @@ describe("ProjectsAnalyticsService", () => {
       expect(
         getProjectGeneralStatsOnPeriodGroupedByMonthsSpy,
       ).toHaveBeenCalled();
+    });
+  });
+
+  describe("getFilesOnPeriod", () => {
+    it("should return an object of all files with their path, name, time spent and language in the normal case", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        type: "normal" as const,
+        amount: 25,
+      };
+
+      mockedDrizzle.execute.mockResolvedValue([
+        {
+          totalTimeSpent: 4537,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "updateFilesDataAfterSync.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataAfterSync.ts",
+        },
+        {
+          totalTimeSpent: 3694,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "extension.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/extension.ts",
+        },
+        {
+          totalTimeSpent: 3067,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "useWebsocket.tsx",
+          path: "/home/user/mooncode/apps/dashboard/src/hooks/useWebsocket.tsx",
+        },
+        {
+          totalTimeSpent: 2662,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "serveDashboard.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serveDashboard.ts",
+        },
+        {
+          totalTimeSpent: 2434,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "getToken.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/auth/getToken.ts",
+        },
+        {
+          totalTimeSpent: 2289,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "periodicSyncData.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/periodicSyncData.ts",
+        },
+        {
+          totalTimeSpent: 2182,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "get-current-file-properties.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/get-current-file-properties.ts",
+        },
+        {
+          totalTimeSpent: 1832,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "useExtensionWebsocket.tsx",
+          path: "/home/user/mooncode/apps/dashboard/src/hooks/useExtensionWebsocket.tsx",
+        },
+        {
+          totalTimeSpent: 1642,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "client.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/trpc/client.ts",
+        },
+        {
+          totalTimeSpent: 1453,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "serveDashboardProd.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardProd.ts",
+        },
+        {
+          totalTimeSpent: 1172,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "websocket.ts",
+          path: "/home/user/mooncode/apps/dashboard/src/utils/websocket.ts",
+        },
+        {
+          totalTimeSpent: 1085,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "constants.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/constants.ts",
+        },
+        {
+          totalTimeSpent: 1049,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "get-language-slug.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/languages/get-language-slug.ts",
+        },
+        {
+          totalTimeSpent: 1014,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "serveDashboardDev.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardDev.ts",
+        },
+        {
+          totalTimeSpent: 866,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "calculate-time.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/time/calculate-time.ts",
+        },
+        {
+          totalTimeSpent: 854,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "registerAuthUriHandler.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/auth/registerAuthUriHandler.ts",
+        },
+        {
+          totalTimeSpent: 821,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "setStatusBarAfterLogin.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/status-bar/setStatusBarAfterLogin.ts",
+        },
+        {
+          totalTimeSpent: 675,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "login.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/auth/login.ts",
+        },
+        {
+          totalTimeSpent: 648,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.tmpl",
+          path: "/home/user/mooncode/packages/ui/src/go.tmpl",
+        },
+        {
+          totalTimeSpent: 579,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "package.json",
+          path: "/home/user/mooncode/apps/vscode-extension/package.json",
+        },
+        {
+          totalTimeSpent: 525,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "openDashboard.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/openDashboard.ts",
+        },
+        {
+          totalTimeSpent: 515,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "colors.json",
+          path: "/home/user/mooncode/packages/ui/src/colors.json",
+        },
+        {
+          totalTimeSpent: 482,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "trpc.service.ts",
+          path: "/home/user/mooncode/apps/api/src/trpc/trpc.service.ts",
+        },
+        {
+          totalTimeSpent: 452,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "logger.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/logger/logger.ts",
+        },
+        {
+          totalTimeSpent: 429,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.mod",
+          path: "/home/user/mooncode/packages/ui/src/go.mod",
+        },
+      ]);
+
+      const mockedOutput = {
+        "/home/user/mooncode/apps/api/src/trpc/trpc.service.ts": {
+          languageSlug: "typescript",
+          name: "trpc.service.ts",
+          totalTimeSpent: 482,
+        },
+        "/home/user/mooncode/apps/dashboard/src/hooks/useExtensionWebsocket.tsx":
+          {
+            languageSlug: "typescript",
+            name: "useExtensionWebsocket.tsx",
+            totalTimeSpent: 1832,
+          },
+        "/home/user/mooncode/apps/dashboard/src/hooks/useWebsocket.tsx": {
+          languageSlug: "typescript",
+          name: "useWebsocket.tsx",
+          totalTimeSpent: 3067,
+        },
+        "/home/user/mooncode/apps/dashboard/src/utils/websocket.ts": {
+          languageSlug: "typescript",
+          name: "websocket.ts",
+          totalTimeSpent: 1172,
+        },
+        "/home/user/mooncode/apps/vscode-extension/package.json": {
+          languageSlug: "json",
+          name: "package.json",
+          totalTimeSpent: 579,
+        },
+        "/home/user/mooncode/apps/vscode-extension/src/constants.ts": {
+          languageSlug: "typescript",
+          name: "constants.ts",
+          totalTimeSpent: 1085,
+        },
+        "/home/user/mooncode/apps/vscode-extension/src/extension.ts": {
+          languageSlug: "typescript",
+          name: "extension.ts",
+          totalTimeSpent: 3694,
+        },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/auth/getToken.ts":
+          {
+            languageSlug: "typescript",
+            name: "getToken.ts",
+            totalTimeSpent: 2434,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/auth/login.ts": {
+          languageSlug: "typescript",
+          name: "login.ts",
+          totalTimeSpent: 675,
+        },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/auth/registerAuthUriHandler.ts":
+          {
+            languageSlug: "typescript",
+            name: "registerAuthUriHandler.ts",
+            totalTimeSpent: 854,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/openDashboard.ts":
+          {
+            languageSlug: "typescript",
+            name: "openDashboard.ts",
+            totalTimeSpent: 525,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardDev.ts":
+          {
+            languageSlug: "typescript",
+            name: "serveDashboardDev.ts",
+            totalTimeSpent: 1014,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardProd.ts":
+          {
+            languageSlug: "typescript",
+            name: "serveDashboardProd.ts",
+            totalTimeSpent: 1453,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serveDashboard.ts":
+          {
+            languageSlug: "typescript",
+            name: "serveDashboard.ts",
+            totalTimeSpent: 2662,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/files/get-current-file-properties.ts":
+          {
+            languageSlug: "typescript",
+            name: "get-current-file-properties.ts",
+            totalTimeSpent: 2182,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataAfterSync.ts":
+          {
+            languageSlug: "typescript",
+            name: "updateFilesDataAfterSync.ts",
+            totalTimeSpent: 4537,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/languages/get-language-slug.ts":
+          {
+            languageSlug: "typescript",
+            name: "get-language-slug.ts",
+            totalTimeSpent: 1049,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/logger/logger.ts":
+          {
+            languageSlug: "typescript",
+            name: "logger.ts",
+            totalTimeSpent: 452,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/periodicSyncData.ts":
+          {
+            languageSlug: "typescript",
+            name: "periodicSyncData.ts",
+            totalTimeSpent: 2289,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/status-bar/setStatusBarAfterLogin.ts":
+          {
+            languageSlug: "typescript",
+            name: "setStatusBarAfterLogin.ts",
+            totalTimeSpent: 821,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/time/calculate-time.ts":
+          {
+            languageSlug: "typescript",
+            name: "calculate-time.ts",
+            totalTimeSpent: 866,
+          },
+        "/home/user/mooncode/apps/vscode-extension/src/utils/trpc/client.ts": {
+          languageSlug: "typescript",
+          name: "client.ts",
+          totalTimeSpent: 1642,
+        },
+        "/home/user/mooncode/packages/ui/src/colors.json": {
+          languageSlug: "json",
+          name: "colors.json",
+          totalTimeSpent: 515,
+        },
+        "/home/user/mooncode/packages/ui/src/go.mod": {
+          languageSlug: "go",
+          name: "go.mod",
+          totalTimeSpent: 429,
+        },
+        "/home/user/mooncode/packages/ui/src/go.tmpl": {
+          languageSlug: "go",
+          name: "go.tmpl",
+          totalTimeSpent: 648,
+        },
+      };
+
+      const projectFilesOnPeriod =
+        await projectsAnalyticsService.getFilesOnPeriod(mockedEntry);
+
+      expect(projectFilesOnPeriod).toBeDefined();
+      expect(projectFilesOnPeriod).toEqual(mockedOutput);
+    });
+
+    it("should return an object of all files with their path, name, time spent and language as well as a boolean indicating if there is another page of data (hasNext)", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        type: "paginated" as const,
+        page: 1,
+      };
+
+      mockedDrizzle.execute.mockResolvedValue([
+        {
+          totalTimeSpent: 4537,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "updateFilesDataAfterSync.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataAfterSync.ts",
+        },
+        {
+          totalTimeSpent: 3694,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "extension.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/extension.ts",
+        },
+        {
+          totalTimeSpent: 3067,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "useWebsocket.tsx",
+          path: "/home/user/mooncode/apps/dashboard/src/hooks/useWebsocket.tsx",
+        },
+        {
+          totalTimeSpent: 2662,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "serveDashboard.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serveDashboard.ts",
+        },
+        {
+          totalTimeSpent: 2434,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "getToken.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/auth/getToken.ts",
+        },
+        {
+          totalTimeSpent: 2289,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "periodicSyncData.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/periodicSyncData.ts",
+        },
+        {
+          totalTimeSpent: 2182,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "get-current-file-properties.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/get-current-file-properties.ts",
+        },
+        {
+          totalTimeSpent: 1832,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "useExtensionWebsocket.tsx",
+          path: "/home/user/mooncode/apps/dashboard/src/hooks/useExtensionWebsocket.tsx",
+        },
+        {
+          totalTimeSpent: 1642,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "client.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/trpc/client.ts",
+        },
+        {
+          totalTimeSpent: 1453,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "serveDashboardProd.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardProd.ts",
+        },
+        {
+          totalTimeSpent: 1172,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "websocket.ts",
+          path: "/home/user/mooncode/apps/dashboard/src/utils/websocket.ts",
+        },
+        {
+          totalTimeSpent: 1085,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "constants.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/constants.ts",
+        },
+        {
+          totalTimeSpent: 1049,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "get-language-slug.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/languages/get-language-slug.ts",
+        },
+        {
+          totalTimeSpent: 1014,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "serveDashboardDev.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardDev.ts",
+        },
+        {
+          totalTimeSpent: 866,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "calculate-time.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/time/calculate-time.ts",
+        },
+        {
+          totalTimeSpent: 854,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "registerAuthUriHandler.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/auth/registerAuthUriHandler.ts",
+        },
+        {
+          totalTimeSpent: 821,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "setStatusBarAfterLogin.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/status-bar/setStatusBarAfterLogin.ts",
+        },
+        {
+          totalTimeSpent: 675,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "login.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/auth/login.ts",
+        },
+        {
+          totalTimeSpent: 648,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.tmpl",
+          path: "/home/user/mooncode/packages/ui/src/go.tmpl",
+        },
+        {
+          totalTimeSpent: 579,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "package.json",
+          path: "/home/user/mooncode/apps/vscode-extension/package.json",
+        },
+        {
+          totalTimeSpent: 525,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "openDashboard.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/openDashboard.ts",
+        },
+        {
+          totalTimeSpent: 515,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "colors.json",
+          path: "/home/user/mooncode/packages/ui/src/colors.json",
+        },
+        {
+          totalTimeSpent: 482,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "trpc.service.ts",
+          path: "/home/user/mooncode/apps/api/src/trpc/trpc.service.ts",
+        },
+        {
+          totalTimeSpent: 452,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "logger.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/logger/logger.ts",
+        },
+        {
+          totalTimeSpent: 429,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.mod",
+          path: "/home/user/mooncode/packages/ui/src/go.mod",
+        },
+      ]);
+
+      mockedDrizzle.from
+        .mockReturnValueOnce(mockedDrizzle)
+        .mockReturnValueOnce(mockedDrizzle)
+        .mockResolvedValueOnce([{ count: 32 }]);
+
+      const mockedOutput = {
+        projectFilesOnPeriod: {
+          "/home/user/mooncode/apps/api/src/trpc/trpc.service.ts": {
+            languageSlug: "typescript",
+            name: "trpc.service.ts",
+            totalTimeSpent: 482,
+          },
+          "/home/user/mooncode/apps/dashboard/src/hooks/useExtensionWebsocket.tsx":
+            {
+              languageSlug: "typescript",
+              name: "useExtensionWebsocket.tsx",
+              totalTimeSpent: 1832,
+            },
+          "/home/user/mooncode/apps/dashboard/src/hooks/useWebsocket.tsx": {
+            languageSlug: "typescript",
+            name: "useWebsocket.tsx",
+            totalTimeSpent: 3067,
+          },
+          "/home/user/mooncode/apps/dashboard/src/utils/websocket.ts": {
+            languageSlug: "typescript",
+            name: "websocket.ts",
+            totalTimeSpent: 1172,
+          },
+          "/home/user/mooncode/apps/vscode-extension/package.json": {
+            languageSlug: "json",
+            name: "package.json",
+            totalTimeSpent: 579,
+          },
+          "/home/user/mooncode/apps/vscode-extension/src/constants.ts": {
+            languageSlug: "typescript",
+            name: "constants.ts",
+            totalTimeSpent: 1085,
+          },
+          "/home/user/mooncode/apps/vscode-extension/src/extension.ts": {
+            languageSlug: "typescript",
+            name: "extension.ts",
+            totalTimeSpent: 3694,
+          },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/auth/getToken.ts":
+            {
+              languageSlug: "typescript",
+              name: "getToken.ts",
+              totalTimeSpent: 2434,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/auth/login.ts": {
+            languageSlug: "typescript",
+            name: "login.ts",
+            totalTimeSpent: 675,
+          },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/auth/registerAuthUriHandler.ts":
+            {
+              languageSlug: "typescript",
+              name: "registerAuthUriHandler.ts",
+              totalTimeSpent: 854,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/openDashboard.ts":
+            {
+              languageSlug: "typescript",
+              name: "openDashboard.ts",
+              totalTimeSpent: 525,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardDev.ts":
+            {
+              languageSlug: "typescript",
+              name: "serveDashboardDev.ts",
+              totalTimeSpent: 1014,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serve-dashboard/serveDashboardProd.ts":
+            {
+              languageSlug: "typescript",
+              name: "serveDashboardProd.ts",
+              totalTimeSpent: 1453,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/dashboard/serveDashboard.ts":
+            {
+              languageSlug: "typescript",
+              name: "serveDashboard.ts",
+              totalTimeSpent: 2662,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/get-current-file-properties.ts":
+            {
+              languageSlug: "typescript",
+              name: "get-current-file-properties.ts",
+              totalTimeSpent: 2182,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataAfterSync.ts":
+            {
+              languageSlug: "typescript",
+              name: "updateFilesDataAfterSync.ts",
+              totalTimeSpent: 4537,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/languages/get-language-slug.ts":
+            {
+              languageSlug: "typescript",
+              name: "get-language-slug.ts",
+              totalTimeSpent: 1049,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/logger/logger.ts":
+            {
+              languageSlug: "typescript",
+              name: "logger.ts",
+              totalTimeSpent: 452,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/periodicSyncData.ts":
+            {
+              languageSlug: "typescript",
+              name: "periodicSyncData.ts",
+              totalTimeSpent: 2289,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/status-bar/setStatusBarAfterLogin.ts":
+            {
+              languageSlug: "typescript",
+              name: "setStatusBarAfterLogin.ts",
+              totalTimeSpent: 821,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/time/calculate-time.ts":
+            {
+              languageSlug: "typescript",
+              name: "calculate-time.ts",
+              totalTimeSpent: 866,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/trpc/client.ts":
+            {
+              languageSlug: "typescript",
+              name: "client.ts",
+              totalTimeSpent: 1642,
+            },
+          "/home/user/mooncode/packages/ui/src/colors.json": {
+            languageSlug: "json",
+            name: "colors.json",
+            totalTimeSpent: 515,
+          },
+          "/home/user/mooncode/packages/ui/src/go.mod": {
+            languageSlug: "go",
+            name: "go.mod",
+            totalTimeSpent: 429,
+          },
+          "/home/user/mooncode/packages/ui/src/go.tmpl": {
+            languageSlug: "go",
+            name: "go.tmpl",
+            totalTimeSpent: 648,
+          },
+        },
+        hasNext: true,
+      };
+
+      const { projectFilesOnPeriod, hasNext } =
+        await projectsAnalyticsService.getFilesOnPeriod(mockedEntry);
+
+      expect(projectFilesOnPeriod).toBeDefined();
+      expect(projectFilesOnPeriod).toEqual(mockedOutput.projectFilesOnPeriod);
+
+      expect(hasNext).toBeDefined();
+      expect(hasNext).toEqual(mockedOutput.hasNext);
+    });
+
+    it("should only keep the matching files when the search attribute is passed in parameter", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        type: "paginated" as const,
+        page: 1,
+        search: "file",
+      };
+
+      mockedDrizzle.execute.mockResolvedValue([
+        {
+          totalTimeSpent: 4537,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "updateFilesDataAfterSync.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataAfterSync.ts",
+        },
+        {
+          totalTimeSpent: 2182,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "get-current-file-properties.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/get-current-file-properties.ts",
+        },
+        {
+          totalTimeSpent: 292,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "update-files-data-frozen-states.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-files-data-frozen-states.ts",
+        },
+        {
+          totalTimeSpent: 199,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "updateFilesDataElapsedTime.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataElapsedTime.ts",
+        },
+        {
+          totalTimeSpent: 170,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "update-current-file-obj.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-current-file-obj.ts",
+        },
+        {
+          totalTimeSpent: 166,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "update-files-data-after-sync.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-files-data-after-sync.ts",
+        },
+        {
+          totalTimeSpent: 67,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "updateFilesDataFrozenStates.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataFrozenStates.ts",
+        },
+        {
+          totalTimeSpent: 51,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "updateCurrentFileObj.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateCurrentFileObj.ts",
+        },
+        {
+          totalTimeSpent: 46,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "initializeFiles.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/initializeFiles.ts",
+        },
+        {
+          totalTimeSpent: 40,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "update-files-data-elapsed-time.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-files-data-elapsed-time.ts",
+        },
+        {
+          totalTimeSpent: 38,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "deleteFilesDataContent.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/deleteFilesDataContent.ts",
+        },
+        {
+          totalTimeSpent: 27,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "getCurrentFileProperties.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/getCurrentFileProperties.ts",
+        },
+        {
+          totalTimeSpent: 23,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "FilesList.tsx",
+          path: "/home/user/mooncode/apps/dashboard/src/components/project-page/files-list/FilesList.tsx",
+        },
+        {
+          totalTimeSpent: 21,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "initialize-files.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/initialize-files.ts",
+        },
+        {
+          totalTimeSpent: 21,
+          languageSlug: "typescript",
+          projectName: "mooncode",
+          name: "delete-files-data-content.ts",
+          path: "/home/user/mooncode/apps/vscode-extension/src/utils/files/delete-files-data-content.ts",
+        },
+      ]);
+
+      mockedDrizzle.from
+        .mockReturnValueOnce(mockedDrizzle)
+        .mockReturnValueOnce(mockedDrizzle)
+        .mockResolvedValueOnce([{ count: 15 }]);
+
+      const mockedOutput = {
+        projectFilesOnPeriod: {
+          "/home/user/mooncode/apps/dashboard/src/components/project-page/files-list/FilesList.tsx":
+            {
+              languageSlug: "typescript",
+              name: "FilesList.tsx",
+              totalTimeSpent: 23,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/delete-files-data-content.ts":
+            {
+              languageSlug: "typescript",
+              name: "delete-files-data-content.ts",
+              totalTimeSpent: 21,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/deleteFilesDataContent.ts":
+            {
+              languageSlug: "typescript",
+              name: "deleteFilesDataContent.ts",
+              totalTimeSpent: 38,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/get-current-file-properties.ts":
+            {
+              languageSlug: "typescript",
+              name: "get-current-file-properties.ts",
+              totalTimeSpent: 2182,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/getCurrentFileProperties.ts":
+            {
+              languageSlug: "typescript",
+              name: "getCurrentFileProperties.ts",
+              totalTimeSpent: 27,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/initialize-files.ts":
+            {
+              languageSlug: "typescript",
+              name: "initialize-files.ts",
+              totalTimeSpent: 21,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/initializeFiles.ts":
+            {
+              languageSlug: "typescript",
+              name: "initializeFiles.ts",
+              totalTimeSpent: 46,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-current-file-obj.ts":
+            {
+              languageSlug: "typescript",
+              name: "update-current-file-obj.ts",
+              totalTimeSpent: 170,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-files-data-after-sync.ts":
+            {
+              languageSlug: "typescript",
+              name: "update-files-data-after-sync.ts",
+              totalTimeSpent: 166,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-files-data-elapsed-time.ts":
+            {
+              languageSlug: "typescript",
+              name: "update-files-data-elapsed-time.ts",
+              totalTimeSpent: 40,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/update-files-data-frozen-states.ts":
+            {
+              languageSlug: "typescript",
+              name: "update-files-data-frozen-states.ts",
+              totalTimeSpent: 292,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateCurrentFileObj.ts":
+            {
+              languageSlug: "typescript",
+              name: "updateCurrentFileObj.ts",
+              totalTimeSpent: 51,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataAfterSync.ts":
+            {
+              languageSlug: "typescript",
+              name: "updateFilesDataAfterSync.ts",
+              totalTimeSpent: 4537,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataElapsedTime.ts":
+            {
+              languageSlug: "typescript",
+              name: "updateFilesDataElapsedTime.ts",
+              totalTimeSpent: 199,
+            },
+          "/home/user/mooncode/apps/vscode-extension/src/utils/files/updateFilesDataFrozenStates.ts":
+            {
+              languageSlug: "typescript",
+              name: "updateFilesDataFrozenStates.ts",
+              totalTimeSpent: 67,
+            },
+        },
+        hasNext: false,
+      };
+
+      const { projectFilesOnPeriod, hasNext } =
+        await projectsAnalyticsService.getFilesOnPeriod(mockedEntry);
+
+      expect(projectFilesOnPeriod).toBeDefined();
+      expect(projectFilesOnPeriod).toEqual(mockedOutput.projectFilesOnPeriod);
+
+      expect(hasNext).toBeDefined();
+      expect(hasNext).toEqual(mockedOutput.hasNext);
+    });
+
+    it("should only keep the matching files when there is a languages array in parameter", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+        type: "paginated" as const,
+        page: 1,
+        languages: ["go", "json"],
+      };
+
+      mockedDrizzle.execute.mockResolvedValue([
+        {
+          totalTimeSpent: 648,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.tmpl",
+          path: "/home/user/mooncode/packages/ui/src/go.tmpl",
+        },
+        {
+          totalTimeSpent: 579,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "package.json",
+          path: "/home/user/mooncode/apps/vscode-extension/package.json",
+        },
+        {
+          totalTimeSpent: 515,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "colors.json",
+          path: "/home/user/mooncode/packages/ui/src/colors.json",
+        },
+        {
+          totalTimeSpent: 429,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.mod",
+          path: "/home/user/mooncode/packages/ui/src/go.mod",
+        },
+        {
+          totalTimeSpent: 196,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.work",
+          path: "/home/user/mooncode/packages/ui/src/go.work",
+        },
+        {
+          totalTimeSpent: 51,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.sum",
+          path: "/home/user/mooncode/packages/ui/src/go.sum",
+        },
+        {
+          totalTimeSpent: 38,
+          languageSlug: "go",
+          projectName: "mooncode",
+          name: "go.asm",
+          path: "/home/user/mooncode/packages/ui/src/go.asm",
+        },
+        {
+          totalTimeSpent: 18,
+          languageSlug: "json",
+          projectName: "mooncode",
+          name: "package.json",
+          path: "/home/user/mooncode/package.json",
+        },
+      ]);
+
+      mockedDrizzle.from
+        .mockReturnValueOnce(mockedDrizzle)
+        .mockReturnValueOnce(mockedDrizzle)
+        .mockResolvedValueOnce([{ count: 8 }]);
+
+      const mockedOutput = {
+        projectFilesOnPeriod: {
+          "/home/user/mooncode/apps/vscode-extension/package.json": {
+            languageSlug: "json",
+            name: "package.json",
+            totalTimeSpent: 579,
+          },
+          "/home/user/mooncode/package.json": {
+            languageSlug: "json",
+            name: "package.json",
+            totalTimeSpent: 18,
+          },
+          "/home/user/mooncode/packages/ui/src/colors.json": {
+            languageSlug: "json",
+            name: "colors.json",
+            totalTimeSpent: 515,
+          },
+          "/home/user/mooncode/packages/ui/src/go.asm": {
+            languageSlug: "go",
+            name: "go.asm",
+            totalTimeSpent: 38,
+          },
+          "/home/user/mooncode/packages/ui/src/go.mod": {
+            languageSlug: "go",
+            name: "go.mod",
+            totalTimeSpent: 429,
+          },
+          "/home/user/mooncode/packages/ui/src/go.sum": {
+            languageSlug: "go",
+            name: "go.sum",
+            totalTimeSpent: 51,
+          },
+          "/home/user/mooncode/packages/ui/src/go.tmpl": {
+            languageSlug: "go",
+            name: "go.tmpl",
+            totalTimeSpent: 648,
+          },
+          "/home/user/mooncode/packages/ui/src/go.work": {
+            languageSlug: "go",
+            name: "go.work",
+            totalTimeSpent: 196,
+          },
+        },
+        hasNext: false,
+      };
+
+      const { projectFilesOnPeriod, hasNext } =
+        await projectsAnalyticsService.getFilesOnPeriod(mockedEntry);
+
+      expect(projectFilesOnPeriod).toBeDefined();
+      expect(projectFilesOnPeriod).toEqual(mockedOutput.projectFilesOnPeriod);
+
+      expect(hasNext).toBeDefined();
+      expect(hasNext).toEqual(mockedOutput.hasNext);
     });
   });
 });
