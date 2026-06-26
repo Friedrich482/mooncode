@@ -23,7 +23,9 @@ export const getProjectPerDayOfPeriodGroupedByWeeks = (
   >();
   const startDate = new Date(data[0].date);
   const lastEntry = data.at(-1);
-  if (!lastEntry) return [];
+  if (!lastEntry) {
+    return [];
+  }
 
   const endDate = new Date(lastEntry.date);
 

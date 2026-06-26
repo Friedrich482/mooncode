@@ -15,7 +15,9 @@ export const getProjectPerDayOfPeriodGroupedByMonths = (
     { month: string; timeSpent: number; startDate: Date; endDate: Date }
   >();
   const lastEntry = data.at(-1);
-  if (!lastEntry) return [];
+  if (!lastEntry) {
+    return [];
+  }
 
   const endDate = new Date(lastEntry.date);
   data.forEach((entry) => {
