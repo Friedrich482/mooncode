@@ -15,7 +15,7 @@ export const appRouterProvider = {
     const appRouter = trpcService.trpc.router({
       ...authRouter.procedures(),
       ...extensionRouter.procedures(),
-      ...analyticsRouter.procedures,
+      ...analyticsRouter.procedures(),
     });
 
     return appRouter;
