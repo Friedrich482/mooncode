@@ -81,7 +81,7 @@ export class DailyDataService {
     const range = dateRange.map((date) => {
       const formattedDate = convertToISODate(date);
       return (
-        dataByDate[formattedDate] || {
+        dataByDate[formattedDate] ?? {
           id: null,
           timeSpent: 0,
           date: formattedDate,

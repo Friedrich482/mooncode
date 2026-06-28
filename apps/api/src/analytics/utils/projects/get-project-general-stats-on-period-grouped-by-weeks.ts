@@ -1,3 +1,4 @@
+import { NAString } from "@/analytics/dto/common";
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
 import { countStrictWeeks } from "@/common/utils/count-strict-weeks";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
@@ -42,16 +43,16 @@ export const getProjectGeneralStatsOnPeriodGroupedByWeeks = ({
           (((timeSpentOnProjectTodaysWeek - mean) / mean) * 100).toFixed(2),
         );
 
-  const maxTimeSpentPerWeek =
-    projectWeeklyDataForPeriod.length > 0
-      ? Math.max(...projectWeeklyDataForPeriod.map((week) => week.timeSpent))
-      : 0;
-  const mostActiveWeek =
+  const maxTimeSpentPerWeek = Math.max(
+    ...projectWeeklyDataForPeriod.map((week) => week.timeSpent),
+  );
+
+  const mostActiveWeek: NAString =
     maxTimeSpentPerWeek === 0
       ? "N/A"
-      : projectWeeklyDataForPeriod.find(
+      : (projectWeeklyDataForPeriod.find(
           (week) => week.timeSpent === maxTimeSpentPerWeek,
-        )?.originalDate || convertToISODate(new Date(start));
+        )?.originalDate ?? convertToISODate(new Date(start)));
 
   return {
     avgTime: formatDuration(mean),

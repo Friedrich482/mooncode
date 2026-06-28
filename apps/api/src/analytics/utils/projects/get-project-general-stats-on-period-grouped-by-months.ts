@@ -39,16 +39,16 @@ export const getProjectGeneralStatsOnPeriodGroupedByMonths = ({
           (((timeSpentOnProjectTodaysMonth - mean) / mean) * 100).toFixed(2),
         );
 
-  const maxTimeSpentPerMonth =
-    projectMonthlyDataForPeriod.length > 0
-      ? Math.max(...projectMonthlyDataForPeriod.map((month) => month.timeSpent))
-      : 0;
+  const maxTimeSpentPerMonth = Math.max(
+    ...projectMonthlyDataForPeriod.map((month) => month.timeSpent),
+  );
+
   const mostActiveMonth =
     maxTimeSpentPerMonth === 0
       ? "N/A"
-      : projectMonthlyDataForPeriod.find(
+      : (projectMonthlyDataForPeriod.find(
           (month) => month.timeSpent === maxTimeSpentPerMonth,
-        )?.originalDate || convertToISODate(new Date(start));
+        )?.originalDate ?? convertToISODate(new Date(start)));
 
   return {
     avgTime: formatDuration(mean),

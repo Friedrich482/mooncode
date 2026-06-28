@@ -519,7 +519,7 @@ export class ProjectsAnalyticsService {
       userId,
     });
 
-    const mostUsedLanguageSlug = await getProjectMostUsedLanguageOnPeriod(
+    const mostUsedLanguageSlug = getProjectMostUsedLanguageOnPeriod(
       projectLanguagesTimeOnPeriod,
     );
 

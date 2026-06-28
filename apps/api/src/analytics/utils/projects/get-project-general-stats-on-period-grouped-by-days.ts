@@ -31,10 +31,9 @@ export const getProjectGeneralStatsOnPeriodGroupedByDays = ({
           (((timeSpentOnProjectToday - mean) / mean) * 100).toFixed(2),
         );
 
-  const maxTimeSpentPerDay =
-    projectPerDayOfPeriod.length > 0
-      ? Math.max(...projectPerDayOfPeriod.map((day) => day.timeSpent))
-      : 0;
+  const maxTimeSpentPerDay = Math.max(
+    ...projectPerDayOfPeriod.map((day) => day.timeSpent),
+  );
 
   const mostActiveDate: NAString =
     maxTimeSpentPerDay === 0
