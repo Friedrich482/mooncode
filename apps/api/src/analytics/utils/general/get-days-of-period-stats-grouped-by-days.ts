@@ -1,6 +1,7 @@
-import { getWeekDayName } from "@/common/utils/get-weekday-name";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { formatDuration } from "@repo/common/format-duration";
+
+import { getWeekDayName } from "../get-weekday-name";
 
 export const getDaysOfPeriodStatsGroupedByDays = (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>,

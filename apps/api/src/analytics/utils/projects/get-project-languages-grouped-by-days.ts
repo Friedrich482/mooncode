@@ -1,5 +1,6 @@
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
-import { getWeekDayName } from "@/common/utils/get-weekday-name";
+
+import { getWeekDayName } from "../get-weekday-name";
 
 export const getProjectLanguagesGroupedByDays = (
   data: Awaited<

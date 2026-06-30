@@ -4,12 +4,12 @@ import {
   DASHBOARD_PRODUCTION_PORT,
 } from "@repo/common/constants";
 
-const ALLOWED_CLIENTS_IN_DEVELOPMENT = [
+export const ALLOWED_CLIENTS_IN_DEVELOPMENT = [
   `http://localhost:${DASHBOARD_DEVELOPMENT_PORT}`,
   `http://127.0.0.1:${DASHBOARD_DEVELOPMENT_PORT}`,
 ];
 
-const ALLOWED_CLIENTS_IN_PRODUCTION = Array.from(
+export const ALLOWED_CLIENTS_IN_PRODUCTION = Array.from(
   { length: 6 },
   (_, i) => DASHBOARD_PRODUCTION_PORT + i,
 )
