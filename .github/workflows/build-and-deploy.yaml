@@ -23,6 +23,9 @@ jobs:
       - name: Lint project
         run: npm run lint
 
+      - name: Test project
+        run: npm run test
+
   build:
     runs-on: ubuntu-latest
     needs: setup
