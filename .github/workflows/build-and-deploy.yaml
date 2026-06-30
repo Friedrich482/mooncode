@@ -3,6 +3,7 @@ name: MoonCode CI/CD Pipeline - Build api and web app docker images and deploy t
 on:
   push:
     branches: "main"
+  workflow_dispatch:
 
 jobs:
   setup:
