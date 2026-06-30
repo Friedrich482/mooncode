@@ -33,9 +33,28 @@ services:
     networks:
       - mooncode-network
 
+  drizzle-gateway:
+    image: ghcr.io/drizzle-team/gateway:1.3.0
+    container_name: mooncode-drizzle-gateway-container
+    restart: always
+    env_file:
+      - apps/api/.env.gateway
+    ports:
+      - 127.0.0.1:4997:4983
+    depends_on:
+      staging-database:
+        condition: service_healthy
+    volumes:
+      - drizzle-gateway:/app
+    networks:
+      - mooncode-network
+
 volumes:
   mooncode-database:
     name: mooncode-database
+
+  drizzle-gateway:
+    name: drizzle-gateway
 
 networks:
   mooncode-network:
