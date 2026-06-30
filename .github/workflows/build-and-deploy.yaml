@@ -24,6 +24,11 @@ jobs:
       - name: Lint project
         run: npm run lint
 
+      # This step is necessary because @repo/common is a compiled package of the monorepo (https://turborepo.dev/docs/core-concepts/internal-packages#compiled-packages)
+      # That package needs to be compiled in order to be consumed by the apps for the testing step
+      - name: Build @repo/common package
+        run: npm run build -w @repo/common
+
       - name: Test project
         run: npm run test
 
