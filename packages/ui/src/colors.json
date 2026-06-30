@@ -698,7 +698,7 @@
     "name": "Web Ontology Language",
     "color": "#5b70bd"
   },
-  "webassembly": { "name": "WebAssembly", "color": "#04133b" },
+  "wat": { "name": "WebAssembly", "color": "#6250e7" },
   "webassemblyinterfacetype": {
     "name": "WebAssembly Interface Type",
     "color": "#6250e7"
