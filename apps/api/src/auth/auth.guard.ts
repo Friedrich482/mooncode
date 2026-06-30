@@ -1,4 +1,3 @@
-import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@/common/constants";
 import { EnvService } from "@/env/env.service";
 import {
   BadRequestException,
@@ -22,7 +21,7 @@ export class AuthGuard implements CanActivate {
     const token = request.cookies?.auth_token;
 
     if (!token) {
-      throw new UnauthorizedException(COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE);
+      throw new UnauthorizedException("Auth cookie/token missing");
     }
 
     let rawPayload: unknown;

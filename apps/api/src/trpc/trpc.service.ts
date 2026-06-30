@@ -1,4 +1,3 @@
-import { COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE } from "@/common/constants";
 import { TrpcContext } from "@/common/dto";
 import { EnvService } from "@/env/env.service";
 import { Inject, Injectable, Logger } from "@nestjs/common";
@@ -95,7 +94,7 @@ export class TrpcService {
     if (!accessToken) {
       throw new TRPCError({
         code: "UNAUTHORIZED",
-        message: COOKIE_OR_TOKEN_NOT_FOUND_MESSAGE,
+        message: "Auth cookie/token missing",
       });
     }
 
