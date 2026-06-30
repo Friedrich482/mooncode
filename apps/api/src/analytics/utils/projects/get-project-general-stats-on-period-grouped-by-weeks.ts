@@ -1,10 +1,10 @@
 import { NAString } from "@/analytics/dto/common";
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
-import { countStrictWeeks } from "@/common/utils/count-strict-weeks";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
+import { countStrictWeeks } from "../count-strict-weeks";
 import { getProjectPerDayOfPeriodGroupedByWeeks } from "./get-project-per-day-of-period-grouped-by-weeks";
 
 export const getProjectGeneralStatsOnPeriodGroupedByWeeks = ({
@@ -24,7 +24,7 @@ export const getProjectGeneralStatsOnPeriodGroupedByWeeks = ({
   >;
   periodResolution: PeriodResolution;
 }) => {
-  const numberOfWeeks = countStrictWeeks(new Date(start), new Date(end));
+  const numberOfWeeks = countStrictWeeks(start, end);
 
   const mean = totalTimeSpentOnPeriod / numberOfWeeks;
 
