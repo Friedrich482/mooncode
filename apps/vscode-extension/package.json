@@ -120,8 +120,7 @@
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "npm run compile-tests && npm run compile && npm run lint",
     "lint": "eslint \"**/*.ts\" --fix",
-    "format": "prettier --write \"**/*.ts\"",
-    "test": "node ./out/test/runTest.js"
+    "format": "prettier --write \"**/*.ts\""
   },
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
