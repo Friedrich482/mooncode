@@ -10,10 +10,12 @@ export class AnalyticsRouter {
     private readonly projectsAnalyticsRouter: ProjectsAnalyticsRouter,
   ) {}
 
-  procedures = {
-    analytics: {
-      general: this.generalAnalyticsRouter.procedures.general,
-      projects: this.projectsAnalyticsRouter.procedures.projects,
-    },
-  };
+  procedures() {
+    return {
+      analytics: {
+        general: this.generalAnalyticsRouter.procedures().general,
+        projects: this.projectsAnalyticsRouter.procedures().projects,
+      },
+    };
+  }
 }

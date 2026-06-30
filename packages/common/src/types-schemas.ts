@@ -3,6 +3,7 @@ import z from "zod";
 import {
   EMAIL_VERIFICATION_CODE_LENGTH,
   EXTENSION_ID,
+  EXTENSION_LOGIN_PATH,
   PASSWORD_RESET_CODE_LENGTH,
   PUBLISHER,
 } from "./constants";
@@ -22,8 +23,8 @@ export const EmailSchema = z
   .max(320, "Email must be at most 320 characters");
 
 export const VSCodeCallbackUrlSchema = z
-  .url()
-  .startsWith("vscode://")
+  .url({ abort: true })
+  .startsWith("vscode://", { abort: true })
   .refine(
     (urlStr) => {
       const url = new URL(urlStr);
@@ -44,6 +45,14 @@ export const VSCodeCallbackUrlSchema = z
   .refine(
     (urlStr) => {
       const url = new URL(urlStr);
+      const [, pathname] = url.pathname.split("/");
+      return pathname === EXTENSION_LOGIN_PATH;
+    },
+    { error: "Invalid login path", abort: true },
+  )
+  .refine(
+    (urlStr) => {
+      const url = new URL(urlStr);
       const state = url.searchParams.get("state");
 
       return state;
@@ -60,7 +69,6 @@ export const JwtPayloadSchema = z.object({
 export const SignInUserSchema = z.object({
   email: EmailSchema,
   password: z.string().min(1, "Password is required"),
-  callbackUrl: VSCodeCallbackUrlSchema.nullable(),
 });
 
 export const CreateEmailVerificationSchema = z.object({

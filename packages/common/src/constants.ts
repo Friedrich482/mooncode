@@ -10,3 +10,4 @@ export const PASSWORD_RESET_CODE_LENGTH = 8;
 
 export const PUBLISHER = "Friedrich482";
 export const EXTENSION_ID = "mooncode";
+export const EXTENSION_LOGIN_PATH = "auth-callback";

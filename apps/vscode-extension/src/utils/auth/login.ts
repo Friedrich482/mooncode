@@ -2,6 +2,7 @@ import { randomBytes } from "crypto";
 import vscode from "vscode";
 
 import { getDashboardServer, getExtensionContext } from "@/extension";
+import { EXTENSION_LOGIN_PATH } from "@repo/common/constants";
 
 export const login = async () => {
   const context = getExtensionContext();
@@ -19,7 +20,7 @@ export const login = async () => {
 
     const callbackUri = await vscode.env.asExternalUri(
       vscode.Uri.parse(
-        `vscode://${publisher}.${extensionId}/auth-callback?state=${state}`,
+        `vscode://${publisher}.${extensionId}/${EXTENSION_LOGIN_PATH}?state=${state}`,
       ),
     );
 

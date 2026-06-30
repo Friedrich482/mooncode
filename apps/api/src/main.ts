@@ -3,8 +3,8 @@ import cookieParser from "cookie-parser";
 import { NestFactory } from "@nestjs/core";
 
 import { AppModule } from "./app.module";
+import { AppRouterRouter } from "./app-router/app-router.router";
 import { getAllowedClients } from "./common/utils/get-allowed-clients";
-import { TrpcRouter } from "./trpc/trpc.router";
 
 async function bootstrap() {
   const allowedClients = getAllowedClients();
@@ -16,7 +16,7 @@ async function bootstrap() {
   });
   app.use(cookieParser());
 
-  const trpc = app.get(TrpcRouter);
+  const trpc = app.get(AppRouterRouter);
   trpc.applyMiddleware(app);
 
   await app.listen(process.env.PORT ?? 3000);

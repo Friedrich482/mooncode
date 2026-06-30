@@ -7,6 +7,7 @@
     "dev:vscode": "code --verbose --extensionDevelopmentPath=$(pwd)/apps/vscode-extension",
     "lint": "turbo run lint",
     "format": "turbo run format",
+    "test": "turbo run test",
     "check-types": "turbo run check-types",
     "lint-staged": "lint-staged",
     "prepare": "husky || true"
@@ -14,7 +15,7 @@
   "devDependencies": {
     "husky": "^9.1.7",
     "prettier": "^3.8.3",
-    "turbo": "^2.9.14",
+    "turbo": "^2.10.0",
     "wait-on": "^8.0.4"
   },
   "lint-staged": {

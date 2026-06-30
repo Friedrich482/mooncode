@@ -31,11 +31,11 @@ export class AuthController {
 
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @Get("/google")
-  async redirectToGoogle(
+  redirectToGoogle(
     @Res() response: Response,
     @Query() queryParams: RedirectToGoogleDtoType,
   ) {
-    const { googleAuthUrl } = await this.authService.redirectToGoogle({
+    const { googleAuthUrl } = this.authService.redirectToGoogle({
       ...queryParams,
     });
 
@@ -44,23 +44,23 @@ export class AuthController {
 
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @Get("/google/callback")
-  async handleGoogleCallBack(
+  async handleGoogleCallback(
     @Query(new ZodPipe(HandleGoogleQueryDto))
     queryParams: HandleGoogleQueryDtoType,
     @Res() response: Response,
     @Req() request: Request,
   ) {
     const returnUrl = validateStateQueryParam(
-      request,
+      request.query["state"],
       this.envService.get("NODE_ENV"),
       RedirectToGoogleDto,
     );
-    const callbackUrl = validateExtensionCallbackUrl(request);
+    const callbackUrl = validateExtensionCallbackUrl(request.query["state"]);
 
     const url = new URL(returnUrl);
     const errorUrl = new URL(`${returnUrl}/login`);
 
-    const result = await this.authService.handleGoogleCallBack(
+    const result = await this.authService.handleGoogleCallback(
       "code" in queryParams
         ? {
             ...queryParams,
@@ -102,12 +102,12 @@ export class AuthController {
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @UseGuards(AuthGuard)
   @Get("/google/linking")
-  async redirectToGoogleForLinking(
+  redirectToGoogleForLinking(
     @Res() response: Response,
     @Query()
     queryParams: RedirectToGoogleForLinkingDtoType,
   ) {
-    const { googleUrl } = await this.authService.redirectToGoogleForLinking({
+    const { googleUrl } = this.authService.redirectToGoogleForLinking({
       ...queryParams,
     });
 
@@ -117,14 +117,14 @@ export class AuthController {
   @Throttle({ default: { limit: 30, blockDuration: 5 * 60 * 1000 } })
   @UseGuards(AuthGuard)
   @Get("/google/linking/callback")
-  async handleGoogleLinkingCallBack(
+  async handleGoogleLinkingCallback(
     @Query(new ZodPipe(HandleGoogleQueryDto))
     queryParams: HandleGoogleQueryDtoType,
     @Res() response: Response,
     @Req() request: Request & { user: { sub: string } },
   ) {
     const returnUrl = validateStateQueryParam(
-      request,
+      request.query["state"],
       this.envService.get("NODE_ENV"),
       RedirectToGoogleForLinkingDto,
     );
@@ -132,7 +132,7 @@ export class AuthController {
     const url = new URL(returnUrl);
     const errorUrl = new URL(`${returnUrl}/profile`);
 
-    const result = await this.authService.handleGoogleLinkingCallBack(
+    const result = await this.authService.handleGoogleLinkingCallback(
       "code" in queryParams
         ? {
             ...queryParams,

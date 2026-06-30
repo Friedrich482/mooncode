@@ -20,97 +20,99 @@ export class ProjectsAnalyticsRouter {
     private readonly projectsAnalyticsService: ProjectsAnalyticsService,
   ) {}
 
-  procedures = {
-    projects: this.trpcService.trpc.router({
-      checkProjectExists: this.trpcService
-        .protectedProcedure()
-        .input(CheckProjectExistsDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.checkProjectExists({
-            ...input,
-            userId: ctx.user.sub,
-          }),
-        ),
+  procedures() {
+    return {
+      projects: this.trpcService.trpc.router({
+        checkProjectExists: this.trpcService
+          .protectedProcedure()
+          .input(CheckProjectExistsDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.checkProjectExists({
+              ...input,
+              userId: ctx.user.sub,
+            }),
+          ),
 
-      getPeriodProjects: this.trpcService
-        .protectedProcedure()
-        .input(GetPeriodProjectsDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.getPeriodProjects({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getPeriodProjects: this.trpcService
+          .protectedProcedure()
+          .input(GetPeriodProjectsDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.getPeriodProjects({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getProjectOnPeriod: this.trpcService
-        .protectedProcedure()
-        .input(GetProjectOnPeriodDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.getProjectOnPeriod({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getProjectOnPeriod: this.trpcService
+          .protectedProcedure()
+          .input(GetProjectOnPeriodDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.getProjectOnPeriod({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getProjectPerDayOfPeriod: this.trpcService
-        .protectedProcedure()
-        .input(GetProjectPerDayOfPeriodDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.getProjectPerDayOfPeriod({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getProjectPerDayOfPeriod: this.trpcService
+          .protectedProcedure()
+          .input(GetProjectPerDayOfPeriodDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.getProjectPerDayOfPeriod({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getProjectLanguagesTimeOnPeriod: this.trpcService
-        .protectedProcedure()
-        .input(GetProjectLanguagesTimeOnPeriodDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.getProjectLanguagesTimeOnPeriod({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getProjectLanguagesTimeOnPeriod: this.trpcService
+          .protectedProcedure()
+          .input(GetProjectLanguagesTimeOnPeriodDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.getProjectLanguagesTimeOnPeriod({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getProjectLanguagesPerDayOfPeriod: this.trpcService
-        .protectedProcedure()
-        .input(GetProjectLanguagesPerDayOfPeriodDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getProjectLanguagesPerDayOfPeriod: this.trpcService
+          .protectedProcedure()
+          .input(GetProjectLanguagesPerDayOfPeriodDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.getProjectLanguagesPerDayOfPeriod({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getProjectDailyStats: this.trpcService
-        .protectedProcedure()
-        .input(GetProjectDailyStatsDto)
-        .query(async ({ input, ctx }) =>
-          this.projectsAnalyticsService.getProjectDailyStats({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getProjectDailyStats: this.trpcService
+          .protectedProcedure()
+          .input(GetProjectDailyStatsDto)
+          .query(async ({ input, ctx }) =>
+            this.projectsAnalyticsService.getProjectDailyStats({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getPeriodGeneralStatsForProject: this.trpcService
-        .protectedProcedure()
-        .input(GetPeriodGeneralStatsForProjectDto)
-        .query(async ({ input, ctx }) =>
-          this.projectsAnalyticsService.getPeriodGeneralStatsForProject({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
+        getPeriodGeneralStatsForProject: this.trpcService
+          .protectedProcedure()
+          .input(GetPeriodGeneralStatsForProjectDto)
+          .query(async ({ input, ctx }) =>
+            this.projectsAnalyticsService.getPeriodGeneralStatsForProject({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
 
-      getProjectFilesOnPeriod: this.trpcService
-        .protectedProcedure()
-        .input(GetProjectFilesOnPeriodDto)
-        .query(async ({ ctx, input }) =>
-          this.projectsAnalyticsService.getFilesOnPeriod({
-            userId: ctx.user.sub,
-            ...input,
-          }),
-        ),
-    }),
-  };
+        getProjectFilesOnPeriod: this.trpcService
+          .protectedProcedure()
+          .input(GetProjectFilesOnPeriodDto)
+          .query(async ({ ctx, input }) =>
+            this.projectsAnalyticsService.getFilesOnPeriod({
+              userId: ctx.user.sub,
+              ...input,
+            }),
+          ),
+      }),
+    };
+  }
 }

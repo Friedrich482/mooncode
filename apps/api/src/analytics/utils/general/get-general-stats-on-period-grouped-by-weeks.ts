@@ -1,33 +1,28 @@
-import { endOfWeek, startOfWeek } from "date-fns";
-
-import { GeneralAnalyticsService } from "@/analytics/services/general-analytics.service";
-import { countStrictWeeks } from "@/common/utils/count-strict-weeks";
+import { NAString } from "@/analytics/dto/common";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
+import { countStrictWeeks } from "../count-strict-weeks";
 import { getDaysOfPeriodStatsGroupedByWeeks } from "./get-days-of-period-stats-grouped-by-weeks";
-import { getMostUsedLanguageOnPeriod } from "./get-most-used-language-on-period";
 
-export const getGeneralStatsOnPeriodGroupedByWeeks = async (
-  userId: string,
-  start: string,
-  end: string,
-  todaysDateString: string,
-  generalAnalyticsService: GeneralAnalyticsService,
-  dailyDataForPeriod: Awaited<ReturnType<DailyDataService["findRange"]>>,
-  periodResolution: PeriodResolution,
-) => {
-  const numberOfWeeks = countStrictWeeks(new Date(start), new Date(end));
-
-  const timeSpentOnPeriod = (
-    await generalAnalyticsService.getTimeSpentOnPeriod({
-      userId,
-      start,
-      end,
-    })
-  ).rawTime;
+export const getGeneralStatsOnPeriodGroupedByWeeks = ({
+  start,
+  end,
+  timeSpentOnPeriod,
+  timeSpentOnTodaySWeek,
+  dailyDataForPeriod,
+  periodResolution,
+}: {
+  start: string;
+  end: string;
+  timeSpentOnPeriod: number;
+  timeSpentOnTodaySWeek: number;
+  dailyDataForPeriod: Awaited<ReturnType<DailyDataService["findRange"]>>;
+  periodResolution: PeriodResolution;
+}) => {
+  const numberOfWeeks = countStrictWeeks(start, end);
 
   const mean = timeSpentOnPeriod / numberOfWeeks;
 
@@ -39,14 +34,6 @@ export const getGeneralStatsOnPeriodGroupedByWeeks = async (
     originalDate: entry.originalDate,
   }));
 
-  const timeSpentOnTodaySWeek = (
-    await generalAnalyticsService.getTimeSpentOnPeriod({
-      userId,
-      start: convertToISODate(startOfWeek(new Date(todaysDateString))),
-      end: convertToISODate(endOfWeek(new Date(todaysDateString))),
-    })
-  ).rawTime;
-
   const percentageToAvg =
     mean === 0
       ? 0
@@ -56,24 +43,17 @@ export const getGeneralStatsOnPeriodGroupedByWeeks = async (
     weeklyDataForPeriod.length > 0
       ? Math.max(...weeklyDataForPeriod.map((week) => week.timeSpent))
       : 0;
-  const mostActiveWeek =
+
+  const mostActiveWeek: NAString =
     maxTimeSpentPerWeek === 0
       ? "N/A"
-      : weeklyDataForPeriod.find(
+      : (weeklyDataForPeriod.find(
           (week) => week.timeSpent === maxTimeSpentPerWeek,
-        )?.originalDate || convertToISODate(new Date(start));
-
-  const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
-    generalAnalyticsService,
-    userId,
-    start,
-    end,
-  );
+        )?.originalDate ?? convertToISODate(new Date(start)));
 
   return {
     avgTime: formatDuration(mean),
     percentageToAvg,
     mostActiveDate: mostActiveWeek,
-    mostUsedLanguageSlug,
   };
 };

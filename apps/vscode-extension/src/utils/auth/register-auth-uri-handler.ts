@@ -1,6 +1,7 @@
 import vscode from "vscode";
 
 import { getExtensionContext } from "@/extension";
+import { EXTENSION_LOGIN_PATH } from "@repo/common/constants";
 
 import { setLoginContextAndStatusBar } from "../status-bar/set-login-context-and-status-bar";
 import { logout } from "./logout";
@@ -12,7 +13,7 @@ export const registerAuthUriHandler = () => {
   vscode.window.registerUriHandler({
     async handleUri(uri: vscode.Uri) {
       // logic to log the user in when the dashboard redirects back to the extension
-      if (uri.path === "/auth-callback") {
+      if (uri.path === `/${EXTENSION_LOGIN_PATH}`) {
         const params = new URLSearchParams(uri.query);
         const token = params.get("token");
         const receivedState = params.get("state");

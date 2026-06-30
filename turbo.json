@@ -20,6 +20,17 @@
       "cache": false,
       "persistent": true
     },
+    "test": {
+      "dependsOn": ["^test"]
+    },
+    "test:watch": {
+      "cache": false,
+      "persistent": true
+    },
+    "test:ui": {
+      "cache": false,
+      "persistent": true
+    },
     "health-check": {
       "cache": false,
       "outputs": []

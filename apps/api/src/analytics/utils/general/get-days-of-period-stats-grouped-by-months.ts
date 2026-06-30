@@ -1,9 +1,10 @@
 import { endOfMonth, startOfMonth } from "date-fns";
 
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getDaysOfPeriodStatsGroupedByMonths = (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>,
@@ -13,7 +14,9 @@ export const getDaysOfPeriodStatsGroupedByMonths = (
     { month: string; timeSpent: number; startDate: Date; endDate: Date }
   >();
   const lastEntry = data.at(-1);
-  if (!lastEntry) return [];
+  if (!lastEntry) {
+    return [];
+  }
 
   const endDate = new Date(lastEntry.date);
 

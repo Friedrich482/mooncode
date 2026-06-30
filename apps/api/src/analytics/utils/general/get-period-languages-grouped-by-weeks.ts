@@ -1,18 +1,18 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
 
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { PeriodResolution } from "@repo/common/types-schemas";
 
-export const getPeriodLanguagesGroupedByWeeks = async (
-  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
-  periodResolution: PeriodResolution,
-  languagesService: LanguagesService,
-) => {
-  if (data.length === 0) return [];
+import { formatShortDate } from "../format-short-date";
 
+export const getPeriodLanguagesGroupedByWeeks = (
+  data: (Awaited<ReturnType<DailyDataService["findRange"]>>[number] & {
+    languages: Awaited<ReturnType<LanguagesService["findAll"]>>;
+  })[],
+  periodResolution: PeriodResolution,
+) => {
   const weeklyMap = new Map<
     string,
     {
@@ -25,18 +25,15 @@ export const getPeriodLanguagesGroupedByWeeks = async (
   >();
 
   const startDate = new Date(data[0].date);
-  const endDate = new Date(data[data.length - 1].date);
+  const lastEntry = data.at(-1);
 
-  const entriesWithLanguages = await Promise.all(
-    data.map(async (entry) => ({
-      ...entry,
-      languages: await languagesService.findAll({
-        dailyDataId: entry.id,
-      }),
-    })),
-  );
+  if (!lastEntry) {
+    return [];
+  }
 
-  for (const [, entry] of entriesWithLanguages.entries()) {
+  const endDate = new Date(lastEntry.date);
+
+  for (const [, entry] of data.entries()) {
     const date = new Date(entry.date);
     let weekStart = startOfWeek(date);
     let weekEnd = endOfWeek(date);
@@ -72,17 +69,11 @@ export const getPeriodLanguagesGroupedByWeeks = async (
       });
     }
 
-    const weekEntry = weeklyMap.get(weekKey) as {
-      weekRange: string;
-      timeSpent: number;
-      startDate: Date;
-      endDate: Date;
-      languages: Record<string, number>;
-    };
+    const weekEntry = weeklyMap.get(weekKey)!;
     weekEntry.timeSpent += entry.timeSpent;
 
     for (const [lang, time] of Object.entries(entry.languages)) {
-      weekEntry.languages[lang] = (weekEntry.languages[lang] || 0) + time;
+      weekEntry.languages[lang] = (weekEntry.languages[lang] ?? 0) + time;
     }
   }
 

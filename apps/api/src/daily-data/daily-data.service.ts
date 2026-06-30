@@ -2,7 +2,7 @@ import { eachDayOfInterval } from "date-fns";
 import { and, between, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { dailyData } from "@/drizzle/schema/daily-data";
 import { Inject, Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
@@ -17,7 +17,7 @@ import {
 @Injectable()
 export class DailyDataService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
   ) {}
   async create(createDailyDataDto: CreateDailyDataDtoType) {
@@ -45,9 +45,12 @@ export class DailyDataService {
     const [oneDailyData] = await this.db
       .select({ id: dailyData.id, timeSpent: dailyData.timeSpent })
       .from(dailyData)
-      .where(and(eq(dailyData.userId, userId), eq(dailyData.date, date)));
+      .where(and(eq(dailyData.userId, userId), eq(dailyData.date, date)))
+      .limit(1);
 
-    if (!oneDailyData) return null;
+    if (!oneDailyData) {
+      return null;
+    }
 
     return oneDailyData;
   }
@@ -78,7 +81,7 @@ export class DailyDataService {
     const range = dateRange.map((date) => {
       const formattedDate = convertToISODate(date);
       return (
-        dataByDate[formattedDate] || {
+        dataByDate[formattedDate] ?? {
           id: null,
           timeSpent: 0,
           date: formattedDate,

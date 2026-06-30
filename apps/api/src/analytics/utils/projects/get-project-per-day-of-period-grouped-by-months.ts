@@ -1,9 +1,10 @@
 import { endOfMonth, startOfMonth } from "date-fns";
 
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getProjectPerDayOfPeriodGroupedByMonths = (
   data: Awaited<
@@ -15,7 +16,9 @@ export const getProjectPerDayOfPeriodGroupedByMonths = (
     { month: string; timeSpent: number; startDate: Date; endDate: Date }
   >();
   const lastEntry = data.at(-1);
-  if (!lastEntry) return [];
+  if (!lastEntry) {
+    return [];
+  }
 
   const endDate = new Date(lastEntry.date);
   data.forEach((entry) => {

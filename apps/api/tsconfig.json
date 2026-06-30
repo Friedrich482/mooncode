@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "jsx": "react",
     "composite": true,
     "module": "nodenext",
     "declaration": true,

@@ -1,10 +1,11 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
 
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getDaysOfPeriodStatsGroupedByWeeks = (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>,
@@ -21,7 +22,9 @@ export const getDaysOfPeriodStatsGroupedByWeeks = (
   >();
   const startDate = new Date(data[0].date);
   const lastEntry = data.at(-1);
-  if (!lastEntry) return [];
+  if (!lastEntry) {
+    return [];
+  }
 
   const endDate = new Date(lastEntry.date);
 
@@ -62,7 +65,7 @@ export const getDaysOfPeriodStatsGroupedByWeeks = (
 
     const weekKey = convertToISODate(weekStart);
 
-    const existing = weeklyMap.get(weekKey) || {
+    const existing = weeklyMap.get(weekKey) ?? {
       weekRange: `${formatShortDate(weekStart)} - ${formatShortDate(weekEnd)}`,
       timeSpent: 0,
       startDate: weekStart,

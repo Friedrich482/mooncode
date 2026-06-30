@@ -1,6 +1,5 @@
-import { differenceInDays } from "date-fns";
+import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
 
-import { NAString } from "@/analytics/dto/common";
 import {
   GetDailyStatsDtoType,
   GetDaysOfPeriodStatsDtoType,
@@ -9,19 +8,23 @@ import {
   GetPeriodLanguagesTimeDtoType,
   GetTimeSpentOnPeriodDtoType,
 } from "@/analytics/dto/general-analytics.dto";
+import { getDaysOfPeriodStatsGroupedByDays } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-days";
 import { getDaysOfPeriodStatsGroupedByMonths } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-months";
 import { getDaysOfPeriodStatsGroupedByWeeks } from "@/analytics/utils/general/get-days-of-period-stats-grouped-by-weeks";
+import { getGeneralStatsOnPeriodGroupedByDays } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-days";
 import { getGeneralStatsOnPeriodGroupedByMonths } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-months";
 import { getGeneralStatsOnPeriodGroupedByWeeks } from "@/analytics/utils/general/get-general-stats-on-period-grouped-by-weeks";
 import { getMostUsedLanguageOnPeriod } from "@/analytics/utils/general/get-most-used-language-on-period";
+import { getPeriodLanguagesGroupedByDays } from "@/analytics/utils/general/get-period-languages-grouped-by-days";
 import { getPeriodLanguagesGroupedByMonths } from "@/analytics/utils/general/get-period-languages-grouped-by-months";
 import { getPeriodLanguagesGroupedByWeeks } from "@/analytics/utils/general/get-period-languages-grouped-by-weeks";
-import { getWeekDayName } from "@/common/utils/get-weekday-name";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
+
+import { NAString } from "../dto/common";
 
 @Injectable()
 export class GeneralAnalyticsService {
@@ -60,9 +63,14 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0) return [];
+    if (dailyDataForPeriod.length === 0) {
+      return [];
+    }
 
     switch (groupBy) {
+      case "days":
+        return getDaysOfPeriodStatsGroupedByDays(dailyDataForPeriod);
+
       case "weeks":
         return getDaysOfPeriodStatsGroupedByWeeks(
           dailyDataForPeriod,
@@ -72,20 +80,12 @@ export class GeneralAnalyticsService {
       case "months":
         return getDaysOfPeriodStatsGroupedByMonths(dailyDataForPeriod);
 
+      case undefined:
+        return getDaysOfPeriodStatsGroupedByDays(dailyDataForPeriod);
+
       default:
-        break;
+        throw groupBy satisfies never;
     }
-
-    const daysOfPeriodStats = dailyDataForPeriod.map(({ timeSpent, date }) => ({
-      timeSpentLine: timeSpent,
-      originalDate: new Date(date).toDateString(),
-      date: getWeekDayName(date),
-      timeSpentBar: timeSpent,
-      timeSpentArea: timeSpent,
-      value: formatDuration(timeSpent),
-    }));
-
-    return daysOfPeriodStats;
   }
 
   async getPeriodLanguagesTime(
@@ -99,7 +99,9 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0) return [];
+    if (dailyDataForPeriod.length === 0) {
+      return [];
+    }
 
     const totalTimeSpentOnPeriod = (
       await this.getTimeSpentOnPeriod({ userId, start, end })
@@ -144,42 +146,38 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0) return [];
+    if (dailyDataForPeriod.length === 0) {
+      return [];
+    }
+
+    const entriesWithLanguages = await Promise.all(
+      dailyDataForPeriod.map(async (entry) => ({
+        ...entry,
+        languages: await this.languagesService.findAll({
+          dailyDataId: entry.id,
+        }),
+      })),
+    );
 
     switch (groupBy) {
+      case "days":
+        return getPeriodLanguagesGroupedByDays(entriesWithLanguages);
+
       case "weeks":
         return getPeriodLanguagesGroupedByWeeks(
-          dailyDataForPeriod,
+          entriesWithLanguages,
           periodResolution,
-          this.languagesService,
         );
 
       case "months":
-        return getPeriodLanguagesGroupedByMonths(
-          dailyDataForPeriod,
-          this.languagesService,
-        );
+        return getPeriodLanguagesGroupedByMonths(entriesWithLanguages);
+
+      case undefined:
+        return getPeriodLanguagesGroupedByDays(entriesWithLanguages);
 
       default:
-        break;
+        throw groupBy satisfies never;
     }
-
-    const allLanguages = await Promise.all(
-      dailyDataForPeriod.map(({ id }) =>
-        this.languagesService.findAll({ dailyDataId: id }),
-      ),
-    );
-
-    const periodLanguagesPerDay = dailyDataForPeriod.map(
-      ({ date, timeSpent }, index) => ({
-        originalDate: new Date(date).toDateString(),
-        date: getWeekDayName(date),
-        timeSpent,
-        ...allLanguages[index],
-      }),
-    );
-
-    return periodLanguagesPerDay;
   }
 
   async getDailyStats(getDailyStatsDto: GetDailyStatsDtoType) {
@@ -193,7 +191,7 @@ export class GeneralAnalyticsService {
     if (!dayData || dayData.timeSpent === 0)
       return {
         formattedTotalTimeSpent: formatDuration(0),
-        finalData: [],
+        languagesStatsOnDay: [],
       };
 
     const dayLanguagesTime = await this.languagesService.findAll({
@@ -202,7 +200,7 @@ export class GeneralAnalyticsService {
 
     const totalTimeSpent = dayData.timeSpent;
 
-    const finalData = Object.entries(dayLanguagesTime)
+    const languagesStatsOnDay = Object.entries(dayLanguagesTime)
       .map(([languageSlug, timeSpent]) => ({
         languageSlug,
         timeSpent,
@@ -214,14 +212,19 @@ export class GeneralAnalyticsService {
     const formattedTotalTimeSpent = formatDuration(totalTimeSpent);
 
     return {
-      finalData,
+      languagesStatsOnDay,
       formattedTotalTimeSpent,
     };
   }
 
   async getPeriodGeneralStats(
     getPeriodGeneralStatsDto: GetPeriodGeneralStatsDtoType,
-  ) {
+  ): Promise<{
+    avgTime: string;
+    percentageToAvg: number;
+    mostActiveDate: NAString;
+    mostUsedLanguageSlug: NAString;
+  }> {
     const { userId, start, end, todaysDateString, groupBy, periodResolution } =
       getPeriodGeneralStatsDto;
 
@@ -231,41 +234,15 @@ export class GeneralAnalyticsService {
       end,
     });
 
-    if (dailyDataForPeriod.length === 0)
+    if (dailyDataForPeriod.length === 0) {
       return {
         avgTime: formatDuration(0),
         percentageToAvg: 0,
         mostActiveDate: "N/A",
         mostUsedLanguageSlug: "N/A",
       };
-
-    switch (groupBy) {
-      case "weeks":
-        return getGeneralStatsOnPeriodGroupedByWeeks(
-          userId,
-          start,
-          end,
-          todaysDateString,
-          this,
-          dailyDataForPeriod,
-          periodResolution,
-        );
-
-      case "months":
-        return getGeneralStatsOnPeriodGroupedByMonths(
-          userId,
-          start,
-          end,
-          todaysDateString,
-          this,
-          dailyDataForPeriod,
-        );
-
-      default:
-        break;
     }
 
-    const numberOfDays = differenceInDays(end, start) + 1;
     const timeSpentOnPeriod = (
       await this.getTimeSpentOnPeriod({
         userId,
@@ -274,7 +251,14 @@ export class GeneralAnalyticsService {
       })
     ).rawTime;
 
-    const mean = Math.floor(timeSpentOnPeriod / numberOfDays);
+    const periodLanguagesTime = await this.getPeriodLanguagesTime({
+      userId,
+      start,
+      end,
+    });
+
+    const mostUsedLanguageSlug =
+      getMostUsedLanguageOnPeriod(periodLanguagesTime);
 
     const timeSpentToday =
       (
@@ -282,39 +266,76 @@ export class GeneralAnalyticsService {
           userId,
           date: todaysDateString,
         })
-      )?.timeSpent || 0;
+      )?.timeSpent ?? 0;
 
-    const percentageToAvg =
-      mean === 0
-        ? 0
-        : parseFloat((((timeSpentToday - mean) / mean) * 100).toFixed(2));
+    switch (groupBy) {
+      case "days":
+        return {
+          ...getGeneralStatsOnPeriodGroupedByDays({
+            start,
+            end,
+            timeSpentOnPeriod,
+            timeSpentToday,
+            dailyDataForPeriod,
+          }),
+          mostUsedLanguageSlug,
+        };
 
-    const maxTimeSpentPerDay =
-      dailyDataForPeriod.length > 0
-        ? Math.max(...dailyDataForPeriod.map((day) => day.timeSpent))
-        : 0;
+      case "weeks":
+        const timeSpentOnTodaySWeek = (
+          await this.getTimeSpentOnPeriod({
+            userId,
+            start: convertToISODate(startOfWeek(new Date(todaysDateString))),
+            end: convertToISODate(endOfWeek(new Date(todaysDateString))),
+          })
+        ).rawTime;
 
-    const mostActiveDate: NAString =
-      maxTimeSpentPerDay === 0
-        ? "N/A"
-        : new Date(
-            dailyDataForPeriod.find(
-              (day) => day.timeSpent === maxTimeSpentPerDay,
-            )?.date || convertToISODate(new Date(start)),
-          ).toDateString();
+        return {
+          ...getGeneralStatsOnPeriodGroupedByWeeks({
+            start,
+            end,
+            timeSpentOnPeriod,
+            timeSpentOnTodaySWeek,
+            dailyDataForPeriod,
+            periodResolution,
+          }),
+          mostUsedLanguageSlug,
+        };
 
-    const mostUsedLanguageSlug = await getMostUsedLanguageOnPeriod(
-      this,
-      userId,
-      start,
-      end,
-    );
+      case "months":
+        const timeSpentOnTodaySMonth = (
+          await this.getTimeSpentOnPeriod({
+            userId,
+            start: convertToISODate(startOfMonth(new Date(todaysDateString))),
+            end: convertToISODate(endOfMonth(new Date(todaysDateString))),
+          })
+        ).rawTime;
 
-    return {
-      avgTime: formatDuration(mean),
-      percentageToAvg,
-      mostActiveDate,
-      mostUsedLanguageSlug,
-    };
+        return {
+          ...getGeneralStatsOnPeriodGroupedByMonths({
+            start,
+            end,
+            timeSpentOnPeriod,
+            timeSpentOnTodaySMonth,
+            dailyDataForPeriod,
+          }),
+          mostUsedLanguageSlug,
+        };
+
+      case undefined:
+        return {
+          ...getGeneralStatsOnPeriodGroupedByDays({
+            start,
+            end,
+            timeSpentOnPeriod,
+            timeSpentToday,
+            dailyDataForPeriod,
+          }),
+          mostUsedLanguageSlug,
+        };
+
+      default:
+        throw groupBy satisfies never;
+    }
   }
 }

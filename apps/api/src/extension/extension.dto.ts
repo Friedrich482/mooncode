@@ -18,10 +18,6 @@ export const UpsertLanguagesDto = z.object({
 });
 
 export const UpsertFilesDto = z.object({
-  timeSpentPerProject: z.record(
-    z.string().min(1),
-    z.number().int().nonnegative(),
-  ),
   filesData: z.record(
     z.string().min(1),
     z.object({

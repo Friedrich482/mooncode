@@ -30,7 +30,6 @@ export const LoginForm = () => {
     defaultValues: {
       email: "",
       password: "",
-      callbackUrl,
     },
   });
 
@@ -45,7 +44,6 @@ export const LoginForm = () => {
       {
         email: values.email,
         password: values.password,
-        callbackUrl,
       },
       {
         onError: (error) => {

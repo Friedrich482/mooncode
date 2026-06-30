@@ -1,14 +1,25 @@
 import { z } from "zod";
 
-import { environmentEnum } from "@/common/dto";
-import { EmailSchema, UserId } from "@repo/common/types-schemas";
+import {
+  EmailSchema,
+  UserId,
+  VSCodeCallbackUrlSchema,
+} from "@repo/common/types-schemas";
+
+export const CheckAuthStatusDto = z.object({
+  user: z.object({ sub: z.ulid() }),
+});
+
+export const GetUserDto = z.object({
+  user: z.object({ sub: z.ulid() }),
+});
 
 export const HandleGoogleQueryDto = z.union([
   z.object({ code: z.string().min(1) }),
   z.object({ error: z.string().min(1) }),
 ]);
 
-export const HandleGoogleCallBackDto = z.discriminatedUnion("type", [
+export const handleGoogleCallbackDto = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("success"),
     code: z.string().min(1),
@@ -19,14 +30,14 @@ export const HandleGoogleCallBackDto = z.discriminatedUnion("type", [
   }),
 ]);
 
-export const HandleGoogleLinkingCallBackDto = HandleGoogleCallBackDto;
+export const handleGoogleLinkingCallbackDto = handleGoogleCallbackDto;
 
 export const StateQueryParamSchema = z.object({
   state: z.url(),
 });
 
 export const RedirectToGoogleDto = StateQueryParamSchema.extend({
-  callback: z.url().optional(),
+  callback: VSCodeCallbackUrlSchema.optional(),
 });
 
 export const RedirectToGoogleForLinkingDto = StateQueryParamSchema;
@@ -41,15 +52,18 @@ export const GoogleUserSchema = z.object({
   picture: z.string().min(1),
 });
 
-export type Environment = (typeof environmentEnum)[number];
+export type CheckAuthStatusDtoType = z.infer<typeof CheckAuthStatusDto>;
+
+export type GetUserDtoType = z.infer<typeof GetUserDto>;
+
 export type HandleGoogleQueryDtoType = z.infer<typeof HandleGoogleQueryDto>;
 
-export type HandleGoogleCallBacKDtoType = z.infer<
-  typeof HandleGoogleCallBackDto
+export type handleGoogleCallbackDtoType = z.infer<
+  typeof handleGoogleCallbackDto
 >;
 
-export type HandleGoogleLinkingCallBackDtoType = z.infer<
-  typeof HandleGoogleLinkingCallBackDto
+export type handleGoogleLinkingCallbackDtoType = z.infer<
+  typeof handleGoogleLinkingCallbackDto
 > &
   UserId;
 

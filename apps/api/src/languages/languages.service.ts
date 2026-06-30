@@ -1,7 +1,7 @@
 import { and, asc, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { languages } from "@/drizzle/schema/languages";
 import { Inject, Injectable } from "@nestjs/common";
 
@@ -15,7 +15,7 @@ import {
 @Injectable()
 export class LanguagesService {
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
   ) {}
   async create(createLanguageDto: CreateLanguageDtoType) {

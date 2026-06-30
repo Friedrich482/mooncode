@@ -49,7 +49,7 @@ export const GetProjectFilesOnPeriodBaseDto = z.object({
 export const GetProjectFilesOnPeriodPaginatedDto = z.object({
   ...GetProjectFilesOnPeriodBaseDto.shape,
   page: z.number().int().positive(),
-  languages: z.array(z.string()).optional(),
+  languages: z.array(z.string()).min(1).optional(),
   type: z.literal("paginated"),
   search: z.string().min(1).max(20).optional(),
 });

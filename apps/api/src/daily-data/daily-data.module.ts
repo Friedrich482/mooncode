@@ -5,7 +5,6 @@ import { DailyDataService } from "./daily-data.service";
 
 @Module({
   imports: [DrizzleModule],
-
   providers: [DailyDataService],
   exports: [DailyDataService],
 })

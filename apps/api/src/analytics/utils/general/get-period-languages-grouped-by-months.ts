@@ -1,16 +1,16 @@
 import { endOfMonth, startOfMonth } from "date-fns";
 
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 
-export const getPeriodLanguagesGroupedByMonths = async (
-  data: Awaited<ReturnType<DailyDataService["findRange"]>>,
-  languagesService: LanguagesService,
-) => {
-  if (data.length === 0) return [];
+import { formatShortDate } from "../format-short-date";
 
+export const getPeriodLanguagesGroupedByMonths = (
+  data: (Awaited<ReturnType<DailyDataService["findRange"]>>[number] & {
+    languages: Awaited<ReturnType<LanguagesService["findAll"]>>;
+  })[],
+) => {
   const monthlyMap = new Map<
     string,
     {
@@ -27,16 +27,7 @@ export const getPeriodLanguagesGroupedByMonths = async (
   }
   const endDate = new Date(lastEntry.date);
 
-  const entriesWithLanguages = await Promise.all(
-    data.map(async (entry) => ({
-      ...entry,
-      languages: await languagesService.findAll({
-        dailyDataId: entry.id,
-      }),
-    })),
-  );
-
-  for (const [, entry] of entriesWithLanguages.entries()) {
+  for (const [, entry] of data.entries()) {
     const date = new Date(entry.date);
     let monthEnd = endOfMonth(date);
     const monthStart = startOfMonth(date);
@@ -53,17 +44,12 @@ export const getPeriodLanguagesGroupedByMonths = async (
         languages: {},
       });
     }
-    const monthEntry = monthlyMap.get(monthKey) as {
-      month: string;
-      timeSpent: number;
-      startDate: Date;
-      endDate: Date;
-      languages: Record<string, number>;
-    };
+    const monthEntry = monthlyMap.get(monthKey)!;
+
     monthEntry.timeSpent += entry.timeSpent;
 
     for (const [lang, time] of Object.entries(entry.languages)) {
-      monthEntry.languages[lang] = (monthEntry.languages[lang] || 0) + time;
+      monthEntry.languages[lang] = (monthEntry.languages[lang] ?? 0) + time;
     }
   }
 

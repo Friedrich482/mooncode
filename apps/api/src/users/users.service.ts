@@ -3,7 +3,7 @@ import { randomBytes } from "crypto";
 import { and, eq, or } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
-import { DrizzleAsyncProvider } from "@/drizzle/drizzle.provider";
+import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
 import { users } from "@/drizzle/schema/users";
 import { Inject, Injectable } from "@nestjs/common";
 import { TRPCError } from "@trpc/server";
@@ -24,38 +24,31 @@ export class UsersService {
   private readonly saltRounds = 10;
 
   constructor(
-    @Inject(DrizzleAsyncProvider)
+    @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
   ) {}
   async create(createUserDto: CreateUserDtoType) {
     const { email, password, username, emailVerifiedAt } = createUserDto;
 
-    // check if a user with the email already exists
-    const [existingUserWithSameEmail] = await this.db
-      .select()
+    // check if a user with the same email or username already exists
+    const [existingUserWithSameEmailOrUsername] = await this.db
+      .select({ email: users.email, username: users.username })
       .from(users)
-      .where(eq(users.email, email))
+      .where(or(eq(users.email, email), eq(users.username, username)))
       .limit(1);
 
-    if (existingUserWithSameEmail) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This email is already used",
-      });
-    }
-
-    // check if a user with the username already exists
-    const [existingUserWithSameUsername] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
-
-    if (existingUserWithSameUsername) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This username already exists",
-      });
+    if (existingUserWithSameEmailOrUsername) {
+      if (existingUserWithSameEmailOrUsername.email === email) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This email is already used",
+        });
+      } else {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This username already exists",
+        });
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, this.saltRounds);
@@ -83,35 +76,45 @@ export class UsersService {
       createGoogleUser;
 
     // check if a user with the email already exists
-    const [existingUserWithSameGoogleEmail] = await this.db
-      .select()
+    const [existingUserWithSameGoogleEmailOrUsername] = await this.db
+      .select({
+        googleEmail: users.googleEmail,
+        email: users.email,
+        username: users.username,
+      })
       .from(users)
       .where(
-        and(
-          or(eq(users.googleEmail, googleEmail), eq(users.email, email)),
-          eq(users.googleId, googleId),
+        or(
+          and(eq(users.googleEmail, googleEmail), eq(users.googleId, googleId)),
+          and(eq(users.email, email), eq(users.googleId, googleId)),
+          eq(users.username, username),
         ),
       )
       .limit(1);
 
-    if (existingUserWithSameGoogleEmail) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This google email is already used",
-      });
-    }
+    if (existingUserWithSameGoogleEmailOrUsername) {
+      if (
+        existingUserWithSameGoogleEmailOrUsername.googleEmail === googleEmail
+      ) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This google email is already used",
+        });
+      }
 
-    const [existingUserWithSameUsername] = await this.db
-      .select()
-      .from(users)
-      .where(eq(users.username, username))
-      .limit(1);
+      if (existingUserWithSameGoogleEmailOrUsername.email === email) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This email is already used",
+        });
+      }
 
-    if (existingUserWithSameUsername) {
-      throw new TRPCError({
-        code: "CONFLICT",
-        message: "This google username already exists",
-      });
+      if (existingUserWithSameGoogleEmailOrUsername.username === username) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "This username is already used",
+        });
+      }
     }
 
     const randomPassword = randomBytes(32).toString("hex");
@@ -124,7 +127,7 @@ export class UsersService {
         email: googleEmail,
         hashedPassword,
         profilePicture,
-        googleId: googleId,
+        googleId,
         googleEmail,
         authMethod: "google",
         emailVerifiedAt: new Date(),
@@ -282,9 +285,12 @@ export class UsersService {
     const [user] = await this.db
       .select({ email: users.email, hashedPassword: users.hashedPassword })
       .from(users)
-      .where(eq(users.id, id));
-    if (!user)
+      .where(eq(users.id, id))
+      .limit(1);
+
+    if (!user) {
       throw new TRPCError({ code: "NOT_FOUND", message: "User not found" });
+    }
 
     let hashedPassword = "";
 
