@@ -1,10 +1,11 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
 
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getProjectPerDayOfPeriodGroupedByWeeks = (
   data: Awaited<

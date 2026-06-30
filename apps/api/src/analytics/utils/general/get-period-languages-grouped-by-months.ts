@@ -1,9 +1,10 @@
 import { endOfMonth, startOfMonth } from "date-fns";
 
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getPeriodLanguagesGroupedByMonths = (
   data: (Awaited<ReturnType<DailyDataService["findRange"]>>[number] & {

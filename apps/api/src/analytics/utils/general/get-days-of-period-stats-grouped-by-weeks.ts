@@ -1,10 +1,11 @@
 import { endOfMonth, endOfWeek, startOfMonth, startOfWeek } from "date-fns";
 
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
 import { formatDuration } from "@repo/common/format-duration";
 import { PeriodResolution } from "@repo/common/types-schemas";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getDaysOfPeriodStatsGroupedByWeeks = (
   data: Awaited<ReturnType<DailyDataService["findRange"]>>,

@@ -1,8 +1,9 @@
 import { endOfMonth, startOfMonth } from "date-fns";
 
 import { ProjectsAnalyticsService } from "@/analytics/services/projects-analytics.service";
-import { formatShortDate } from "@/common/utils/format-short-date";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
+
+import { formatShortDate } from "../format-short-date";
 
 export const getProjectLanguagesGroupedByMonths = (
   data: Awaited<
