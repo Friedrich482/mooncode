@@ -32,6 +32,7 @@ export default defineConfig({
           include: ["./src/email/utils/*.test.tsx"],
           browser: {
             enabled: true,
+            headless: process.env.CI === "true",
             provider: playwright(),
             instances: [{ browser: "chromium" }],
           },

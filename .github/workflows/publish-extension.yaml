@@ -32,7 +32,7 @@ jobs:
           npm run publish:patch --workspace=mooncode
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
-          VITE_API_URL: ${{secrets.VITE_API_URL}}
-          VITE_LOGOUT_URL: ${{secrets.VITE_LOGOUT_URL}}
-          VITE_AUTH_GOOGLE_URL: ${{secrets.VITE_AUTH_GOOGLE_URL}}
-          VITE_LINKING_GOOGLE_ACCOUNT_URL: ${{secrets.VITE_LINKING_GOOGLE_ACCOUNT_URL}}
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_LOGOUT_URL: ${{ secrets.VITE_LOGOUT_URL }}
+          VITE_AUTH_GOOGLE_URL: ${{ secrets.VITE_AUTH_GOOGLE_URL }}
+          VITE_LINKING_GOOGLE_ACCOUNT_URL: ${{ secrets.VITE_LINKING_GOOGLE_ACCOUNT_URL }}

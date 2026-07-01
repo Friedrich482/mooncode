@@ -17,7 +17,7 @@
     "migrate": "npx drizzle-kit migrate",
     "studio": "drizzle-kit studio",
     "lint": "eslint \"**/*.{ts,tsx}\" --fix",
-    "test": "vitest run --browser.headless",
+    "test": "vitest",
     "test:watch": "vitest --watch",
     "test:ui": "vitest --ui --coverage",
     "test:debug": "vitest --inspect-brk --inspect --logHeapUsage --threads=false",
