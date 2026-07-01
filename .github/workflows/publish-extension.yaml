@@ -3,6 +3,10 @@ name: MoonCode Extension CI/CD Pipeline - Bump and publish extension version
 on:
   push:
     branches: "main"
+    paths:
+      - apps/dashboard/**
+      - apps/vscode-extension/**
+      - packages/common/**
 
 jobs:
   build-and-publish:
