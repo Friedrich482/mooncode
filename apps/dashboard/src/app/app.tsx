@@ -23,6 +23,7 @@ function makeQueryClient() {
       queries: {
         staleTime: 60 * 1000,
         refetchOnWindowFocus: true,
+        refetchOnReconnect: true,
         refetchInterval: 60 * 1000,
         retry: (failureCount, error) => {
           if (isTRPCClientError(error)) {
@@ -42,7 +43,10 @@ function getQueryClient() {
   if (typeof window === "undefined") {
     return makeQueryClient();
   } else {
-    if (!browserQueryClient) browserQueryClient = makeQueryClient();
+    if (!browserQueryClient) {
+      browserQueryClient = makeQueryClient();
+    }
+
     return browserQueryClient;
   }
 }

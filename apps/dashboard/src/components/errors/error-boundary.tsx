@@ -52,22 +52,38 @@ export const FallBackRender = ({
     }
   }, [error.data?.code]);
 
-  // reset the error boundary only if the range is reset properly (start date before end date or period changes)
+  // ! reset the error boundary only:
+  // ! if the range is reset properly (start date before end date or period is not a custom range period)
+  // ! don't reset the error boundary if the server is unreachable
+  const isFetchFailure =
+    error.message === "Failed to fetch" ||
+    error.cause?.message === "Failed to fetch";
+  const errorMessage = isFetchFailure
+    ? `${error.message}. Please check your internet connection`
+    : error.message;
+
   useEffect(() => {
     if (
-      !isAfter(customRange.start, customRange.end) ||
-      period !== "Custom Range"
+      (!isAfter(customRange.start, customRange.end) ||
+        period !== "Custom Range") &&
+      !isFetchFailure
     ) {
       resetErrorBoundary();
     }
-  }, [customRange.start, customRange.end, period]);
+  }, [
+    customRange.start,
+    customRange.end,
+    period,
+    isFetchFailure,
+    resetErrorBoundary,
+  ]);
 
   return rest.hasCustomChildren ? (
-    rest.customChildren(error.message)
+    rest.customChildren(errorMessage)
   ) : (
     <BaseErrorComponent
       className={rest.className}
-      errorMessage={error.message}
+      errorMessage={errorMessage}
     />
   );
 };
