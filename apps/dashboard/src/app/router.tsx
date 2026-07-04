@@ -29,12 +29,14 @@ import { redirectToNotFoundLoader } from "@/loaders/redirect-to-not-found-loader
 import { rootLoader } from "@/loaders/root-loader";
 
 import { App } from "./app";
+import { AppErrorBoundary } from "./app-error-boundary";
 import { RegisterFinish } from "./pages/auth/register-finish";
 import { Profile } from "./pages/profile/profile";
 
 const router = createBrowserRouter([
   {
     element: <App />,
+    ErrorBoundary: () => <AppErrorBoundary />,
     children: [
       {
         element: <Layout />,
