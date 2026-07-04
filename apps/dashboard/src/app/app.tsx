@@ -6,6 +6,7 @@ import superjson from "superjson";
 import { FallBackRender } from "@/components/errors/error-boundary";
 import { NavigationResetWrapper } from "@/components/layout/navigation-reset-wrapper";
 import { useExtensionWebsocket } from "@/hooks/use-extension-websocket";
+import { useSetupOnlineManager } from "@/hooks/use-setup-online-manager";
 import { ThemeProvider } from "@/providers/theme-provider";
 import { isTRPCClientError, TRPCProvider } from "@/utils/trpc";
 import type { AppRouter } from "@repo/trpc/router";
@@ -72,6 +73,7 @@ export const App = () => {
   );
 
   useExtensionWebsocket();
+  useSetupOnlineManager();
 
   return (
     <ThemeProvider>

@@ -4,6 +4,7 @@ import { TriangleAlert } from "lucide-react";
 
 import { usePeriodStore } from "@/stores/period/period-store";
 import { AppRouter } from "@repo/trpc/router";
+import { onlineManager } from "@tanstack/react-query";
 import { TRPCClientError } from "@trpc/client";
 
 type BaseErrorProps = {
@@ -54,6 +55,7 @@ export const FallBackRender = ({
 
   // ! reset the error boundary only:
   // ! if the range is reset properly (start date before end date or period is not a custom range period)
+  // ! or if the server was unreachable and is now available
   // ! don't reset the error boundary if the server is unreachable
   const isFetchFailure =
     error.message === "Failed to fetch" ||
@@ -77,6 +79,18 @@ export const FallBackRender = ({
     isFetchFailure,
     resetErrorBoundary,
   ]);
+
+  useEffect(() => {
+    if (!isFetchFailure) {
+      return;
+    }
+
+    return onlineManager.subscribe((isOnline) => {
+      if (isOnline) {
+        resetErrorBoundary();
+      }
+    });
+  }, [isFetchFailure, resetErrorBoundary]);
 
   return rest.hasCustomChildren ? (
     rest.customChildren(errorMessage)
