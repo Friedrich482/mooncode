@@ -27,7 +27,7 @@ export const DayChartTitle = ({
     <h2 className="flex items-center justify-between gap-4 px-3 text-center text-2xl font-bold">
       <Icon
         Icon={ChevronLeft}
-        className="max-[20.5rem]:hidden"
+        className="shrink-0 max-[20.5rem]:hidden"
         onClick={handleChevronLeftClick}
       />
       <div className="inline-block max-[26.25rem]:text-lg max-[24.375rem]:text-sm max-[20.5rem]:w-full">
@@ -50,7 +50,7 @@ export const DayChartTitle = ({
       </div>
       <Icon
         Icon={ChevronRight}
-        className="max-[20.5rem]:hidden"
+        className="shrink-0 max-[20.5rem]:hidden"
         onClick={handleChevronRightClick}
         // deactivate the next date button if we are "Today"
         disabled={isSameDay(date, new Date())}

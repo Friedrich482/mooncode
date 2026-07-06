@@ -16,6 +16,9 @@ export const appRouterProvider = {
       ...authRouter.procedures(),
       ...extensionRouter.procedures(),
       ...analyticsRouter.procedures(),
+      health: {
+        ping: trpcService.publicProcedure().query(() => ({ status: "OK" })),
+      },
     });
 
     return appRouter;

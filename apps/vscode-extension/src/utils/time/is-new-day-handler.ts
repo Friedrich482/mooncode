@@ -10,7 +10,7 @@ export const isNewDayHandler = async (
 ) => {
   const todaysDateString = getLocaleDate(new Date());
 
-  // if the global state doesn't have that date, it means it a new day
+  // if the global state doesn't have that date, it means it is a new day
   if (!Object.hasOwn(dailyData, todaysDateString)) {
     deleteFilesDataContent();
 

@@ -1,5 +1,5 @@
 import { useLocation } from "react-router";
-import { Folder, LayoutDashboard, User } from "lucide-react";
+import { LayoutDashboard } from "lucide-react";
 
 import { LinkWithQuery } from "@/components/common/link-with-query";
 import {
@@ -60,7 +60,6 @@ export const AppSidebarError = ({ errorMessage }: { errorMessage: string }) => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton variant="outline">
-                  <Folder />
                   <span>{errorMessage}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -73,7 +72,6 @@ export const AppSidebarError = ({ errorMessage }: { errorMessage: string }) => {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton variant="outline">
-              <User />
               <span>{errorMessage}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
