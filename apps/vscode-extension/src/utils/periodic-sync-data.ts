@@ -5,9 +5,11 @@ import { getLocaleDate } from "@repo/common/get-locale-date";
 
 import { getLoginContext } from "./auth/login-context";
 import { handleInvalidTokenError } from "./errors/handle-invalid-token-error";
+import { hasFilesDataChanged } from "./files/has-files-data-changed";
 import { updateFilesDataAfterSync } from "./files/update-files-data-after-sync";
 import { getGlobalStateData } from "./global-state/get-global-state-data";
 import { updateGlobalStateData } from "./global-state/update-global-state-data";
+import { hasLanguagesDataChanged } from "./languages/has-languages-data-changed";
 import { logError } from "./logger/logger";
 import { setStatusBarItem } from "./status-bar/set-status-bar-item";
 import { calculateTime } from "./time/calculate-time";
@@ -35,7 +37,7 @@ export const periodicSyncData = async (
 
   const timeSpentPerLanguageToday = Object.entries(filesDataToUpsert).reduce(
     (acc, [, { elapsedTime, languageSlug }]) => {
-      acc[languageSlug] = (acc[languageSlug] || 0) + elapsedTime;
+      acc[languageSlug] = (acc[languageSlug] ?? 0) + elapsedTime;
       return acc;
     },
     {} as { [languageSlug: string]: number },
@@ -83,36 +85,52 @@ export const periodicSyncData = async (
       }
     }
 
-    const upsertedLanguagesData = await trpc.extension.upsertLanguages.mutate({
-      targetedDate: todaysDateString,
-      timeSpentOnDay: timeSpentToday,
-      timeSpentPerLanguage: timeSpentPerLanguageToday,
-    });
+    const hasLanguagesDataChangedSinceLastSync = hasLanguagesDataChanged(
+      globalStateData.dailyData[todaysDateString]?.timeSpentPerLanguage ?? {},
+      timeSpentPerLanguageToday,
+    );
 
-    timeSpentOnDay = upsertedLanguagesData.timeSpentOnDay;
-    timeSpentPerLanguage = upsertedLanguagesData.languages;
-
-    const files = await trpc.extension.upsertFiles.mutate({
-      filesData: todayFilesData,
-      targetedDate: todaysDateString,
-    });
-    updateFilesDataAfterSync(files);
-
-    isServerSynced = true;
-    lastServerSync = new Date();
-
-    // Remove all the data for days previous to today - they've been synced
-    await updateGlobalStateData({
-      lastServerSync,
-      dailyData: {
-        [todaysDateString]: {
-          timeSpentOnDay,
-          timeSpentPerLanguage,
-          dayFilesData: files,
-          updatedAt: new Date(),
+    if (hasLanguagesDataChangedSinceLastSync) {
+      const upsertedLanguagesData = await trpc.extension.upsertLanguages.mutate(
+        {
+          targetedDate: todaysDateString,
+          timeSpentOnDay: timeSpentToday,
+          timeSpentPerLanguage: timeSpentPerLanguageToday,
         },
-      },
-    });
+      );
+
+      timeSpentOnDay = upsertedLanguagesData.timeSpentOnDay;
+      timeSpentPerLanguage = upsertedLanguagesData.languages;
+    }
+
+    const hasFilesDataChangedSinceLastSync = hasFilesDataChanged(
+      globalStateData.dailyData[todaysDateString]?.dayFilesData ?? {},
+      todayFilesData,
+    );
+
+    if (hasFilesDataChangedSinceLastSync) {
+      const files = await trpc.extension.upsertFiles.mutate({
+        filesData: todayFilesData,
+        targetedDate: todaysDateString,
+      });
+      updateFilesDataAfterSync(files);
+
+      isServerSynced = true;
+      lastServerSync = new Date();
+
+      // Remove all the data for days previous to today - they've been synced
+      await updateGlobalStateData({
+        lastServerSync,
+        dailyData: {
+          [todaysDateString]: {
+            timeSpentOnDay,
+            timeSpentPerLanguage,
+            dayFilesData: files,
+            updatedAt: new Date(),
+          },
+        },
+      });
+    }
   } catch (error) {
     if (isTRPCClientError(error)) {
       logError(
