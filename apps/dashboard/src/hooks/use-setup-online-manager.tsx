@@ -8,7 +8,7 @@ export const useSetupOnlineManager = () => {
     onlineManager.setEventListener((setOnline) => {
       const check = async () => {
         try {
-          await trpcLoaderClient.auth.checkAuthStatus.query();
+          await trpcLoaderClient.health.ping.query();
           setOnline(true);
         } catch {
           setOnline(false);
@@ -20,7 +20,6 @@ export const useSetupOnlineManager = () => {
       const interval = setInterval(check, 60 * 1000);
       window.addEventListener("online", check);
       window.addEventListener("offline", setOffline);
-      window.addEventListener("focus", check);
 
       check();
 
@@ -28,7 +27,6 @@ export const useSetupOnlineManager = () => {
         clearInterval(interval);
         window.removeEventListener("online", check);
         window.removeEventListener("offline", setOffline);
-        window.removeEventListener("focus", check);
       };
     });
   }, []);

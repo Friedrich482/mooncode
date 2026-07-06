@@ -6,10 +6,12 @@ export const RegisterFinish = () => {
   usePageTitle("Register | MoonCode");
 
   return (
-    <main className="flex items-center gap-2">
-      <Night className="relative flex size-full h-dvh w-[50%] max-[42.5rem]:hidden" />
+    <main className="flex min-h-dvh gap-2">
+      <div className="relative w-1/2 max-[42.5rem]:hidden">
+        <Night className="absolute h-full" />
+      </div>
 
-      <div className="flex h-dvh w-[50%] items-center justify-center max-[42.5rem]:w-full">
+      <div className="flex w-1/2 items-center justify-center max-[42.5rem]:w-full">
         <RegisterFinishForm />
       </div>
     </main>
