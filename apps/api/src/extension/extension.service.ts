@@ -1,3 +1,4 @@
+import { BranchesService } from "@/branches/branches.service";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { FilesService } from "@/files/files.service";
 import { LanguagesService } from "@/languages/languages.service";
@@ -17,6 +18,7 @@ export class ExtensionService {
     private readonly dailyDataService: DailyDataService,
     private readonly languagesService: LanguagesService,
     private readonly projectsService: ProjectsService,
+    private readonly branchesService: BranchesService,
     private readonly filesService: FilesService,
   ) {}
 
@@ -234,6 +236,86 @@ export class ExtensionService {
       }
     }
 
+    // we need to create all branches of the projects
+    const branchesData = Object.entries(filesData)
+      .map((entry) => ({
+        filePath: entry[0],
+        ...entry[1],
+      }))
+      .reduce(
+        (acc, curr) => {
+          acc[curr.projectPath] = {
+            ...acc[curr.projectPath],
+            [curr.branchName]: {
+              projectId:
+                acc[curr.projectPath]?.[curr.branchName]?.projectId ??
+                updatedProjects[curr.projectPath].projectId,
+              timeSpent:
+                (acc[curr.projectPath]?.[curr.branchName]?.timeSpent ?? 0) +
+                curr.timeSpent,
+            },
+          };
+
+          return acc;
+        },
+        {} as {
+          [projectPath: string]: {
+            [branchName: string]: {
+              timeSpent: number;
+              projectId: string;
+            };
+          };
+        },
+      );
+
+    const updatedBranches: {
+      [projectPath: string]: {
+        [branchName: string]: { timeSpent: number; branchId: string };
+      };
+    } = {};
+
+    // for each project
+    for (const [projectPath, branches] of Object.entries(branchesData)) {
+      // for each branch in that project
+      for (const [name, branch] of Object.entries(branches)) {
+        const existingBranch = await this.branchesService.findOne({
+          name,
+          projectId: branch.projectId,
+        });
+
+        updatedBranches[projectPath][name] = { branchId: "", timeSpent: 0 };
+
+        if (!existingBranch) {
+          // if the branch doesn't exist, create it
+          const createdBranch = await this.branchesService.create({
+            name,
+            timeSpent: branch.timeSpent,
+            projectId: branch.projectId,
+          });
+
+          updatedBranches[projectPath][name].branchId = createdBranch.id;
+          updatedBranches[projectPath][name].timeSpent =
+            createdBranch.timeSpent;
+        } else {
+          // else update it but only if the new time spent is greater than the existing one
+          if (existingBranch.timeSpent < branch.timeSpent) {
+            const updatedBranch = await this.branchesService.update({
+              name,
+              projectId: branch.projectId,
+              timeSpent: branch.timeSpent,
+            });
+            updatedBranches[projectPath][name].timeSpent =
+              updatedBranch.timeSpent;
+          } else {
+            updatedBranches[projectPath][name].timeSpent =
+              existingBranch.timeSpent;
+          }
+
+          updatedBranches[projectPath][name].branchId = existingBranch.id;
+        }
+      }
+    }
+
     const returningFilesData = await this.filesService.findAllOnDay({
       dailyDataId: dailyDataForDay.id,
     });
@@ -250,7 +332,7 @@ export class ExtensionService {
       }
 
       const existingFileData = await this.filesService.findOne({
-        projectId: updatedProjects[file.projectPath].projectId,
+        branchId: updatedBranches[file.projectPath][file.branchName].branchId,
         name: file.fileName,
         path,
         languageId: fileLanguage.languageId,
@@ -259,7 +341,7 @@ export class ExtensionService {
       if (!existingFileData) {
         // if the data for this file doesn't exist, create it
         const createdFile = await this.filesService.create({
-          projectId: updatedProjects[file.projectPath].projectId,
+          branchId: updatedBranches[file.projectPath][file.branchName].branchId,
           languageId: fileLanguage.languageId,
           name: file.fileName,
           path,
@@ -272,12 +354,14 @@ export class ExtensionService {
           projectPath: file.projectPath,
           timeSpent: createdFile.timeSpent,
           fileName: createdFile.name,
+          branchName: file.branchName,
         };
       } else {
         // else just update the file data but only if the new timeSpent is greater than the existing one
         if (existingFileData.timeSpent < file.timeSpent) {
           const updatedFile = await this.filesService.update({
-            projectId: updatedProjects[file.projectPath].projectId,
+            branchId:
+              updatedBranches[file.projectPath][file.branchName].branchId,
             languageId: fileLanguage.languageId,
             path,
             timeSpent: file.timeSpent,
@@ -290,6 +374,7 @@ export class ExtensionService {
             projectPath: file.projectPath,
             timeSpent: updatedFile.timeSpent,
             fileName: updatedFile.name,
+            branchName: file.branchName,
           };
         } else {
           returningFilesData[path] = {
@@ -298,6 +383,7 @@ export class ExtensionService {
             projectPath: file.projectPath,
             fileName: file.fileName,
             timeSpent: existingFileData.timeSpent,
+            branchName: file.branchName,
           };
         }
       }

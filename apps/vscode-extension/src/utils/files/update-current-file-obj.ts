@@ -17,7 +17,8 @@ export const updateCurrentFileObj = (
     !projectName ||
     !projectPath ||
     !currentLanguageSlug ||
-    !fileName
+    !fileName ||
+    !branchName
   ) {
     return;
   }

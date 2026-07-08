@@ -33,6 +33,7 @@ export const updateFilesDataAfterSync = (
       projectPath: file.projectPath,
       languageSlug: file.languageSlug,
       fileName: file.fileName,
+      branchName: file.branchName,
     };
   });
 };

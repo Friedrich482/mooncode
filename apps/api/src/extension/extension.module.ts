@@ -1,3 +1,4 @@
+import { BranchesModule } from "@/branches/branches.module";
 import { DailyDataModule } from "@/daily-data/daily-data.module";
 import { FilesModule } from "@/files/files.module";
 import { LanguagesModule } from "@/languages/languages.module";
@@ -8,7 +9,13 @@ import { ExtensionRouter } from "./extension.router";
 import { ExtensionService } from "./extension.service";
 
 @Module({
-  imports: [DailyDataModule, LanguagesModule, ProjectsModule, FilesModule],
+  imports: [
+    DailyDataModule,
+    LanguagesModule,
+    ProjectsModule,
+    BranchesModule,
+    FilesModule,
+  ],
   providers: [ExtensionService, ExtensionRouter],
   exports: [ExtensionService, ExtensionRouter],
 })

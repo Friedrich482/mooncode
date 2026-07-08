@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const CreateFileDto = z.object({
-  projectId: z.ulid(),
+  branchId: z.ulid(),
   languageId: z.ulid(),
   path: z.string().min(1),
   name: z.string().min(1),
@@ -9,7 +9,7 @@ export const CreateFileDto = z.object({
 });
 
 export const UpdateFileDto = z.object({
-  projectId: z.ulid(),
+  branchId: z.ulid(),
   languageId: z.ulid(),
   timeSpent: z.number().int(),
   path: z.string().min(1),
@@ -18,7 +18,7 @@ export const UpdateFileDto = z.object({
 
 export const FindOneFileDto = z.object({
   languageId: z.ulid(),
-  projectId: z.ulid(),
+  branchId: z.ulid(),
   name: z.string().min(1),
   path: z.string().min(1),
 });

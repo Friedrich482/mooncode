@@ -9,6 +9,7 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AppRouterModule } from "./app-router/app-router.module";
 import { AuthModule } from "./auth/auth.module";
+import { BranchesModule } from "./branches/branches.module";
 import { DailyDataModule } from "./daily-data/daily-data.module";
 import { DrizzleModule } from "./drizzle/drizzle.module";
 import { EmailModule } from "./email/email.module";
@@ -52,6 +53,7 @@ import { UsersModule } from "./users/users.module";
     PasswordResetsModule,
     AnalyticsModule,
     ExtensionModule,
+    BranchesModule,
   ],
   controllers: [AppController],
   providers: [

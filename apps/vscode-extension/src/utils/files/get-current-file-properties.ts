@@ -34,7 +34,7 @@ export const getCurrentFileProperties = (
     };
   }
 
-  const branchName = getCurrentGitBranch(projectPath);
+  const branchName = getCurrentGitBranch(projectPath) ?? "N/A";
 
   const absolutePath = path.normalize(fileUri.fsPath);
   const fileName = path.basename(absolutePath);
