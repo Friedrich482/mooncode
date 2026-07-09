@@ -8,7 +8,7 @@ import { getLanguageColor } from "@repo/ui/utils/get-language-color";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const useSuspenseQueryProjectsLangChart = () => {
-  const { projectName: name } = useLoaderData<typeof projectLoader>();
+  const { projectName } = useLoaderData<typeof projectLoader>();
 
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
@@ -21,12 +21,12 @@ export const useSuspenseQueryProjectsLangChart = () => {
         ? {
             start: customRange.start,
             end: customRange.end,
-            name,
+            projectName,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
-            name,
+            projectName,
           },
     ),
   );
@@ -37,13 +37,13 @@ export const useSuspenseQueryProjectsLangChart = () => {
         ? {
             start: customRange.start,
             end: customRange.end,
-            name,
+            projectName,
             groupBy,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
-            name,
+            projectName,
             groupBy,
           },
     ),

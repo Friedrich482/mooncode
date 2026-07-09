@@ -20,12 +20,12 @@ export const useGetTimeSpentOnProject = () => {
         ? {
             start: customRange.start,
             end: customRange.end,
-            name: projectName,
+            projectName,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
-            name: projectName,
+            projectName,
           },
     ),
   );

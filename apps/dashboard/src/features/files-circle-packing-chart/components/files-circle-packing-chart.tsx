@@ -13,7 +13,7 @@ import { Tree } from "../types-schemas";
 import { CircularPacking } from "./circular-packing";
 
 export const FilesCirclePackingChart = () => {
-  const { projectName: name } = useLoaderData<typeof projectLoader>();
+  const { projectName } = useLoaderData<typeof projectLoader>();
 
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
@@ -27,14 +27,14 @@ export const FilesCirclePackingChart = () => {
     trpc.analytics.projects.getProjectFilesOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
-            name,
+            projectName,
             start: customRange.start,
             end: customRange.end,
             amount: NUMBER_OF_FILES_TO_SHOW,
             type: "normal" as const,
           }
         : {
-            name,
+            projectName,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             amount: NUMBER_OF_FILES_TO_SHOW,

@@ -33,7 +33,7 @@ export const ProjectDayLanguagesChart = () => {
   const { data } = useSuspenseQuery(
     trpc.analytics.projects.getProjectDailyStats.queryOptions({
       dateString,
-      name: projectName,
+      projectName,
     }),
   );
 

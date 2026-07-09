@@ -282,7 +282,7 @@ export class ExtensionService {
           name,
           projectId: branch.projectId,
         });
-
+        updatedBranches[projectPath] ??= {};
         updatedBranches[projectPath][name] = { branchId: "", timeSpent: 0 };
 
         if (!existingBranch) {

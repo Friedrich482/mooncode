@@ -1,3 +1,4 @@
+import { BranchesModule } from "@/branches/branches.module";
 import { DailyDataModule } from "@/daily-data/daily-data.module";
 import { DrizzleModule } from "@/drizzle/drizzle.module";
 import { LanguagesModule } from "@/languages/languages.module";
@@ -11,7 +12,13 @@ import { GeneralAnalyticsService } from "./services/general-analytics.service";
 import { ProjectsAnalyticsService } from "./services/projects-analytics.service";
 
 @Module({
-  imports: [DrizzleModule, DailyDataModule, LanguagesModule, ProjectsModule],
+  imports: [
+    DrizzleModule,
+    DailyDataModule,
+    LanguagesModule,
+    ProjectsModule,
+    BranchesModule,
+  ],
   providers: [
     GeneralAnalyticsRouter,
     AnalyticsRouter,

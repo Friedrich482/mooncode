@@ -11,7 +11,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { Entry } from "../types-schemas";
 
 export const useLanguagesDropDown = () => {
-  const { projectName: name } = useLoaderData<typeof projectLoader>();
+  const { projectName } = useLoaderData<typeof projectLoader>();
 
   const trpc = useTRPC();
   const period = usePeriodStore((state) => state.period);
@@ -20,9 +20,9 @@ export const useLanguagesDropDown = () => {
   const { data: fetchedData } = useSuspenseQuery(
     trpc.analytics.projects.getProjectLanguagesTimeOnPeriod.queryOptions(
       period === "Custom Range"
-        ? { name, start: customRange.start, end: customRange.end }
+        ? { projectName, start: customRange.start, end: customRange.end }
         : {
-            name,
+            projectName,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
           },

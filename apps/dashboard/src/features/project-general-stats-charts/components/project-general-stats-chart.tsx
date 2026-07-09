@@ -48,14 +48,14 @@ export const ProjectGeneralStatsChart = () => {
             start: customRange.start,
             end: customRange.end,
             todaysDateString,
-            name: projectName,
+            projectName,
             groupBy,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             todaysDateString,
-            name: projectName,
+            projectName,
             groupBy,
           },
     ),

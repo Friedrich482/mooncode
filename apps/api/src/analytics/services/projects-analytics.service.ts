@@ -41,9 +41,16 @@ import { getProjectMostUsedLanguageOnPeriod } from "@/analytics/utils/projects/g
 import { getProjectPerDayOfPeriodGroupedByDays } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-days";
 import { getProjectPerDayOfPeriodGroupedByMonths } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-months";
 import { getProjectPerDayOfPeriodGroupedByWeeks } from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
+import { BranchesService } from "@/branches/branches.service";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
-import { dailyData, files, languages, projects } from "@/drizzle/schema";
+import {
+  branches,
+  dailyData,
+  files,
+  languages,
+  projects,
+} from "@/drizzle/schema";
 import { ProjectsService } from "@/projects/projects.service";
 import { Inject, Injectable } from "@nestjs/common";
 import { convertToISODate } from "@repo/common/convert-to-iso-date";
@@ -58,25 +65,34 @@ export class ProjectsAnalyticsService {
     @Inject(DRIZZLE_ASYNC_PROVIDER)
     private readonly db: NodePgDatabase,
     private readonly projectsService: ProjectsService,
+    private readonly branchesService: BranchesService,
     private readonly dailyDataService: DailyDataService,
   ) {}
 
   async findProjectByNameOnRange(
     findProjectByNameOnRangeDto: FindProjectByNameOnRangeDtoType,
   ) {
-    const { userId, name, start, end } = findProjectByNameOnRangeDto;
+    const {
+      userId,
+      projectName,
+      branches: branchesArray,
+      start,
+      end,
+    } = findProjectByNameOnRangeDto;
 
     const data = await this.db
       .select({
         date: dailyData.date,
-        timeSpent: sum(projects.timeSpent).mapWith(Number),
+        timeSpent: sum(branches.timeSpent).mapWith(Number),
       })
       .from(projects)
+      .innerJoin(branches, eq(projects.id, branches.projectId))
       .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, name),
+          eq(projects.name, projectName),
+          branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
       )
@@ -95,8 +111,8 @@ export class ProjectsAnalyticsService {
       const formattedDate = convertToISODate(date);
       return (
         dataByDate[formattedDate] ?? {
-          timeSpent: 0,
           date: formattedDate,
+          timeSpent: 0,
         }
       );
     });
@@ -107,7 +123,13 @@ export class ProjectsAnalyticsService {
   async getLanguagesTimeOnPeriod(
     getProjectLanguagesTimeOnPeriodDto: GetProjectLanguagesTimeOnPeriodDtoType,
   ) {
-    const { userId, name, start, end } = getProjectLanguagesTimeOnPeriodDto;
+    const {
+      userId,
+      projectName,
+      branches: branchesArray,
+      start,
+      end,
+    } = getProjectLanguagesTimeOnPeriodDto;
 
     const aggregated = await this.db
       .select({
@@ -115,13 +137,15 @@ export class ProjectsAnalyticsService {
         totalTime: sum(files.timeSpent).mapWith(Number),
       })
       .from(files)
-      .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(branches, eq(branches.id, files.branchId))
+      .innerJoin(projects, eq(projects.id, branches.projectId))
       .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+      .innerJoin(languages, eq(languages.id, files.languageId))
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, name),
+          eq(projects.name, projectName),
+          branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
       )
@@ -142,8 +166,13 @@ export class ProjectsAnalyticsService {
   async getLanguagesTimePerDayOfPeriod(
     getProjectLanguagesTimePerDayOfPeriodDto: GetProjectLanguagesTimePerDayOfPeriodDtoType,
   ) {
-    const { userId, name, start, end } =
-      getProjectLanguagesTimePerDayOfPeriodDto;
+    const {
+      userId,
+      projectName,
+      branches: branchesArray,
+      start,
+      end,
+    } = getProjectLanguagesTimePerDayOfPeriodDto;
 
     const data = await this.db
       .select({
@@ -152,22 +181,22 @@ export class ProjectsAnalyticsService {
         date: dailyData.date,
       })
       .from(files)
-      .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
+      .innerJoin(branches, eq(branches.id, files.branchId))
+      .innerJoin(projects, eq(projects.id, branches.projectId))
       .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+      .innerJoin(languages, eq(languages.id, files.languageId))
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, name),
+          eq(projects.name, projectName),
+          branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
       );
 
     const languagesPerDayOfPeriod = data.reduce(
       (acc, { date, languageSlug, timeSpent }) => {
-        if (!acc[date]) {
-          acc[date] = {};
-        }
+        acc[date] ??= {};
         acc[date][languageSlug] = (acc[date][languageSlug] ?? 0) + timeSpent;
         return acc;
       },
@@ -214,13 +243,19 @@ export class ProjectsAnalyticsService {
   }
 
   async getProjectOnPeriod(getProjectOnPeriodDto: GetProjectOnPeriodDtoType) {
-    const { userId, start, end, name } = getProjectOnPeriodDto;
+    const {
+      userId,
+      start,
+      end,
+      projectName,
+      branches: branchesArray,
+    } = getProjectOnPeriodDto;
 
     const [userHasProjectsOfName] = await this.db
       .select({ name: projects.name, path: projects.path })
       .from(projects)
       .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
-      .where(and(eq(projects.name, name), eq(dailyData.userId, userId)))
+      .where(and(eq(projects.name, projectName), eq(dailyData.userId, userId)))
       .limit(1);
 
     if (!userHasProjectsOfName) {
@@ -231,19 +266,21 @@ export class ProjectsAnalyticsService {
       .select({
         name: projects.name,
         path: projects.path,
-        totalTimeSpent: sum(projects.timeSpent).mapWith(Number),
+        totalTimeSpent: sum(branches.timeSpent).mapWith(Number),
       })
       .from(projects)
-      .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+      .innerJoin(branches, eq(projects.id, branches.projectId))
       .where(
         and(
           eq(dailyData.userId, userId),
+          eq(projects.name, projectName),
+          branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
-          eq(projects.name, name),
         ),
       )
       .groupBy(projects.path, projects.name)
-      .orderBy(desc(sum(projects.timeSpent)));
+      .orderBy(desc(sum(branches.timeSpent)));
 
     if (!projectAggregatedOnPeriod) {
       return {
@@ -259,14 +296,22 @@ export class ProjectsAnalyticsService {
   async getProjectPerDayOfPeriod(
     getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType,
   ) {
-    const { userId, start, end, name, groupBy, periodResolution } =
-      getProjectPerDayOfPeriodDto;
+    const {
+      userId,
+      start,
+      end,
+      projectName,
+      branches,
+      groupBy,
+      periodResolution,
+    } = getProjectPerDayOfPeriodDto;
 
     const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
-      name,
+      projectName,
+      branches,
     });
 
     if (projectOnDaysOnPeriod.length === 0) {
@@ -297,13 +342,15 @@ export class ProjectsAnalyticsService {
   async getProjectLanguagesTimeOnPeriod(
     getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType,
   ) {
-    const { userId, start, end, name } = getProjectLanguagesTimeOnPeriod;
+    const { userId, start, end, projectName, branches } =
+      getProjectLanguagesTimeOnPeriod;
 
     const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
-      name,
+      projectName,
+      branches,
     });
 
     if (projectOnDaysOnPeriod.length === 0) {
@@ -315,7 +362,8 @@ export class ProjectsAnalyticsService {
         userId,
         start,
         end,
-        name,
+        projectName,
+        branches,
       })
     ).totalTimeSpent;
 
@@ -323,7 +371,8 @@ export class ProjectsAnalyticsService {
       userId,
       start,
       end,
-      name,
+      projectName,
+      branches,
     });
 
     const projectLanguagesTimeOnPeriod = Object.entries(aggregatedLanguageTime)
@@ -348,14 +397,22 @@ export class ProjectsAnalyticsService {
   async getProjectLanguagesPerDayOfPeriod(
     getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType,
   ) {
-    const { userId, start, end, name, groupBy, periodResolution } =
-      getProjectLanguagesPerDayOfPeriodDto;
+    const {
+      userId,
+      start,
+      end,
+      projectName,
+      branches,
+      groupBy,
+      periodResolution,
+    } = getProjectLanguagesPerDayOfPeriodDto;
 
     const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
-      name,
+      projectName,
+      branches,
     });
 
     if (projectOnDaysOnPeriod.length === 0) {
@@ -367,7 +424,7 @@ export class ProjectsAnalyticsService {
         userId,
         start,
         end,
-        name,
+        projectName,
       });
 
     switch (groupBy) {
@@ -404,7 +461,12 @@ export class ProjectsAnalyticsService {
   async getProjectDailyStats(
     getProjectDailyStatsDto: GetProjectDailyStatsDtoType,
   ) {
-    const { dateString, name, userId } = getProjectDailyStatsDto;
+    const {
+      dateString,
+      projectName,
+      branches: branchesArray,
+      userId,
+    } = getProjectDailyStatsDto;
 
     const dayData = await this.dailyDataService.findOne({
       userId,
@@ -425,10 +487,15 @@ export class ProjectsAnalyticsService {
         projectPath: projects.path,
       })
       .from(files)
-      .innerJoin(projects, eq(projects.id, files.projectId))
+      .innerJoin(branches, eq(branches.id, files.branchId))
+      .innerJoin(projects, eq(projects.id, branches.projectId))
       .innerJoin(languages, eq(languages.id, files.languageId))
       .where(
-        and(eq(projects.name, name), eq(projects.dailyDataId, dayData.id)),
+        and(
+          eq(projects.name, projectName),
+          branchesArray ? inArray(branches.name, branchesArray) : undefined,
+          eq(projects.dailyDataId, dayData.id),
+        ),
       );
 
     if (rawProjectFilesOnDay.length === 0) {
@@ -447,15 +514,52 @@ export class ProjectsAnalyticsService {
       {} as { [languageSlug: string]: number },
     );
 
-    const totalTimeSpent = (
+    const projectId = (
       await this.projectsService.findOne({
         dailyDataId: dayData.id,
-        name,
+        name: projectName,
         path: rawProjectFilesOnDay[0].projectPath,
       })
-    )?.timeSpent;
+    )?.id;
 
-    if (!totalTimeSpent) {
+    if (!projectId) {
+      return {
+        formattedTotalTimeSpent: formatDuration(0),
+        finalData: [],
+      };
+    }
+
+    let totalTimeSpent = 0;
+
+    // if there are branches, the total time spent is the sum of the times spent across all the branches
+    if (branchesArray) {
+      const branchesFound = await Promise.all(
+        branchesArray.map(
+          async (branch) =>
+            await this.branchesService.findOne({
+              projectId,
+              name: branch,
+            }),
+        ),
+      );
+
+      totalTimeSpent = branchesFound.reduce((acc, curr) => {
+        acc = acc + (curr?.timeSpent ?? 0);
+        return acc;
+      }, 0);
+    } else {
+      // otherwise it is just the time spent on the project
+      totalTimeSpent =
+        (
+          await this.projectsService.findOne({
+            dailyDataId: dayData.id,
+            name: projectName,
+            path: rawProjectFilesOnDay[0].projectPath,
+          })
+        )?.timeSpent ?? 0;
+    }
+
+    if (totalTimeSpent === 0) {
       return {
         formattedTotalTimeSpent: formatDuration(0),
         finalData: [],
@@ -481,7 +585,8 @@ export class ProjectsAnalyticsService {
   ) {
     const {
       userId,
-      name,
+      projectName,
+      branches,
       start,
       end,
       todaysDateString,
@@ -490,30 +595,34 @@ export class ProjectsAnalyticsService {
     } = getPeriodGeneralStatsForProjectDto;
 
     const projectPerDayOfPeriod = await this.findProjectByNameOnRange({
-      name,
+      projectName,
+      branches,
       start,
       end,
       userId,
     });
 
-    if (projectPerDayOfPeriod.length === 0)
+    if (projectPerDayOfPeriod.length === 0) {
       return {
         avgTime: formatDuration(0),
         percentageToAvg: 0,
         mostActiveDate: "N/A",
         mostUsedLanguageSlug: "N/A",
       };
+    }
 
     const { totalTimeSpent: totalTimeSpentOnPeriod, path } =
       await this.getProjectOnPeriod({
         userId,
         start,
         end,
-        name,
+        projectName,
+        branches,
       });
 
     const projectLanguagesTimeOnPeriod = await this.getLanguagesTimeOnPeriod({
-      name,
+      projectName,
+      branches,
       start,
       end,
       userId,
@@ -528,15 +637,43 @@ export class ProjectsAnalyticsService {
     )?.id;
 
     let timeSpentOnProjectToday = 0;
+
     if (todaysDailyDataId) {
-      timeSpentOnProjectToday =
-        (
-          await this.projectsService.findOne({
-            dailyDataId: todaysDailyDataId,
-            name,
-            path,
-          })
-        )?.timeSpent ?? 0;
+      const projectId = (
+        await this.projectsService.findOne({
+          dailyDataId: todaysDailyDataId,
+          name: projectName,
+          path,
+        })
+      )?.id;
+
+      // if there are branches the total time spent is the sum of the times spent across all the branches
+      if (branches && projectId) {
+        const branchesFound = await Promise.all(
+          branches.map(
+            async (branch) =>
+              await this.branchesService.findOne({
+                projectId,
+                name: branch,
+              }),
+          ),
+        );
+
+        timeSpentOnProjectToday = branchesFound.reduce((acc, curr) => {
+          acc = acc + (curr?.timeSpent ?? 0);
+          return acc;
+        }, 0);
+      } else if (projectId) {
+        // otherwise it is just the time spent in the project
+        timeSpentOnProjectToday =
+          (
+            await this.projectsService.findOne({
+              dailyDataId: todaysDailyDataId,
+              name: projectName,
+              path,
+            })
+          )?.timeSpent ?? 0;
+      }
     }
 
     switch (groupBy) {
@@ -556,7 +693,7 @@ export class ProjectsAnalyticsService {
         const timeSpentOnProjectTodaysWeek = (
           await this.getProjectOnPeriod({
             userId,
-            name,
+            projectName,
             start: convertToISODate(startOfWeek(new Date(todaysDateString))),
             end: convertToISODate(endOfWeek(new Date(todaysDateString))),
           })
@@ -578,7 +715,7 @@ export class ProjectsAnalyticsService {
         const timeSpentOnProjectTodaysMonth = (
           await this.getProjectOnPeriod({
             userId,
-            name,
+            projectName,
             start: convertToISODate(startOfMonth(new Date(todaysDateString))),
             end: convertToISODate(endOfMonth(new Date(todaysDateString))),
           })
@@ -638,7 +775,14 @@ export class ProjectsAnalyticsService {
           }
         : never
   > {
-    const { userId, name, start, end, type } = getProjectFilesOnPeriodDto;
+    const {
+      userId,
+      projectName,
+      branches: branchesArray,
+      start,
+      end,
+      type,
+    } = getProjectFilesOnPeriodDto;
 
     const baseQuery = this.db
       .select({
@@ -649,9 +793,10 @@ export class ProjectsAnalyticsService {
         path: files.path,
       })
       .from(files)
-      .innerJoin(projects, eq(projects.id, files.projectId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
-      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId));
+      .innerJoin(branches, eq(branches.id, files.branchId))
+      .innerJoin(projects, eq(projects.id, branches.projectId))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+      .innerJoin(languages, eq(languages.id, files.languageId));
 
     // normal case
     if (type === "normal") {
@@ -661,7 +806,8 @@ export class ProjectsAnalyticsService {
         .where(
           and(
             eq(dailyData.userId, userId),
-            eq(projects.name, name),
+            eq(projects.name, projectName),
+            branchesArray ? inArray(branches.name, branchesArray) : undefined,
             between(dailyData.date, start, end),
           ),
         )
@@ -703,7 +849,8 @@ export class ProjectsAnalyticsService {
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, name),
+          eq(projects.name, projectName),
+          branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
           search ? ilike(files.name, `%${search}%`) : undefined,
           languagesArray
@@ -744,13 +891,15 @@ export class ProjectsAnalyticsService {
           path: files.path,
         })
         .from(files)
-        .innerJoin(projects, eq(projects.id, files.projectId))
+        .innerJoin(branches, eq(branches.id, files.branchId))
+        .innerJoin(projects, eq(projects.id, branches.projectId))
         .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
         .innerJoin(languages, eq(languages.id, files.languageId))
         .where(
           and(
             eq(dailyData.userId, userId),
-            eq(projects.name, name),
+            eq(projects.name, projectName),
+            branchesArray ? inArray(branches.name, branchesArray) : undefined,
             between(dailyData.date, start, end),
             search ? ilike(files.name, `%${search}%`) : undefined,
             languagesArray

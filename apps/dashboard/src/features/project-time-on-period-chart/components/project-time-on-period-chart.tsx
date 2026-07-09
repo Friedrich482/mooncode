@@ -52,7 +52,7 @@ const tooltipFormatter = (value: string, name: string) =>
     : null;
 
 export const ProjectTimeOnPeriodChart = () => {
-  const { projectName: name } = useLoaderData<typeof projectLoader>();
+  const { projectName } = useLoaderData<typeof projectLoader>();
 
   const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);
@@ -69,13 +69,13 @@ export const ProjectTimeOnPeriodChart = () => {
         ? {
             start: customRange.start,
             end: customRange.end,
-            name,
+            projectName,
             groupBy,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
-            name,
+            projectName,
             groupBy,
           },
     ),
