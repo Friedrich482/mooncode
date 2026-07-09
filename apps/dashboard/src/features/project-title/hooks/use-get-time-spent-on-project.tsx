@@ -7,7 +7,7 @@ import { useTRPC } from "@/utils/trpc";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const useGetTimeSpentOnProject = () => {
-  const { projectName } = useLoaderData<typeof projectLoader>();
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const trpc = useTRPC();
 
@@ -20,12 +20,12 @@ export const useGetTimeSpentOnProject = () => {
         ? {
             start: customRange.start,
             end: customRange.end,
-            projectName,
+            name,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
-            projectName,
+            name,
           },
     ),
   );

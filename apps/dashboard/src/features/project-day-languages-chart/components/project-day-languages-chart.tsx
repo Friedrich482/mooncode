@@ -20,7 +20,7 @@ import { getLanguageName } from "@repo/ui/utils/get-language-name";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const ProjectDayLanguagesChart = () => {
-  const { projectName } = useLoaderData<typeof projectLoader>();
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const [date, setDate] = useState(new Date());
   const dateString = useMemo(() => getLocaleDate(date), [date]);
@@ -33,7 +33,7 @@ export const ProjectDayLanguagesChart = () => {
   const { data } = useSuspenseQuery(
     trpc.analytics.projects.getProjectDailyStats.queryOptions({
       dateString,
-      projectName,
+      name,
     }),
   );
 

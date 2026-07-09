@@ -12,7 +12,7 @@ export const useFiles = (
   searchTerm: string,
   isSortedDesc: boolean,
 ) => {
-  const { projectName } = useLoaderData<typeof projectLoader>();
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
@@ -24,7 +24,7 @@ export const useFiles = (
     trpc.analytics.projects.getProjectFilesOnPeriod.queryOptions(
       period === "Custom Range"
         ? {
-            projectName,
+            name,
             start: customRange.start,
             end: customRange.end,
             languages: languagesToFetch,
@@ -33,7 +33,7 @@ export const useFiles = (
             search: search || undefined,
           }
         : {
-            projectName,
+            name,
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             languages: languagesToFetch,

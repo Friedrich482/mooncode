@@ -74,7 +74,7 @@ export class ProjectsAnalyticsService {
   ) {
     const {
       userId,
-      projectName,
+      name,
       branches: branchesArray,
       start,
       end,
@@ -91,7 +91,7 @@ export class ProjectsAnalyticsService {
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, projectName),
+          eq(projects.name, name),
           branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
@@ -125,7 +125,7 @@ export class ProjectsAnalyticsService {
   ) {
     const {
       userId,
-      projectName,
+      name,
       branches: branchesArray,
       start,
       end,
@@ -144,7 +144,7 @@ export class ProjectsAnalyticsService {
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, projectName),
+          eq(projects.name, name),
           branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
@@ -168,7 +168,7 @@ export class ProjectsAnalyticsService {
   ) {
     const {
       userId,
-      projectName,
+      name,
       branches: branchesArray,
       start,
       end,
@@ -188,7 +188,7 @@ export class ProjectsAnalyticsService {
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, projectName),
+          eq(projects.name, name),
           branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
@@ -247,7 +247,7 @@ export class ProjectsAnalyticsService {
       userId,
       start,
       end,
-      projectName,
+      name,
       branches: branchesArray,
     } = getProjectOnPeriodDto;
 
@@ -255,7 +255,7 @@ export class ProjectsAnalyticsService {
       .select({ name: projects.name, path: projects.path })
       .from(projects)
       .innerJoin(dailyData, eq(projects.dailyDataId, dailyData.id))
-      .where(and(eq(projects.name, projectName), eq(dailyData.userId, userId)))
+      .where(and(eq(projects.name, name), eq(dailyData.userId, userId)))
       .limit(1);
 
     if (!userHasProjectsOfName) {
@@ -274,7 +274,7 @@ export class ProjectsAnalyticsService {
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, projectName),
+          eq(projects.name, name),
           branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
         ),
@@ -296,21 +296,14 @@ export class ProjectsAnalyticsService {
   async getProjectPerDayOfPeriod(
     getProjectPerDayOfPeriodDto: GetProjectPerDayOfPeriodDtoType,
   ) {
-    const {
-      userId,
-      start,
-      end,
-      projectName,
-      branches,
-      groupBy,
-      periodResolution,
-    } = getProjectPerDayOfPeriodDto;
+    const { userId, start, end, name, branches, groupBy, periodResolution } =
+      getProjectPerDayOfPeriodDto;
 
     const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
-      projectName,
+      name,
       branches,
     });
 
@@ -342,14 +335,14 @@ export class ProjectsAnalyticsService {
   async getProjectLanguagesTimeOnPeriod(
     getProjectLanguagesTimeOnPeriod: GetProjectLanguagesTimeOnPeriodType,
   ) {
-    const { userId, start, end, projectName, branches } =
+    const { userId, start, end, name, branches } =
       getProjectLanguagesTimeOnPeriod;
 
     const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
-      projectName,
+      name,
       branches,
     });
 
@@ -362,7 +355,7 @@ export class ProjectsAnalyticsService {
         userId,
         start,
         end,
-        projectName,
+        name,
         branches,
       })
     ).totalTimeSpent;
@@ -371,7 +364,7 @@ export class ProjectsAnalyticsService {
       userId,
       start,
       end,
-      projectName,
+      name,
       branches,
     });
 
@@ -397,21 +390,14 @@ export class ProjectsAnalyticsService {
   async getProjectLanguagesPerDayOfPeriod(
     getProjectLanguagesPerDayOfPeriodDto: GetProjectLanguagesPerDayOfPeriodDtoType,
   ) {
-    const {
-      userId,
-      start,
-      end,
-      projectName,
-      branches,
-      groupBy,
-      periodResolution,
-    } = getProjectLanguagesPerDayOfPeriodDto;
+    const { userId, start, end, name, branches, groupBy, periodResolution } =
+      getProjectLanguagesPerDayOfPeriodDto;
 
     const projectOnDaysOnPeriod = await this.findProjectByNameOnRange({
       userId,
       start,
       end,
-      projectName,
+      name,
       branches,
     });
 
@@ -424,7 +410,7 @@ export class ProjectsAnalyticsService {
         userId,
         start,
         end,
-        projectName,
+        name,
       });
 
     switch (groupBy) {
@@ -463,7 +449,7 @@ export class ProjectsAnalyticsService {
   ) {
     const {
       dateString,
-      projectName,
+      name,
       branches: branchesArray,
       userId,
     } = getProjectDailyStatsDto;
@@ -492,7 +478,7 @@ export class ProjectsAnalyticsService {
       .innerJoin(languages, eq(languages.id, files.languageId))
       .where(
         and(
-          eq(projects.name, projectName),
+          eq(projects.name, name),
           branchesArray ? inArray(branches.name, branchesArray) : undefined,
           eq(projects.dailyDataId, dayData.id),
         ),
@@ -517,7 +503,7 @@ export class ProjectsAnalyticsService {
     const projectId = (
       await this.projectsService.findOne({
         dailyDataId: dayData.id,
-        name: projectName,
+        name,
         path: rawProjectFilesOnDay[0].projectPath,
       })
     )?.id;
@@ -553,7 +539,7 @@ export class ProjectsAnalyticsService {
         (
           await this.projectsService.findOne({
             dailyDataId: dayData.id,
-            name: projectName,
+            name,
             path: rawProjectFilesOnDay[0].projectPath,
           })
         )?.timeSpent ?? 0;
@@ -585,7 +571,7 @@ export class ProjectsAnalyticsService {
   ) {
     const {
       userId,
-      projectName,
+      name,
       branches,
       start,
       end,
@@ -595,7 +581,7 @@ export class ProjectsAnalyticsService {
     } = getPeriodGeneralStatsForProjectDto;
 
     const projectPerDayOfPeriod = await this.findProjectByNameOnRange({
-      projectName,
+      name,
       branches,
       start,
       end,
@@ -616,12 +602,12 @@ export class ProjectsAnalyticsService {
         userId,
         start,
         end,
-        projectName,
+        name,
         branches,
       });
 
     const projectLanguagesTimeOnPeriod = await this.getLanguagesTimeOnPeriod({
-      projectName,
+      name,
       branches,
       start,
       end,
@@ -642,7 +628,7 @@ export class ProjectsAnalyticsService {
       const projectId = (
         await this.projectsService.findOne({
           dailyDataId: todaysDailyDataId,
-          name: projectName,
+          name,
           path,
         })
       )?.id;
@@ -669,7 +655,7 @@ export class ProjectsAnalyticsService {
           (
             await this.projectsService.findOne({
               dailyDataId: todaysDailyDataId,
-              name: projectName,
+              name,
               path,
             })
           )?.timeSpent ?? 0;
@@ -693,7 +679,7 @@ export class ProjectsAnalyticsService {
         const timeSpentOnProjectTodaysWeek = (
           await this.getProjectOnPeriod({
             userId,
-            projectName,
+            name,
             start: convertToISODate(startOfWeek(new Date(todaysDateString))),
             end: convertToISODate(endOfWeek(new Date(todaysDateString))),
           })
@@ -715,7 +701,7 @@ export class ProjectsAnalyticsService {
         const timeSpentOnProjectTodaysMonth = (
           await this.getProjectOnPeriod({
             userId,
-            projectName,
+            name,
             start: convertToISODate(startOfMonth(new Date(todaysDateString))),
             end: convertToISODate(endOfMonth(new Date(todaysDateString))),
           })
@@ -777,7 +763,7 @@ export class ProjectsAnalyticsService {
   > {
     const {
       userId,
-      projectName,
+      name,
       branches: branchesArray,
       start,
       end,
@@ -806,7 +792,7 @@ export class ProjectsAnalyticsService {
         .where(
           and(
             eq(dailyData.userId, userId),
-            eq(projects.name, projectName),
+            eq(projects.name, name),
             branchesArray ? inArray(branches.name, branchesArray) : undefined,
             between(dailyData.date, start, end),
           ),
@@ -849,7 +835,7 @@ export class ProjectsAnalyticsService {
       .where(
         and(
           eq(dailyData.userId, userId),
-          eq(projects.name, projectName),
+          eq(projects.name, name),
           branchesArray ? inArray(branches.name, branchesArray) : undefined,
           between(dailyData.date, start, end),
           search ? ilike(files.name, `%${search}%`) : undefined,
@@ -898,7 +884,7 @@ export class ProjectsAnalyticsService {
         .where(
           and(
             eq(dailyData.userId, userId),
-            eq(projects.name, projectName),
+            eq(projects.name, name),
             branchesArray ? inArray(branches.name, branchesArray) : undefined,
             between(dailyData.date, start, end),
             search ? ilike(files.name, `%${search}%`) : undefined,

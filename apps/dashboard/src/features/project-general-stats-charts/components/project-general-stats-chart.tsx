@@ -37,7 +37,7 @@ export const ProjectGeneralStatsChart = () => {
   const groupBy = usePeriodStore((state) => state.groupBy);
   const customRange = usePeriodStore((state) => state.customRange);
   const todaysDateString = useMemo(() => getLocaleDate(new Date()), []);
-  const { projectName } = useLoaderData<typeof projectLoader>();
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const trpc = useTRPC();
 
@@ -48,14 +48,14 @@ export const ProjectGeneralStatsChart = () => {
             start: customRange.start,
             end: customRange.end,
             todaysDateString,
-            projectName,
+            name,
             groupBy,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             todaysDateString,
-            projectName,
+            name,
             groupBy,
           },
     ),

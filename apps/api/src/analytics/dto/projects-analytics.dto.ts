@@ -14,7 +14,7 @@ export const FindProjectByNameOnRangeDto = z.object({
   userId: z.ulid(),
   start: DateStringDto,
   end: DateStringDto,
-  projectName: z.string().min(1),
+  name: z.string().min(1),
   branches: z.array(z.string().min(1)).min(1).optional(),
 });
 
@@ -22,20 +22,20 @@ export const GetProjectLanguagesTimePerDayOfPeriodDto = z.object({
   userId: z.ulid(),
   start: DateStringDto,
   end: DateStringDto,
-  projectName: z.string().min(1),
+  name: z.string().min(1),
   branches: z.array(z.string().min(1)).min(1).optional(),
 });
 
 export const GetProjectDailyStatsDto = z.object({
   dateString: DateStringDto,
-  projectName: z.string().min(1),
+  name: z.string().min(1),
   branches: z.array(z.string().min(1)).min(1).optional(),
 });
 
 export const GetPeriodGeneralStatsForProjectDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
-    projectName: z.string().min(1),
+    name: z.string().min(1),
     branches: z.array(z.string().min(1)).min(1).optional(),
     todaysDateString: DateStringDto,
   }),
@@ -45,7 +45,7 @@ export const GetProjectFilesOnPeriodBaseDto = z.object({
   ...refineDto(
     z.object({
       ...DateRangeDto.shape,
-      projectName: z.string().min(1),
+      name: z.string().min(1),
       branches: z.array(z.string().min(1)).min(1).optional(),
     }),
   ).shape,
@@ -81,7 +81,7 @@ export const GetPeriodProjectsDto = refineDto(
 export const GetProjectOnPeriodDto = refineDto(
   z.object({
     ...DateRangeDto.shape,
-    projectName: z.string().min(1),
+    name: z.string().min(1),
     branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
@@ -89,7 +89,7 @@ export const GetProjectOnPeriodDto = refineDto(
 export const GetProjectPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
-    projectName: z.string().min(1),
+    name: z.string().min(1),
     branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
@@ -97,7 +97,7 @@ export const GetProjectPerDayOfPeriodDto = refineAndTransformDto(
 export const GetProjectLanguagesTimeOnPeriodDto = refineDto(
   z.object({
     ...DateRangeDto.shape,
-    projectName: z.string().min(1),
+    name: z.string().min(1),
     branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
@@ -105,7 +105,7 @@ export const GetProjectLanguagesTimeOnPeriodDto = refineDto(
 export const GetProjectLanguagesPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
-    projectName: z.string().min(1),
+    name: z.string().min(1),
     branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
