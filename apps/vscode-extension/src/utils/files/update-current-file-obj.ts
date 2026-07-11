@@ -23,27 +23,23 @@ export const updateCurrentFileObj = (
     return;
   }
 
-  if (!filesData[absolutePath]) {
-    filesData[absolutePath] = {
-      elapsedTime: 0,
-      startTime: performance.now(),
-      lastActivityTime: performance.now(),
-      frozenTime: null,
-      freezeStartTime: null,
-      isFrozen: false,
-      projectName,
-      projectPath,
-      languageSlug: currentLanguageSlug,
-      fileName,
-      branchName,
-    };
-  }
+  filesData[projectPath] ??= {};
+  filesData[projectPath][branchName] ??= {};
+  filesData[projectPath][branchName][absolutePath] ??= {
+    elapsedTime: 0,
+    startTime: performance.now(),
+    lastActivityTime: performance.now(),
+    frozenTime: null,
+    freezeStartTime: null,
+    isFrozen: false,
+    projectName,
+    languageSlug: currentLanguageSlug,
+    fileName,
+  };
 
-  const currentFileData = filesData[absolutePath];
+  const currentFileData = filesData[projectPath][branchName][absolutePath];
 
   currentFileData.lastActivityTime = performance.now();
   currentFileData.languageSlug = currentLanguageSlug;
   currentFileData.projectName = projectName;
-  currentFileData.projectPath = projectPath;
-  currentFileData.branchName = branchName;
 };

@@ -21,17 +21,34 @@ export const initExtensionCommands = (
     () => {
       const filesData = getTime();
 
-      const formattedData = Object.entries(
-        Object.entries(filesData).reduce(
-          (acc, [, { elapsedTime, languageSlug }]) => {
-            acc[languageSlug] = (acc[languageSlug] || 0) + elapsedTime;
+      const data = Object.entries(filesData)
+        .flatMap(([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+        )
+        .reduce(
+          (acc, curr) => {
+            acc[curr.languageSlug] =
+              (acc[curr.languageSlug] ?? 0) + curr.elapsedTime;
+
             return acc;
           },
           {} as Record<string, number>,
-        ),
-      )
-        .map(([key, elapsedTime]) => `${key}: ${elapsedTime} seconds`)
+        );
+
+      const formattedData = Object.entries(data)
+        .map(
+          ([languageSlug, elapsedTime]) =>
+            `${languageSlug}: ${elapsedTime} seconds`,
+        )
         .join("\n");
+
       logInfo(`Current Languages Data:\n${formattedData}`);
     },
   );
@@ -39,17 +56,34 @@ export const initExtensionCommands = (
   const showInitialLanguagesDataCommand = vscode.commands.registerCommand(
     "MoonCode.showInitialLanguagesData",
     () => {
-      const formattedData = Object.entries(
-        Object.entries(initialFilesData).reduce(
-          (acc, [, { timeSpent, languageSlug }]) => {
-            acc[languageSlug] = (acc[languageSlug] || 0) + timeSpent;
+      const data = Object.entries(initialFilesData)
+        .flatMap(([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+        )
+        .reduce(
+          (acc, curr) => {
+            acc[curr.languageSlug] =
+              (acc[curr.languageSlug] ?? 0) + curr.timeSpent;
+
             return acc;
           },
           {} as Record<string, number>,
-        ),
-      )
-        .map(([key, elapsedTime]) => `${key}: ${elapsedTime} seconds`)
+        );
+
+      const formattedData = Object.entries(data)
+        .map(
+          ([languageSlug, elapsedTime]) =>
+            `${languageSlug}: ${elapsedTime} seconds`,
+        )
         .join("\n");
+
       logInfo(`Initial Languages Data:\n${formattedData}`);
     },
   );
@@ -58,8 +92,23 @@ export const initExtensionCommands = (
     "MoonCode.showCurrentFilesData",
     () => {
       const filesData = getTime();
-      const formattedData = Object.entries(filesData)
-        .map(([key, { elapsedTime }]) => `${key}: ${elapsedTime} seconds`)
+
+      const data = Object.entries(filesData).flatMap(
+        ([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+      );
+
+      const formattedData = data
+        .map(
+          ({ filePath, elapsedTime }) => `${filePath}: ${elapsedTime} seconds`,
+        )
         .join("\n");
       logInfo(`Current files data:\n${formattedData}`);
     },
@@ -78,7 +127,19 @@ export const initExtensionCommands = (
   const showInitialFilesDataCommand = vscode.commands.registerCommand(
     "MoonCode.showInitialFilesData",
     () => {
-      const formattedData = Object.entries(initialFilesData)
+      const data = Object.entries(initialFilesData).flatMap(
+        ([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+      );
+
+      const formattedData = Object.entries(data)
         .map(
           ([key, { timeSpent: elapsedTime }]) =>
             `${key}: ${elapsedTime} seconds`,

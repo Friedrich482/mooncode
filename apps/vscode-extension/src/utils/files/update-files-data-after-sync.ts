@@ -1,39 +1,41 @@
 import { filesData } from "@/constants";
+import { FileDataSync } from "@/types-schemas";
 
-import { RouterOutput } from "../trpc/client";
-
-export const updateFilesDataAfterSync = (
-  files: Awaited<RouterOutput["extension"]["upsertFiles"]>,
-) => {
+export const updateFilesDataAfterSync = (filesFromServer: FileDataSync) => {
   const now = performance.now();
 
-  Object.keys(files).forEach((filePath) => {
-    const file = files[filePath];
+  Object.entries(filesFromServer).forEach(([projectPath, branches]) => {
+    Object.entries(branches).forEach(([branchName, files]) => {
+      Object.entries(files).forEach(([filePath, file]) => {
+        filesData[projectPath] ??= {};
+        filesData[projectPath][branchName] ??= {};
 
-    if (filesData[filePath]) {
-      filesData[filePath].elapsedTime = file.timeSpent;
+        let entry = filesData[projectPath][branchName][filePath];
 
-      if (!filesData[filePath].isFrozen) {
-        filesData[filePath].startTime = now - file.timeSpent * 1000;
-        return;
-      }
+        if (entry) {
+          entry.elapsedTime = file.timeSpent;
 
-      filesData[filePath].frozenTime = file.timeSpent;
-      return;
-    }
+          if (!entry.isFrozen) {
+            entry.startTime = now - file.timeSpent * 1000;
+            return;
+          }
 
-    filesData[filePath] = {
-      elapsedTime: file.timeSpent,
-      frozenTime: null,
-      freezeStartTime: null,
-      isFrozen: false,
-      lastActivityTime: now,
-      startTime: now - file.timeSpent * 1000,
-      projectName: file.projectName,
-      projectPath: file.projectPath,
-      languageSlug: file.languageSlug,
-      fileName: file.fileName,
-      branchName: file.branchName,
-    };
+          entry.frozenTime = file.timeSpent;
+          return;
+        }
+
+        filesData[projectPath][branchName][filePath] = {
+          elapsedTime: file.timeSpent,
+          frozenTime: null,
+          freezeStartTime: null,
+          isFrozen: false,
+          lastActivityTime: now,
+          startTime: now - file.timeSpent * 1000,
+          projectName: file.projectName,
+          languageSlug: file.languageSlug,
+          fileName: file.fileName,
+        };
+      });
+    });
   });
 };

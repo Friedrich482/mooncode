@@ -22,9 +22,10 @@ export const fetchInitialData = async () => {
       dateString,
     });
 
-    const dayFilesData = await trpc.extension.getFilesForDay.query({
+    const dayFilesData = (await trpc.extension.getFilesForDay.query({
       dateString,
-    });
+      type: "new",
+    })) as FileDataSync;
 
     timeSpentFromServer = timeSpent;
     initialFilesDataFromServer = dayFilesData;

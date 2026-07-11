@@ -85,16 +85,12 @@ export class FilesService {
       })
       .from(files)
       .innerJoin(branches, eq(branches.id, files.branchId))
-      .innerJoin(languages, eq(languages.id, files.languageId))
       .innerJoin(projects, eq(projects.id, branches.projectId))
+      .innerJoin(languages, eq(languages.id, files.languageId))
       .where(eq(projects.dailyDataId, dailyDataId))
       .orderBy(asc(files.timeSpent));
 
-    const filesDataObject = Object.fromEntries(
-      filesDataArray.map(({ filePath, ...rest }) => [filePath, rest]),
-    );
-
-    return filesDataObject;
+    return filesDataArray;
   }
 
   async update(updateFileDto: UpdateFileDtoType) {

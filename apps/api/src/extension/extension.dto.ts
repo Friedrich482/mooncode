@@ -7,9 +7,16 @@ export const GetLanguagesTimeForDayDto = z.object({
   dateString: DateStringDto,
 });
 
-export const GetFilesForDayDto = z.object({
-  dateString: DateStringDto,
-});
+export const GetFilesForDayDto = z.discriminatedUnion("type", [
+  z.object({
+    dateString: DateStringDto,
+    type: z.literal("old").optional().default("old"),
+  }),
+  z.object({
+    dateString: DateStringDto,
+    type: z.literal("new"),
+  }),
+]);
 
 export const UpsertLanguagesDto = z.object({
   targetedDate: DateStringDto,
@@ -17,26 +24,55 @@ export const UpsertLanguagesDto = z.object({
   timeSpentPerLanguage: z.record(z.string().min(1), z.number().int()),
 });
 
-export const UpsertFilesDto = z.object({
-  filesData: z.record(
-    z.string().min(1),
-    z.object({
-      timeSpent: z.number().int().nonnegative(),
-      languageSlug: z.string().min(1),
-      projectName: z.string().min(1),
-      projectPath: z.string().min(1),
-      fileName: z.string().min(1),
-      // default value for backward compatibility
-      branchName: z.string().min(1).default("main"),
-    }),
+const NewExpectedFilesDataDto = z.record(
+  z.string().min(1), // project path
+  z.record(
+    z.string().min(1), // branch name
+    z.record(
+      z.string().min(1), // absolute path of the file
+      z.object({
+        timeSpent: z.number().int().nonnegative(),
+        languageSlug: z.string().min(1),
+        projectName: z.string().min(1),
+        fileName: z.string().min(1),
+      }),
+    ),
   ),
-  targetedDate: DateStringDto,
-});
+);
+
+export const UpsertFilesDto = z.discriminatedUnion("type", [
+  z.object({
+    type: z.literal("old").optional().default("old"),
+    filesData: z.record(
+      z.string().min(1),
+      z.object({
+        timeSpent: z.number().int().nonnegative(),
+        languageSlug: z.string().min(1),
+        projectName: z.string().min(1),
+        projectPath: z.string().min(1),
+        fileName: z.string().min(1),
+        // default main for backward compatibility
+        branchName: z.string().min(1).default("main"),
+      }),
+    ),
+    targetedDate: DateStringDto,
+  }),
+
+  z.object({
+    type: z.literal("new"),
+    filesData: NewExpectedFilesDataDto,
+    targetedDate: DateStringDto,
+  }),
+]);
 
 export type GetLanguagesTimeForDayDtoType = z.infer<
   typeof GetLanguagesTimeForDayDto
 > &
   UserId;
+
+export type NewExpectedFilesDataDtoType = z.infer<
+  typeof NewExpectedFilesDataDto
+>;
 
 export type UpsertLanguagesDtoType = z.infer<typeof UpsertLanguagesDto> &
   UserId;

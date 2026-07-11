@@ -8,6 +8,7 @@ import { Injectable } from "@nestjs/common";
 import {
   GetFilesForDayDtoType,
   GetLanguagesTimeForDayDtoType,
+  NewExpectedFilesDataDtoType,
   UpsertFilesDtoType,
   UpsertLanguagesDtoType,
 } from "./extension.dto";
@@ -47,7 +48,7 @@ export class ExtensionService {
   }
 
   async getFilesForDay(getFilesForDayDto: GetFilesForDayDtoType) {
-    const { userId, dateString } = getFilesForDayDto;
+    const { userId, dateString, type } = getFilesForDayDto;
 
     const dayData = await this.dailyDataService.findOne({
       userId,
@@ -62,7 +63,29 @@ export class ExtensionService {
       dailyDataId: dayData.id,
     });
 
-    return filesData;
+    if (type === "old") {
+      const filesDataObject = Object.fromEntries(
+        filesData.map(({ filePath, ...rest }) => [filePath, rest]),
+      );
+
+      return filesDataObject;
+    }
+
+    const returningData = filesData.reduce((acc, curr) => {
+      acc[curr.projectPath] ??= {};
+      acc[curr.projectPath][curr.branchName] ??= {};
+
+      acc[curr.projectPath][curr.branchName][curr.filePath] = {
+        fileName: curr.fileName,
+        languageSlug: curr.languageSlug,
+        projectName: curr.projectName,
+        timeSpent: curr.timeSpent,
+      };
+
+      return acc;
+    }, {} as NewExpectedFilesDataDtoType);
+
+    return returningData;
   }
 
   async upsertLanguages(upsertLanguagesDto: UpsertLanguagesDtoType) {
@@ -150,7 +173,7 @@ export class ExtensionService {
   }
 
   async upsertFiles(upsertFilesDto: UpsertFilesDtoType) {
-    const { userId, filesData, targetedDate } = upsertFilesDto;
+    const { userId, filesData, targetedDate, type } = upsertFilesDto;
 
     const dailyDataForDay = await this.dailyDataService.findOne({
       userId,
@@ -163,12 +186,54 @@ export class ExtensionService {
       return {};
     }
 
-    const projectsData = Object.entries(filesData)
-      .map((entry) => ({
-        filePath: entry[0],
-        ...entry[1],
-      }))
-      .reduce(
+    let projectsData: {
+      [path: string]: {
+        name: string;
+        timeSpent: number;
+        dailyDataId: string;
+      };
+    };
+
+    if (type === "old") {
+      projectsData = Object.entries(filesData)
+        .map((entry) => ({
+          filePath: entry[0],
+          ...entry[1],
+        }))
+        .reduce(
+          (acc, curr) => {
+            acc[curr.projectPath] = {
+              name: acc[curr.projectPath]?.name ?? curr.projectName,
+              dailyDataId:
+                acc[curr.projectPath]?.dailyDataId ?? dailyDataForDay.id,
+              timeSpent:
+                (acc[curr.projectPath]?.timeSpent ?? 0) + curr.timeSpent,
+            };
+
+            return acc;
+          },
+          {} as {
+            [path: string]: {
+              name: string;
+              timeSpent: number;
+              dailyDataId: string;
+            };
+          },
+        );
+    } else {
+      const filesDataArray = Object.entries(filesData).flatMap(
+        ([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+      );
+
+      projectsData = filesDataArray.reduce(
         (acc, curr) => {
           acc[curr.projectPath] = {
             name: acc[curr.projectPath]?.name ?? curr.projectName,
@@ -187,6 +252,7 @@ export class ExtensionService {
           };
         },
       );
+    }
 
     const updatedProjects: {
       [projectPath: string]: {
@@ -237,12 +303,60 @@ export class ExtensionService {
     }
 
     // we need to create all branches of the projects
-    const branchesData = Object.entries(filesData)
-      .map((entry) => ({
-        filePath: entry[0],
-        ...entry[1],
-      }))
-      .reduce(
+    let branchesData: {
+      [projectPath: string]: {
+        [branchName: string]: {
+          timeSpent: number;
+          projectId: string;
+        };
+      };
+    };
+
+    if (type === "old") {
+      branchesData = Object.entries(filesData)
+        .map((entry) => ({
+          filePath: entry[0],
+          ...entry[1],
+        }))
+        .reduce(
+          (acc, curr) => {
+            acc[curr.projectPath] = {
+              ...acc[curr.projectPath],
+              [curr.branchName]: {
+                projectId:
+                  acc[curr.projectPath]?.[curr.branchName]?.projectId ??
+                  updatedProjects[curr.projectPath].projectId,
+                timeSpent:
+                  (acc[curr.projectPath]?.[curr.branchName]?.timeSpent ?? 0) +
+                  curr.timeSpent,
+              },
+            };
+
+            return acc;
+          },
+          {} as {
+            [projectPath: string]: {
+              [branchName: string]: {
+                timeSpent: number;
+                projectId: string;
+              };
+            };
+          },
+        );
+    } else {
+      const filesDataArray = Object.entries(filesData).flatMap(
+        ([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+      );
+
+      branchesData = filesDataArray.reduce(
         (acc, curr) => {
           acc[curr.projectPath] = {
             ...acc[curr.projectPath],
@@ -267,6 +381,7 @@ export class ExtensionService {
           };
         },
       );
+    }
 
     const updatedBranches: {
       [projectPath: string]: {
@@ -316,79 +431,192 @@ export class ExtensionService {
       }
     }
 
-    const returningFilesData = await this.filesService.findAllOnDay({
+    const filesDataFromDb = await this.filesService.findAllOnDay({
       dailyDataId: dailyDataForDay.id,
     });
 
-    for (const [path, file] of Object.entries(filesData)) {
-      const fileLanguage = await this.languagesService.findOne({
-        dailyDataId: dailyDataForDay.id,
-        languageSlug: file.languageSlug,
-      });
+    if (type === "old") {
+      const returningFilesData = Object.fromEntries(
+        filesDataFromDb.map(({ filePath, ...rest }) => [filePath, rest]),
+      );
 
-      // must exist at this point
-      if (!fileLanguage) {
-        continue;
-      }
-
-      const existingFileData = await this.filesService.findOne({
-        branchId: updatedBranches[file.projectPath][file.branchName].branchId,
-        name: file.fileName,
-        path,
-        languageId: fileLanguage.languageId,
-      });
-
-      if (!existingFileData) {
-        // if the data for this file doesn't exist, create it
-        const createdFile = await this.filesService.create({
-          branchId: updatedBranches[file.projectPath][file.branchName].branchId,
-          languageId: fileLanguage.languageId,
-          name: file.fileName,
-          path,
-          timeSpent: file.timeSpent,
+      for (const [path, file] of Object.entries(filesData)) {
+        const fileLanguage = await this.languagesService.findOne({
+          dailyDataId: dailyDataForDay.id,
+          languageSlug: file.languageSlug,
         });
 
-        returningFilesData[createdFile.path] = {
-          languageSlug: file.languageSlug,
-          projectName: file.projectName,
-          projectPath: file.projectPath,
-          timeSpent: createdFile.timeSpent,
-          fileName: createdFile.name,
-          branchName: file.branchName,
-        };
-      } else {
-        // else just update the file data but only if the new timeSpent is greater than the existing one
-        if (existingFileData.timeSpent < file.timeSpent) {
-          const updatedFile = await this.filesService.update({
+        // must exist at this point
+        if (!fileLanguage) {
+          continue;
+        }
+
+        const existingFileData = await this.filesService.findOne({
+          branchId: updatedBranches[file.projectPath][file.branchName].branchId,
+          name: file.fileName,
+          path,
+          languageId: fileLanguage.languageId,
+        });
+
+        if (!existingFileData) {
+          // if the data for this file doesn't exist, create it
+          const createdFile = await this.filesService.create({
             branchId:
               updatedBranches[file.projectPath][file.branchName].branchId,
             languageId: fileLanguage.languageId,
+            name: file.fileName,
             path,
             timeSpent: file.timeSpent,
-            name: file.fileName,
           });
 
-          returningFilesData[updatedFile.path] = {
+          returningFilesData[createdFile.path] = {
             languageSlug: file.languageSlug,
             projectName: file.projectName,
             projectPath: file.projectPath,
-            timeSpent: updatedFile.timeSpent,
-            fileName: updatedFile.name,
+            timeSpent: createdFile.timeSpent,
+            fileName: createdFile.name,
             branchName: file.branchName,
           };
         } else {
-          returningFilesData[path] = {
-            languageSlug: file.languageSlug,
-            projectName: file.projectName,
-            projectPath: file.projectPath,
-            fileName: file.fileName,
-            timeSpent: existingFileData.timeSpent,
-            branchName: file.branchName,
-          };
+          // else just update the file data but only if the new timeSpent is greater than the existing one
+          if (existingFileData.timeSpent < file.timeSpent) {
+            const updatedFile = await this.filesService.update({
+              branchId:
+                updatedBranches[file.projectPath][file.branchName].branchId,
+              languageId: fileLanguage.languageId,
+              path,
+              timeSpent: file.timeSpent,
+              name: file.fileName,
+            });
+
+            returningFilesData[updatedFile.path] = {
+              languageSlug: file.languageSlug,
+              projectName: file.projectName,
+              projectPath: file.projectPath,
+              timeSpent: updatedFile.timeSpent,
+              fileName: updatedFile.name,
+              branchName: file.branchName,
+            };
+          } else {
+            returningFilesData[path] = {
+              languageSlug: file.languageSlug,
+              projectName: file.projectName,
+              projectPath: file.projectPath,
+              fileName: file.fileName,
+              timeSpent: existingFileData.timeSpent,
+              branchName: file.branchName,
+            };
+          }
         }
       }
-    }
+      return returningFilesData;
+    } else {
+      const returningFilesData = filesDataFromDb.reduce((acc, curr) => {
+        acc[curr.projectPath] ??= {};
+        acc[curr.projectPath][curr.branchName] ??= {};
 
-    return returningFilesData;
+        acc[curr.projectPath][curr.branchName][curr.filePath] = {
+          fileName: curr.fileName,
+          languageSlug: curr.languageSlug,
+          projectName: curr.projectName,
+          timeSpent: curr.timeSpent,
+        };
+
+        return acc;
+      }, {} as NewExpectedFilesDataDtoType);
+
+      const filesDataArray = Object.entries(filesData).flatMap(
+        ([projectPath, branches]) =>
+          Object.entries(branches).flatMap(([branchName, files]) =>
+            Object.entries(files).map(([filePath, file]) => ({
+              projectPath,
+              branchName,
+              filePath,
+              ...file,
+            })),
+          ),
+      );
+
+      for (const file of filesDataArray) {
+        const fileLanguage = await this.languagesService.findOne({
+          dailyDataId: dailyDataForDay.id,
+          languageSlug: file.languageSlug,
+        });
+
+        // must exist at this point
+        if (!fileLanguage) {
+          continue;
+        }
+
+        const existingFileData = await this.filesService.findOne({
+          branchId: updatedBranches[file.projectPath][file.branchName].branchId,
+          name: file.fileName,
+          path: file.filePath,
+          languageId: fileLanguage.languageId,
+        });
+
+        if (!existingFileData) {
+          // if the data for this file doesn't exist, create it
+          const createdFile = await this.filesService.create({
+            branchId:
+              updatedBranches[file.projectPath][file.branchName].branchId,
+            languageId: fileLanguage.languageId,
+            name: file.fileName,
+            path: file.filePath,
+            timeSpent: file.timeSpent,
+          });
+
+          returningFilesData[file.projectPath] ??= {};
+          returningFilesData[file.projectPath][file.branchName] ??= {};
+
+          returningFilesData[file.projectPath][file.branchName][
+            createdFile.path
+          ] = {
+            languageSlug: file.languageSlug,
+            projectName: file.projectName,
+            timeSpent: createdFile.timeSpent,
+            fileName: createdFile.name,
+          };
+        } else {
+          // else just update the file data but only if the new timeSpent is greater than the existing one
+          if (existingFileData.timeSpent < file.timeSpent) {
+            const updatedFile = await this.filesService.update({
+              branchId:
+                updatedBranches[file.projectPath][file.branchName].branchId,
+              languageId: fileLanguage.languageId,
+              path: file.filePath,
+              timeSpent: file.timeSpent,
+              name: file.fileName,
+            });
+
+            returningFilesData[file.projectPath] ??= {};
+            returningFilesData[file.projectPath][file.branchName] ??= {};
+
+            returningFilesData[file.projectPath][file.branchName][
+              updatedFile.path
+            ] = {
+              languageSlug: file.languageSlug,
+              projectName: file.projectName,
+              timeSpent: updatedFile.timeSpent,
+              fileName: updatedFile.name,
+            };
+          } else {
+            returningFilesData[file.projectPath] ??= {};
+            returningFilesData[file.projectPath][file.branchName] ??= {};
+
+            returningFilesData[file.projectPath][file.branchName][
+              file.filePath
+            ] = {
+              languageSlug: file.languageSlug,
+              projectName: file.projectName,
+              fileName: file.fileName,
+              timeSpent: existingFileData.timeSpent,
+            };
+          }
+        }
+      }
+
+      return returningFilesData;
+    }
   }
 }

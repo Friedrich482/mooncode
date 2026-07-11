@@ -29,7 +29,7 @@ export const calculateTime = async (): Promise<() => FileMap> => {
 
       updateFilesDataFrozenStates();
     } catch (error) {
-      logError(`Error in periodic check:${error}`);
+      logError(`Error in periodic check: ${error}`);
     } finally {
       timeoutId = setTimeout(runPeriodicCheck, 1000);
     }
