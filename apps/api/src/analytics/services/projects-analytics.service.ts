@@ -7,6 +7,7 @@ import {
 } from "date-fns";
 import {
   and,
+  asc,
   between,
   count,
   desc,
@@ -22,6 +23,7 @@ import {
   FindProjectByNameOnRangeDtoType,
   GetPeriodGeneralStatsForProjectDtoType,
   GetPeriodProjectsDtoType,
+  GetProjectBranchesOnPeriodDtoType,
   GetProjectDailyStatsDtoType,
   GetProjectFilesOnPeriodDtoType,
   GetProjectLanguagesPerDayOfPeriodDtoType,
@@ -291,6 +293,32 @@ export class ProjectsAnalyticsService {
     }
 
     return projectAggregatedOnPeriod;
+  }
+
+  async getProjectBranchesOnPeriod(
+    getProjectBranchesOnPeriodDto: GetProjectBranchesOnPeriodDtoType,
+  ) {
+    const { userId, start, end, name } = getProjectBranchesOnPeriodDto;
+
+    const projectBranches = await this.db
+      .select({
+        name: branches.name,
+        timeSpent: sum(branches.timeSpent).mapWith(Number),
+      })
+      .from(branches)
+      .innerJoin(projects, eq(projects.id, branches.projectId))
+      .innerJoin(dailyData, eq(dailyData.id, projects.dailyDataId))
+      .where(
+        and(
+          eq(dailyData.userId, userId),
+          eq(projects.name, name),
+          between(dailyData.date, start, end),
+        ),
+      )
+      .groupBy(branches.name)
+      .orderBy(asc(sum(branches.timeSpent)));
+
+    return projectBranches;
   }
 
   async getProjectPerDayOfPeriod(

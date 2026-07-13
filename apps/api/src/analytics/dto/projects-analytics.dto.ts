@@ -86,6 +86,13 @@ export const GetProjectOnPeriodDto = refineDto(
   }),
 );
 
+export const GetProjectBranchesOnPeriodDto = refineDto(
+  z.object({
+    ...DateRangeDto.shape,
+    name: z.string().min(1),
+  }),
+);
+
 export const GetProjectPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
@@ -145,6 +152,11 @@ export type GetPeriodProjectsDtoType = z.infer<typeof GetPeriodProjectsDto> &
   UserId;
 
 export type GetProjectOnPeriodDtoType = z.infer<typeof GetProjectOnPeriodDto> &
+  UserId;
+
+export type GetProjectBranchesOnPeriodDtoType = z.infer<
+  typeof GetProjectBranchesOnPeriodDto
+> &
   UserId;
 
 export type GetProjectPerDayOfPeriodDtoType = z.infer<
