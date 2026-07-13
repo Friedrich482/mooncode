@@ -50,7 +50,7 @@ describe("filesService", () => {
     it("should return the created file", async () => {
       const mockedEntry = {
         languageId: "1",
-        projectId: "2",
+        branchId: "2",
         name: "package.json",
         timeSpent: 300,
         path: "/home/user/projects/mooncode/apps/api/package.json",
@@ -74,7 +74,7 @@ describe("filesService", () => {
   describe("findOne", () => {
     const mockedEntry = {
       languageId: "1",
-      projectId: "2",
+      branchId: "2",
       name: "package.json",
       path: "/home/user/projects/mooncode/apps/api/package.json",
     };
@@ -113,6 +113,7 @@ describe("filesService", () => {
           filePath: "/home/user/projects/mooncode/apps/api/package.json",
           projectName: "mooncode",
           projectPath: "/home/user/projects/mooncode",
+          branchName: "branching",
         },
 
         {
@@ -122,6 +123,7 @@ describe("filesService", () => {
           filePath: "/home/user/projects/mooncode/apps/api/main.ts",
           projectName: "mooncode",
           projectPath: "/home/user/projects/mooncode",
+          branchName: "branching",
         },
 
         {
@@ -131,42 +133,16 @@ describe("filesService", () => {
           filePath: "/home/user/projects/factory/Dockerfile",
           projectName: "factory",
           projectPath: "/home/user/projects/factory",
+          branchName: "main",
         },
       ];
-
-      const mockedFoundFilesObject = {
-        "/home/user/projects/mooncode/apps/api/package.json": {
-          languageSlug: "json",
-          timeSpent: 600,
-          fileName: "package.json",
-          projectName: "mooncode",
-          projectPath: "/home/user/projects/mooncode",
-        },
-
-        "/home/user/projects/mooncode/apps/api/main.ts": {
-          languageSlug: "typescript",
-          timeSpent: 2000,
-          fileName: "main.ts",
-          projectName: "mooncode",
-          projectPath: "/home/user/projects/mooncode",
-        },
-
-        "/home/user/projects/factory/Dockerfile": {
-          languageSlug: "docker",
-          timeSpent: 1200,
-          fileName: "Dockerfile",
-          projectName: "factory",
-          projectPath: "/home/user/projects/factory",
-        },
-      };
 
       mockedDrizzle.orderBy.mockResolvedValue(mockedFilesFound);
 
       const filesFound = await filesService.findAllOnDay({ dailyDataId: "1" });
 
       expect(filesFound).toBeDefined();
-      expect(Object.keys(filesFound).length).toBeGreaterThan(0);
-      expect(filesFound).toEqual(mockedFoundFilesObject);
+      expect(filesFound).toEqual(mockedFilesFound);
     });
   });
 
@@ -176,7 +152,7 @@ describe("filesService", () => {
         name: "main.ts",
         path: "/home/user/projects/mooncode/apps/api/main.ts",
         timeSpent: 800,
-        projectId: "1",
+        branchId: "1",
         languageId: "5",
       };
 
