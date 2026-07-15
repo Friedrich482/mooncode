@@ -133,6 +133,7 @@ describe("ExtensionRouter", () => {
     const mockedEntry = {
       dateString: "2026-06-22",
       userId: mockedPayload.sub,
+      type: "old" as const,
     };
 
     const mockedOutput = {
@@ -142,6 +143,7 @@ describe("ExtensionRouter", () => {
         fileName: "package.json",
         projectName: "mooncode",
         projectPath: "/home/user/projects/mooncode",
+        branchName: "main",
       },
       "/home/user/projects/mooncode/apps/api/main.ts": {
         languageSlug: "typescript",
@@ -149,6 +151,7 @@ describe("ExtensionRouter", () => {
         fileName: "main.ts",
         projectName: "mooncode",
         projectPath: "/home/user/projects/mooncode",
+        branchName: "test",
       },
       "/home/user/projects/factory/Dockerfile": {
         languageSlug: "docker",
@@ -156,6 +159,7 @@ describe("ExtensionRouter", () => {
         fileName: "Dockerfile",
         projectName: "factory",
         projectPath: "/home/user/projects/factory",
+        branchName: "main",
       },
     };
 
@@ -256,6 +260,7 @@ describe("ExtensionRouter", () => {
           fileName: "package.json",
           projectName: "mooncode",
           projectPath: "/home/user/projects/mooncode",
+          branchName: "main",
         },
         "/home/user/projects/mooncode/apps/api/main.ts": {
           languageSlug: "typescript",
@@ -263,6 +268,7 @@ describe("ExtensionRouter", () => {
           fileName: "main.ts",
           projectName: "mooncode",
           projectPath: "/home/user/projects/mooncode",
+          branchName: "test",
         },
         "/home/user/projects/factory/Dockerfile": {
           languageSlug: "docker",
@@ -270,10 +276,12 @@ describe("ExtensionRouter", () => {
           fileName: "Dockerfile",
           projectName: "factory",
           projectPath: "/home/user/projects/factory",
+          branchName: "main",
         },
       },
       targetedDate: "2026-06-22",
       userId: mockedPayload.sub,
+      type: "old" as const,
     };
 
     const mockedOutput = {
@@ -283,6 +291,7 @@ describe("ExtensionRouter", () => {
         fileName: "package.json",
         projectName: "mooncode",
         projectPath: "/home/user/projects/mooncode",
+        branchName: "main",
       },
       "/home/user/projects/mooncode/apps/api/main.ts": {
         languageSlug: "typescript",
@@ -290,6 +299,7 @@ describe("ExtensionRouter", () => {
         fileName: "main.ts",
         projectName: "mooncode",
         projectPath: "/home/user/projects/mooncode",
+        branchName: "test",
       },
       "/home/user/projects/factory/Dockerfile": {
         languageSlug: "docker",
@@ -297,6 +307,7 @@ describe("ExtensionRouter", () => {
         fileName: "Dockerfile",
         projectName: "factory",
         projectPath: "/home/user/projects/factory",
+        branchName: "main",
       },
     };
 

@@ -9,6 +9,7 @@ import * as getProjectLanguagesGroupedByWeeksUtils from "@/analytics/utils/proje
 import * as getProjectPerDayOfPeriodGroupedByDaysUtils from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-days";
 import * as getProjectPerDayOfPeriodGroupedByMonthsUtils from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-months";
 import * as getProjectPerDayOfPeriodGroupedByWeeksUtils from "@/analytics/utils/projects/get-project-per-day-of-period-grouped-by-weeks";
+import { BranchesService } from "@/branches/branches.service";
 import { MockedDrizzle } from "@/common/tests/types";
 import { DailyDataService } from "@/daily-data/daily-data.service";
 import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
@@ -33,6 +34,12 @@ describe("ProjectsAnalyticsService", () => {
     findOne: Mock<Procedure>;
   };
 
+  let branchesService: {
+    create: Mock<Procedure>;
+    findOne: Mock<Procedure>;
+    update: Mock<Procedure>;
+  };
+
   let mockedDrizzle: MockedDrizzle;
 
   beforeEach(async () => {
@@ -48,6 +55,12 @@ describe("ProjectsAnalyticsService", () => {
       checkExists: vi.fn(),
       findRange: vi.fn(),
       findOne: vi.fn(),
+    };
+
+    branchesService = {
+      create: vi.fn(),
+      findOne: vi.fn(),
+      update: vi.fn(),
     };
 
     mockedDrizzle = {
@@ -74,6 +87,7 @@ describe("ProjectsAnalyticsService", () => {
         ProjectsAnalyticsService,
         { provide: DailyDataService, useValue: dailyDataService },
         { provide: ProjectsService, useValue: projectsService },
+        { provide: BranchesService, useValue: branchesService },
         {
           provide: DRIZZLE_ASYNC_PROVIDER,
           useValue: mockedDrizzle,
@@ -88,6 +102,7 @@ describe("ProjectsAnalyticsService", () => {
     const mockedEntry = {
       userId: "1",
       name: "mooncode",
+      branches: ["main", "test"],
       start: "2026-06-17",
       end: "2026-06-21",
     };
@@ -177,6 +192,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
       };
@@ -225,6 +241,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
       };
@@ -454,6 +471,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
       };
@@ -488,6 +506,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
       };
@@ -518,6 +537,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
       };
@@ -533,6 +553,36 @@ describe("ProjectsAnalyticsService", () => {
       expect(error)
         .property("message")
         .match(/project/i);
+    });
+  });
+
+  describe("getProjectBranchesOnPeriod", () => {
+    it("should return an array of branches with their name and the time spent on each of them on the specified period", async () => {
+      const mockedEntry = {
+        userId: "1",
+        name: "mooncode",
+        start: "2026-06-17",
+        end: "2026-06-21",
+      };
+
+      const mockedOutput = [
+        {
+          name: "main",
+          timeSpent: 1200,
+        },
+        {
+          name: "test",
+          timeSpent: 4500,
+        },
+      ];
+
+      mockedDrizzle.orderBy.mockResolvedValue(mockedOutput);
+
+      const projectBranchesOnPeriod =
+        await projectsAnalyticsService.getProjectBranchesOnPeriod(mockedEntry);
+
+      expect(projectBranchesOnPeriod).toBeDefined();
+      expect(projectBranchesOnPeriod).toEqual(mockedOutput);
     });
   });
 
@@ -566,6 +616,7 @@ describe("ProjectsAnalyticsService", () => {
         name: "mooncode",
         start: "2026-06-17",
         end: "2026-06-21",
+        branches: ["main", "test"],
         groupBy: "days" as const,
         periodResolution: "day" as const,
       };
@@ -586,6 +637,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         groupBy: "days" as const,
@@ -614,6 +666,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         periodResolution: "day" as const,
@@ -641,6 +694,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         start: "2026-06-12",
         end: "2026-06-21",
+        branches: ["main", "test"],
         groupBy: "weeks" as const,
         periodResolution: "week" as const,
         userId: "1",
@@ -723,6 +777,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-05-12",
         end: "2026-06-21",
         groupBy: "months" as const,
@@ -805,6 +860,7 @@ describe("ProjectsAnalyticsService", () => {
     const mockedEntry = {
       userId: "1",
       name: "mooncode",
+      branches: ["main", "test"],
       start: "2026-06-17",
       end: "2026-06-21",
     };
@@ -1013,6 +1069,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         groupBy: "days" as const,
@@ -1037,6 +1094,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         groupBy: "days" as const,
@@ -1120,6 +1178,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         periodResolution: "day" as const,
@@ -1202,6 +1261,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-12",
         end: "2026-06-21",
         groupBy: "weeks" as const,
@@ -1265,6 +1325,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-05-12",
         end: "2026-06-21",
         groupBy: "months" as const,
@@ -1390,10 +1451,145 @@ describe("ProjectsAnalyticsService", () => {
     const mockedEntry = {
       dateString: "2026-06-26",
       name: "mooncode",
+      branches: ["main", "test"],
       userId: "1",
     };
 
-    it("should return an object containing the expected fields: formattedTotalTimeSpent and finalData", async () => {
+    it("should return an object containing the expected fields: formattedTotalTimeSpent and finalData when there the 'branches' parameter is specified", async () => {
+      dailyDataService.findOne.mockResolvedValue({
+        id: "2",
+        timeSpent: 8500,
+      });
+
+      mockedDrizzle.where.mockResolvedValue([
+        {
+          timeSpent: 1200,
+          languageSlug: "docker",
+          projectPath: "/home/user/projects/mooncode/api/Dockerfile",
+        },
+        {
+          timeSpent: 900,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/auth/auth.service.ts",
+        },
+        {
+          timeSpent: 800,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/auth/auth.service.test.ts",
+        },
+        {
+          timeSpent: 750,
+          languageSlug: "css",
+          projectPath: "/home/user/projects/mooncode/dashboard/src/index.css",
+        },
+        {
+          timeSpent: 700,
+          languageSlug: "typescript",
+          projectPath: "/home/user/mooncode/api/src/app.module.ts",
+        },
+        {
+          timeSpent: 650,
+          languageSlug: "typescript",
+          projectPath:
+            "/home/user/projects/mooncode/api/src/files/files.module.ts",
+        },
+        {
+          timeSpent: 600,
+          languageSlug: "json",
+          projectPath: "/home/user/mooncode/vscode-extension/package.json",
+        },
+        {
+          timeSpent: 550,
+          languageSlug: "yaml",
+          projectPath:
+            "/home/user/mooncode/.github/workflows/build-and-deploy.yaml",
+        },
+        {
+          timeSpent: 500,
+          languageSlug: "typescript",
+          projectPath: "/home/user/mooncode/api/src/main.ts",
+        },
+        {
+          timeSpent: 450,
+          languageSlug: "sql",
+          projectPath: "/home/user/mooncode/api/drizzle/0000_whole_glorian.sql",
+        },
+        {
+          timeSpent: 400,
+          languageSlug: "json",
+          projectPath: "/home/user/mooncode/dashboard/package.json",
+        },
+      ]);
+
+      branchesService.findOne
+        .mockResolvedValueOnce({ id: "3", name: "main", timeSpent: 4500 })
+        .mockResolvedValueOnce({ id: "4", name: "test", timeSpent: 4000 });
+
+      projectsService.findOne.mockResolvedValue({
+        id: "5",
+        name: "mooncode",
+        path: "/home/user/mooncode",
+        timeSpent: 8500,
+      });
+
+      const mockedLanguagesStats = [
+        {
+          formattedValue: "59 mins",
+          languageSlug: "typescript",
+          percentage: 41.76,
+          timeSpent: 3550,
+        },
+        {
+          formattedValue: "20 mins",
+          languageSlug: "docker",
+          percentage: 14.12,
+          timeSpent: 1200,
+        },
+        {
+          formattedValue: "16 mins",
+          languageSlug: "json",
+          percentage: 11.76,
+          timeSpent: 1000,
+        },
+        {
+          formattedValue: "12 mins",
+          languageSlug: "css",
+          percentage: 8.82,
+          timeSpent: 750,
+        },
+        {
+          formattedValue: "9 mins",
+          languageSlug: "yaml",
+          percentage: 6.47,
+          timeSpent: 550,
+        },
+        {
+          formattedValue: "7 mins",
+          languageSlug: "sql",
+          percentage: 5.29,
+          timeSpent: 450,
+        },
+      ];
+
+      const { finalData, formattedTotalTimeSpent } =
+        await projectsAnalyticsService.getProjectDailyStats(mockedEntry);
+
+      expect(formattedTotalTimeSpent).toBeDefined();
+      expect(formattedTotalTimeSpent).toEqual("2 hrs 21 mins");
+
+      expect(finalData).toBeDefined();
+      expect(finalData).toEqual(mockedLanguagesStats);
+    });
+
+    it("should return an object containing the expected fields: formattedTotalTimeSpent and finalData when there the 'branches' parameter is not specified", async () => {
+      const mockedEntry = {
+        dateString: "2026-06-26",
+        name: "mooncode",
+        userId: "1",
+      };
+
       dailyDataService.findOne.mockResolvedValue({
         id: "2",
         timeSpent: 8500,
@@ -1655,6 +1851,7 @@ describe("ProjectsAnalyticsService", () => {
         periodResolution: "day" as const,
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
       };
 
       vi.spyOn(
@@ -1687,6 +1884,7 @@ describe("ProjectsAnalyticsService", () => {
         periodResolution: "day" as const,
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
       };
 
       const mockedTimeSpentPerDayOnProject = [
@@ -1769,6 +1967,7 @@ describe("ProjectsAnalyticsService", () => {
         periodResolution: "day" as const,
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
       };
 
       const mockedTimeSpentPerDayOnProject = [
@@ -1852,6 +2051,7 @@ describe("ProjectsAnalyticsService", () => {
         periodResolution: "week" as const,
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
       };
 
       const mockedTimeSpentPerDayOnProject = [
@@ -1929,6 +2129,7 @@ describe("ProjectsAnalyticsService", () => {
         periodResolution: "month" as const,
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
       };
 
       const mockedTimeSpentPerDayOnProject = [
@@ -2039,6 +2240,7 @@ describe("ProjectsAnalyticsService", () => {
         end: "2026-06-21",
         type: "normal" as const,
         amount: 25,
+        branches: ["main", "test"],
       };
 
       mockedDrizzle.execute.mockResolvedValue([
@@ -2372,6 +2574,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         type: "paginated" as const,
@@ -2721,6 +2924,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         type: "paginated" as const,
@@ -2951,6 +3155,7 @@ describe("ProjectsAnalyticsService", () => {
       const mockedEntry = {
         userId: "1",
         name: "mooncode",
+        branches: ["main", "test"],
         start: "2026-06-17",
         end: "2026-06-21",
         type: "paginated" as const,
