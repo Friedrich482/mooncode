@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { useLoaderData } from "react-router";
 
 import { projectLoader } from "@/loaders/project-loader";
+import { useBranchesStore } from "@/stores/branches/branches-store";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
@@ -36,8 +37,10 @@ export const ProjectGeneralStatsChart = () => {
   const period = usePeriodStore((state) => state.period);
   const groupBy = usePeriodStore((state) => state.groupBy);
   const customRange = usePeriodStore((state) => state.customRange);
+  const branches = useBranchesStore((state) => state.branches);
+
   const todaysDateString = useMemo(() => getLocaleDate(new Date()), []);
-  const { projectName } = useLoaderData<typeof projectLoader>();
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
 
   const trpc = useTRPC();
 
@@ -48,15 +51,17 @@ export const ProjectGeneralStatsChart = () => {
             start: customRange.start,
             end: customRange.end,
             todaysDateString,
-            name: projectName,
+            name,
             groupBy,
+            branches,
           }
         : {
             start: PERIODS_CONFIG[period].start,
             end: PERIODS_CONFIG[period].end,
             todaysDateString,
-            name: projectName,
+            name,
             groupBy,
+            branches,
           },
     ),
   );

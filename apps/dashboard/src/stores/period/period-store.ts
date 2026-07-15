@@ -9,7 +9,7 @@ import { Period } from "./types-schemas";
 import { correctGroupBy } from "./utils/correct-groupby";
 import { getPeriodStoreValuesFromURL } from "./utils/get-period-store-values-from-url";
 
-type Store = {
+type PeriodStore = {
   period: Period;
   setPeriod: (state: Period) => void;
 
@@ -39,7 +39,7 @@ const correctedGroupBy = correctGroupBy(
   initialGroupBy,
 );
 
-export const usePeriodStore = create<Store>((set, get) => ({
+export const usePeriodStore = create<PeriodStore>((set, get) => ({
   period: initialPeriod,
   setPeriod: (newPeriod) => {
     set({
@@ -82,7 +82,7 @@ export const usePeriodStore = create<Store>((set, get) => ({
         ),
 }));
 
-const updateURLFromState = (state: Store) => {
+const updateURLFromState = (state: PeriodStore) => {
   const searchParams = new URLSearchParams(window.location.search);
 
   if (state.period !== "Custom Range") {

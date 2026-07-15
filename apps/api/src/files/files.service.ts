@@ -2,6 +2,7 @@ import { and, asc, eq } from "drizzle-orm";
 import { NodePgDatabase } from "drizzle-orm/node-postgres";
 
 import { DRIZZLE_ASYNC_PROVIDER } from "@/drizzle/constants";
+import { branches } from "@/drizzle/schema";
 import { files } from "@/drizzle/schema/files";
 import { languages } from "@/drizzle/schema/languages";
 import { projects } from "@/drizzle/schema/projects";
@@ -22,13 +23,13 @@ export class FilesService {
   ) {}
 
   async create(createFileDto: CreateFileDtoType) {
-    const { languageId, projectId, name, timeSpent, path } = createFileDto;
+    const { languageId, branchId, name, timeSpent, path } = createFileDto;
 
     const [createdFileData] = await this.db
       .insert(files)
       .values({
         languageId,
-        projectId,
+        branchId,
         name,
         path,
         timeSpent,
@@ -43,7 +44,7 @@ export class FilesService {
   }
 
   async findOne(findOneFileDto: FindOneFileDtoType) {
-    const { languageId, projectId, name, path } = findOneFileDto;
+    const { languageId, branchId, name, path } = findOneFileDto;
 
     const [fileData] = await this.db
       .select({
@@ -55,7 +56,7 @@ export class FilesService {
       .where(
         and(
           eq(files.languageId, languageId),
-          eq(files.projectId, projectId),
+          eq(files.branchId, branchId),
           eq(files.name, name),
           eq(files.path, path),
         ),
@@ -80,22 +81,20 @@ export class FilesService {
         filePath: files.path,
         projectName: projects.name,
         projectPath: projects.path,
+        branchName: branches.name,
       })
       .from(files)
-      .innerJoin(projects, eq(projects.id, files.projectId))
+      .innerJoin(branches, eq(branches.id, files.branchId))
+      .innerJoin(projects, eq(projects.id, branches.projectId))
       .innerJoin(languages, eq(languages.id, files.languageId))
       .where(eq(projects.dailyDataId, dailyDataId))
       .orderBy(asc(files.timeSpent));
 
-    const filesDataObject = Object.fromEntries(
-      filesDataArray.map(({ filePath, ...rest }) => [filePath, rest]),
-    );
-
-    return filesDataObject;
+    return filesDataArray;
   }
 
   async update(updateFileDto: UpdateFileDtoType) {
-    const { timeSpent, projectId, languageId, name, path } = updateFileDto;
+    const { timeSpent, branchId, languageId, name, path } = updateFileDto;
 
     const [updatedFileData] = await this.db
       .update(files)
@@ -104,7 +103,7 @@ export class FilesService {
       })
       .where(
         and(
-          eq(files.projectId, projectId),
+          eq(files.branchId, branchId),
           eq(files.languageId, languageId),
           eq(files.name, name),
           eq(files.path, path),

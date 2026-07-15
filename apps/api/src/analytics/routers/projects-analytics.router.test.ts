@@ -23,6 +23,7 @@ describe("ProjectsAnalyticsRouter", () => {
     checkProjectExists: Mock<Procedure>;
     getPeriodProjects: Mock<Procedure>;
     getProjectOnPeriod: Mock<Procedure>;
+    getProjectBranchesOnPeriod: Mock<Procedure>;
     getProjectPerDayOfPeriod: Mock<Procedure>;
     getProjectLanguagesTimeOnPeriod: Mock<Procedure>;
     getProjectLanguagesPerDayOfPeriod: Mock<Procedure>;
@@ -66,6 +67,7 @@ describe("ProjectsAnalyticsRouter", () => {
       checkProjectExists: vi.fn(),
       getPeriodProjects: vi.fn(),
       getProjectOnPeriod: vi.fn(),
+      getProjectBranchesOnPeriod: vi.fn(),
       getProjectPerDayOfPeriod: vi.fn(),
       getProjectLanguagesTimeOnPeriod: vi.fn(),
       getProjectLanguagesPerDayOfPeriod: vi.fn(),
@@ -232,6 +234,53 @@ describe("ProjectsAnalyticsRouter", () => {
 
       expect(totalTimeSpent).toBeDefined();
       expect(totalTimeSpent).toEqual(mockedOutput.totalTimeSpent);
+    });
+  });
+
+  describe("getProjectBranchesOnPeriod", () => {
+    const mockedEntry = {
+      start: "2026-06-17",
+      end: "2026-06-21",
+      name: "mooncode",
+      userId: mockedPayload.sub,
+    };
+
+    const mockedOutput = [
+      {
+        name: "main",
+        timeSpent: 1200,
+      },
+      {
+        name: "test",
+        timeSpent: 4500,
+      },
+    ];
+
+    it("should call the getProjectBranchesOnPeriod method of the ProjectsAnalyticsService", async () => {
+      projectsAnalyticsService.getProjectBranchesOnPeriod.mockResolvedValue(
+        mockedOutput,
+      );
+
+      await caller.getProjectBranchesOnPeriod(mockedEntry);
+
+      expect(
+        projectsAnalyticsService.getProjectBranchesOnPeriod,
+      ).toHaveBeenCalled();
+      expect(
+        projectsAnalyticsService.getProjectBranchesOnPeriod,
+      ).toHaveBeenCalledWith(mockedEntry);
+    });
+
+    it("should return the data under the expected shape", async () => {
+      projectsAnalyticsService.getProjectBranchesOnPeriod.mockResolvedValue(
+        mockedOutput,
+      );
+
+      const projectBranchesOnPeriod =
+        await caller.getProjectBranchesOnPeriod(mockedEntry);
+
+      expect(projectBranchesOnPeriod).toBeDefined();
+      expect(projectBranchesOnPeriod).toEqual(mockedOutput);
     });
   });
 

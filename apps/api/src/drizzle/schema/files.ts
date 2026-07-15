@@ -2,8 +2,8 @@ import { index, integer, pgTable, text, varchar } from "drizzle-orm/pg-core";
 import { ulid } from "ulid";
 
 import { timestamps } from "../columns.helpers";
+import { branches } from "./branches";
 import { languages } from "./languages";
-import { projects } from "./projects";
 
 export const files = pgTable(
   "files",
@@ -12,9 +12,9 @@ export const files = pgTable(
       .primaryKey()
       .notNull()
       .$defaultFn(() => ulid().toLowerCase()),
-    projectId: varchar("project_id", { length: 26 })
+    branchId: varchar("branch_id", { length: 26 })
       .notNull()
-      .references(() => projects.id, { onDelete: "cascade" }),
+      .references(() => branches.id, { onDelete: "cascade" }),
     languageId: varchar("language_id", { length: 26 })
       .notNull()
       .references(() => languages.id, { onDelete: "cascade" }),
@@ -25,7 +25,6 @@ export const files = pgTable(
     ...timestamps,
   },
   (table) => [
-    index("project_id_index").on(table.projectId),
     index("language_id_index").on(table.languageId),
     index("file_name_index").on(table.name),
     index("file_path_index").on(table.path),

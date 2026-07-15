@@ -1,6 +1,8 @@
 import * as path from "path";
 import vscode from "vscode";
 
+import { getCurrentGitBranch } from "../branch/get-current-git-branch";
+
 export const getCurrentFileProperties = (
   document: vscode.TextDocument | undefined,
 ) => {
@@ -10,6 +12,7 @@ export const getCurrentFileProperties = (
       projectPath: null,
       absolutePath: null,
       fileName: null,
+      branchName: null,
     };
   }
 
@@ -27,8 +30,11 @@ export const getCurrentFileProperties = (
       projectPath: null,
       absolutePath: null,
       fileName: null,
+      branchName: null,
     };
   }
+
+  const branchName = getCurrentGitBranch(projectPath) ?? "N/A";
 
   const absolutePath = path.normalize(fileUri.fsPath);
   const fileName = path.basename(absolutePath);
@@ -38,5 +44,6 @@ export const getCurrentFileProperties = (
     projectPath,
     absolutePath,
     fileName,
+    branchName,
   };
 };

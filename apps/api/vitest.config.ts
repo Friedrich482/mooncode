@@ -45,5 +45,6 @@ export default defineConfig({
         },
       },
     ],
+    coverage: { reportOnFailure: true },
   },
 });

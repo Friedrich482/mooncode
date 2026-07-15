@@ -7,6 +7,7 @@ import { PeriodDropDown } from "@/components/common/period-dropdown";
 import { FallBackRender } from "@/components/errors/error-boundary";
 import { SuspenseBoundary } from "@/components/errors/suspense-boundary";
 
+import { BranchesDropdown } from "./branches-dropdown";
 import { ProjectName } from "./project-name";
 import { TimeSpentOnProject } from "./time-spent-on-project";
 
@@ -39,6 +40,31 @@ export const ProjectTitle = () => (
       <div className="float-left mr-4 mb-4 flex flex-col gap-2">
         <PeriodDropDown />
         <GroupByDropDown />
+      </div>
+
+      <div className="float-right mr-4 flex">
+        <ErrorBoundary
+          FallbackComponent={({ error, resetErrorBoundary }) => (
+            <FallBackRender
+              error={error}
+              resetErrorBoundary={resetErrorBoundary}
+              hasCustomChildren={true}
+              customChildren={(errorMessage) => (
+                <h3 className="text-destructive flex h-9 items-center justify-center gap-2 p-1">
+                  <TriangleAlert className="size-8 shrink-0 max-xl:size-6" />
+                  <span>{errorMessage}</span>
+                </h3>
+              )}
+            />
+          )}
+        >
+          <SuspenseBoundary
+            hasCustomSkeleton={false}
+            className="h-9 w-44 max-[23rem]:w-full"
+          >
+            <BranchesDropdown />
+          </SuspenseBoundary>
+        </ErrorBoundary>
       </div>
 
       <div className="text-start text-balance">

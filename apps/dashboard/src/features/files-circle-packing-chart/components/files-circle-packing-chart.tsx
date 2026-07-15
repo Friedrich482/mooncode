@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useLoaderData } from "react-router";
 
 import { projectLoader } from "@/loaders/project-loader";
+import { useBranchesStore } from "@/stores/branches/branches-store";
 import { PERIODS_CONFIG } from "@/stores/period/constants";
 import { usePeriodStore } from "@/stores/period/period-store";
 import { useTRPC } from "@/utils/trpc";
@@ -18,6 +19,8 @@ export const FilesCirclePackingChart = () => {
   const period = usePeriodStore((state) => state.period);
   const customRange = usePeriodStore((state) => state.customRange);
 
+  const branches = useBranchesStore((state) => state.branches);
+
   const [isGrouped, setIsGrouped] = useState(true);
   const handleGroupCheckboxChange = () => setIsGrouped((prev) => !prev);
 
@@ -32,6 +35,7 @@ export const FilesCirclePackingChart = () => {
             end: customRange.end,
             amount: NUMBER_OF_FILES_TO_SHOW,
             type: "normal" as const,
+            branches,
           }
         : {
             name,
@@ -39,6 +43,7 @@ export const FilesCirclePackingChart = () => {
             end: PERIODS_CONFIG[period].end,
             amount: NUMBER_OF_FILES_TO_SHOW,
             type: "normal" as const,
+            branches,
           },
     ),
   );

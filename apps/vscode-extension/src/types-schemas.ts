@@ -19,7 +19,6 @@ export type FileData = {
   freezeStartTime: number | null;
   isFrozen: boolean;
   projectName: string;
-  projectPath: string;
   languageSlug: string;
   fileName: string;
 };
@@ -36,14 +35,19 @@ export const globalStateInitialDataSchema = z.object({
       timeSpentPerLanguage: z.record(z.string().min(1), z.number()),
 
       dayFilesData: z.record(
-        z.string().min(1), // the absolute path of the file
-        z.object({
-          timeSpent: z.number(),
-          projectPath: z.string().min(1),
-          languageSlug: z.string().min(1),
-          projectName: z.string().min(1),
-          fileName: z.string().min(1),
-        }),
+        z.string().min(1), // project path
+        z.record(
+          z.string().min(1), // branch
+          z.record(
+            z.string().min(1), // absolute path of the file
+            z.object({
+              timeSpent: z.number(),
+              languageSlug: z.string().min(1),
+              projectName: z.string().min(1),
+              fileName: z.string().min(1),
+            }),
+          ),
+        ),
       ),
 
       updatedAt: z.union([
@@ -53,7 +57,7 @@ export const globalStateInitialDataSchema = z.object({
     }),
   ),
 });
-export type FileMap = Record<string, FileData>;
+export type FileMap = Record<string, Record<string, Record<string, FileData>>>; // first record: project path, second: branch name and third: file path
 export type GlobalStateData = z.infer<typeof globalStateInitialDataSchema>;
 export type FileDataSync = GlobalStateData["dailyData"][string]["dayFilesData"];
 

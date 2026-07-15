@@ -15,6 +15,7 @@ export const FindProjectByNameOnRangeDto = z.object({
   start: DateStringDto,
   end: DateStringDto,
   name: z.string().min(1),
+  branches: z.array(z.string().min(1)).min(1).optional(),
 });
 
 export const GetProjectLanguagesTimePerDayOfPeriodDto = z.object({
@@ -22,17 +23,20 @@ export const GetProjectLanguagesTimePerDayOfPeriodDto = z.object({
   start: DateStringDto,
   end: DateStringDto,
   name: z.string().min(1),
+  branches: z.array(z.string().min(1)).min(1).optional(),
 });
 
 export const GetProjectDailyStatsDto = z.object({
   dateString: DateStringDto,
   name: z.string().min(1),
+  branches: z.array(z.string().min(1)).min(1).optional(),
 });
 
 export const GetPeriodGeneralStatsForProjectDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
     name: z.string().min(1),
+    branches: z.array(z.string().min(1)).min(1).optional(),
     todaysDateString: DateStringDto,
   }),
 );
@@ -42,6 +46,7 @@ export const GetProjectFilesOnPeriodBaseDto = z.object({
     z.object({
       ...DateRangeDto.shape,
       name: z.string().min(1),
+      branches: z.array(z.string().min(1)).min(1).optional(),
     }),
   ).shape,
 });
@@ -77,6 +82,14 @@ export const GetProjectOnPeriodDto = refineDto(
   z.object({
     ...DateRangeDto.shape,
     name: z.string().min(1),
+    branches: z.array(z.string().min(1)).min(1).optional(),
+  }),
+);
+
+export const GetProjectBranchesOnPeriodDto = refineDto(
+  z.object({
+    ...DateRangeDto.shape,
+    name: z.string().min(1),
   }),
 );
 
@@ -84,6 +97,7 @@ export const GetProjectPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
     name: z.string().min(1),
+    branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
 
@@ -91,6 +105,7 @@ export const GetProjectLanguagesTimeOnPeriodDto = refineDto(
   z.object({
     ...DateRangeDto.shape,
     name: z.string().min(1),
+    branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
 
@@ -98,6 +113,7 @@ export const GetProjectLanguagesPerDayOfPeriodDto = refineAndTransformDto(
   z.object({
     ...BaseDto.shape,
     name: z.string().min(1),
+    branches: z.array(z.string().min(1)).min(1).optional(),
   }),
 );
 
@@ -136,6 +152,11 @@ export type GetPeriodProjectsDtoType = z.infer<typeof GetPeriodProjectsDto> &
   UserId;
 
 export type GetProjectOnPeriodDtoType = z.infer<typeof GetProjectOnPeriodDto> &
+  UserId;
+
+export type GetProjectBranchesOnPeriodDtoType = z.infer<
+  typeof GetProjectBranchesOnPeriodDto
+> &
   UserId;
 
 export type GetProjectPerDayOfPeriodDtoType = z.infer<

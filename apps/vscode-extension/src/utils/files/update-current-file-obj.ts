@@ -8,7 +8,7 @@ import { getCurrentFileProperties } from "./get-current-file-properties";
 export const updateCurrentFileObj = (
   document: vscode.TextDocument | undefined,
 ) => {
-  const { absolutePath, projectName, projectPath, fileName } =
+  const { absolutePath, projectName, projectPath, fileName, branchName } =
     getCurrentFileProperties(document);
   const currentLanguageSlug = getLanguageSlug(document);
 
@@ -17,30 +17,29 @@ export const updateCurrentFileObj = (
     !projectName ||
     !projectPath ||
     !currentLanguageSlug ||
-    !fileName
+    !fileName ||
+    !branchName
   ) {
     return;
   }
 
-  if (!filesData[absolutePath]) {
-    filesData[absolutePath] = {
-      elapsedTime: 0,
-      startTime: performance.now(),
-      lastActivityTime: performance.now(),
-      frozenTime: null,
-      freezeStartTime: null,
-      isFrozen: false,
-      projectName,
-      projectPath,
-      languageSlug: currentLanguageSlug,
-      fileName,
-    };
-  }
+  filesData[projectPath] ??= {};
+  filesData[projectPath][branchName] ??= {};
+  filesData[projectPath][branchName][absolutePath] ??= {
+    elapsedTime: 0,
+    startTime: performance.now(),
+    lastActivityTime: performance.now(),
+    frozenTime: null,
+    freezeStartTime: null,
+    isFrozen: false,
+    projectName,
+    languageSlug: currentLanguageSlug,
+    fileName,
+  };
 
-  const currentFileData = filesData[absolutePath];
+  const currentFileData = filesData[projectPath][branchName][absolutePath];
 
   currentFileData.lastActivityTime = performance.now();
   currentFileData.languageSlug = currentLanguageSlug;
   currentFileData.projectName = projectName;
-  currentFileData.projectPath = projectPath;
 };

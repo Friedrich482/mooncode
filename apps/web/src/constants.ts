@@ -1,11 +1,11 @@
 import { type IconType, SiGithub, SiX } from "@icons-pack/react-simple-icons";
 
 export const NAVBAR_LINKS: { href: string; text: string }[] = [
-  { href: "architecture", text: "Architecture" },
   {
     href: "features",
     text: "Features",
   },
+  { href: "architecture", text: "Architecture" },
   {
     href: "installation",
     text: "Installation",

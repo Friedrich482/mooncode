@@ -6,6 +6,7 @@ import { CustomChartToolTip } from "@/components/common/custom-chart-tooltip";
 import { DayChartTitle } from "@/components/common/day-chart-title";
 import { chartConfig } from "@/constants";
 import { projectLoader } from "@/loaders/project-loader";
+import { useBranchesStore } from "@/stores/branches/branches-store";
 import { getNextDayDate } from "@/utils/get-next-day-date";
 import { getPrevDayDate } from "@/utils/get-previous-day-date";
 import { useTRPC } from "@/utils/trpc";
@@ -20,7 +21,9 @@ import { getLanguageName } from "@repo/ui/utils/get-language-name";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const ProjectDayLanguagesChart = () => {
-  const { projectName } = useLoaderData<typeof projectLoader>();
+  const { projectName: name } = useLoaderData<typeof projectLoader>();
+
+  const branches = useBranchesStore((state) => state.branches);
 
   const [date, setDate] = useState(new Date());
   const dateString = useMemo(() => getLocaleDate(date), [date]);
@@ -33,7 +36,8 @@ export const ProjectDayLanguagesChart = () => {
   const { data } = useSuspenseQuery(
     trpc.analytics.projects.getProjectDailyStats.queryOptions({
       dateString,
-      name: projectName,
+      name,
+      branches,
     }),
   );
 

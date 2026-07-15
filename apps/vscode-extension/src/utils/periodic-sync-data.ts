@@ -1,6 +1,7 @@
 import { isEqual } from "date-fns";
 import vscode from "vscode";
 
+import { FileDataSync } from "@/types-schemas";
 import { getLocaleDate } from "@repo/common/get-locale-date";
 
 import { getLoginContext } from "./auth/login-context";
@@ -26,9 +27,21 @@ export const periodicSyncData = async (
     [languageSlug: string]: number;
   };
 
-  const filesDataToUpsert = getTime();
+  const rawData = getTime();
 
-  const timeSpentToday = Object.values(filesDataToUpsert).reduce(
+  const filesDataToUpsert = Object.entries(rawData).flatMap(
+    ([projectPath, branches]) =>
+      Object.entries(branches).flatMap(([branchName, files]) =>
+        Object.entries(files).map(([filePath, file]) => ({
+          projectPath,
+          branchName,
+          filePath,
+          ...file,
+        })),
+      ),
+  );
+
+  const timeSpentToday = filesDataToUpsert.reduce(
     (acc, curr) => acc + curr.elapsedTime,
     0,
   );
@@ -46,21 +59,32 @@ export const periodicSyncData = async (
   timeSpentPerLanguage = timeSpentPerLanguageToday;
 
   const todayFilesData = Object.fromEntries(
-    Object.entries(filesDataToUpsert).map(
-      ([
-        filePath,
-        { elapsedTime, languageSlug, projectName, projectPath, fileName },
-      ]) => [
-        filePath,
-        {
-          timeSpent: elapsedTime,
-          languageSlug,
-          projectName,
-          projectPath,
-          fileName,
-        },
-      ],
-    ),
+    Object.entries(rawData).map(([projectPath, branches]) => [
+      projectPath,
+      Object.fromEntries(
+        Object.entries(branches).map(([branchName, files]) => [
+          branchName,
+          Object.fromEntries(
+            Object.entries(files).map(
+              ([
+                filePath,
+                { elapsedTime, fileName, languageSlug, projectName },
+              ]) => [
+                filePath,
+                {
+                  projectPath,
+                  branchName,
+                  timeSpent: elapsedTime,
+                  fileName,
+                  languageSlug,
+                  projectName,
+                },
+              ],
+            ),
+          ),
+        ]),
+      ),
+    ]),
   );
 
   const globalStateData = await getGlobalStateData();
@@ -81,6 +105,7 @@ export const periodicSyncData = async (
         await trpc.extension.upsertFiles.mutate({
           filesData: data.dayFilesData,
           targetedDate: dateString,
+          type: "new",
         });
       }
     }
@@ -109,10 +134,12 @@ export const periodicSyncData = async (
     );
 
     if (hasFilesDataChangedSinceLastSync) {
-      const files = await trpc.extension.upsertFiles.mutate({
+      const files = (await trpc.extension.upsertFiles.mutate({
         filesData: todayFilesData,
         targetedDate: todaysDateString,
-      });
+        type: "new",
+      })) as FileDataSync;
+
       updateFilesDataAfterSync(files);
 
       isServerSynced = true;
