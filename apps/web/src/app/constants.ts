@@ -2,6 +2,7 @@ import {
   Activity,
   ChartColumnIcon,
   Code,
+  FolderGit2,
   LayoutDashboard,
   Timer,
   WifiOff,
@@ -23,6 +24,11 @@ export const FEATURES: Feature[] = [
     Icon: Code,
     title: "Support for most languages and file extensions",
     text: "A wide variety of programming languages are supported and automatically detected by the VSCode extension, from the common ones to the more obscure.",
+  },
+  {
+    Icon: FolderGit2,
+    title: "Project Git branch stats",
+    text: "Coding stats filterable per Git branch(es) on each version-controlled project.",
   },
   {
     Icon: LayoutDashboard,
