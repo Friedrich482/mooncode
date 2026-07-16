@@ -2,7 +2,7 @@
   "name": "mooncode",
   "displayName": "MoonCode",
   "description": "MoonCode is an extension that tracks your coding time (like WakaTime) and gives you a detailed summary about all your coding statistics. With MoonCode, developers get the full history of their coding activity.",
-  "version": "0.0.70",
+  "version": "0.0.72",
   "icon": "./public/moon.png",
   "publisher": "Friedrich482",
   "author": {
@@ -111,7 +111,7 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
-    "publish:patch": "vsce publish patch",
+    "publish": "vsce publish",
     "compile": "npx tsx build.ts",
     "build": "tsc --build",
     "watch": "npx tsx build.ts --watch",

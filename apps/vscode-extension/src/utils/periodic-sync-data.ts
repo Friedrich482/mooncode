@@ -72,8 +72,6 @@ export const periodicSyncData = async (
               ]) => [
                 filePath,
                 {
-                  projectPath,
-                  branchName,
                   timeSpent: elapsedTime,
                   fileName,
                   languageSlug,

@@ -29,7 +29,7 @@ jobs:
         run: |
           npm run build --workspace=@repo/common
           npm run build --workspace=dashboard
-          npm run publish:patch --workspace=mooncode
+          npm run publish --workspace=mooncode
         env:
           VSCE_PAT: ${{ secrets.VSCE_PAT }}
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
