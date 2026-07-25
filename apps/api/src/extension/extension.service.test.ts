@@ -5,6 +5,7 @@ import { DailyDataService } from "@/daily-data/daily-data.service";
 import { FilesService } from "@/files/files.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { ProjectsService } from "@/projects/projects.service";
+import { TelemetryService } from "@/telemetry/telemetry.service";
 import { Test } from "@nestjs/testing";
 import { Procedure } from "@vitest/spy";
 
@@ -12,6 +13,11 @@ import { ExtensionService } from "./extension.service";
 
 describe("ExtensionService", () => {
   let extensionService: ExtensionService;
+
+  let telemetryService: {
+    findOne: Mock<Procedure>;
+    create: Mock<Procedure>;
+  };
 
   let dailyDataService: {
     findOne: Mock<Procedure>;
@@ -48,6 +54,11 @@ describe("ExtensionService", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
 
+    telemetryService = {
+      create: vi.fn(),
+      findOne: vi.fn(),
+    };
+
     dailyDataService = {
       findOne: vi.fn(),
       update: vi.fn(),
@@ -83,6 +94,7 @@ describe("ExtensionService", () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         ExtensionService,
+        { provide: TelemetryService, useValue: telemetryService },
         { provide: DailyDataService, useValue: dailyDataService },
         { provide: LanguagesService, useValue: languagesService },
         { provide: ProjectsService, useValue: projectsService },

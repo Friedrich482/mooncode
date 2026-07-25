@@ -1,7 +1,13 @@
 import { z } from "zod";
 
-import { DateStringDto } from "@/common/dto";
+import { DateStringDto, SemVerDto } from "@/common/dto";
 import { UserId } from "@repo/common/types-schemas";
+
+export const CollectTelemetryDataDto = z.object({
+  machineId: z.string().min(1),
+  extensionVersion: SemVerDto,
+  vscodeVersion: SemVerDto,
+});
 
 export const GetLanguagesTimeForDayDto = z.object({
   dateString: DateStringDto,
@@ -64,6 +70,11 @@ export const UpsertFilesDto = z.discriminatedUnion("type", [
     targetedDate: DateStringDto,
   }),
 ]);
+
+export type CollectTelemetryDataDtoType = z.infer<
+  typeof CollectTelemetryDataDto
+> &
+  UserId;
 
 export type GetLanguagesTimeForDayDtoType = z.infer<
   typeof GetLanguagesTimeForDayDto

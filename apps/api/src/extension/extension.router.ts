@@ -2,6 +2,7 @@ import { TrpcService } from "@/trpc/trpc.service";
 import { Injectable } from "@nestjs/common";
 
 import {
+  CollectTelemetryDataDto,
   GetFilesForDayDto,
   GetLanguagesTimeForDayDto,
   UpsertFilesDto,
@@ -19,6 +20,16 @@ export class ExtensionRouter {
   procedures() {
     return {
       extension: this.trpcService.trpc.router({
+        collectTelemetryData: this.trpcService
+          .protectedProcedure()
+          .input(CollectTelemetryDataDto)
+          .mutation(async ({ ctx, input }) =>
+            this.extensionService.collectTelemetryData({
+              ...input,
+              userId: ctx.user.sub,
+            }),
+          ),
+
         getLanguagesTimeForDay: this.trpcService
           .protectedProcedure()
           .input(GetLanguagesTimeForDayDto)

@@ -3,9 +3,11 @@ import { DailyDataService } from "@/daily-data/daily-data.service";
 import { FilesService } from "@/files/files.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { ProjectsService } from "@/projects/projects.service";
+import { TelemetryService } from "@/telemetry/telemetry.service";
 import { Injectable } from "@nestjs/common";
 
 import {
+  CollectTelemetryDataDtoType,
   GetFilesForDayDtoType,
   GetLanguagesTimeForDayDtoType,
   NewExpectedFilesDataDtoType,
@@ -16,12 +18,42 @@ import {
 @Injectable()
 export class ExtensionService {
   constructor(
+    private readonly telemetryService: TelemetryService,
     private readonly dailyDataService: DailyDataService,
     private readonly languagesService: LanguagesService,
     private readonly projectsService: ProjectsService,
     private readonly branchesService: BranchesService,
     private readonly filesService: FilesService,
   ) {}
+
+  async collectTelemetryData(
+    collectTelemetryDataDto: CollectTelemetryDataDtoType,
+  ) {
+    const { userId, machineId, extensionVersion, vscodeVersion } =
+      collectTelemetryDataDto;
+
+    const existingTelemetryEntry = await this.telemetryService.findOne({
+      userId,
+      machineId,
+    });
+
+    if (
+      !existingTelemetryEntry ||
+      existingTelemetryEntry.extensionVersion !== extensionVersion ||
+      existingTelemetryEntry.vscodeVersion !== vscodeVersion
+    ) {
+      const createdTelemetryEntry = await this.telemetryService.create({
+        userId,
+        machineId,
+        vscodeVersion,
+        extensionVersion,
+      });
+
+      return createdTelemetryEntry;
+    }
+
+    return existingTelemetryEntry;
+  }
 
   async getLanguagesTimeForDay(
     getLanguagesTimeForDayDto: GetLanguagesTimeForDayDtoType,
