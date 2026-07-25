@@ -1,10 +1,10 @@
 import { z } from "zod";
 
-import { DateStringDto, SemVerDto } from "@/common/dto";
-import { UserId } from "@repo/common/types-schemas";
+import { DateStringDto } from "@/common/dto";
+import { SemVerSchema as SemVerDto, UserId } from "@repo/common/types-schemas";
 
 export const CollectTelemetryDataDto = z.object({
-  machineId: z.string().min(1),
+  machineId: z.hash("sha256"),
   extensionVersion: SemVerDto,
   vscodeVersion: SemVerDto,
 });
