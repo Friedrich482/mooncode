@@ -106,6 +106,133 @@ describe("ExtensionService", () => {
     extensionService = moduleRef.get(ExtensionService);
   });
 
+  describe("collectTelemetryData", () => {
+    it("should return the matching telemetry event if it already exists", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedExistingTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      telemetryService.findOne.mockResolvedValue(mockedExistingTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedExistingTelemetryEvent);
+    });
+
+    it("should create the telemetry event if it doesn't already exists for that specific machine", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedCreatedTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      telemetryService.findOne.mockResolvedValue(null);
+      telemetryService.create.mockResolvedValue(mockedCreatedTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryService.create).toHaveBeenCalled();
+      expect(telemetryService.create).toHaveBeenCalledWith({ ...mockedEntry });
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedCreatedTelemetryEvent);
+    });
+
+    it("should create the telemetry event if it exists for that specific machine but the extension version has changed", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedFoundTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedCreatedTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.129.1",
+      };
+
+      telemetryService.findOne.mockResolvedValue(mockedFoundTelemetryEvent);
+      telemetryService.create.mockResolvedValue(mockedCreatedTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryService.create).toHaveBeenCalled();
+      expect(telemetryService.create).toHaveBeenCalledWith({ ...mockedEntry });
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedCreatedTelemetryEvent);
+    });
+
+    it("should create the telemetry event if it exists for that specific machine but the vscode version has changed", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.130.0",
+      };
+
+      const mockedFoundTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedCreatedTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.130.0",
+      };
+
+      telemetryService.findOne.mockResolvedValue(mockedFoundTelemetryEvent);
+      telemetryService.create.mockResolvedValue(mockedCreatedTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryService.create).toHaveBeenCalled();
+      expect(telemetryService.create).toHaveBeenCalledWith({ ...mockedEntry });
+      expect(telemetryEvent).toEqual(mockedCreatedTelemetryEvent);
+    });
+  });
+
   describe("getLanguagesTimeForDay", () => {
     const mockedEntry = {
       userId: "1",

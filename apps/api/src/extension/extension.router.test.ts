@@ -18,6 +18,7 @@ describe("ExtensionRouter", () => {
   let trpcService: TrpcService;
 
   let extensionService: {
+    collectTelemetryData: Mock<Procedure>;
     getLanguagesTimeForDay: Mock<Procedure>;
     getFilesForDay: Mock<Procedure>;
     upsertLanguages: Mock<Procedure>;
@@ -51,6 +52,7 @@ describe("ExtensionRouter", () => {
     vi.clearAllMocks();
 
     extensionService = {
+      collectTelemetryData: vi.fn(),
       getLanguagesTimeForDay: vi.fn(),
       getFilesForDay: vi.fn(),
       upsertLanguages: vi.fn(),
@@ -82,6 +84,43 @@ describe("ExtensionRouter", () => {
     )(mockedCtx);
 
     vi.spyOn(trpcService, "getPayload").mockResolvedValue(mockedPayload);
+  });
+
+  describe("collectTelemetryData", () => {
+    const mockedEntry = {
+      machineId:
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      extensionVersion: "0.0.71",
+      vscodeVersion: "1.130.0",
+      userId: mockedPayload.sub,
+    };
+
+    const mockedOutput = {
+      machineId:
+        "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+      extensionVersion: "0.0.71",
+      vscodeVersion: "1.130.0",
+    };
+
+    it("should call the collectTelemetryData method of the extensionService", async () => {
+      extensionService.collectTelemetryData.mockResolvedValue(mockedOutput);
+
+      await caller.collectTelemetryData(mockedEntry);
+
+      expect(extensionService.collectTelemetryData).toHaveBeenCalled();
+      expect(extensionService.collectTelemetryData).toHaveBeenCalledWith(
+        mockedEntry,
+      );
+    });
+
+    it("should return the telemetry event created or found", async () => {
+      extensionService.collectTelemetryData.mockResolvedValue(mockedOutput);
+
+      const telemetryEvent = await caller.collectTelemetryData(mockedEntry);
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedOutput);
+    });
   });
 
   describe("getLanguagesTimeForDay", () => {

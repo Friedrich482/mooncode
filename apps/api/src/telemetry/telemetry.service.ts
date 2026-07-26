@@ -41,7 +41,8 @@ export class TelemetryService {
       .from(telemetry)
       .where(
         and(eq(telemetry.userId, userId), eq(telemetry.machineId, machineId)),
-      );
+      )
+      .limit(1);
 
     if (!telemetryEntry) {
       return null;
