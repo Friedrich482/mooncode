@@ -5,7 +5,7 @@ import { SemVerSchema } from "@repo/common/types-schemas";
 import { isTRPCClientError } from "@trpc/client";
 
 import { handleInvalidTokenError } from "../errors/handle-invalid-token-error";
-import { logDir, logError } from "../logger/logger";
+import { logError } from "../logger/logger";
 import { trpc } from "../trpc/client";
 
 export const collectTelemetryData = async () => {
@@ -26,8 +26,6 @@ export const collectTelemetryData = async () => {
   const extensionVersion = parsedExtensionVersion.data;
   const vscodeVersion = vscode.version;
   const machineId = vscode.env.machineId;
-
-  logDir({ extensionVersion, vscodeVersion, machineId });
 
   try {
     await trpc.extension.collectTelemetryData.mutate({
