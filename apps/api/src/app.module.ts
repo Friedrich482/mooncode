@@ -20,6 +20,7 @@ import { FilesModule } from "./files/files.module";
 import { LanguagesModule } from "./languages/languages.module";
 import { PasswordResetsModule } from "./password-resets/password-resets.module";
 import { ProjectsModule } from "./projects/projects.module";
+import { TelemetryModule } from "./telemetry/telemetry.module";
 import { TrpcModule } from "./trpc/trpc.module";
 import { UsersModule } from "./users/users.module";
 
@@ -54,6 +55,7 @@ import { UsersModule } from "./users/users.module";
     AnalyticsModule,
     ExtensionModule,
     BranchesModule,
+    TelemetryModule,
   ],
   controllers: [AppController],
   providers: [

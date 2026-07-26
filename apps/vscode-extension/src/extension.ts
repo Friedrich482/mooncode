@@ -12,6 +12,7 @@ import { logInfo } from "./utils/logger/logger";
 import { periodicSyncData } from "./utils/periodic-sync-data";
 import { addStatusBarItem } from "./utils/status-bar/add-status-bar-item";
 import { setStatusBarItem } from "./utils/status-bar/set-status-bar-item";
+import { collectTelemetryData } from "./utils/telemetry/collect-telemetry-data";
 import { calculateTime } from "./utils/time/calculate-time";
 
 let extensionContext: vscode.ExtensionContext;
@@ -26,6 +27,8 @@ export async function activate(context: vscode.ExtensionContext) {
   registerAuthUriHandler();
 
   statusBarItem = addStatusBarItem();
+
+  collectTelemetryData();
 
   const { timeSpent, initialFilesData } = await fetchInitialData();
 

@@ -5,6 +5,7 @@ import { DailyDataService } from "@/daily-data/daily-data.service";
 import { FilesService } from "@/files/files.service";
 import { LanguagesService } from "@/languages/languages.service";
 import { ProjectsService } from "@/projects/projects.service";
+import { TelemetryService } from "@/telemetry/telemetry.service";
 import { Test } from "@nestjs/testing";
 import { Procedure } from "@vitest/spy";
 
@@ -12,6 +13,11 @@ import { ExtensionService } from "./extension.service";
 
 describe("ExtensionService", () => {
   let extensionService: ExtensionService;
+
+  let telemetryService: {
+    findOne: Mock<Procedure>;
+    create: Mock<Procedure>;
+  };
 
   let dailyDataService: {
     findOne: Mock<Procedure>;
@@ -48,6 +54,11 @@ describe("ExtensionService", () => {
   beforeEach(async () => {
     vi.clearAllMocks();
 
+    telemetryService = {
+      create: vi.fn(),
+      findOne: vi.fn(),
+    };
+
     dailyDataService = {
       findOne: vi.fn(),
       update: vi.fn(),
@@ -83,6 +94,7 @@ describe("ExtensionService", () => {
     const moduleRef = await Test.createTestingModule({
       providers: [
         ExtensionService,
+        { provide: TelemetryService, useValue: telemetryService },
         { provide: DailyDataService, useValue: dailyDataService },
         { provide: LanguagesService, useValue: languagesService },
         { provide: ProjectsService, useValue: projectsService },
@@ -92,6 +104,133 @@ describe("ExtensionService", () => {
     }).compile();
 
     extensionService = moduleRef.get(ExtensionService);
+  });
+
+  describe("collectTelemetryData", () => {
+    it("should return the matching telemetry event if it already exists", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedExistingTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      telemetryService.findOne.mockResolvedValue(mockedExistingTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedExistingTelemetryEvent);
+    });
+
+    it("should create the telemetry event if it doesn't already exists for that specific machine", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedCreatedTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      telemetryService.findOne.mockResolvedValue(null);
+      telemetryService.create.mockResolvedValue(mockedCreatedTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryService.create).toHaveBeenCalled();
+      expect(telemetryService.create).toHaveBeenCalledWith({ ...mockedEntry });
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedCreatedTelemetryEvent);
+    });
+
+    it("should create the telemetry event if it exists for that specific machine but the extension version has changed", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedFoundTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.71",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedCreatedTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.129.1",
+      };
+
+      telemetryService.findOne.mockResolvedValue(mockedFoundTelemetryEvent);
+      telemetryService.create.mockResolvedValue(mockedCreatedTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryService.create).toHaveBeenCalled();
+      expect(telemetryService.create).toHaveBeenCalledWith({ ...mockedEntry });
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryEvent).toEqual(mockedCreatedTelemetryEvent);
+    });
+
+    it("should create the telemetry event if it exists for that specific machine but the vscode version has changed", async () => {
+      const mockedEntry = {
+        userId: "1",
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.130.0",
+      };
+
+      const mockedFoundTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.129.1",
+      };
+
+      const mockedCreatedTelemetryEvent = {
+        machineId:
+          "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        extensionVersion: "0.0.72",
+        vscodeVersion: "1.130.0",
+      };
+
+      telemetryService.findOne.mockResolvedValue(mockedFoundTelemetryEvent);
+      telemetryService.create.mockResolvedValue(mockedCreatedTelemetryEvent);
+
+      const telemetryEvent =
+        await extensionService.collectTelemetryData(mockedEntry);
+
+      expect(telemetryEvent).toBeDefined();
+      expect(telemetryService.create).toHaveBeenCalled();
+      expect(telemetryService.create).toHaveBeenCalledWith({ ...mockedEntry });
+      expect(telemetryEvent).toEqual(mockedCreatedTelemetryEvent);
+    });
   });
 
   describe("getLanguagesTimeForDay", () => {

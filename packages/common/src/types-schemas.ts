@@ -157,6 +157,13 @@ export const WsDataSchema = z.discriminatedUnion("type", [
   }),
 ]);
 
+export const SemVerSchema = z
+  .string()
+  .regex(
+    /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-((?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\.(?:0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\+([0-9a-zA-Z-]+(?:\.[0-9a-zA-Z-]+)*))?$/,
+    { error: "Must be a semantic version" },
+  );
+
 export const GroupByEnum = ["days", "weeks", "months"] as const;
 export type GroupBy = (typeof GroupByEnum)[number];
 export type UserId = { userId: string };
