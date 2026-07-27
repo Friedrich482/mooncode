@@ -114,31 +114,7 @@ export const UpdateEmailSchema = z.object({
   code: z.string().length(EMAIL_VERIFICATION_CODE_LENGTH),
 });
 
-export const IsoDateStringSchema = z
-  .string()
-  .regex(
-    /^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,
-    "Date must be in YYYY-MM-DD format",
-  )
-  .refine(
-    (dateStr) => {
-      const date = new Date(dateStr);
-      const [year, month, day] = dateStr.split("-").map(Number);
-
-      return (
-        date instanceof Date &&
-        !isNaN(date.getTime()) &&
-        date.getUTCFullYear() === year &&
-        date.getUTCMonth() + 1 === month &&
-        date.getUTCDate() === day
-      );
-    },
-    { error: "Invalid date" },
-  );
-
-export const IsoDateSchema = IsoDateStringSchema.transform(
-  (dateStr) => new Date(dateStr),
-);
+export const IsoDateStringSchema = z.iso.date();
 
 export const WsDataSchema = z.discriminatedUnion("type", [
   z.object({
