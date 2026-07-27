@@ -17,6 +17,7 @@ import { EmailVerificationModule } from "./email-verifications/email-verificatio
 import { EnvModule } from "./env/env.module";
 import { ExtensionModule } from "./extension/extension.module";
 import { FilesModule } from "./files/files.module";
+import { HealthModule } from "./health/health.module";
 import { LanguagesModule } from "./languages/languages.module";
 import { PasswordResetsModule } from "./password-resets/password-resets.module";
 import { ProjectsModule } from "./projects/projects.module";
@@ -56,6 +57,7 @@ import { UsersModule } from "./users/users.module";
     ExtensionModule,
     BranchesModule,
     TelemetryModule,
+    HealthModule,
   ],
   controllers: [AppController],
   providers: [

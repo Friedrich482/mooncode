@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"**/*.{ts,sh}\" Dockerfile",
     "dev": "NEST_DEBUG=true nest start --watch",
-    "health-check": "wait-on http://localhost:3000/health && echo 'API is ready!'",
+    "health-check": "wait-on http://localhost:3000/health/ping && echo 'API is ready!'",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:prod": "NODE_ENV=production node dist/main.js",
